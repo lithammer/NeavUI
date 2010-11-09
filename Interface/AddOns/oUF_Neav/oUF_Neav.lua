@@ -28,7 +28,6 @@
 for _, button in pairs({
     'UnitFramePanelPartyBackground',
     'UnitFramePanelPartyPets',
-    --'UnitFramePanelPartyInRaid', -- 3.3.5 code
 
     'CombatPanelTargetOfTarget',
     'CombatPanelTOTDropDown',
@@ -37,8 +36,7 @@ for _, button in pairs({
     
     'DisplayPanelShowAggroPercentage',
     
-    'FrameCategoriesButton9',
-    --'FrameCategoriesButton10',
+    'FrameCategoriesButton10',
     --'FrameCategoriesButton11',
 }) do
     _G['InterfaceOptions'..button]:SetAlpha(0.35)
@@ -517,167 +515,7 @@ local function CreateUnitLayout(self, unit)
     self.Name:SetShadowOffset(1, -1)
     self.Name:SetJustifyH('CENTER')
     self.Name:SetHeight(10)
-	
-	-- Holy power
-	if unit == "player" and select(2, UnitClass("player")) == "PALADIN" then
-		local bg = {}
-		local HPowerAnim = {}
-		self.HolyPower = {}
-		-- Helper var for animation handling
-		self.HolyPower.lastHPow = UnitPower("player", SPELL_POWER_HOLY_POWER)
-		
-		for i = 1, MAX_HOLY_POWER do
-			bg[i] = CreateFrame("Frame", nil, self)
-			bg[i]:SetSize(18, 18)
-			
-			if i > 1 then bg[i]:SetPoint("RIGHT", bg[i - 1], "LEFT", -5, 0) end
-			
-			bg[i].tex = bg[i]:CreateTexture(nil, "ARTWORK")
-			bg[i].tex:SetTexture("Interface\\AddOns\\oUF_Neav\\media\\holypower.blp")
-			bg[i].tex:SetTexCoord(0, 18 / 64, 0, 18 / 32)
-			bg[i].tex:SetAllPoints(bg[i])
-			self.HolyPower[i] = bg[i]:CreateTexture(nil, "OVERLAY")
-			self.HolyPower[i]:SetTexture("Interface\\AddOns\\oUF_Neav\\media\\holypower.blp")
-			self.HolyPower[i]:SetTexCoord(18 / 64, 36 / 64, 0, 18 / 32)
-			self.HolyPower[i]:SetAllPoints(bg[i])
-			self.HolyPower[i]:SetVertexColor(1, 1, 0.4)
-			
-			HPowerAnim[i] = self.HolyPower[i]:CreateAnimationGroup()
-			local alphaIn = HPowerAnim[i]:CreateAnimation("Alpha")
-			alphaIn:SetChange(1)
-			alphaIn:SetSmoothing("OUT")
-			alphaIn:SetDuration(1)
-			alphaIn:SetOrder(1)
-			
-			HPowerAnim[i]:SetScript("OnFinished", function() self.HolyPower[i]:SetAlpha(1) end)
-		end
-		
-		bg[1]:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT")
-		
-		self.HolyPower.PostUpdate = function(_, unit)
-			if unit == "player" then
-				local hPow = UnitPower("player", SPELL_POWER_HOLY_POWER)
-				if hPow > 0 then
-					if self.HolyPower.lastHPow <= hPow then
-						-- Play animation only on holy power gains
-						self.HolyPower[hPow]:SetAlpha(0)
-						HPowerAnim[hPow]:Play();
-					end
-				else
-					for i = 1, MAX_HOLY_POWER do
-						-- Holy power reset, stop all running animations
-						self.HolyPower.lastHPow = hPow
-						if HPowerAnim[i]:IsPlaying() then HPowerAnim[i]:Stop() end
-					end
-				end
-				self.HolyPower.lastHPow = hPow
-			end
-		end
-	end
-	
-	-- Soul shards
-	if unit == 'player' and select(2, UnitClass('player')) == 'WARLOCK' and UnitLevel('player') > 9 then
-		local bg = {}
-		local shinywheee = {}
-		self.SoulShards = {}
-		-- Helper var for animation handling
-		self.SoulShards.lastShards = UnitPower(unit, SPELL_POWER_SOUL_SHARDS)
-		
-		for i = 1, SHARD_BAR_NUM_SHARDS do
-			-- Blizzard replica
-			bg[i] = CreateFrame('Frame', nil, self)
-			bg[i]:SetFrameStrata('HIGH')
-			bg[i]:SetSize(52, 29)
-			
-			bg[i]:RegisterEvent('UNIT_ENTERED_VEHICLE')
-			bg[i]:RegisterEvent('UNIT_EXITED_VEHICLE')
-			bg[i]:SetScript('OnEvent', function(self, event)
-				if event == 'UNIT_ENTERED_VEHICLE' then
-					bg[i]:Hide()
-				elseif event == 'UNIT_EXITED_VEHICLE' then
-					bg[i]:Show()
-				end
-			end)
-			
-			if i > 1 then bg[i]:SetPoint('LEFT', bg[i - 1], 'RIGHT', -15, 0) end
-			
-			bg[i].tex = bg[i]:CreateTexture(nil, 'ARTWORK')
-			bg[i].tex:SetTexture('Interface\\PlayerFrame\\UI-WarlockShard.blp')
-			bg[i].tex:SetTexCoord(0.01562500, 0.82812500, 0.60937500, 0.83593750)
-			bg[i].tex:SetAllPoints(bg[i])
-			
-			self.SoulShards[i] = bg[i]:CreateTexture(nil, 'OVERLAY')
-			self.SoulShards[i]:SetTexture('Interface\\PlayerFrame\\UI-WarlockShard.blp')
-			self.SoulShards[i]:SetTexCoord(0.01562500, 0.28125000, 0.00781250, 0.13281250)
-			self.SoulShards[i]:SetSize(17, 16)
-			--self.SoulShards[i]:SetAllPoints(bg[i])
-			self.SoulShards[i]:SetPoint('LEFT', bg[i], 'LEFT', 8, 2)
-			--self.SoulShards[i]:SetVertexColor(138/255, 0, 184/255)
-			-- End Blizzard replica
-			
-			-- Shine effect
-			shinywheee[i] = CreateFrame('Frame', nil, bg[i])
-			shinywheee[i]:SetAllPoints()
-			shinywheee[i]:SetAlpha(0)
-			shinywheee[i]:Hide()
-				
-			local shine = shinywheee[i]:CreateTexture(nil, 'OVERLAY')
-			shine:SetSize(25, 25)
-			shine:SetPoint('CENTER', bg[i], -2, -2)
-			shine:SetTexture('Interface\\Cooldown\\star4.blp')
-			shine:SetBlendMode('ADD')
-			
-			shinywheee[i].anim = shinywheee[i]:CreateAnimationGroup()
-			local alphaIn = shinywheee[i].anim:CreateAnimation('Alpha')
-			alphaIn:SetChange(0.3)
-			alphaIn:SetDuration(0.4)
-			alphaIn:SetOrder(1)
-			local rotateIn = shinywheee[i].anim:CreateAnimation('Rotation')
-			rotateIn:SetDegrees(-90)
-			rotateIn:SetDuration(0.4)
-			rotateIn:SetOrder(1)
-			local scaleIn = shinywheee[i].anim:CreateAnimation('Scale')
-			scaleIn:SetScale(2, 2)
-			scaleIn:SetOrigin('CENTER', 0, 0)
-			scaleIn:SetDuration(0.4)
-			scaleIn:SetOrder(1)
-			local alphaOut = shinywheee[i].anim:CreateAnimation('Alpha')
-			alphaOut:SetChange(-0.5)
-			alphaOut:SetDuration(0.4)
-			alphaOut:SetOrder(2)
-			local rotateOut = shinywheee[i].anim:CreateAnimation('Rotation')
-			rotateOut:SetDegrees(-90)
-			rotateOut:SetDuration(0.3)
-			rotateOut:SetOrder(2)
-			local scaleOut = shinywheee[i].anim:CreateAnimation('Scale')
-			scaleOut:SetScale(-2, -2)
-			scaleOut:SetOrigin('CENTER', 0, 0)
-			scaleOut:SetDuration(0.4)
-			scaleOut:SetOrder(2)
-				
-			shinywheee[i].anim:SetScript('OnFinished', function() shinywheee[i]:Hide() end)
-			shinywheee[i]:SetScript('OnShow', function() shinywheee[i].anim:Play() end)
-		end
-		
-		self.SoulShards.PostUpdate = function(_, unit)				
-			if unit == 'player' then
-				local shards = UnitPower(unit, SPELL_POWER_SOUL_SHARDS)
-				if shards > 0 then
-					if self.SoulShards.lastShards <= shards then
-						-- Play animation only on shards gains
-						for i = self.SoulShards.lastShards + 1, shards do
-							-- For each shard gained
-							shinywheee[i]:Show()
-						end
-					end
-				end
-				self.SoulShards.lastShards = shards
-			end
-		end
-		
-		bg[1]:SetPoint('TOPRIGHT', self, 'BOTTOM', 18, 2)
-	end
-    
+	 
     if (unit == 'pet') then
         self.Name:SetWidth(110)
         self.Name:SetJustifyH('LEFT')
@@ -880,9 +718,41 @@ local function CreateUnitLayout(self, unit)
         -- playerframe
         
     if (unit == 'player') then
-        --self:SetAttribute('initial-height', 42)
-        --self:SetAttribute('initial-width', 175)
 		self:SetSize(175, 42)
+
+			-- warlock soulshard bar
+		if (select(2, UnitClass('player')) == 'WARLOCK') then
+			ShardBarFrame:SetParent(oUF_Neav_Player)
+			ShardBarFrame:SetScale(oUF_Neav.units.player.scale)
+			ShardBar_OnLoad(ShardBarFrame)
+			ShardBarFrame:ClearAllPoints()
+			ShardBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 35, 0)
+			ShardBarFrame:SetFrameStrata('HIGH')
+			ShardBarFrame:Show()
+		end
+
+			-- holy power bar
+		if (select(2, UnitClass('player')) == 'PALADIN') then
+			PaladinPowerBar:SetParent(oUF_Neav_Player)
+			PaladinPowerBar:SetScale(oUF_Neav.units.player.scale)
+			PaladinPowerBar_OnLoad(PaladinPowerBar)
+			PaladinPowerBar:ClearAllPoints()
+			PaladinPowerBar:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 35, 0)
+			PaladinPowerBar:SetFrameStrata('HIGH')
+			PaladinPowerBar:Show()
+		end
+
+			-- druid eclipse bar
+		if (select(2, UnitClass('player')) == 'DRUID') then
+			EclipseBarFrame:SetParent(oUF_Neav_Player)
+			EclipseBarFrame:SetScale(oUF_Neav.units.player.scale)
+			EclipseBar_OnLoad(EclipseBarFrame)
+			EclipseBarFrame:ClearAllPoints()
+			EclipseBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 35, 0)
+			EclipseBarFrame:SetFrameStrata('HIGH')
+			EclipseBarFrame:Show()
+		end
+		
         
             -- runebar
                 
