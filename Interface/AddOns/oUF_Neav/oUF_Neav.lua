@@ -723,33 +723,30 @@ local function CreateUnitLayout(self, unit)
 			-- warlock soulshard bar
 		if (select(2, UnitClass('player')) == 'WARLOCK') then
 			ShardBarFrame:SetParent(oUF_Neav_Player)
-			ShardBarFrame:SetScale(oUF_Neav.units.player.scale)
+			ShardBarFrame:SetScale(oUF_Neav.units.player.scale * 0.8)
 			ShardBar_OnLoad(ShardBarFrame)
 			ShardBarFrame:ClearAllPoints()
-			ShardBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 35, 0)
-			ShardBarFrame:SetFrameStrata('HIGH')
+			ShardBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, 0)
 			ShardBarFrame:Show()
 		end
 
 			-- holy power bar
 		if (select(2, UnitClass('player')) == 'PALADIN') then
 			PaladinPowerBar:SetParent(oUF_Neav_Player)
-			PaladinPowerBar:SetScale(oUF_Neav.units.player.scale)
+			PaladinPowerBar:SetScale(oUF_Neav.units.player.scale * 0.8)
 			PaladinPowerBar_OnLoad(PaladinPowerBar)
 			PaladinPowerBar:ClearAllPoints()
-			PaladinPowerBar:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 35, 0)
-			PaladinPowerBar:SetFrameStrata('HIGH')
+			PaladinPowerBar:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, 0)
 			PaladinPowerBar:Show()
 		end
 
 			-- druid eclipse bar
 		if (select(2, UnitClass('player')) == 'DRUID') then
 			EclipseBarFrame:SetParent(oUF_Neav_Player)
-			EclipseBarFrame:SetScale(oUF_Neav.units.player.scale)
+			EclipseBarFrame:SetScale(oUF_Neav.units.player.scale * 0.8)
 			EclipseBar_OnLoad(EclipseBarFrame)
 			EclipseBarFrame:ClearAllPoints()
-			EclipseBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 35, 0)
-			EclipseBarFrame:SetFrameStrata('HIGH')
+			EclipseBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, 0)
 			EclipseBarFrame:Show()
 		end
 		
