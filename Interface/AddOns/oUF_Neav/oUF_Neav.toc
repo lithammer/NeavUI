@@ -16,4 +16,4 @@ oUF_NeavTags.lua
 oUF_NeavCastbars.lua
 
 oUF_Neav.lua
-##oUF_NeavRaid.lua
+oUF_NeavRaid.lua
