@@ -743,10 +743,10 @@ local function CreateUnitLayout(self, unit)
 			-- druid eclipse bar
 		if (select(2, UnitClass('player')) == 'DRUID') then
 			EclipseBarFrame:SetParent(oUF_Neav_Player)
-			EclipseBarFrame:SetScale(oUF_Neav.units.player.scale * 0.8)
+			EclipseBarFrame:SetScale(oUF_Neav.units.player.scale * 0.7)
 			EclipseBar_OnLoad(EclipseBarFrame)
 			EclipseBarFrame:ClearAllPoints()
-			EclipseBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, 0)
+			EclipseBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 35, 5)
 			EclipseBarFrame:Show()
 		end
 		
