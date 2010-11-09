@@ -941,8 +941,6 @@ local function CreateUnitLayout(self, unit)
         -- petframe
             
     if (unit == 'pet') then
-        --self:SetAttribute('initial-height', 42)
-        --self:SetAttribute('initial-width', 175)
 		self:SetSize(175, 42)
     
         self.Debuffs = CreateFrame('Frame', nil, self)
@@ -1006,8 +1004,6 @@ local function CreateUnitLayout(self, unit)
     end
         
     if (unit == 'target' or unit == 'focus') then
-        --self:SetAttribute('initial-height', 42)
-        --self:SetAttribute('initial-width', 175)
 		self:SetSize(175, 42)
 
         self.CombatFeedbackText = self.Health:CreateFontString(nil, 'ARTWORK')
@@ -1052,8 +1048,6 @@ local function CreateUnitLayout(self, unit)
     end
     
     if (self.targetUnit) then
-        --self:SetAttribute('initial-height', 20)
-        --self:SetAttribute('initial-width', 85)
 		self:SetSize(85, 20)
         
         self.Debuffs = CreateFrame('Frame', nil, self)
@@ -1069,8 +1063,6 @@ local function CreateUnitLayout(self, unit)
     end
     
     if (self.partyUnit) then
-        --self:SetAttribute('initial-height', 30)
-        --self:SetAttribute('initial-width', 105)
 		self:SetSize(105, 30)
         
         self.Debuffs = CreateFrame('Frame', nil, self)
