@@ -87,6 +87,7 @@ oUF_Neav = {
             position = {'LEFT', UIParent, 'CENTER', 447, 0},
             showTargetBorder = true,
             targetBorderColor = {1, 1, 1},
+			verticalHeath = true,
         },
     },
 

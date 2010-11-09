@@ -98,7 +98,16 @@ if (nMainbar.petbar.mouseover) then
     EnableMouseOver('PetActionButton', PetActionBarFrame, 1, 10, nMainbar.petbar.alpha)
 end
 
+if (nMainbar.petbar.vertical) then
+	for i = 2, 10 do
+		button = _G["PetActionButton"..i]
+		button:ClearAllPoints()
+		button:SetPoint("TOP", _G["PetActionButton"..(i - 1)], "BOTTOM", 0, -8)
+	end
+end
+
 if (nMainbar.stanceBar.mouseover) then
     ShapeshiftBarFrame:SetFrameStrata('HIGH')
     EnableMouseOver('ShapeshiftButton', ShapeshiftBarFrame, 1, GetNumShapeSlots(), nMainbar.stanceBar.alpha)
 end
+

@@ -5,3 +5,4 @@
 nChat.lua
 nChat_TellTarget.lua
 nChat_URL.lua
+nChat_Copy.lua

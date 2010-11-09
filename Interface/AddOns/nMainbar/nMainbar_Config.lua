@@ -25,7 +25,7 @@ nMainbar = {
                                             -- 'icon'
                                             -- 'hotkey' (will show the range indicator instead of the hotkey if ['Keybind = false'] )
                                             -- false (no range indicator)
-                                        
+
         countFontsize           = 19,
         countFont               = 'Interface\\AddOns\\nMainbar\\media\\font.ttf',
         
@@ -76,6 +76,7 @@ nMainbar = {
         mouseover           = false,
         scale               = 1,
         alpha               = 1,
+		vertical			= true,
     },
     
     possessbar = {
@@ -96,7 +97,7 @@ nMainbar = {
     },
     
     multiBarRight = {
-        mouseover           = true,
+        mouseover           = false,
         alpha               = 1,
     },
     

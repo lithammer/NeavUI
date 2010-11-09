@@ -155,6 +155,21 @@ GameTooltip:HookScript('OnTooltipCleared', function(self)
     self.Icon:SetTexture(nil)
 end)
 
+-- function to short-display HP value on StatusBar
+local function ShortValue(value)
+	if value >= 1e7 then
+		return ('%.1fm'):format(value / 1e6):gsub('%.?0+([km])$', '%1')
+	elseif value >= 1e6 then
+		return ('%.2fm'):format(value / 1e6):gsub('%.?0+([km])$', '%1')
+	elseif value >= 1e5 then
+		return ('%.0fk'):format(value / 1e3)
+	elseif value >= 1e3 then
+		return ('%.1fk'):format(value / 1e3):gsub('%.?0+([km])$', '%1')
+	else
+		return value
+	end
+end
+
 local PowerBarColor = PowerBarColor
 GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
     local unit = GameTooltip_GetUnit(self)
@@ -181,33 +196,14 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             end
         end
         
-		-- Health and mana text
-        if UnitIsPlayer(unit) and not UnitIsDead(unit) then
-        	hp, hpMax = UnitHealth(unit), UnitHealthMax(unit)
-        	if hp == hpMax then
-        		self:AddLine(hp, 27/255, 243/255, 27/255, 0.35)
-        	else
-        		self:AddLine(hp..' / '..hpMax, 27/255, 243/255, 27/255, 0.35)
-        	end
-        	
-        	mana, manaMax = UnitPower(unit, 0), UnitPowerMax(unit, 0)
-        	if not (mana == 0) then
-        		if mana == manaMax then
-        			self:AddLine(mana, PowerBarColor["MANA"].r, PowerBarColor["MANA"].g, PowerBarColor["MANA"].b)
-        		else
-        			self:AddLine(mana..' / '..manaMax, PowerBarColor["MANA"].r, PowerBarColor["MANA"].g, PowerBarColor["MANA"].b)
-        		end
-        	end
-        end
-        
         if ( UnitExists(unit .. 'target') ) then
 			if ( UnitName('player') == unitTargetName ) then
-				self:AddLine(TARGET .. ': |cffff00ff' .. string.upper(YOU) .. '|r', 1, 1, 1)
+				self:AddLine('|cffff00ff' .. string.upper(YOU) .. '|r', 1, 1, 1)
 			else
 				if UnitIsPlayer(unit .. 'target') then
-					self:AddLine(TARGET .. ': ' .. format('|cff%02x%02x%02x%s|r', unitTargetClassColor.r*255, unitTargetClassColor.g*255, unitTargetClassColor.b*255, unitTargetName), 1, 1, 1)
+					self:AddLine(format('|cff%02x%02x%02x%s|r', unitTargetClassColor.r*255, unitTargetClassColor.g*255, unitTargetClassColor.b*255, unitTargetName), 1, 1, 1)
 				else
-					self:AddLine(TARGET .. ': ' .. format('|cff%02x%02x%02x%s|r', unitTargetReactionColor.r*255, unitTargetReactionColor.g*255, unitTargetReactionColor.b*255, unitTargetName), 1, 1, 1)
+					self:AddLine(format('|cff%02x%02x%02x%s|r', unitTargetReactionColor.r*255, unitTargetReactionColor.g*255, unitTargetReactionColor.b*255, unitTargetName), 1, 1, 1)
 				end
 			end
 		end
@@ -248,5 +244,60 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
         GameTooltipStatusBar:ClearAllPoints()
         GameTooltipStatusBar:SetPoint('LEFT', self:GetName()..'TextLeft'..self:NumLines(), 1, -3)
         GameTooltipStatusBar:SetPoint('RIGHT', self, -10, 0)
+		
+		--update HP value on status bar
+		GameTooltipStatusBar:SetScript("OnValueChanged", function(self, value)
+			if not value then
+				return
+			end
+			local min, max = self:GetMinMaxValues()
+			
+			if (value < min) or (value > max) then
+				return
+			end
+			local _, unit = GameTooltip:GetUnit()
+			
+			-- fix target of target returning nil
+			if (not unit) then
+				local GMF = GetMouseFocus()
+				unit = GMF and GMF:GetAttribute("unit")
+			end
+
+			if not self.text then
+				self.text = self:CreateFontString(nil, 'LOW')
+				self.text:SetPoint('CENTER', GameTooltipStatusBar, 0, 0)
+				self.text:SetFont('Fonts\\ARIALN.ttf', 13, 'THINOUTLINE')
+				self.text:Show()
+				if unit then
+					min, max = UnitHealth(unit), UnitHealthMax(unit)
+					local hp = ShortValue(min).." / "..ShortValue(max)
+					if UnitIsGhost(unit) then
+						self.text:SetText('Ghost')
+					elseif min == 0 or UnitIsDead(unit) or UnitIsGhost(unit) then
+						self.text:SetText('Dead')
+					else
+						self.text:SetText(hp)
+					end
+				end
+			else
+				if unit then
+					min, max = UnitHealth(unit), UnitHealthMax(unit)
+					self.text:Show()
+					local hp = ShortValue(min).." / "..ShortValue(max)
+					if UnitIsGhost(unit) then
+						self.text:SetText('Ghost')
+					elseif min == 0 or UnitIsDead(unit) or UnitIsGhost(unit) then
+						self.text:SetText('Dead')
+					else
+						self.text:SetText(hp)
+					end
+				else
+					self.text:Hide()
+				end
+			end
+		end)
+		
     end
 end)
+
+

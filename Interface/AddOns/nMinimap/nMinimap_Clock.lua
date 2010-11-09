@@ -108,61 +108,58 @@ hooksecurefunc(TimeManagerAlarmFiredTexture, 'Hide', function()
     TimeManagerClockTicker:SetTextColor(classColor.r, classColor.g, classColor.b)
 end)
 
-TimeManagerClockButton:SetScript("OnEnter", function(self)
-	OnLoad = function(self) RequestRaidInfo() end,
-	
-	GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMLEFT')
-	-- GameTooltip:ClearAllPoints()
-	-- GameTooltip:SetPoint("BOTTOM", self, "TOP", 0, 0)
-	-- GameTooltip:ClearLines()
-	
-	local wgtime = GetWintergraspWaitTime() or nil
-	inInstance, instanceType = IsInInstance()
-	
-	if not (instanceType == "none") then
-		wgtime = "Unavailable"
-	elseif wgtime == nil then
-		wgtime = "In Progress"
-	else
-		local hour = tonumber(format("%01.f", floor(wgtime/3600)))
-		local min = format(hour > 0 and "%02.f" or "%01.f", floor(wgtime/60 - (hour*60)))
-		local sec = format("%02.f", floor(wgtime - hour*3600 - min *60))            
-		wgtime = (hour > 0 and hour..":" or "")..min..":"..sec            
-	end
-	
-	GameTooltip:AddDoubleLine("Time to Wintergrasp:", wgtime)
-	GameTooltip:AddLine(" ")
-	
-	local oneraid
-	for i = 1, GetNumSavedInstances() do
-	local name,_,reset,difficulty,locked,extended,_,isRaid,maxPlayers = GetSavedInstanceInfo(i)
-	
-	if isRaid and (locked or extended) then
-		local tr,tg,tb,diff
-		if not oneraid then
-			GameTooltip:AddLine(" ")
-			GameTooltip:AddLine("Saved Raid(s)")
-			oneraid = true
-		end
+TimeManagerClockButton:SetScript('OnEnter', function(self)
+    collectgarbage()
+    UpdateAddOnMemoryUsage()
+       
+    local entry
+        
+    local total = 0
+    local addons = {}
+        
+    local gradient = {0, 1, 0, 1, 1, 0, 1, 0, 0}
+        
+    for index = 1, GetNumAddOns() do
+        if (IsAddOnLoaded(index)) then
+            local memory = GetAddOnMemoryUsage(index)
+            total = total + memory
+            
+            entry = {
+                name = GetAddOnInfo(index), 
+                memory = memory
+            }
+            
+        tinsert(addons, entry)
+        
+        table.sort(addons, function(a, b) 
+            return a.memory > b.memory 
+        end)
+            
+        end
+    end
+        
+    GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMLEFT')
+    GameTooltip:AddLine(date('%A, %d %B'), 1, 1, 1)
+    GameTooltip:AddLine(' ') 
+        
+    local r, g, b = Minimap_ColorGradient((GetFramerate() / 40), 1, 0, 0, 1, 1, 0, 0, 1, 0)
+    GameTooltip:AddDoubleLine('Framerate:', format('%.0f fps', GetFramerate()), classColor.r, classColor.g, classColor.b, r, g, b)
+    
+    local r, g, b = Minimap_ColorGradient((select(3, GetNetStats()) / 200), unpack(gradient))
+    GameTooltip:AddDoubleLine('Latency:', format('%d ms', select(3, GetNetStats())), classColor.r, classColor.g, classColor.b, r, g, b)
+    GameTooltip:AddLine(' ')
 
-		local function fmttime(sec,table)
-		local table = table or {}
-		local d,h,m,s = ChatFrame_TimeBreakDown(floor(sec))
-		local string = gsub(gsub(format(" %dd %dh %dm "..((d==0 and h==0) and "%ds" or ""),d,h,m,s)," 0[dhms]"," "),"%s+"," ")
-		local string = strtrim(gsub(string, "([dhms])", {d=table.days or "d",h=table.hours or "h",m=table.minutes or "m",s=table.seconds or "s"})," ")
-		return strmatch(string,"^%s*$") and "0"..(table.seconds or L"s") or string
-	end
-	
-	if extended then tr,tg,tb = 0.3,1,0.3 else tr,tg,tb = 1,1,1 end
-		if difficulty == 3 or difficulty == 4 then diff = "H" else diff = "N" end
-			GameTooltip:AddDoubleLine(format("%s |cffaaaaaa(%s%s)", name, maxPlayers, diff), fmttime(reset), 1, 1, 1, tr, tg, tb)
-		end
-	end
-	
-	GameTooltip:Show()
+    for _, content in pairs(addons) do
+        local r, g, b = Minimap_ColorGradient((content.memory / 800), unpack(gradient))
+        GameTooltip:AddDoubleLine(content.name, Minimap_FormatValue(content.memory), 1, 1, 1, r, g, b)
+    end
+        
+    local r, g, b = Minimap_ColorGradient((entry.memory / 800), unpack(gradient)) 
+    GameTooltip:AddLine(' ')
+    GameTooltip:AddDoubleLine('AddOns', Minimap_FormatValue(total), classColor.r, classColor.g, classColor.b, r, g, b)
+    GameTooltip:AddDoubleLine('Total', Minimap_FormatValue(collectgarbage('count')), classColor.r, classColor.g, classColor.b, r, g, b)
+    GameTooltip:Show()
 end)
-TimeManagerClockButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
-TimeManagerClockButton:RegisterEvent('UPDATE_INSTANCE_INFO')
 
 TimeManagerClockButton:SetScript('OnClick', function(self, button)
     if (button == 'RightButton') then

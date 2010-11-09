@@ -83,12 +83,12 @@ CreateBorder(Minimap, 12, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
     -- enable mousewheel zooming
 
 Minimap:EnableMouseWheel(true)
-Minimap:SetScript('OnMouseWheel', function()
-    if (arg1 > 0) then
-        Minimap_ZoomIn()
-    else
-        Minimap_ZoomOut()
-    end
+Minimap:SetScript("OnMouseWheel", function(self, delta)
+	if delta > 0 then
+		_G.MinimapZoomIn:Click()
+	elseif delta < 0 then
+		_G.MinimapZoomOut:Click()
+	end
 end)
 
     -- a "new" mail notification    

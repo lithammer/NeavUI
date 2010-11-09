@@ -17,9 +17,9 @@ function ShapeshiftBar_Update()
 end
 
 for _, frame in pairs({
-    -- 'MultiBarLeft',
+    'MultiBarLeft',
     'MultiBarRight',
-    -- 'MultiBarBottomLeft',
+    'MultiBarBottomLeft',
     'MultiBarBottomRight',
     'ShapeshiftBarFrame',
     'PossessBarFrame',
@@ -231,16 +231,30 @@ for _, bar in pairs({
     -- bar:SetFrameStrata('BACKGROUND')
 end
 
+--EXP_DEFAULT_WIDTH = 512
+hooksecurefunc('MainMenuExpBar_SetWidth', function(self)
+	if UnitHasVehicleUI('player') then
+		MainMenuExpBar:Hide()
+	else
+		MainMenuExpBar:Show()
+	end
+	MainMenuXPBarTextureMid:SetWidth(512-28)
+	MainMenuExpBar:SetWidth(512)
+end)
+
+-- Remove superfluous experience bar separators
+for i = 10, 19 do
+    for _, frame in pairs({
+        _G['MainMenuXPBarDiv'..i],
+    }) do
+        frame:Hide()
+    end
+end
+
 MainMenuBarTexture0:SetPoint('BOTTOM', MainMenuBarArtFrame, -128, 0)
 MainMenuBarTexture1:SetPoint('BOTTOM', MainMenuBarArtFrame, 128, 0)
 
 MainMenuMaxLevelBar0:SetPoint('BOTTOM', MainMenuBarMaxLevelBar, 'TOP', -128, 0)
-
-local ExpBarFix = CreateFrame('Frame')
-ExpBarFix:RegisterEvent('PLAYER_ENTERING_WORLD')
-ExpBarFix:SetScript('OnEvent', function(self, event)
-	MainMenuExpBar_SetWidth(512)
-end)
 
 MainMenuBarLeftEndCap:SetPoint('BOTTOM', MainMenuBarArtFrame, -289, 0)
 MainMenuBarLeftEndCap.SetPoint = function() end
@@ -252,7 +266,7 @@ CharacterMicroButton:ClearAllPoints()
 CharacterMicroButton:SetPoint('BOTTOMLEFT', 9000, 9000)
 
 GuildMicroButton:ClearAllPoints()
-GuildMicroButton:SetPoint('TOPLEFT', CharacterMicroButton, 'BOTTOMLEFT', 0, 20)     
+GuildMicroButton:SetPoint('TOPLEFT', CharacterMicroButton, 'BOTTOMLEFT', 0, 20)
 
     hooksecurefunc('VehicleMenuBar_MoveMicroButtons', function(self)
         if (not self) then
@@ -265,5 +279,5 @@ GuildMicroButton:SetPoint('TOPLEFT', CharacterMicroButton, 'BOTTOMLEFT', 0, 20)
             CharacterMicroButton:ClearAllPoints()
             CharacterMicroButton:SetPoint('BOTTOMLEFT', VehicleMenuBar, 'BOTTOMRIGHT', -365, 41)
         end
-    end) 
+    end)
 end

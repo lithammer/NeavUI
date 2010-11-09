@@ -6,9 +6,7 @@
 
 	Supported Plugins:
 		oUF_AuraWatch
-		oUF_ReadyCheck
 		oUF_Smooth
-        oUF_AuaraWatch
 
 	Features:
 		Aggro highlighting
@@ -23,37 +21,39 @@ local function GetSpellName(spellID)
 end
 
 local playerClass = select(2, UnitClass('player'))
-local isHealer = (playerClass == 'PRIEST')
-if isHealer then return end
+local isHealer = (playerClass == 'DRUID' or playerClass == 'PALADIN' or playerClass == 'PRIEST' or playerClass == 'SHAMAN')
 
 local indicatorList = {}
 if playerClass == 'DRUID' then
-	indicatorList = { 
-		48440, -- rejuvenation #1
-		48443, -- regrowth #2
-		48450, -- lifebloom #3
-		53249, -- wild growth #4
-		21849, -- gift of the wild #5
-		1126, -- mark of the wild #6
+	indicatorList = {
+		774, -- rejuvenation #1
+		8936, -- regrowth #2
+		33763, -- lifebloom #3
+		48438, -- wild growth #4
+		1126, -- mark of the wild #5
+	}
+elseif playerClass == 'PALADIN' then
+	indicatorList = {
 	}
 elseif playerClass == 'PRIEST' then
-	indicatorList = { 
-		48066, -- power word: shield #1
+	indicatorList = {
+		17, -- power word: shield #1
 		6788, -- weakened soul #2
-		48068, -- renew #3
-		48113, -- prayer of mending #4
+		139, -- renew #3
+		33076, -- prayer of mending #4
+	}
+elseif playerClass == 'SHAMAN' then
+	indicatorList = {
 	}
 elseif playerClass == 'WARLOCK' then
 	indicatorList = {
-		47883, -- soulstone #1
+		20707, -- soulstone #1
 	}
 end
 
 function auraIcon(self, icon)
-	--TukuiDB:SetTemplate(icon)
 	icon.icon:SetPoint("TOPLEFT", -2, 2)
 	icon.icon:SetPoint("BOTTOMRIGHT", 2, -2)
-	--icon.icon:SetTexCoord(.08, .92, .08, .92)
 	icon.icon:SetDrawLayer("ARTWORK")
 
 	if (icon.cd) then
@@ -103,7 +103,7 @@ local function CreateIndicators(self, unit)
 				icon:SetPoint('TOPRIGHT', self)
 				icon.icon:SetVertexColor(0.7, 1, 0)
 				icon:SetFrameLevel(icon:GetFrameLevel() + 1)
-			elseif i == 5 or i == 6 then -- gift/mark of the wild
+			elseif i == 5 then -- mark of the wild
 				icon:SetPoint('TOPLEFT', self)
 				icon.icon:SetVertexColor(235/255 , 145/255, 199/255)
 				icon.anyUnit = true
@@ -171,6 +171,7 @@ local dispellFilter = {
     ['DRUID'] = {
         ['Curse'] = true,
         ['Poison'] = true,
+		['Magic'] = true,
     },
     ['DEATHKNIGHT'] = {},
     ['HUNTER'] = {},
@@ -190,7 +191,7 @@ end
 
 local debuffList = setmetatable({
 	-- PvP
-    [GetSpellName(6215)] = 3, -- Fear
+    [GetSpellName(5782)] = 3, -- Fear
 	
 	-- PvE
 	
@@ -373,8 +374,9 @@ local function CreateRaidLayout(self, unit)
     	UnitFrame_OnLeave(self)
     end)
 
-    self:SetAttribute('initial-height', oUF_Neav.units.raid.height)
-	self:SetAttribute('initial-width', oUF_Neav.units.raid.width)
+    --self:SetAttribute('initial-height', oUF_Neav.units.raid.height)
+	--self:SetAttribute('initial-width', oUF_Neav.units.raid.width)
+	self:SetSize(oUF_Neav.units.raid.width, oUF_Neav.units.raid.height)
 
         -- health bar
 
@@ -429,32 +431,60 @@ local function CreateRaidLayout(self, unit)
     self.Name:SetTextColor(1, 1, 1)
     self:Tag(self.Name, '[name:Raid]')
 
-        -- incoming heals, healcomm
+        -- heal prediction (new healcomm)
+	if isHealer then
+		local mhpb = CreateFrame('StatusBar', nil, self.Health)
+		if oUF_Neav.units.raid.verticalHeath then
+			mhpb:SetOrientation("VERTICAL")
+			mhpb:SetPoint('BOTTOM', self.Health:GetStatusBarTexture(), 'TOP', 0, 0)
+			mhpb:SetWidth(oUF_Neav.units.raid.width * oUF_Neav.units.raid.scale)
+			mhpb:SetHeight(oUF_Neav.units.raid.height * oUF_Neav.units.raid.scale)		
+		else
+			mhpb:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT', 0, 0)
+			mhpb:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT', 0, 0)
+			mhpb:SetWidth(oUF_Neav.units.raid.width)-- * oUF_Neav.units.raid.scale)
+		end				
+		mhpb:SetStatusBarTexture(self.Health:GetStatusBarTexture():GetTexture())
+		mhpb:SetStatusBarColor(0, 1, 0.5, 0.25)
 
-    self.HealCommBar = CreateFrame('StatusBar', nil, self.Health)
-    self.HealCommBar:SetHeight(0)
-    self.HealCommBar:SetWidth(0)
-    self.HealCommBar:SetStatusBarTexture(self.Health:GetStatusBarTexture():GetTexture())
-    self.HealCommBar:SetStatusBarColor(0, 1, 0, 0.10)
-    self.HealCommBar:SetPoint('LEFT', self.Health, 'LEFT')
-    self.allowHealCommOverflow = false
+		local ohpb = CreateFrame('StatusBar', nil, self.Health)
+		ohpb:SetPoint('TOPLEFT', mhpb:GetStatusBarTexture(), 'TOPRIGHT', 0, 0)
+		ohpb:SetPoint('BOTTOMLEFT', mhpb:GetStatusBarTexture(), 'BOTTOMRIGHT', 0, 0)
+		ohpb:SetWidth(oUF_Neav.units.raid.width * oUF_Neav.units.raid.scale)
+		ohpb:SetStatusBarTexture(self.Health:GetStatusBarTexture():GetTexture())
+		ohpb:SetStatusBarColor(0, 1, 0, 0.25)
 
-    self.HealCommText = self.Health:CreateFontString(nil, 'OVERLAY')
-    self.HealCommText:SetPoint('BOTTOM', 0, 5)
-    self.HealCommText:SetFont(oUF_Neav.media.font, 13)
-    self.HealCommText:SetShadowOffset(1, -1)
-    self.HealCommText:SetTextColor(0, 1, 0)
-    self.HealCommTextFormat = shortVal
+		self.HealPrediction = {
+			myBar = mhpb,
+			otherBar = ohpb,
+			maxOverflow = 1,
+		}
+	
+		-- self.HealCommBar = CreateFrame('StatusBar', nil, self.Health)
+		-- self.HealCommBar:SetHeight(0)
+		-- self.HealCommBar:SetWidth(0)
+		-- self.HealCommBar:SetStatusBarTexture(self.Health:GetStatusBarTexture():GetTexture())
+		-- self.HealCommBar:SetStatusBarColor(0, 1, 0, 0.10)
+		-- self.HealCommBar:SetPoint('LEFT', self.Health, 'LEFT')
+		-- self.allowHealCommOverflow = false
 
-    self.HealCommBar:SetScript('OnShow', function()
-        self.Health.Value:SetDrawLayer('BACKGROUND')
-    end)
+		-- self.HealCommText = self.Health:CreateFontString(nil, 'OVERLAY')
+		-- self.HealCommText:SetPoint('BOTTOM', 0, 5)
+		-- self.HealCommText:SetFont(oUF_Neav.media.font, 13)
+		-- self.HealCommText:SetShadowOffset(1, -1)
+		-- self.HealCommText:SetTextColor(0, 1, 0)
+		-- self.HealCommTextFormat = shortVal
 
-    self.HealCommBar:SetScript('OnHide', function()
-        self.Health.Value:SetDrawLayer('OVERLAY')
-    end)
+		-- self.HealCommBar:SetScript('OnShow', function()
+			-- self.Health.Value:SetDrawLayer('BACKGROUND')
+		-- end)
 
-    self.HealCommTimeframe = 3
+		-- self.HealCommBar:SetScript('OnHide', function()
+			-- self.Health.Value:SetDrawLayer('OVERLAY')
+		-- end)
+
+		-- self.HealCommTimeframe = 3
+	end 
 
         -- aggro text
 
