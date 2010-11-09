@@ -1,0 +1,25 @@
+## Interface: 40000
+## Title: oGlow
+## Author: Haste
+## Version: 2.0.1
+## SavedVariables: oGlowDB
+## X-eMail: troeks@gmail.com
+## Notes: Make your shiny items... glow in the dark!
+
+oglow.lua
+ui.lua
+
+pipes\bags.lua
+pipes\char.lua
+pipes\inspect.lua
+pipes\bank.lua
+pipes\gbank.lua
+pipes\trade.lua
+pipes\tradeskill.lua
+pipes\merchant.lua
+pipes\mail.lua
+pipes\char-flyout.lua
+
+displays\border.lua
+
+filters\quality.lua
