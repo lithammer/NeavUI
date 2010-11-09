@@ -1,0 +1,6 @@
+## Interface: 30300
+## Title: OmniCC
+## Notes: Cooldown count for everything
+## Author: Tuller
+
+basic.lua

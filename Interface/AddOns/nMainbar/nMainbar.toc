@@ -1,0 +1,13 @@
+## Interface: 30300
+## Title: |cffCC3333 n|rMainBar
+## Notes: A smaller mainbar
+
+nMainbar_Config.lua
+
+nMainbar.lua
+
+nMainbar_ShortBar.lua
+nMainbar_ActionBars.lua
+
+nMainbar_ExpBar.lua
+nMainbar_Extras.lua

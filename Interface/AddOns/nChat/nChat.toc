@@ -1,0 +1,7 @@
+## Interface: 30300
+## Title: |cffCC3333 n|rChat
+## RequiredDeps: !Beautycase
+
+nChat.lua
+nChat_TellTarget.lua
+nChat_URL.lua
