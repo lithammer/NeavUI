@@ -1,0 +1,10 @@
+## Interface: 40000
+## Title: ActionButtonText
+## OptionalDeps:
+## Dependencies:
+## SavedVariablesPerCharacter: ABT_spelldb
+ABT.lua
+ABTSpells.lua
+localisation.en.lua
+ABTOptions.lua
+ABTConfig.lua
