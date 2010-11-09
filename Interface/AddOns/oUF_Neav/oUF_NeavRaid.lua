@@ -434,16 +434,10 @@ local function CreateRaidLayout(self, unit)
         -- heal prediction (new healcomm)
 	if isHealer then
 		local mhpb = CreateFrame('StatusBar', nil, self.Health)
-		if oUF_Neav.units.raid.verticalHeath then
-			mhpb:SetOrientation("VERTICAL")
-			mhpb:SetPoint('BOTTOM', self.Health:GetStatusBarTexture(), 'TOP', 0, 0)
-			mhpb:SetWidth(oUF_Neav.units.raid.width * oUF_Neav.units.raid.scale)
-			mhpb:SetHeight(oUF_Neav.units.raid.height * oUF_Neav.units.raid.scale)		
-		else
-			mhpb:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT', 0, 0)
-			mhpb:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT', 0, 0)
-			mhpb:SetWidth(oUF_Neav.units.raid.width)-- * oUF_Neav.units.raid.scale)
-		end				
+		mhpb:SetOrientation("VERTICAL")
+		mhpb:SetPoint('BOTTOM', self.Health:GetStatusBarTexture(), 'TOP', 0, 0)
+		mhpb:SetWidth(oUF_Neav.units.raid.width * oUF_Neav.units.raid.scale)
+		mhpb:SetHeight(oUF_Neav.units.raid.height * oUF_Neav.units.raid.scale)		
 		mhpb:SetStatusBarTexture(self.Health:GetStatusBarTexture():GetTexture())
 		mhpb:SetStatusBarColor(0, 1, 0.5, 0.25)
 
