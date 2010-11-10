@@ -19,8 +19,8 @@ end
 for _, frame in pairs({
     'MultiBarLeft',
     'MultiBarRight',
-    'MultiBarBottomLeft',
-    'MultiBarBottomRight',
+    --'MultiBarBottomLeft',
+    --'MultiBarBottomRight',
     'ShapeshiftBarFrame',
     'PossessBarFrame',
         
@@ -231,15 +231,16 @@ for _, bar in pairs({
     -- bar:SetFrameStrata('BACKGROUND')
 end
 
---EXP_DEFAULT_WIDTH = 512
-hooksecurefunc('MainMenuExpBar_SetWidth', function(self)
-	if UnitHasVehicleUI('player') then
-		MainMenuExpBar:Hide()
-	else
-		MainMenuExpBar:Show()
+EXP_DEFAULT_WIDTH = 512
+hooksecurefunc('MainMenuExpBar_SetWidth', function(width)	
+	local divWidth = width/10;
+	local xpos = divWidth - 4.5;	
+	for i=1,9 do
+		local texture = _G["MainMenuXPBarDiv"..i];
+		local xalign = floor(xpos);
+		texture:SetPoint("LEFT", xalign, 1);
+		xpos = xpos + divWidth;
 	end
-	MainMenuXPBarTextureMid:SetWidth(512-28)
-	MainMenuExpBar:SetWidth(512)
 end)
 
 -- Remove superfluous experience bar separators
