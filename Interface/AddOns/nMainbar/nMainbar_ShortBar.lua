@@ -243,7 +243,7 @@ hooksecurefunc('MainMenuExpBar_SetWidth', function(width)
 	end
 end)
 
--- Remove superfluous experience bar separators
+-- Remove superfluous experience bar dividers
 for i = 10, 19 do
     for _, frame in pairs({
         _G['MainMenuXPBarDiv'..i],
@@ -269,16 +269,17 @@ CharacterMicroButton:SetPoint('BOTTOMLEFT', 9000, 9000)
 GuildMicroButton:ClearAllPoints()
 GuildMicroButton:SetPoint('TOPLEFT', CharacterMicroButton, 'BOTTOMLEFT', 0, 20)
 
-    hooksecurefunc('VehicleMenuBar_MoveMicroButtons', function(self)
-        if (not self) then
-            CharacterMicroButton:ClearAllPoints()
-            CharacterMicroButton:SetPoint('BOTTOMLEFT', UIParent, 9000, 9000)
-        elseif (self == 'Mechanical') then
-            CharacterMicroButton:ClearAllPoints()
-            CharacterMicroButton:SetPoint('BOTTOMLEFT', VehicleMenuBar, 'BOTTOMRIGHT', -340, 41)
-        elseif (self == 'Natural') then
-            CharacterMicroButton:ClearAllPoints()
-            CharacterMicroButton:SetPoint('BOTTOMLEFT', VehicleMenuBar, 'BOTTOMRIGHT', -365, 41)
-        end
-    end)
+hooksecurefunc('VehicleMenuBar_MoveMicroButtons', function(self)
+	if (not self) then
+		CharacterMicroButton:ClearAllPoints()
+		CharacterMicroButton:SetPoint('BOTTOMLEFT', UIParent, 9000, 9000)
+	elseif (self == 'Mechanical') then
+		CharacterMicroButton:ClearAllPoints()
+		CharacterMicroButton:SetPoint('BOTTOMLEFT', VehicleMenuBar, 'BOTTOMRIGHT', -340, 41)
+	elseif (self == 'Natural') then
+		CharacterMicroButton:ClearAllPoints()
+		CharacterMicroButton:SetPoint('BOTTOMLEFT', VehicleMenuBar, 'BOTTOMRIGHT', -365, 41)
+	end
+end)
+
 end
