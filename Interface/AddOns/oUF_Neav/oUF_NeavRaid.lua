@@ -27,10 +27,8 @@ local indicatorList = {}
 if playerClass == 'DRUID' then
 	indicatorList = {
 		774, -- rejuvenation #1
-		8936, -- regrowth #2
-		33763, -- lifebloom #3
-		48438, -- wild growth #4
-		1126, -- mark of the wild #5
+		33763, -- lifebloom #2
+		48438, -- wild growth #3
 	}
 elseif playerClass == 'PALADIN' then
 	indicatorList = {
@@ -88,10 +86,7 @@ local function CreateIndicators(self, unit)
 			if i == 1 then -- rejuvenation
 				icon:SetPoint('BOTTOMRIGHT', self)
 				icon.icon:SetVertexColor(1, 0.2, 1)
-			elseif i == 2 then -- regrowth
-				icon:SetPoint('TOPRIGHT', self)
-				icon.icon:SetVertexColor(0.7, 1, 0)
-			elseif i == 3 then -- lifebloom
+			elseif i == 2 then -- lifebloom
 				icon:SetPoint('BOTTOM', self)
 				icon.icon:SetVertexColor(0.72, 0.54, 0) 
 
@@ -99,14 +94,10 @@ local function CreateIndicators(self, unit)
 				count:SetFont(NumberFontNormal:GetFont(), 10, 'OUTLINE')
             	count:SetPoint('BOTTOMLEFT', icon, 'TOPLEFT', 3, -5)
 				icon.count = count
-			elseif i == 4 then -- wild growth
+			elseif i == 3 then -- wild growth
 				icon:SetPoint('TOPRIGHT', self)
 				icon.icon:SetVertexColor(0.7, 1, 0)
 				icon:SetFrameLevel(icon:GetFrameLevel() + 1)
-			elseif i == 5 then -- mark of the wild
-				icon:SetPoint('TOPLEFT', self)
-				icon.icon:SetVertexColor(235/255 , 145/255, 199/255)
-				icon.anyUnit = true
 			end
 		elseif playerClass == 'PRIEST' then
 			if i == 1 then -- power word: shield
