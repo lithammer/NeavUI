@@ -1,0 +1,24 @@
+Modular text-based raid status monitor.
+
+!http://i10.tinypic.com/6fajod2.jpg!
+
+h2. Customization
+
+AddWatch accepts a name and a callback parameter which is fed with the unit id of a raider, a simple watch can be added as follows:
+
+<pre>addon:AddWatch("Dead", function(unit) return UnitIsDeadOrGhost(unit) end)</pre>
+
+You can add much more complex callbacks:
+
+<pre>local healerClasses = {"PRIEST", "SHAMAN", "DRUID", "PALADIN"}
+local lowManaThreshold = 0.2
+
+addon:AddWatch("Low Healer Mana", function(unit)
+	local class, classId = UnitClass(unit)
+
+	-- We only want to include healer classes
+	if healerClasses[classId] and UnitPowerType(unit) == 0 then
+		return (UnitMana(unit) / UnitMaxMana(unit) <= lowManaThreshold)
+	end
+end)
+</pre>
