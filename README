@@ -1,0 +1,5 @@
+This UI has some modifications and additions compared to the original Neav UI such as:
+
+* Option to have a vertical petbar
+* Short value formatting is different (e.g. 1.1m instead of 1M 100K)
+* Healthbar on tooltips now have a textual representation as well
