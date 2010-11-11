@@ -52,23 +52,24 @@ end
 function auraIcon(self, icon)
 	icon.icon:SetPoint("TOPLEFT", -2, 2)
 	icon.icon:SetPoint("BOTTOMRIGHT", 2, -2)
+	icon.icon:SetTexCoord(.08, .92, .08, .92)
 	icon.icon:SetDrawLayer("ARTWORK")
-
+	
 	if (icon.cd) then
 		icon.cd:SetReverse()
 	end
-
-	icon.overlay:SetTexture()
+	
+	--icon.overlay:SetTexture()
 end
 
 local function CreateIndicators(self, unit)
     self.AuraWatch = CreateFrame('Frame', nil, self)
     self.AuraWatch.presentAlpha = 1
     self.AuraWatch.missingAlpha = 0
-    self.AuraWatch.hideCooldown = true
+    self.AuraWatch.hideCooldown = false
     self.AuraWatch.noCooldownCount = true
     self.AuraWatch.icons = {}
-	--self.AuraWatch.PostCreateIcon = auraIcon
+	self.AuraWatch.PostCreateIcon = auraIcon
 
     for i, id in pairs(indicatorList) do
         icon = CreateFrame('Frame', nil, self.AuraWatch)
@@ -87,12 +88,14 @@ local function CreateIndicators(self, unit)
 				icon:SetPoint('BOTTOMRIGHT', self)
 				icon.icon:SetVertexColor(1, 0.2, 1)
 			elseif i == 2 then -- lifebloom
-				icon:SetPoint('BOTTOM', self)
-				icon.icon:SetVertexColor(0.72, 0.54, 0) 
+				icon:SetPoint('TOP', self)
+				icon.icon:SetVertexColor(0.5, 1, 0.5)
 
 				local count = icon:CreateFontString(nil, 'OVERLAY')
-				count:SetFont(NumberFontNormal:GetFont(), 10, 'OUTLINE')
-            	count:SetPoint('BOTTOMLEFT', icon, 'TOPLEFT', 3, -5)
+				count:SetFont(NumberFontNormal:GetFont(), 10)
+				count:SetShadowColor(0, 0, 0)
+				count:SetShadowOffset(1, -1)
+            	count:SetPoint('RIGHT', icon, 'LEFT', -1, 0)
 				icon.count = count
 			elseif i == 3 then -- wild growth
 				icon:SetPoint('TOPRIGHT', self)
@@ -102,11 +105,11 @@ local function CreateIndicators(self, unit)
 		elseif playerClass == 'PRIEST' then
 			if i == 1 then -- power word: shield
 				icon:SetFrameLevel(icon:GetFrameLevel() + 1)
-				icon:SetPoint('BOTTOMLEFT', self)
+				icon:SetPoint('TOP', self)
 				icon.icon:SetVertexColor(1, 1, 0)
 				icon.anyUnit = true
 			elseif i == 2 then -- weakened soul
-				icon:SetPoint('BOTTOMLEFT', self)
+				icon:SetPoint('TOP', self)
 				icon.icon:SetVertexColor(0.6, 0, 0)
 				icon.anyUnit = true
 			elseif i == 3 then -- renew
@@ -153,7 +156,7 @@ local dispellFilter = {
     },
     ['PALADIN'] = {
         ['Poison'] = true,
-    ['Magic'] = true,
+		['Magic'] = true,
         ['Disease'] = true,
     },
     ['MAGE'] = {
@@ -428,7 +431,7 @@ local function CreateRaidLayout(self, unit)
 		mhpb:SetOrientation("VERTICAL")
 		mhpb:SetPoint('BOTTOM', self.Health:GetStatusBarTexture(), 'TOP', 0, 0)
 		mhpb:SetWidth(oUF_Neav.units.raid.width)
-		mhpb:SetHeight(oUF_Neav.units.raid.height)		
+		mhpb:SetHeight(oUF_Neav.units.raid.height)
 		mhpb:SetStatusBarTexture(self.Health:GetStatusBarTexture():GetTexture())
 		mhpb:SetStatusBarColor(0, 1, 0.5, 0.25)
 
@@ -437,6 +440,7 @@ local function CreateRaidLayout(self, unit)
 		ohpb:SetPoint('TOPLEFT', mhpb:GetStatusBarTexture(), 'TOPRIGHT', 0, 0)
 		ohpb:SetPoint('BOTTOMLEFT', mhpb:GetStatusBarTexture(), 'BOTTOMRIGHT', 0, 0)
 		ohpb:SetWidth(oUF_Neav.units.raid.width)
+		ohpb:SetHeight(oUF_Neav.units.raid.height)
 		ohpb:SetStatusBarTexture(self.Health:GetStatusBarTexture():GetTexture())
 		ohpb:SetStatusBarColor(0, 1, 0, 0.25)
 
