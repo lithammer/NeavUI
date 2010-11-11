@@ -109,7 +109,7 @@ local function Timer_Create(self)
 	timer:SetScript('OnUpdate', Timer_OnUpdate)
 
 	local text = timer:CreateFontString(nil, 'OVERLAY')
-	text:SetPoint('CENTER', TukuiDB.Scale(2), TukuiDB.Scale(0))
+	text:SetPoint('TOPLEFT', 0, 0)
 	text:SetJustifyH("CENTER")
 	timer.text = text
 
