@@ -30,8 +30,13 @@ if playerClass == 'DRUID' then
 		33763, -- lifebloom #2
 		48438, -- wild growth #3
 	}
+elseif playerClass == 'MAGE' then
+	indicatorList = {
+		54648, -- focus magic #1
+	}
 elseif playerClass == 'PALADIN' then
 	indicatorList = {
+		53563, -- beacon of light #1
 	}
 elseif playerClass == 'PRIEST' then
 	indicatorList = {
@@ -42,10 +47,13 @@ elseif playerClass == 'PRIEST' then
 	}
 elseif playerClass == 'SHAMAN' then
 	indicatorList = {
+		974, -- earth shield #1
+		61295, -- riptide #1
 	}
 elseif playerClass == 'WARLOCK' then
 	indicatorList = {
 		20707, -- soulstone #1
+		85767, -- dark intent #2
 	}
 end
 
@@ -102,6 +110,17 @@ local function CreateIndicators(self, unit)
 				icon.icon:SetVertexColor(0.7, 1, 0)
 				icon:SetFrameLevel(icon:GetFrameLevel() + 1)
 			end
+		elseif playerClass == 'MAGE' then
+			if i == 1 then -- focus magic
+				icon:SetPoint('TOPRIGHT', self)
+				icon.icon:SetVertexColor(180/255, 0, 1)
+				icon.anyUnit = true
+				icon.hideCooldown = true
+		elseif playerClass == 'PALADIN' then
+			if i == 1 then -- beacon of light
+				icon:SetPoint('TOPRIGHT', self)
+				icon.icon:SetVertexColor(0, 1, 0)
+			end
 		elseif playerClass == 'PRIEST' then
 			if i == 1 then -- power word: shield
 				icon:SetFrameLevel(icon:GetFrameLevel() + 1)
@@ -119,17 +138,35 @@ local function CreateIndicators(self, unit)
 				icon:SetPoint('TOPRIGHT', self)
 				icon.icon:SetVertexColor(1, 0.6, 0.6)
 				icon.anyUnit = true
+				icon.hideCooldown = true
 				
 				local count = icon:CreateFontString(nil, 'OVERLAY')
-				count:SetFont(NumberFontNormal:GetFont(), 10, 'OUTLINE')
-            	count:SetPoint('BOTTOMLEFT', icon, 'TOPLEFT', 3, -5)
+				count:SetFont(NumberFontNormal:GetFont(), 10)
+				count:SetShadowColor(0, 0, 0)
+				count:SetShadowOffset(1, -1)
+            	count:SetPoint('RIGHT', icon, 'LEFT', -1, 0)
 				icon.count = count
 			end
+		elseif playerClass == 'SHAMAN' then
+			if i == 1 then -- earth shield
+				icon:SetPoint('TOPRIGHT', self)
+				icon.icon:SetVertexColor(0.4, 1, 0.4)
+				icon.anyUnit = true
+				icon.hideCooldown = true
+			elseif i == 2 then -- riptide
+				icon:SetPoint('BOTTOMRIGHT', self)
+				icon.icon:SetVertexColor(0.2, 0.2, 1)
 		elseif playerClass == 'WARLOCK' then
 			if i == 1 then -- soulstone
-				icon:SetPoint('TOPRIGHT', self)
+				icon:SetPoint('TOP', self)
 				icon.icon:SetVertexColor(180/255, 0, 1)
 				icon.anyUnit = true
+				icon.hideCooldown = true
+			elseif i == 2 then -- dark intent
+				icon:SetPoint('TOPRIGHT', self)
+				icon.icon:SetVertexColor(180/255, 0.5, 1)
+				icon.anyUnit = true
+				icon.hideCooldown = true
 			end
 		end
         self.AuraWatch.icons[id] = icon
