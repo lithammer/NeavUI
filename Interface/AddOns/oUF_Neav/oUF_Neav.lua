@@ -736,7 +736,7 @@ local function CreateUnitLayout(self, unit)
 			PaladinPowerBar:SetScale(oUF_Neav.units.player.scale * 0.8)
 			PaladinPowerBar_OnLoad(PaladinPowerBar)
 			PaladinPowerBar:ClearAllPoints()
-			PaladinPowerBar:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, 0)
+			PaladinPowerBar:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 20, 2)
 			PaladinPowerBar:Show()
 		end
 
