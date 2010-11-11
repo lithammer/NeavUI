@@ -116,6 +116,7 @@ local function CreateIndicators(self, unit)
 				icon.icon:SetVertexColor(180/255, 0, 1)
 				icon.anyUnit = true
 				icon.hideCooldown = true
+			end
 		elseif playerClass == 'PALADIN' then
 			if i == 1 then -- beacon of light
 				icon:SetPoint('TOPRIGHT', self)
@@ -156,6 +157,7 @@ local function CreateIndicators(self, unit)
 			elseif i == 2 then -- riptide
 				icon:SetPoint('BOTTOMRIGHT', self)
 				icon.icon:SetVertexColor(0.2, 0.2, 1)
+			end
 		elseif playerClass == 'WARLOCK' then
 			if i == 1 then -- soulstone
 				icon:SetPoint('TOP', self)
