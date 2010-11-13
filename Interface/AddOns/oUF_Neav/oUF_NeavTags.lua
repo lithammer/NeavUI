@@ -46,6 +46,8 @@ oUF.Tags['name'] = function(unit)
 		colorA = oUF.colors.happiness[GetPetHappiness()]
     elseif (unit == 'player' or not UnitIsFriend('player', unit) and UnitIsPlayer(unit) and UnitClass(unit)) then
 		colorA = oUF.colors.class[class]
+	elseif (unit == 'targettarget' and UnitIsPlayer(unit) and UnitClass(unit)) then
+		colorA = oUF.colors.class[class]
 	else
 		colorB = {1, 1, 1}
 	end
