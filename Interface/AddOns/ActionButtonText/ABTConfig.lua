@@ -86,29 +86,29 @@ function ABT_NS.configinit()
 	end
 	function spelldd.Initialize()
 		local function Button_OnClick()
-			UIDropDownMenu_SetSelectedValue(spelldd, this.value)
-			spelldd.value = this.value
+			UIDropDownMenu_SetSelectedValue(spelldd, self.value)
+			spelldd.value = self.value
 			--_G['obipresets']:Hide()
-			_G["obicon1"]:SetText(this.value or " ")
-			_G["obisearchtt"]:SetChecked(ABT_spelldb[this.value]["SEARCHTT"] or false)
-  		_G['obishowdmg']:SetValue(ABT_spelldb[this.value]["SHOWDMG"] or 0)
-			_G["obicon2"]:SetText(ABT_spelldb[this.value]["Buff"] or " ")
-			_G["obitarget"]:SetValue(ABT_spelldb[this.value]["TARGET"] or 1)
-			_G["obicon4"]:SetChecked(ABT_spelldb[this.value]["Debuff"] or false)
-			_G["obinotmine"]:SetChecked(ABT_spelldb[this.value]["NOTMINE"] or false)
-			_G["obicon5"]:SetChecked(ABT_spelldb[this.value]["NoTime"] or false)
-			_G["obicon6"]:SetChecked(ABT_spelldb[this.value]["Stack"] or false)
-			_G["obicon8"]:SetValue(ABT_spelldb[this.value]["CP"] or 0)
-  		_G['obiedef']:SetValue(ABT_spelldb[this.value]["EDEF"] or 0)
-  		_G['obictoom']:SetValue(ABT_spelldb[this.value]["CTOOM"] or -1)
+			_G["obicon1"]:SetText(self.value or " ")
+			_G["obisearchtt"]:SetChecked(ABT_spelldb[self.value]["SEARCHTT"] or false)
+  		_G['obishowdmg']:SetValue(ABT_spelldb[self.value]["SHOWDMG"] or 0)
+			_G["obicon2"]:SetText(ABT_spelldb[self.value]["Buff"] or " ")
+			_G["obitarget"]:SetValue(ABT_spelldb[self.value]["TARGET"] or 1)
+			_G["obicon4"]:SetChecked(ABT_spelldb[self.value]["Debuff"] or false)
+			_G["obinotmine"]:SetChecked(ABT_spelldb[self.value]["NOTMINE"] or false)
+			_G["obicon5"]:SetChecked(ABT_spelldb[self.value]["NoTime"] or false)
+			_G["obicon6"]:SetChecked(ABT_spelldb[self.value]["Stack"] or false)
+			_G["obicon8"]:SetValue(ABT_spelldb[self.value]["CP"] or 0)
+  		_G['obiedef']:SetValue(ABT_spelldb[self.value]["EDEF"] or 0)
+  		_G['obictoom']:SetValue(ABT_spelldb[self.value]["CTOOM"] or -1)
   		_G["obicon11"]:SetText(ABT_NS.del1)
   		_G["obicon11"]:Show()
-  		_G["obispos"]:SetValue(ABT_spelldb[this.value]["SPOS"] or 1)
-  		_G["obifontsize"]:SetValue(ABT_spelldb[this.value]["FONTSIZE"] or 11)
-  		_G["obifontstyle"]:SetValue(ABT_spelldb[this.value]["FONTSTYLE"] or 1)
-  		_G['obifontcolor'].fontr = ABT_spelldb[this.value]["FONTCOLR"] or 0
-  		_G['obifontcolor'].fontg = ABT_spelldb[this.value]["FONTCOLG"] or 1
-  		_G['obifontcolor'].fontb = ABT_spelldb[this.value]["FONTCOLB"] or 0
+  		_G["obispos"]:SetValue(ABT_spelldb[self.value]["SPOS"] or 1)
+  		_G["obifontsize"]:SetValue(ABT_spelldb[self.value]["FONTSIZE"] or 11)
+  		_G["obifontstyle"]:SetValue(ABT_spelldb[self.value]["FONTSTYLE"] or 1)
+  		_G['obifontcolor'].fontr = ABT_spelldb[self.value]["FONTCOLR"] or 0
+  		_G['obifontcolor'].fontg = ABT_spelldb[self.value]["FONTCOLG"] or 1
+  		_G['obifontcolor'].fontb = ABT_spelldb[self.value]["FONTCOLB"] or 0
   		_G['obifontcolor'].bg:SetTexture(_G['obifontcolor'].fontr,_G['obifontcolor'].fontg,_G['obifontcolor'].fontb)
   		example_update()
 			_G["obicon0"]:Hide()
@@ -215,9 +215,9 @@ function ABT_NS.configinit()
 
 	function presets.Initialize()
 		local function Button_OnClick()
-			UIDropDownMenu_SetSelectedValue(presets, this.value)
-			presets.value = this.value
-			spell = this.value
+			UIDropDownMenu_SetSelectedValue(presets, self.value)
+			presets.value = self.value
+			spell = self.value
 			preset = ABT_NS.examples[spell]
 			_G["obicon1"]:SetText(spell)
 			_G["obisearchtt"]:SetChecked(preset["SEARCHTT"] or false)
@@ -387,7 +387,7 @@ function ABT_NS.configinit()
   local function target_change(self)
     vals = ABT_NS.targetvals
     if self:GetValue() then
-    this.valtext:SetText(vals[self:GetValue()])
+    self.valtext:SetText(vals[self:GetValue()])
     example_update()
     end
   end
@@ -419,7 +419,7 @@ function ABT_NS.configinit()
   local function spos_change(self)
     vals = ABT_NS.sposvals
     if self:GetValue() then
-    this.valtext:SetText(vals[self:GetValue()])
+    self.valtext:SetText(vals[self:GetValue()])
     example_update()
     end
   end
@@ -445,7 +445,7 @@ function ABT_NS.configinit()
 	text:SetText(ABT_NS.hint4)
 
   local function fontsize_change(self)
-    this.valtext:SetText(self:GetValue())
+    self.valtext:SetText(self:GetValue())
     example_update()
   end
 
@@ -466,7 +466,7 @@ function ABT_NS.configinit()
   local function fontstyle_change(self)
     vals = ABT_NS.fontstylevals
     if self:GetValue() then
-      this.valtext:SetText(vals[self:GetValue()])
+      self.valtext:SetText(vals[self:GetValue()])
     example_update()
     end
   end
