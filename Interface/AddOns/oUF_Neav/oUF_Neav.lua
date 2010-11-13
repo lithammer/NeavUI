@@ -36,7 +36,7 @@ for _, button in pairs({
     
     'DisplayPanelShowAggroPercentage',
     
-    'FrameCategoriesButton10',
+    'FrameCategoriesButton9',
     --'FrameCategoriesButton11',
 }) do
     _G['InterfaceOptions'..button]:SetAlpha(0.35)
