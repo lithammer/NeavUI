@@ -232,7 +232,8 @@ for _, bar in pairs({
 end
 
 EXP_DEFAULT_WIDTH = 512
-hooksecurefunc('MainMenuExpBar_SetWidth', function(width)	
+hooksecurefunc('MainMenuExpBar_SetWidth', function(width)
+	if InCombatLockdown() then return end
 	local divWidth = width/10;
 	local xpos = divWidth - 4.5;	
 	for i=1,9 do
