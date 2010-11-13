@@ -34,7 +34,8 @@ CHAT_YELL_GET = '%s:\32'
 CHAT_WHISPER_GET = '[from] %s:\32'
 CHAT_WHISPER_INFORM_GET = '[to] %s:\32'
 
-CHAT_BN_WHISPER_GET = "[from] %s:\32";
+CHAT_BN_WHISPER_GET = "[from] %s:\32"
+CHAT_BN_WHISPER_INFORM_GET = "[to] %s:\32"
 
 CHAT_GUILD_GET = '[|Hchannel:Guild|hG|h] %s:\32'
 CHAT_OFFICER_GET = '[|Hchannel:o|hO|h] %s:\32'
