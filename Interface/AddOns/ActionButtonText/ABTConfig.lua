@@ -1,54 +1,54 @@
 local ABT_configtooltip = CreateFrame("GameTooltip","ABT_configtooltip",UIParent,"GameTooltipTemplate")
 
 function ABT_NS.configinit()
-  ABT_NS.configpanel = CreateFrame("Frame", "OBIConfig",UIParent);
+	ABT_NS.configpanel = CreateFrame("Frame", "OBIConfig",UIParent);
 	ABT_NS.configpanel:SetWidth(608)
 	ABT_NS.configpanel:SetHeight(440)
 	ABT_NS.configpanel:SetPoint("CENTER")
 
-  local function example_update()
-    _G['obiexample']:SetDisabledTexture(GetActionTexture(1))
-    spell = _G['obicon1']:GetText()
-    if spell then
- 		   _,_,texture = GetSpellInfo(spell)
-  	  if texture then
-  		  _G['obiexample']:SetDisabledTexture(texture)
-  		end
-  	end
-    if _G['obifontsize']:GetValue() > 0 then
-    example = ""
-    if _G['obicon5']:GetChecked() then
-    else
-      example = "9m"
-    end
-    if _G['obishowdmg']:GetValue() == 1 then
-      example = ABT_NS.needslash(example,"DDDD")
-    end     
-    if _G['obicon6']:GetChecked() then
-      example = ABT_NS.needslash(example,"S")
-    end     
-    if _G['obictoom']:GetValue() >= 0 then
-      example = ABT_NS.needslash(example,"CC")
-    end
-    if _G['obicon8']:GetValue() > 0 then
-      example = ABT_NS.needslash(example,"P")
-    end
-    if _G['obiedef']:GetValue() > 0 then
-      example = ABT_NS.needslash(example,"E")
-    end
-    ABT_NS.cleartext(_G['obiexample'])
-    ABT_NS.settext(_G['obiexample'],_G['obispos']:GetValue(),"|cff" .. string.format("%02x%02x%02x",(_G['obifontcolor'].fontr or 0) * 255,(_G['obifontcolor'].fontg or 0) * 255,(_G['obifontcolor'].fontb or 2) * 255) .. example .. "|r",_G['obifontsize']:GetValue(),ABT_NS.fontstylevals[_G['obifontstyle']:GetValue()])
-    end
-  end
+	local function example_update()
+		_G['obiexample']:SetDisabledTexture(GetActionTexture(1))
+		spell = _G['obicon1']:GetText()
+		if spell then
+			   _,_,texture = GetSpellInfo(spell)
+		  if texture then
+			  _G['obiexample']:SetDisabledTexture(texture)
+			end
+		end
+		if _G['obifontsize']:GetValue() > 0 then
+		example = ""
+		if _G['obicon5']:GetChecked() then
+		else
+		  example = "9m"
+		end
+		if _G['obishowdmg']:GetValue() == 1 then
+		  example = ABT_NS.needslash(example,"DDDD")
+		end     
+		if _G['obicon6']:GetChecked() then
+		  example = ABT_NS.needslash(example,"S")
+		end     
+		if _G['obictoom']:GetValue() >= 0 then
+		  example = ABT_NS.needslash(example,"CC")
+		end
+		if _G['obicon8']:GetValue() > 0 then
+		  example = ABT_NS.needslash(example,"P")
+		end
+		if _G['obiedef']:GetValue() > 0 then
+		  example = ABT_NS.needslash(example,"E")
+		end
+		ABT_NS.cleartext(_G['obiexample'])
+		ABT_NS.settext(_G['obiexample'],_G['obispos']:GetValue(),"|cff" .. string.format("%02x%02x%02x",(_G['obifontcolor'].fontr or 0) * 255,(_G['obifontcolor'].fontg or 0) * 255,(_G['obifontcolor'].fontb or 2) * 255) .. example .. "|r",_G['obifontsize']:GetValue(),ABT_NS.fontstylevals[_G['obifontstyle']:GetValue()])
+		end
+	end
 
 	local function Dropdown_OnShow(self)
-	  UIDropDownMenu_SetWidth(self, 180)
+		UIDropDownMenu_SetWidth(self, 180)
  		UIDropDownMenu_JustifyText(self, "LEFT")
 		getglobal(self:GetName() .. 'Text'):SetText(" ")
 		UIDropDownMenu_Initialize(self, self.Initialize)
 	end
 
-  local spelldd = CreateFrame('Frame', "obicon0" , ABT_NS.configpanel, 'UIDropDownMenuTemplate')
+	local spelldd = CreateFrame('Frame', "obicon0" , ABT_NS.configpanel, 'UIDropDownMenuTemplate')
 	local text = spelldd:CreateFontString(nil, 'BACKGROUND')
 	text:SetPoint('BOTTOMLEFT', spelldd, 'TOPLEFT', 21, 0)
 	text:SetFontObject('GameFontNormalSmall')
@@ -57,7 +57,7 @@ function ABT_NS.configinit()
 	spelldd:SetPoint('TOPLEFT', 25, -100)
 
 	ABT_NS.newspell_click = function()
-	  _G['obicon0'].value = nil
+		_G['obicon0'].value = nil
 		--_G['obipresets']:Show()
 		_G["obicon1"]:SetText("")
 		_G["obisearchtt"]:SetChecked(false)
@@ -85,13 +85,13 @@ function ABT_NS.configinit()
 		_G["obicon1"]:Show()
 	end
 	function spelldd.Initialize()
-		local function Button_OnClick()
+		local function Button_OnClick(self)
 			UIDropDownMenu_SetSelectedValue(spelldd, self.value)
 			spelldd.value = self.value
 			--_G['obipresets']:Hide()
 			_G["obicon1"]:SetText(self.value or " ")
 			_G["obisearchtt"]:SetChecked(ABT_spelldb[self.value]["SEARCHTT"] or false)
-  		_G['obishowdmg']:SetValue(ABT_spelldb[self.value]["SHOWDMG"] or 0)
+			_G['obishowdmg']:SetValue(ABT_spelldb[self.value]["SHOWDMG"] or 0)
 			_G["obicon2"]:SetText(ABT_spelldb[self.value]["Buff"] or " ")
 			_G["obitarget"]:SetValue(ABT_spelldb[self.value]["TARGET"] or 1)
 			_G["obicon4"]:SetChecked(ABT_spelldb[self.value]["Debuff"] or false)
@@ -99,18 +99,18 @@ function ABT_NS.configinit()
 			_G["obicon5"]:SetChecked(ABT_spelldb[self.value]["NoTime"] or false)
 			_G["obicon6"]:SetChecked(ABT_spelldb[self.value]["Stack"] or false)
 			_G["obicon8"]:SetValue(ABT_spelldb[self.value]["CP"] or 0)
-  		_G['obiedef']:SetValue(ABT_spelldb[self.value]["EDEF"] or 0)
-  		_G['obictoom']:SetValue(ABT_spelldb[self.value]["CTOOM"] or -1)
-  		_G["obicon11"]:SetText(ABT_NS.del1)
-  		_G["obicon11"]:Show()
-  		_G["obispos"]:SetValue(ABT_spelldb[self.value]["SPOS"] or 1)
-  		_G["obifontsize"]:SetValue(ABT_spelldb[self.value]["FONTSIZE"] or 11)
-  		_G["obifontstyle"]:SetValue(ABT_spelldb[self.value]["FONTSTYLE"] or 1)
-  		_G['obifontcolor'].fontr = ABT_spelldb[self.value]["FONTCOLR"] or 0
-  		_G['obifontcolor'].fontg = ABT_spelldb[self.value]["FONTCOLG"] or 1
-  		_G['obifontcolor'].fontb = ABT_spelldb[self.value]["FONTCOLB"] or 0
-  		_G['obifontcolor'].bg:SetTexture(_G['obifontcolor'].fontr,_G['obifontcolor'].fontg,_G['obifontcolor'].fontb)
-  		example_update()
+			_G['obiedef']:SetValue(ABT_spelldb[self.value]["EDEF"] or 0)
+			_G['obictoom']:SetValue(ABT_spelldb[self.value]["CTOOM"] or -1)
+			_G["obicon11"]:SetText(ABT_NS.del1)
+			_G["obicon11"]:Show()
+			_G["obispos"]:SetValue(ABT_spelldb[self.value]["SPOS"] or 1)
+			_G["obifontsize"]:SetValue(ABT_spelldb[self.value]["FONTSIZE"] or 11)
+			_G["obifontstyle"]:SetValue(ABT_spelldb[self.value]["FONTSTYLE"] or 1)
+			_G['obifontcolor'].fontr = ABT_spelldb[self.value]["FONTCOLR"] or 0
+			_G['obifontcolor'].fontg = ABT_spelldb[self.value]["FONTCOLG"] or 1
+			_G['obifontcolor'].fontb = ABT_spelldb[self.value]["FONTCOLB"] or 0
+			_G['obifontcolor'].bg:SetTexture(_G['obifontcolor'].fontr,_G['obifontcolor'].fontg,_G['obifontcolor'].fontb)
+			example_update()
 			_G["obicon0"]:Hide()
 			_G["obicon1"]:Show()
 		end
@@ -214,7 +214,7 @@ function ABT_NS.configinit()
 	presets:Hide()
 
 	function presets.Initialize()
-		local function Button_OnClick()
+		local function Button_OnClick(self)
 			UIDropDownMenu_SetSelectedValue(presets, self.value)
 			presets.value = self.value
 			spell = self.value
@@ -229,16 +229,16 @@ function ABT_NS.configinit()
 			_G["obicon5"]:SetChecked(preset["NoTime"] or false)
 			_G["obicon6"]:SetChecked(preset["Stack"] or false)
 			_G["obicon8"]:SetValue(preset["CP"] or 0)
-  		_G['obiedef']:SetValue(preset["EDEF"] or 0)
-  		_G['obictoom']:SetValue(preset["CTOOM"] or -1)
-  		_G["obicon11"]:SetText(ABT_NS.del1)
-  		_G["obifontsize"]:SetValue(preset["FONTSIZE"] or 11)
-  		_G["obifontstyle"]:SetValue(preset["FONTSTYLE"] or 1)
-  		_G['obifontcolor'].fontr = preset["FONTCOLR"] or 0
-  		_G['obifontcolor'].fontg = preset["FONTCOLG"] or 1
-  		_G['obifontcolor'].fontb = preset["FONTCOLB"] or 0
-  		_G['obifontcolor'].bg:SetTexture(_G['obifontcolor'].fontr,_G['obifontcolor'].fontg,_G['obifontcolor'].fontb)
-  		example_update()
+			_G['obiedef']:SetValue(preset["EDEF"] or 0)
+			_G['obictoom']:SetValue(preset["CTOOM"] or -1)
+			_G["obicon11"]:SetText(ABT_NS.del1)
+			_G["obifontsize"]:SetValue(preset["FONTSIZE"] or 11)
+			_G["obifontstyle"]:SetValue(preset["FONTSTYLE"] or 1)
+			_G['obifontcolor'].fontr = preset["FONTCOLR"] or 0
+			_G['obifontcolor'].fontg = preset["FONTCOLG"] or 1
+			_G['obifontcolor'].fontb = preset["FONTCOLB"] or 0
+			_G['obifontcolor'].bg:SetTexture(_G['obifontcolor'].fontr,_G['obifontcolor'].fontg,_G['obifontcolor'].fontb)
+			example_update()
 		end
 	  local items = {}
     for spell in pairs(ABT_NS.examples) do
@@ -409,12 +409,12 @@ function ABT_NS.configinit()
 	local notime = CreateFrame('CheckButton', "obicon5" , spellnm, "UICheckButtonTemplate")
 	_G[notime:GetName() .. 'Text']:SetText(ABT_NS.con5)
 	notime:SetPoint('TOPLEFT', isdebuff, 'BOTTOMLEFT', 0, 10)
-	notime:SetScript("OnClick",function() example_update() end)
+	notime:SetScript("OnClick", function(self) example_update() end)
 
 	local stack = CreateFrame('CheckButton', "obicon6" , spellnm,"UICheckButtonTemplate")
 	_G[stack:GetName() .. 'Text']:SetText(ABT_NS.con6)
 	stack:SetPoint('TOPLEFT', notime, 'TOPRIGHT', 70 ,0)
-	stack:SetScript("OnClick",function() example_update() end)
+	stack:SetScript("OnClick", function(self) example_update() end)
 
   local function spos_change(self)
     vals = ABT_NS.sposvals
@@ -521,7 +521,7 @@ function ABT_NS.configinit()
 	bg:SetWidth(20); bg:SetHeight(20)
 	bg:SetPoint('CENTER')
 	fontcolor.bg = bg
-	fontcolor:SetScript('onclick',getcolor)
+	fontcolor:SetScript('OnClick', getcolor)
 
   local testbutton = CreateFrame('CheckButton',"obiexample", spellnm, "ActionBarButtonTemplate")
   testbutton:SetWidth(36)
@@ -612,20 +612,20 @@ function ABT_NS.configinit()
   savec:SetHeight(20)
 	savec:SetPoint('BOTTOMLEFT', ABT_NS.configpanel, 'BOTTOMLEFT', 30, 20)
 	savec:SetText(ABT_NS.con9)
-	savec:SetScript("OnClick",save_click)
+	savec:SetScript("OnClick", save_click)
 
   local cancelc = CreateFrame('Button',"obicon10", spellnm,"UIPanelButtonTemplate")
   cancelc:SetWidth(120)
   cancelc:SetHeight(20)
 	cancelc:SetPoint('TOPLEFT', savec, 'TOPRIGHT', 20, 0)
 	cancelc:SetText(ABT_NS.con10)
-	cancelc:SetScript("OnClick",cancel_click)
+	cancelc:SetScript("OnClick", cancel_click)
 
   local deleteb = CreateFrame('Button',"obicon11", spellnm,"UIPanelButtonTemplate")
   deleteb:SetWidth(200)
   deleteb:SetHeight(20)
 	deleteb:SetPoint('TOPLEFT', cancelc, 'TOPRIGHT', 80, 0)
-	deleteb:SetScript("OnClick",delete_click)
+	deleteb:SetScript("OnClick", delete_click)
 
   local widgets = {_G['obicon1'],_G['obicon1']:GetChildren()}
   for _,id in ipairs(widgets) do
