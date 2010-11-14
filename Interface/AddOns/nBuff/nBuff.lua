@@ -96,13 +96,13 @@ hooksecurefunc('BuffFrame_UpdateAllBuffAnchors', function()
 		else
 			numBuffs = numBuffs + 1
             
-			if (hasMainHandEnchant and hasOffHandEnchant and hasThrownEnchant) then
-                numBuffs = numBuffs + 3
-			elseif (hasMainHandEnchant and hasOffHandEnchant) or (hasMainHandEnchant and hasThrownEnchant) or (hasOffHandEnchant or hasThrownEnchant) then
-				numBuffs = numBuffs + 2
-            elseif (hasMainHandEnchant or hasOffHandEnchant or hasThrownEnchant) then            
-                numBuffs = numBuffs + 1
-            end
+			-- if (hasMainHandEnchant and hasOffHandEnchant and hasThrownEnchant) then
+                -- numBuffs = numBuffs + 3
+			-- elseif (hasMainHandEnchant and hasOffHandEnchant) or (hasMainHandEnchant and hasThrownEnchant) or (hasOffHandEnchant or hasThrownEnchant) then
+				-- numBuffs = numBuffs + 2
+            -- elseif (hasMainHandEnchant or hasOffHandEnchant or hasThrownEnchant) then            
+                -- numBuffs = numBuffs + 1
+            -- end
             
 			if (buff.parent ~= BuffFrame) then
 				buff:SetParent(BuffFrame)
