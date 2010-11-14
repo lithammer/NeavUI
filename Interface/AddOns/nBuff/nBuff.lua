@@ -48,13 +48,13 @@ local function BuffFrame_SetPoint(self)
             if (hasMainHandEnchant and hasOffHandEnchant and hasThrownEnchant) then
                 self:SetPoint('TOPRIGHT', TempEnchant3, 'TOPLEFT', -nBuff.padding.x, 0)
                 return
-			elseif (hasMainHandEnchant and hasOffHandEnchant) or (hasMainHandEnchant and hasThrownEnchant) or (hasOffHandEnchant or hasThrownEnchant) then
+			elseif (hasMainHandEnchant and hasOffHandEnchant) or (hasMainHandEnchant and hasThrownEnchant) or (hasOffHandEnchant and hasThrownEnchant) then
 				self:SetPoint('TOPRIGHT', TempEnchant2, 'TOPLEFT', -nBuff.padding.x, 0)
 				return
-            elseif (hasMainHandEnchant or hasOffHandEnchant or hasThrownEnchant) then            
+            elseif (hasMainHandEnchant or hasOffHandEnchant or hasThrownEnchant) then
                 self:SetPoint('TOPRIGHT', TempEnchant1, 'TOPLEFT', -nBuff.padding.x, 0)
                 return
-            elseif (not hasMainHandEnchant and not hasOffHandEnchant) then
+            elseif (not hasMainHandEnchant and not hasOffHandEnchant and not hasThrownEnchant) then
                 self:SetPoint('TOPRIGHT', TempEnchant1)
                 return
             end
