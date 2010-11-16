@@ -343,7 +343,7 @@ local function UpdateThreat(self, _, unit)
     if (self.Aggro) then
         local threat = UnitThreatSituation(self.unit)
         if (threat == 3) then
-            --self.Aggro:SetText('|cFFFF0000AGGRO')
+            self.Aggro:SetText('|cFFFF0000AGGRO')
             self.Health:SetBackdropColor(0.9, 0, 0) 
         else
             self.Aggro:SetText('')
