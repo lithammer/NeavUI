@@ -46,14 +46,25 @@ end
 
 local function FormatValue(self)
     if (self >= 1000000) then
-		return ('%.2fm'):format(self / 1000000)
+		return ('%.2fm'):format(self / 1e6)
         --return ('%.3fK'):format(self / 1e6):gsub('%.', 'M ')
     elseif (self >= 100000) then
-		return ('%.1fk'):format(self / 1000)
+		return ('%.1fk'):format(self / 1e3)
         --return ('%.3f'):format(self / 1e3):gsub('%.', 'K ')
     else
         return self
     end
+end
+
+-- Kill the Blizzard party/raid frames
+for _, frame in pairs({
+	CompactPartyFrame,
+	CompactRaidFrameManager,
+	CompactRaidFrameContainer,
+}) do
+	frame:UnregisterAllEvents()
+	frame.Show = function() return end
+	frame:Hide()
 end
 
 local function CreateDropDown(self)   

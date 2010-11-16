@@ -233,14 +233,15 @@ end
 
 EXP_DEFAULT_WIDTH = 512
 hooksecurefunc('MainMenuExpBar_SetWidth', function(width)
-	if InCombatLockdown() then return end
-	local divWidth = width/10;
-	local xpos = divWidth - 4.5;	
-	for i=1,9 do
-		local texture = _G["MainMenuXPBarDiv"..i];
-		local xalign = floor(xpos);
-		texture:SetPoint("LEFT", xalign, 1);
-		xpos = xpos + divWidth;
+	if not InCombatLockdown() then
+		local divWidth = width/10
+		local xpos = divWidth - 4.5
+		for i=1,9 do
+			local texture = _G["MainMenuXPBarDiv"..i]
+			local xalign = floor(xpos)
+			texture:SetPoint("LEFT", xalign, 1)
+			xpos = xpos + divWidth
+		end
 	end
 end)
 
