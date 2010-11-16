@@ -2,7 +2,7 @@
 
 ## Changes and additions
 
-**oUF_Neav**
+**oUF_Neav:**
 
 - Short value formatting for player, target, pet and party frames is different (e.g. 1.1m instead of 1M 100K).
 - Added Blizzards holy power, eclipse and soulshard bars, they fit the UI very nicely.
@@ -15,11 +15,11 @@
 - Mouse-over indicator (darkening the color when hovering over a frame).
 - Raid frames is a bit modified, now using the built-in heal prediction from oUF. And added healing indicators for all classes (I hope).
 
-**nMainbar**
+**nMainbar:**
 
 - Option to have a vertical petbar (see nMainbar_Config.lua).
 
-**Misc**
+**Misc:**
 
 - Healthbar on tooltips now have a textual representation on it as well.
 - Removed cursor coordinates for map simply becuase it doesn't really work anymore with the smaller map.
