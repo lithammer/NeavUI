@@ -58,8 +58,8 @@ elseif playerClass == 'WARLOCK' then
 end
 
 function auraIcon(self, icon)
-	icon.icon:SetPoint("TOPLEFT", -2, 2)
-	icon.icon:SetPoint("BOTTOMRIGHT", 2, -2)
+	icon.icon:SetPoint("TOPLEFT", -1, 1)
+	icon.icon:SetPoint("BOTTOMRIGHT", 1, -1)
 	icon.icon:SetTexCoord(.08, .92, .08, .92)
 	icon.icon:SetDrawLayer("ARTWORK")
 	
