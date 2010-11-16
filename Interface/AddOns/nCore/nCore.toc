@@ -4,6 +4,6 @@
 nCore.lua
 
 modules\coords.lua
-##modules\errors.lua
+modules\errors.lua
 modules\fonts.lua
 modules\warning.lua
