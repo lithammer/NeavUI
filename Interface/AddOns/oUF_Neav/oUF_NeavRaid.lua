@@ -40,8 +40,8 @@ elseif playerClass == 'PALADIN' then
 	}
 elseif playerClass == 'PRIEST' then
 	indicatorList = {
-		17, -- power word: shield #1
-		6788, -- weakened soul #2
+		6788, -- weakened soul #1
+		17, -- power word: shield #2
 		139, -- renew #3
 		33076, -- prayer of mending #4
 	}
@@ -58,8 +58,8 @@ elseif playerClass == 'WARLOCK' then
 end
 
 function auraIcon(self, icon)
-	icon.icon:SetPoint("TOPLEFT", -2, 2)
-	icon.icon:SetPoint("BOTTOMRIGHT", 2, -2)
+	icon.icon:SetPoint("TOPLEFT", -1, 1)
+	icon.icon:SetPoint("BOTTOMRIGHT", 1, -1)
 	icon.icon:SetTexCoord(.08, .92, .08, .92)
 	icon.icon:SetDrawLayer("ARTWORK")
 	
@@ -123,14 +123,14 @@ local function CreateIndicators(self, unit)
 				icon.icon:SetVertexColor(0, 1, 0)
 			end
 		elseif playerClass == 'PRIEST' then
-			if i == 1 then -- power word: shield
-				icon:SetFrameLevel(icon:GetFrameLevel() + 1)
-				icon:SetPoint('TOP', self)
-				icon.icon:SetVertexColor(1, 1, 0)
-				icon.anyUnit = true
-			elseif i == 2 then -- weakened soul
+			if i == 1 then -- weakened soul
 				icon:SetPoint('TOP', self)
 				icon.icon:SetVertexColor(0.6, 0, 0)
+				icon.anyUnit = true
+			elseif i == 2 then -- power word: shield
+				icon:SetFrameLevel(icon:GetFrameLevel() + 5)
+				icon:SetPoint('TOP', self)
+				icon.icon:SetVertexColor(1, 1, 0)
 				icon.anyUnit = true
 			elseif i == 3 then -- renew
 				icon:SetPoint('BOTTOMRIGHT', self)
@@ -343,7 +343,7 @@ local function UpdateThreat(self, _, unit)
     if (self.Aggro) then
         local threat = UnitThreatSituation(self.unit)
         if (threat == 3) then
-            --self.Aggro:SetText('|cFFFF0000AGGRO')
+            self.Aggro:SetText('|cFFFF0000AGGRO')
             self.Health:SetBackdropColor(0.9, 0, 0) 
         else
             self.Aggro:SetText('')

@@ -37,12 +37,24 @@ for _, button in pairs({
     'DisplayPanelShowAggroPercentage',
     
     'FrameCategoriesButton9',
-    --'FrameCategoriesButton11',
+    'FrameCategoriesButton11',
 }) do
     _G['InterfaceOptions'..button]:SetAlpha(0.35)
     _G['InterfaceOptions'..button]:Disable()
     _G['InterfaceOptions'..button]:EnableMouse(false)
 end
+
+-- Kill party/raid frames
+for _, frame in pairs({
+	CompactPartyFrame,
+	CompactRaidFrameManager,
+	CompactRaidFrameContainer,
+}) do
+	frame:UnregisterAllEvents()
+	frame.Show = function() return end
+	frame:Hide()
+end
+	
 
 local function FormatValue(self)
     if (self >= 1000000) then
