@@ -231,9 +231,13 @@ for _, bar in pairs({
     -- bar:SetFrameStrata('BACKGROUND')
 end
 
-EXP_DEFAULT_WIDTH = 512
 hooksecurefunc('MainMenuExpBar_SetWidth', function(width)
 	if not InCombatLockdown() then
+		if width == EXP_DEFAULT_WIDTH then
+			MainMenuXPBarTextureMid:SetWidth(512 - 28)
+			MainMenuExpBar:SetWidth(512)
+			width = 512
+		end
 		local divWidth = width/10
 		local xpos = divWidth - 4.5
 		for i=1,9 do
