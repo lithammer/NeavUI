@@ -416,7 +416,7 @@ local function CreateRaidLayout(self, unit)
     self.Health:SetFrameStrata('LOW')
     self.Health:SetAllPoints(self)
     self.Health:SetFrameLevel(1)
-	if horizontalHealthBars then
+	if oUF_Neav.units.raid.horizontalHealthBars then
 		self.Health:SetOrientation('HORIZONTAL')
 	else
 		self.Health:SetOrientation('VERTICAL')
@@ -470,7 +470,7 @@ local function CreateRaidLayout(self, unit)
 	
 	if isHealer then
 		local mhpb = CreateFrame('StatusBar', nil, self.Health)
-		if horizontalHealthBars then
+		if oUF_Neav.units.raid.horizontalHealthBars then
 			mhpb:SetOrientation('HORIZONTAL')
 			mhpb:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT', 0, 0)
 		else
@@ -482,7 +482,7 @@ local function CreateRaidLayout(self, unit)
 		mhpb:SetStatusBarColor(0, 1, 0.5, 0.25)
 
 		local ohpb = CreateFrame('StatusBar', nil, self.Health)
-		if horizontalHealthBars then
+		if oUF_Neav.units.raid.horizontalHealthBars then
 			ohpb:SetOrientation('HORIZONTAL')
 			ohpb:SetPoint('LEFT', mhpb:GetStatusBarTexture(), 'RIGHT', 0, 0)
 		else
