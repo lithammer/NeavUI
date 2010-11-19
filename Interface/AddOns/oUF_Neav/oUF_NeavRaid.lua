@@ -21,6 +21,7 @@ local function GetSpellName(spellID)
 end
 
 local playerClass = select(2, UnitClass('player'))
+local isHealer = (playerClass == 'DRUID' or playerClass == 'PALADIN' or playerClass == 'PRIEST' or playerClass == 'SHAMAN')
 
 local indicatorList = {}
 if playerClass == 'DRUID' then
@@ -462,28 +463,28 @@ local function CreateRaidLayout(self, unit)
     self:Tag(self.Name, '[name:Raid]')
 
         -- heal prediction (new healcomm)
+	
+	if isHealer then
+		local mhpb = CreateFrame('StatusBar', nil, self.Health)
+		mhpb:SetOrientation('VERTICAL')
+		mhpb:SetPoint('BOTTOM', self.Health:GetStatusBarTexture(), 'TOP', 0, 0)
+		mhpb:SetWidth(oUF_Neav.units.raid.width)
+		mhpb:SetHeight(oUF_Neav.units.raid.height)
+		mhpb:SetStatusBarColor(0, 1, 0.5, 0.25)
 
-	local mhpb = CreateFrame('StatusBar', nil, self.Health)
-	mhpb:SetOrientation("VERTICAL")
-	mhpb:SetPoint('BOTTOM', self.Health:GetStatusBarTexture(), 'TOP', 0, 0)
-	mhpb:SetWidth(oUF_Neav.units.raid.width)
-	mhpb:SetHeight(oUF_Neav.units.raid.height)
-	mhpb:SetStatusBarTexture(self.Health:GetStatusBarTexture():GetTexture())
-	mhpb:SetStatusBarColor(0, 1, 0.5, 0.25)
+		local ohpb = CreateFrame('StatusBar', nil, self.Health)
+		ohpb:SetOrientation('VERTICAL')
+		ohpb:SetPoint('BOTTOM', mhpb:GetStatusBarTexture(), 'TOP', 0, 0)
+		ohpb:SetWidth(oUF_Neav.units.raid.width)
+		ohpb:SetHeight(oUF_Neav.units.raid.height)
+		ohpb:SetStatusBarColor(0, 1, 0, 0.25)
 
-	local ohpb = CreateFrame('StatusBar', nil, self.Health)
-	ohpb:SetPoint('TOPLEFT', mhpb:GetStatusBarTexture(), 'TOPRIGHT', 0, 0)
-	ohpb:SetPoint('BOTTOMLEFT', mhpb:GetStatusBarTexture(), 'BOTTOMRIGHT', 0, 0)
-	ohpb:SetWidth(oUF_Neav.units.raid.width)
-	ohpb:SetHeight(oUF_Neav.units.raid.height)
-	ohpb:SetStatusBarTexture(self.Health:GetStatusBarTexture():GetTexture())
-	ohpb:SetStatusBarColor(0, 1, 0, 0.25)
-
-	self.HealPrediction = {
-		myBar = mhpb,
-		otherBar = ohpb,
-		maxOverflow = 1,
-	}
+		self.HealPrediction = {
+			myBar = mhpb,
+			otherBar = ohpb,
+			maxOverflow = 1,
+		}
+	end
 	
         -- aggro text
 
@@ -619,28 +620,28 @@ oUF:Factory(function(self)
 end)
 
 -- Moves the raid frames a bit
-SlashCmdList["HEAL"] = function()
-	local pos = {'LEFT', UIParent, 'CENTER', 200, 0}
-    for i = 1, oUF_Neav.units.raid.numGroups do
-		if (i == 1) then
-			raid[i]:ClearAllPoints()
-			raid[i]:SetPoint(unpack(pos))
-		else
-			raid[i]:SetPoint('TOPLEFT', raid[i-1], 'TOPRIGHT', 7, 0)
-		end
-	end
-end
-SLASH_HEAL1 = "/heal"
-
--- Moves the raid frames a bit
-SlashCmdList["DPS"] = function()
-    for i = 1, oUF_Neav.units.raid.numGroups do
-		if (i == 1) then
-			raid[i]:ClearAllPoints()
-			raid[i]:SetPoint(unpack(oUF_Neav.units.raid.position))
-		else
-			raid[i]:SetPoint('TOPLEFT', raid[i-1], 'TOPRIGHT', 7, 0)
-		end
-	end
-end
-SLASH_DPS1 = "/dps"
+--SlashCmdList["HEAL"] = function()
+--	local pos = {'LEFT', UIParent, 'CENTER', 200, 0}
+--    for i = 1, oUF_Neav.units.raid.numGroups do
+--		if (i == 1) then
+--			raid[i]:ClearAllPoints()
+--			raid[i]:SetPoint(unpack(pos))
+--		else
+--			raid[i]:SetPoint('TOPLEFT', raid[i-1], 'TOPRIGHT', 7, 0)
+--		end
+--	end
+--end
+--SLASH_HEAL1 = "/heal"
+--
+---- Moves the raid frames a bit
+--SlashCmdList["DPS"] = function()
+--    for i = 1, oUF_Neav.units.raid.numGroups do
+--		if (i == 1) then
+--			raid[i]:ClearAllPoints()
+--			raid[i]:SetPoint(unpack(oUF_Neav.units.raid.position))
+--		else
+--			raid[i]:SetPoint('TOPLEFT', raid[i-1], 'TOPRIGHT', 7, 0)
+--		end
+--	end
+--end
+--SLASH_DPS1 = "/dps"
