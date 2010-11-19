@@ -87,6 +87,7 @@ oUF_Neav = {
             position = {'LEFT', UIParent, 'CENTER', 447, 0},
             showTargetBorder = true,
             targetBorderColor = {1, 1, 1},
+			horizontalHealthBars = false,
         },
     },
 
@@ -101,7 +102,8 @@ oUF_Neav = {
             color = {1, 0.7, 0},
         },
         pet = {
-            position = {'BOTTOM', UIParent, 0, 390},
+            --position = {'BOTTOM', UIParent, 0, 390},
+            position = {'BOTTOM', UIParent, 0, 9000},
             width = 220,
             height = 19,
             color = {0, 0.65, 1},

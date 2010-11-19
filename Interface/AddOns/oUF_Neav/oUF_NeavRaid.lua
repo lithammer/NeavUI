@@ -416,7 +416,11 @@ local function CreateRaidLayout(self, unit)
     self.Health:SetFrameStrata('LOW')
     self.Health:SetAllPoints(self)
     self.Health:SetFrameLevel(1)
-    self.Health:SetOrientation('VERTICAL') 
+	if horizontalHealthBars then
+		self.Health:SetOrientation('HORIZONTAL')
+	else
+		self.Health:SetOrientation('VERTICAL')
+	end
     self.Health:SetBackdrop{
         bgFile = 'Interface\\Buttons\\WHITE8x8', 
         insets = {
@@ -466,15 +470,25 @@ local function CreateRaidLayout(self, unit)
 	
 	if isHealer then
 		local mhpb = CreateFrame('StatusBar', nil, self.Health)
-		mhpb:SetOrientation('VERTICAL')
-		mhpb:SetPoint('BOTTOM', self.Health:GetStatusBarTexture(), 'TOP', 0, 0)
+		if horizontalHealthBars then
+			mhpb:SetOrientation('HORIZONTAL')
+			mhpb:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT', 0, 0)
+		else
+			mhpb:SetOrientation('VERTICAL')
+			mhpb:SetPoint('BOTTOM', self.Health:GetStatusBarTexture(), 'TOP', 0, 0)
+		end
 		mhpb:SetWidth(oUF_Neav.units.raid.width)
 		mhpb:SetHeight(oUF_Neav.units.raid.height)
 		mhpb:SetStatusBarColor(0, 1, 0.5, 0.25)
 
 		local ohpb = CreateFrame('StatusBar', nil, self.Health)
-		ohpb:SetOrientation('VERTICAL')
-		ohpb:SetPoint('BOTTOM', mhpb:GetStatusBarTexture(), 'TOP', 0, 0)
+		if horizontalHealthBars then
+			ohpb:SetOrientation('HORIZONTAL')
+			ohpb:SetPoint('LEFT', mhpb:GetStatusBarTexture(), 'RIGHT', 0, 0)
+		else
+			ohpb:SetOrientation('VERTICAL')
+			ohpb:SetPoint('BOTTOM', mhpb:GetStatusBarTexture(), 'TOP', 0, 0)
+		end
 		ohpb:SetWidth(oUF_Neav.units.raid.width)
 		ohpb:SetHeight(oUF_Neav.units.raid.height)
 		ohpb:SetStatusBarColor(0, 1, 0, 0.25)
