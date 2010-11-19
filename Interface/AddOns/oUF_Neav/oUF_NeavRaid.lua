@@ -21,7 +21,6 @@ local function GetSpellName(spellID)
 end
 
 local playerClass = select(2, UnitClass('player'))
-local isHealer = (playerClass == 'DRUID' or playerClass == 'PALADIN' or playerClass == 'PRIEST' or playerClass == 'SHAMAN')
 
 local indicatorList = {}
 if playerClass == 'DRUID' then
