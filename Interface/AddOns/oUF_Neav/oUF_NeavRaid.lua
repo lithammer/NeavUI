@@ -407,8 +407,6 @@ local function CreateRaidLayout(self, unit)
     	UnitFrame_OnLeave(self)
     end)
 
-    --self:SetAttribute('initial-height', oUF_Neav.units.raid.height)
-	--self:SetAttribute('initial-width', oUF_Neav.units.raid.width)
 	self:SetSize(oUF_Neav.units.raid.width, oUF_Neav.units.raid.height)
 
         -- health bar
@@ -465,56 +463,29 @@ local function CreateRaidLayout(self, unit)
     self:Tag(self.Name, '[name:Raid]')
 
         -- heal prediction (new healcomm)
-	if isHealer then
-		local mhpb = CreateFrame('StatusBar', nil, self.Health)
-		mhpb:SetOrientation("VERTICAL")
-		mhpb:SetPoint('BOTTOM', self.Health:GetStatusBarTexture(), 'TOP', 0, 0)
-		mhpb:SetWidth(oUF_Neav.units.raid.width)
-		mhpb:SetHeight(oUF_Neav.units.raid.height)
-		mhpb:SetStatusBarTexture(self.Health:GetStatusBarTexture():GetTexture())
-		mhpb:SetStatusBarColor(0, 1, 0.5, 0.25)
 
-		local ohpb = CreateFrame('StatusBar', nil, self.Health)
-		ohpb:SetOrientation("VERTICAL")
-		ohpb:SetPoint('TOPLEFT', mhpb:GetStatusBarTexture(), 'TOPRIGHT', 0, 0)
-		ohpb:SetPoint('BOTTOMLEFT', mhpb:GetStatusBarTexture(), 'BOTTOMRIGHT', 0, 0)
-		ohpb:SetWidth(oUF_Neav.units.raid.width)
-		ohpb:SetHeight(oUF_Neav.units.raid.height)
-		ohpb:SetStatusBarTexture(self.Health:GetStatusBarTexture():GetTexture())
-		ohpb:SetStatusBarColor(0, 1, 0, 0.25)
+	local mhpb = CreateFrame('StatusBar', nil, self.Health)
+	mhpb:SetOrientation("VERTICAL")
+	mhpb:SetPoint('BOTTOM', self.Health:GetStatusBarTexture(), 'TOP', 0, 0)
+	mhpb:SetWidth(oUF_Neav.units.raid.width)
+	mhpb:SetHeight(oUF_Neav.units.raid.height)
+	mhpb:SetStatusBarTexture(self.Health:GetStatusBarTexture():GetTexture())
+	mhpb:SetStatusBarColor(0, 1, 0.5, 0.25)
 
-		self.HealPrediction = {
-			myBar = mhpb,
-			otherBar = ohpb,
-			maxOverflow = 1,
-		}
+	local ohpb = CreateFrame('StatusBar', nil, self.Health)
+	ohpb:SetPoint('TOPLEFT', mhpb:GetStatusBarTexture(), 'TOPRIGHT', 0, 0)
+	ohpb:SetPoint('BOTTOMLEFT', mhpb:GetStatusBarTexture(), 'BOTTOMRIGHT', 0, 0)
+	ohpb:SetWidth(oUF_Neav.units.raid.width)
+	ohpb:SetHeight(oUF_Neav.units.raid.height)
+	ohpb:SetStatusBarTexture(self.Health:GetStatusBarTexture():GetTexture())
+	ohpb:SetStatusBarColor(0, 1, 0, 0.25)
+
+	self.HealPrediction = {
+		myBar = mhpb,
+		otherBar = ohpb,
+		maxOverflow = 1,
+	}
 	
-		-- self.HealCommBar = CreateFrame('StatusBar', nil, self.Health)
-		-- self.HealCommBar:SetHeight(0)
-		-- self.HealCommBar:SetWidth(0)
-		-- self.HealCommBar:SetStatusBarTexture(self.Health:GetStatusBarTexture():GetTexture())
-		-- self.HealCommBar:SetStatusBarColor(0, 1, 0, 0.10)
-		-- self.HealCommBar:SetPoint('LEFT', self.Health, 'LEFT')
-		-- self.allowHealCommOverflow = false
-
-		-- self.HealCommText = self.Health:CreateFontString(nil, 'OVERLAY')
-		-- self.HealCommText:SetPoint('BOTTOM', 0, 5)
-		-- self.HealCommText:SetFont(oUF_Neav.media.font, 13)
-		-- self.HealCommText:SetShadowOffset(1, -1)
-		-- self.HealCommText:SetTextColor(0, 1, 0)
-		-- self.HealCommTextFormat = shortVal
-
-		-- self.HealCommBar:SetScript('OnShow', function()
-			-- self.Health.Value:SetDrawLayer('BACKGROUND')
-		-- end)
-
-		-- self.HealCommBar:SetScript('OnHide', function()
-			-- self.Health.Value:SetDrawLayer('OVERLAY')
-		-- end)
-
-		-- self.HealCommTimeframe = 3
-	end 
-
         -- aggro text
 
     self.Aggro = self.Health:CreateFontString(nil, 'OVERLAY')
