@@ -231,6 +231,8 @@ for _, bar in pairs({
     -- bar:SetFrameStrata('BACKGROUND')
 end
 
+-- Fixes the issue with resizing exp bar when entering and exiting vehicles
+-- as well as the positioning the dividers properly
 hooksecurefunc('MainMenuExpBar_SetWidth', function(width)
 	if not InCombatLockdown() then
 		if width == EXP_DEFAULT_WIDTH then
@@ -289,3 +291,8 @@ hooksecurefunc('VehicleMenuBar_MoveMicroButtons', function(self)
 end)
 
 end
+
+MainMenuBarVehicleLeaveButton:HookScript('OnEvent', function(self, event, ...)
+	MainMenuBarVehicleLeaveButton:ClearAllPoints()
+	MainMenuBarVehicleLeaveButton:SetPoint('LEFT', MainMenuBar, 'RIGHT', 10, 80)
+end)
