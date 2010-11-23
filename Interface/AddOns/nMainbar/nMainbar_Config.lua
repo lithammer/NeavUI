@@ -73,10 +73,10 @@ nMainbar = {
     },
     
     petbar = {
-        mouseover           = false,
-        scale               = 1,
-        alpha               = 1,
-		vertical			= true,
+		mouseover			= false,
+		scale				= 1,
+		alpha				= 1,
+		vertical			= false,
     },
     
     possessbar = {
