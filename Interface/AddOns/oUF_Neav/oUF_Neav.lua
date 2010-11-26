@@ -44,18 +44,6 @@ for _, button in pairs({
     _G['InterfaceOptions'..button]:EnableMouse(false)
 end
 
--- Kill party/raid frames
-for _, frame in pairs({
-	CompactPartyFrame,
-	CompactRaidFrameManager,
-	CompactRaidFrameContainer,
-}) do
-	frame:UnregisterAllEvents()
-	frame.Show = function() return end
-	frame:Hide()
-end
-	
-
 local function FormatValue(self)
     if (self >= 1000000) then
 		return ('%.2fm'):format(self / 1e6)
@@ -75,7 +63,7 @@ for _, frame in pairs({
 	CompactRaidFrameContainer,
 }) do
 	frame:UnregisterAllEvents()
-	frame.Show = function() return end
+	frame.Show = function() end
 	frame:Hide()
 end
 
@@ -177,7 +165,7 @@ end
 local function UpdatePartyStatus(self)
     for i = 1, MAX_RAID_MEMBERS do
         if (GetNumRaidMembers() > 0) then
-            local unitName, _, groupNumber= GetRaidRosterInfo(i)
+            local unitName, _, groupNumber = GetRaidRosterInfo(i)
             if (unitName == UnitName('player')) then
                 self.Group[4]:SetText(GROUP..' '..groupNumber)
                 self.Group[2]:SetWidth(self.Group[4]:GetWidth())
@@ -195,7 +183,7 @@ end
     
 local function UpdateFrame(self, event, unit)
 	if (self.unit ~= unit) then 
-        return 
+        return
     end
     
     if (self.Name.Bg) then
@@ -227,7 +215,7 @@ local function UpdateFrame(self, event, unit)
 end
     
 local function UpdateThreat(self, event, unit)
-	if (self.unit ~= unit) then 
+	if (self.unit ~= unit) or UnitExists(unit) == nil then 
         return 
     end
     
@@ -393,6 +381,12 @@ local function UpdateDruidPower(self, event, unit)
         self.Druid.Power.Value:SetAlpha(0)   
         self.Druid.Texture:SetAlpha(0)
     end
+end
+
+local function UpdateAllElements(frame)
+	for _, v in ipairs(frame.__elements) do
+		v(frame, 'UpdateElement', frame.unit)
+	end
 end
 
 local function CreateUnitLayout(self, unit)
@@ -1172,6 +1166,18 @@ local function CreateUnitLayout(self, unit)
         self.Debuffs.PostCreateIcon = UpdateAuraIcons
         self.Debuffs.showDebuffType = true
     end
+	
+		-- hacks
+	
+	-- execute an update on every unit if party or raid member changed
+	-- should fix issues with names/symbols/etc not updating introduced with 4.0.3 patch
+	self:RegisterEvent('PARTY_MEMBERS_CHANGED', UpdateAllElements)
+	self:RegisterEvent('RAID_ROSTER_UPDATE', UpdateAllElements)
+	
+	-- update pet name, this should fix "UNKNOWN" pet names on pet unit.
+	self:RegisterEvent('UNIT_PET', function(self, event)
+		if self.Name then self.Name:UpdateTag(self.unit) end
+	end)
     
 	return self
 end

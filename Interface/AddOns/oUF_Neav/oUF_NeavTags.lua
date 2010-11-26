@@ -27,6 +27,7 @@ oUF.Tags['level'] = function(unit)
 end
 
 oUF.Tags['name'] = function(unit)
+	if not UnitExists(unit) then return end
     local r, g, b
     local colorA, colorB
     local unitName, unitRealm = UnitName(unit)
