@@ -386,14 +386,9 @@ local function UpdateTargetBorder(self)
 	end
 end
 
--- Number formatting for healcomm4
-local shortVal = function(val)
-	if (val >= 1e6) then
-		return ("+%.1fm"):format(val / 1e6)
-	elseif (val >= 1e3) then
-		return ("+%.1f"):format(val / 1e3)
-	else
-		return ("+%d"):format(val)
+local function UpdateAllElements(frame)
+	for _, v in ipairs(frame.__elements) do
+		v(frame, 'UpdateElement', frame.unit)
 	end
 end
 
@@ -601,6 +596,13 @@ local function CreateRaidLayout(self, unit)
         insideAlpha = 1,
         outsideAlpha = 0.3,
     }
+	
+		-- hacks
+	
+	-- execute an update on every unit if party or raid member changed
+	-- should fix issues with names/symbols/etc not updating introduced with 4.0.3 patch
+	self:RegisterEvent('PARTY_MEMBERS_CHANGED', UpdateAllElements)
+	self:RegisterEvent('RAID_ROSTER_UPDATE', UpdateAllElements)
 
     return self
 end
