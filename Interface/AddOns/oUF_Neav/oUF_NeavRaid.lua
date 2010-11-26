@@ -145,7 +145,7 @@ local function CreateIndicators(self, unit)
 				count:SetFont(NumberFontNormal:GetFont(), 10)
 				count:SetShadowColor(0, 0, 0)
 				count:SetShadowOffset(1, -1)
-            	count:SetPoint('RIGHT', icon, 'LEFT', -1, 0)
+            	count:SetPoint('TOP', icon, 'BOTTOM', 0, -1)
 				icon.count = count
 			end
 		elseif playerClass == 'SHAMAN' then
