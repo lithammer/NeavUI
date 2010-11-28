@@ -61,7 +61,7 @@ oUF.Tags['name'] = function(unit)
     return format('|cff%02x%02x%02x%s|r', r*255, g*255, b*255, unitName)
 end
 
-oUF.TagEvents['name:Raid'] = 'UNIT_LEVEL UNIT_NAME_UPDATE'
+oUF.TagEvents['name:Raid'] = 'UNIT_LEVEL'
 oUF.Tags['name:Raid'] = function(unit)
     return UnitName(unit):sub(1, 4)
 end
