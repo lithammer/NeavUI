@@ -22,7 +22,7 @@
 **Misc:**
 
 - Healthbar on tooltips now have a textual representation on it as well.
-- Removed cursor coordinates for map simply becuase it doesn't really work anymore with the smaller map.
+- Removed cursor coordinates for map simply because it doesn't really work anymore with the smaller map.
 - Fixed position and font size for player coordinates.
 - Added a copy chat function to nChat, use it by right-clicking on the chat tab. Also added a URL copy function.
 
