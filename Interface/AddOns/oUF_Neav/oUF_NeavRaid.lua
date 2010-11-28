@@ -386,12 +386,6 @@ local function UpdateTargetBorder(self)
 	end
 end
 
-local function UpdateAllElements(frame)
-	for _, v in ipairs(frame.__elements) do
-		v(frame, 'UpdateElement', frame.unit)
-	end
-end
-
 local function CreateRaidLayout(self, unit)
     self:SetScript('OnEnter', function(self)
     	self.Health.Mouseover:SetAlpha(0.15)
@@ -596,13 +590,6 @@ local function CreateRaidLayout(self, unit)
         insideAlpha = 1,
         outsideAlpha = 0.3,
     }
-	
-		-- hacks
-	
-	-- execute an update on every unit if party or raid member changed
-	-- should fix issues with names/symbols/etc not updating introduced with 4.0.3 patch
-	self:RegisterEvent('PARTY_MEMBERS_CHANGED', UpdateAllElements)
-	self:RegisterEvent('RAID_ROSTER_UPDATE', UpdateAllElements)
 
     return self
 end

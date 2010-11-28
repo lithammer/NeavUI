@@ -215,7 +215,7 @@ local function UpdateFrame(self, event, unit)
 end
     
 local function UpdateThreat(self, event, unit)
-	if (self.unit ~= unit) or UnitExists(unit) == nil then 
+	if (self.unit ~= unit) then 
         return 
     end
     
@@ -381,12 +381,6 @@ local function UpdateDruidPower(self, event, unit)
         self.Druid.Power.Value:SetAlpha(0)   
         self.Druid.Texture:SetAlpha(0)
     end
-end
-
-local function UpdateAllElements(frame)
-	for _, v in ipairs(frame.__elements) do
-		v(frame, 'UpdateElement', frame.unit)
-	end
 end
 
 local function CreateUnitLayout(self, unit)
@@ -1166,18 +1160,6 @@ local function CreateUnitLayout(self, unit)
         self.Debuffs.PostCreateIcon = UpdateAuraIcons
         self.Debuffs.showDebuffType = true
     end
-	
-		-- hacks
-	
-	-- execute an update on every unit if party or raid member changed
-	-- should fix issues with names/symbols/etc not updating introduced with 4.0.3 patch
-	self:RegisterEvent('PARTY_MEMBERS_CHANGED', UpdateAllElements)
-	self:RegisterEvent('RAID_ROSTER_UPDATE', UpdateAllElements)
-	
-	-- update pet name, this should fix "UNKNOWN" pet names on pet unit.
-	self:RegisterEvent('UNIT_PET', function(self, event)
-		if self.Name then self.Name:UpdateTag(self.unit) end
-	end)
     
 	return self
 end
