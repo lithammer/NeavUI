@@ -38,4 +38,7 @@ Seems like taint are the only issues left, they don't seem overly important but 
 
 ## Bugs?
 
+## Credits
+Anton 'Neav' Ickert for creating this wonderful UI.
+
 ## Screenshots
