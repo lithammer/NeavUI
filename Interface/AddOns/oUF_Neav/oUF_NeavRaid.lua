@@ -96,7 +96,7 @@ local function CreateIndicators(self, unit)
 				icon:SetPoint('BOTTOMRIGHT', self)
 				icon.icon:SetVertexColor(1, 0.2, 1)
 			elseif i == 2 then -- lifebloom
-				icon:SetPoint('TOP', self)
+				icon:SetPoint('BOTTOM', self)
 				icon.icon:SetVertexColor(0.5, 1, 0.5)
 
 				local count = icon:CreateFontString(nil, 'OVERLAY')
@@ -124,12 +124,12 @@ local function CreateIndicators(self, unit)
 			end
 		elseif playerClass == 'PRIEST' then
 			if i == 1 then -- weakened soul
-				icon:SetPoint('TOP', self)
+				icon:SetPoint('BOTTOM', self)
 				icon.icon:SetVertexColor(0.6, 0, 0)
 				icon.anyUnit = true
 			elseif i == 2 then -- power word: shield
 				icon:SetFrameLevel(icon:GetFrameLevel() + 5)
-				icon:SetPoint('TOP', self)
+				icon:SetPoint('BOTTOM', self)
 				icon.icon:SetVertexColor(1, 1, 0)
 				icon.anyUnit = true
 			elseif i == 3 then -- renew
@@ -160,7 +160,7 @@ local function CreateIndicators(self, unit)
 			end
 		elseif playerClass == 'WARLOCK' then
 			if i == 1 then -- soulstone
-				icon:SetPoint('TOP', self)
+				icon:SetPoint('BOTTOMRIGHT', self)
 				icon.icon:SetVertexColor(180/255, 0, 1)
 				icon.anyUnit = true
 				icon.hideCooldown = true
