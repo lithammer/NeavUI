@@ -65,6 +65,7 @@ ChatTypeInfo['RAID'].sticky = 1
 ChatTypeInfo['BATTLEGROUND'].sticky = 1
 ChatTypeInfo['BATTLEGROUND_LEADER'].sticky = 1
 ChatTypeInfo['WHISPER'].sticky = 0
+ChatTypeInfo["BN_WHISPER"].sticky = 0
 
 local AddMessage = ChatFrame1.AddMessage
 
@@ -368,14 +369,13 @@ f:SetScript('OnEvent', function(_, event)
     end
 end)
 
-
 	-- play sound files system
 
-local SoundSys = CreateFrame("Frame")
-SoundSys:RegisterEvent("CHAT_MSG_WHISPER")
-SoundSys:RegisterEvent("CHAT_MSG_BN_WHISPER")
-SoundSys:HookScript("OnEvent", function(self, event, ...)
-	if event == "CHAT_MSG_WHISPER" or "CHAT_MSG_BN_WHISPER" then
-		PlaySoundFile("Sound\\Spells\\Simongame_visual_gametick.wav")
+local SoundSys = CreateFrame('Frame')
+SoundSys:RegisterEvent('CHAT_MSG_WHISPER')
+SoundSys:RegisterEvent('CHAT_MSG_BN_WHISPER')
+SoundSys:HookScript('OnEvent', function(self, event, ...)
+	if event == 'CHAT_MSG_WHISPER' or 'CHAT_MSG_BN_WHISPER' then
+		PlaySoundFile('Sound\\Spells\\Simongame_visual_gametick.wav')
 	end
 end)
