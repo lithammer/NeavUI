@@ -96,7 +96,7 @@ local function CreateIndicators(self, unit)
 				icon:SetPoint('BOTTOMRIGHT', self)
 				icon.icon:SetVertexColor(1, 0.2, 1)
 			elseif i == 2 then -- lifebloom
-				icon:SetPoint('BOTTOM', self)
+				icon:SetPoint('TOPRIGHT', self)
 				icon.icon:SetVertexColor(0.5, 1, 0.5)
 
 				local count = icon:CreateFontString(nil, 'OVERLAY')
@@ -106,7 +106,7 @@ local function CreateIndicators(self, unit)
             	count:SetPoint('RIGHT', icon, 'LEFT', -1, 0)
 				icon.count = count
 			elseif i == 3 then -- wild growth
-				icon:SetPoint('TOPRIGHT', self)
+				icon:SetPoint('BOTTOMLEFT', self)
 				icon.icon:SetVertexColor(0.7, 1, 0)
 				icon:SetFrameLevel(icon:GetFrameLevel() + 1)
 			end
@@ -124,19 +124,19 @@ local function CreateIndicators(self, unit)
 			end
 		elseif playerClass == 'PRIEST' then
 			if i == 1 then -- weakened soul
-				icon:SetPoint('BOTTOM', self)
+				icon:SetPoint('TOPRIGHT', self)
 				icon.icon:SetVertexColor(0.6, 0, 0)
 				icon.anyUnit = true
 			elseif i == 2 then -- power word: shield
 				icon:SetFrameLevel(icon:GetFrameLevel() + 5)
-				icon:SetPoint('BOTTOM', self)
+				icon:SetPoint('TOPRIGHT', self)
 				icon.icon:SetVertexColor(1, 1, 0)
 				icon.anyUnit = true
 			elseif i == 3 then -- renew
 				icon:SetPoint('BOTTOMRIGHT', self)
 				icon.icon:SetVertexColor(0, 1, 0)
 			elseif i == 4 then -- prayer of mending
-				icon:SetPoint('TOPRIGHT', self)
+				icon:SetPoint('BOTTOMLEFT', self)
 				icon.icon:SetVertexColor(1, 0.6, 0.6)
 				icon.anyUnit = true
 				icon.hideCooldown = true
@@ -145,7 +145,7 @@ local function CreateIndicators(self, unit)
 				count:SetFont(NumberFontNormal:GetFont(), 10)
 				count:SetShadowColor(0, 0, 0)
 				count:SetShadowOffset(1, -1)
-            	count:SetPoint('TOP', icon, 'BOTTOM', 0, -1)
+            	count:SetPoint('BOTTOM', icon, 'TOP', 0, 1)
 				icon.count = count
 			end
 		elseif playerClass == 'SHAMAN' then
@@ -154,6 +154,13 @@ local function CreateIndicators(self, unit)
 				icon.icon:SetVertexColor(0.4, 1, 0.4)
 				icon.anyUnit = true
 				icon.hideCooldown = true
+				
+				local count = icon:CreateFontString(nil, 'OVERLAY')
+				count:SetFont(NumberFontNormal:GetFont(), 10)
+				count:SetShadowColor(0, 0, 0)
+				count:SetShadowOffset(1, -1)
+            	count:SetPoint('RIGHT', icon, 'LEFT', -1, 0)
+				icon.count = count
 			elseif i == 2 then -- riptide
 				icon:SetPoint('BOTTOMRIGHT', self)
 				icon.icon:SetVertexColor(0.2, 0.2, 1)
