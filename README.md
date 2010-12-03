@@ -29,7 +29,7 @@
 ## Known issues
 
 - The quest blob on the map is still a cause for taint, not really sure what's causing it and if it really needs fixing.
-- Something seems to be causing taint for CompactRaidFrame (which isn't really used). The source being both ActionButtonText and !Colorz, not sure if this needs fixing either.
+- ActionButtonText occasionally causes taint that blocks right-click cancelling of buffs.
 
 Seems like taint are the only issues left, they don't seem overly important but bad nonetheless.
 
