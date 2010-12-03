@@ -1,62 +1,73 @@
------------------------------------------------------------------------------
--- copy url
------------------------------------------------------------------------------
+local gsub = _G.string.gsub
+local find = _G.string.find
 
-local color = "BD0101"
-local pattern = "[wWhH][wWtT][wWtT][\46pP]%S+[^%p%s]"
-
-function string.color(text, color)
-	return "|cff"..color..text.."|r"
-end
-
-function string.link(text, type, value, color)
-	return "|H"..type..":"..tostring(value).."|h"..tostring(text):color(color or "ffffff").."|h"
-end
-
-StaticPopupDialogs["LINKME"] = {
-	text = "URL COPY",
-	button2 = CANCEL,
-	hasEditBox = true,
-    	hasWideEditBox = true,
-	timeout = 0,
-	exclusive = 1,
-	hideOnEscape = 1,
-	EditBoxOnEscapePressed = function(self) self:GetParent():Hide() end,
-	whileDead = 1,
-	maxLetters = 255,
+local urlStyle = "|cffffffff|Hurl:%1|h[%1]|h|r"
+local urlPatterns = {
+	"(http://%S+)", -- http://foo.com
+	"(www%.%S+)", -- www.foo.com/whatever/index.php
+	"(%d+%.%d+%.%d+%.%d+:?%d*)", -- 192.168.1.3, 192.3.4.5:43567
 }
 
-local function f(url)
-	return string.link("["..url.."]", "url", url, color)
-end
+local messageTypes = {
+	"CHAT_MSG_CHANNEL",
+	"CHAT_MSG_GUILD",
+	"CHAT_MSG_PARTY",
+	"CHAT_MSG_RAID",
+	"CHAT_MSG_SAY",
+	"CHAT_MSG_WHISPER",
+}
 
-local function hook(self, text, ...)
-	self:f(text:gsub(pattern, f), ...)
-end
+local urlFilter = function(self, event, text, ...)
+	for _, pattern in ipairs(urlPatterns) do
+		local result, matches = gsub(text, pattern, urlStyle)
 
-for i = 1, NUM_CHAT_WINDOWS do
-	if ( i ~= 2 ) then
-		local frame = _G["ChatFrame"..i]
-		frame.f = frame.AddMessage
-		frame.AddMessage = hook
+		if matches > 0 then
+			return false, result, ...
+		end
 	end
 end
 
-local f = ChatFrame_OnHyperlinkShow
-function ChatFrame_OnHyperlinkShow(self, link, text, button)
-	local type, value = link:match("(%a+):(.+)")
-	if ( type == "url" ) then
-		local dialog = StaticPopup_Show("LINKME")
-		local editbox = _G[dialog:GetName().."WideEditBox"]  
-		editbox:SetText(value)
-		editbox:SetFocus()
-		editbox:HighlightText()
-		local button = _G[dialog:GetName().."Button2"]
-            
-		button:ClearAllPoints()
-           
-		button:SetPoint("CENTER", editbox, "CENTER", 0, -30)
-	else
-		f(self, link, text, button)
-	end
+for _, event in ipairs(messageTypes) do
+	ChatFrame_AddMessageEventFilter(event, urlFilter)
 end
+
+local origSetItemRef = _G.SetItemRef
+local currentLink
+local SetItemRefHook = function(link, text, button)
+	if link:sub(0, 3) == "url" then
+		currentLink = link:sub(5)
+		StaticPopup_Show("UrlCopyDialog")
+		return
+	end
+	
+	return origSetItemRef(link, text, button)
+end
+
+SetItemRef = SetItemRefHook
+
+StaticPopupDialogs["UrlCopyDialog"] = {
+	text = "URL",
+	button2 = TEXT(CLOSE),
+	hasEditBox = 1,
+	hasWideEditBox = 1,
+	OnShow = function(self)
+		local name = self:GetName()
+		local editBox = _G[name .. "EditBox"]
+		if editBox then
+			editBox:SetText(currentLink)
+			editBox:SetFocus()
+			editBox:HighlightText(0)
+		end
+		
+		local button = _G[name .. "Button2"]		
+		if button then
+			button:ClearAllPoints()
+			button:SetWidth(200)
+			button:SetPoint("CENTER", editBox, "CENTER", 0, -30)
+		end
+	end,
+	EditBoxOnEscapePressed = function(self) self:GetParent():Hide() end,
+	timeout = 0,
+	whileDead = 1,
+	hideOnEscape = 1,
+}
