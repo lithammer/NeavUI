@@ -1,3 +1,21 @@
+local f = CreateFrame('Frame')
+f:RegisterEvent('PLAYER_LOGIN')
+--f:RegisterEvent('CHAT_MSG_WHISPER')
+f:SetScript('OnEvent', function(_, event, ...)
+    if (event == 'PLAYER_LOGIN') then
+        SetCVar('ScreenshotQuality', 10)
+        SetCVar('ProcessAffinityMask', 7)
+        SetCVar('timingmethod', "1")
+    end
+    
+    -- if (event == 'CHAT_MSG_WHISPER') then 
+        -- if (arg1 == 'raid' or arg1 == 'RAID' or arg1 == 'Raid' or arg1 == 'invite' or arg1 == 'inv') then
+            -- SendChatMessage('Autoinvite', 'WHISPER', nil, arg2)
+            -- InviteUnit(arg2)
+        -- end
+    -- end
+end)
+
 SlashCmdList['FRAMENAME'] = function()
     local name = GetMouseFocus():GetName()
     
@@ -7,20 +25,18 @@ SlashCmdList['FRAMENAME'] = function()
         DEFAULT_CHAT_FRAME:AddMessage('|cff00FF00This frame has no name!')
     end
 end
-
 SLASH_FRAMENAME1 = '/frame'
 
 SlashCmdList['RELOADUI'] = function()
     ReloadUI()
 end
-
 SLASH_RELOADUI1 = '/rl'
 
 WatchFrameTitle:SetAlpha(0)
 
 local p1, p2, p3, p4, p5 = WatchFrameCollapseExpandButton:GetPoint()
 WatchFrameCollapseExpandButton:ClearAllPoints()
-WatchFrameCollapseExpandButton:SetPoint(p1, p2, p3, p4 - 15, p5)
+WatchFrameCollapseExpandButton:SetPoint(p1, p2, p3, p4 + 30, p5 - 25)
 
 local a, b, c, d, e = RaidFrameNotInRaidRaidBrowserButton:GetPoint() 
 RaidFrameNotInRaidRaidBrowserButton:SetPoint(a, b, c, d, e - 25)
