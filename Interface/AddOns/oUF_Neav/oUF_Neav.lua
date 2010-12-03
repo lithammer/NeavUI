@@ -744,20 +744,20 @@ local function CreateUnitLayout(self, unit)
 			-- holy power bar
 		if (select(2, UnitClass('player')) == 'PALADIN') then
 			PaladinPowerBar:SetParent(oUF_Neav_Player)
-			PaladinPowerBar:SetScale(oUF_Neav.units.player.scale * 0.8)
+			PaladinPowerBar:SetScale(oUF_Neav.units.player.scale * 0.81)
 			PaladinPowerBar_OnLoad(PaladinPowerBar)
 			PaladinPowerBar:ClearAllPoints()
-			PaladinPowerBar:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 20, 2)
+			PaladinPowerBar:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 25, 2)
 			PaladinPowerBar:Show()
 		end
 
 			-- druid eclipse bar
 		if (select(2, UnitClass('player')) == 'DRUID') then
 			EclipseBarFrame:SetParent(oUF_Neav_Player)
-			EclipseBarFrame:SetScale(oUF_Neav.units.player.scale * 0.7)
+			EclipseBarFrame:SetScale(oUF_Neav.units.player.scale * 0.82)
 			EclipseBar_OnLoad(EclipseBarFrame)
 			EclipseBarFrame:ClearAllPoints()
-			EclipseBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 35, 5)
+			EclipseBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, 4)
 			EclipseBarFrame:Show()
 		end
 		
