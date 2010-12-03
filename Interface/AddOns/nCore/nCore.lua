@@ -36,7 +36,7 @@ WatchFrameTitle:SetAlpha(0)
 
 local p1, p2, p3, p4, p5 = WatchFrameCollapseExpandButton:GetPoint()
 WatchFrameCollapseExpandButton:ClearAllPoints()
-WatchFrameCollapseExpandButton:SetPoint(p1, p2, p3, p4 + 30, p5 - 25)
+WatchFrameCollapseExpandButton:SetPoint(p1, p2, p3, p4 - 15, p5)
 
 local a, b, c, d, e = RaidFrameNotInRaidRaidBrowserButton:GetPoint() 
 RaidFrameNotInRaidRaidBrowserButton:SetPoint(a, b, c, d, e - 25)
