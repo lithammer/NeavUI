@@ -7,7 +7,6 @@ local function DeficitValue(self)
 	end
 end
 
-oUF.TagEvents['level'] = 'UNIT_LEVEL'
 oUF.Tags['level'] = function(unit)
     local r, g, b
     local level = UnitLevel(unit)
