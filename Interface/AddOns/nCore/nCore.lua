@@ -4,7 +4,8 @@ f:RegisterEvent('PLAYER_LOGIN')
 f:SetScript('OnEvent', function(_, event, ...)
     if (event == 'PLAYER_LOGIN') then
         SetCVar('ScreenshotQuality', 10)
-        SetCVar('ProcessAffinityMask', 7)
+        --SetCVar('ProcessAffinityMask', 3)
+		--SetCVar('timingmethod', 1)
     end
     
     -- if (event == 'CHAT_MSG_WHISPER') then 
