@@ -29,7 +29,7 @@
 ## Known issues
 
 - The quest blob on the map is still a cause for taint, not really sure what's causing it and if it really needs fixing.
-- ActionButtonText occasionally causes taint that blocks right-click cancelling of buffs.
+- ActionButtonText occasionally causes taint that blocks right-click cancelling of buffs. This might actually be a bug on Blizzards end though.
 
 Seems like taint are the only issues left, they don't seem overly important but bad nonetheless.
 
