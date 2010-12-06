@@ -4,7 +4,7 @@
 
 **oUF_Neav:**
 
-- Short value formatting for player, target, pet and party frames is different (e.g. 1.1m instead of 1M 100K).
+- Different short value formatting for player, target, pet and party frames is different (e.g. 1.1m instead of 1M 100K).
 - Added Blizzards holy power, eclipse and soulshard bars, they fit the UI very nicely.
 
 **Raid frames:**
