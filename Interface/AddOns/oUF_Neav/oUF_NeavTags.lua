@@ -7,6 +7,7 @@ local function DeficitValue(self)
 	end
 end
 
+oUF.TagEvents['level'] = 'UNIT_LEVEL'
 oUF.Tags['level'] = function(unit)
     local r, g, b
     local level = UnitLevel(unit)
@@ -26,6 +27,7 @@ oUF.Tags['level'] = function(unit)
     return format('|cff%02x%02x%02x%s|r', r*255, g*255, b*255, level)
 end
 
+oUF.TagEvents['name'] = 'UNIT_NAME_UPDATE'
 oUF.Tags['name'] = function(unit)
     local r, g, b
     local colorA, colorB
@@ -61,7 +63,7 @@ oUF.Tags['name'] = function(unit)
     return format('|cff%02x%02x%02x%s|r', r*255, g*255, b*255, unitName)
 end
 
-oUF.TagEvents['name:Raid'] = 'UNIT_LEVEL'
+oUF.TagEvents['name:Raid'] = 'UNIT_LEVEL UNIT_NAME_UPDATE'
 oUF.Tags['name:Raid'] = function(unit)
     return UnitName(unit):sub(1, 4)
 end
