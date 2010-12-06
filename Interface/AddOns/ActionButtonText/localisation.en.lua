@@ -1,3 +1,5 @@
+local _, ABT_NS = ... -- namespace
+
 -- English/Default localisation
 
 -- Config

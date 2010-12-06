@@ -1,3 +1,4 @@
+local _, ABT_NS = ... -- namespace
 local ABT_abouttext = "<HTML><BODY>\
 <H1>|cff00ff00ActionButtonText (1.02)|r</H1>\
 <H2>Created by &lt;Damage Inc&gt; of (EU)Draenor</H2>\

@@ -1,3 +1,4 @@
+local _, ABT_NS = ... -- namespace
 local ABT_configtooltip = CreateFrame("GameTooltip","ABT_configtooltip",UIParent,"GameTooltipTemplate")
 
 function ABT_NS.configinit()
@@ -341,9 +342,9 @@ function ABT_NS.configinit()
   end
 
   local edef = CreateFrame('Slider',"obiedef", spellnm,"OptionsSliderTemplate")
-  edef:SetWidth(110)
-  edef:SetMinMaxValues(0,2)
-  edef:SetValueStep(1)
+	edef:SetWidth(110)
+	edef:SetMinMaxValues(0,2)
+	edef:SetValueStep(1)
 	_G[edef:GetName() .. 'Text']:SetText(ABT_NS.edef)
 	_G[edef:GetName() .. 'Low']:SetText("")
 	_G[edef:GetName() .. 'High']:SetText("")
@@ -354,7 +355,7 @@ function ABT_NS.configinit()
 	text:SetFontObject('GameFontNormalSmall')
 	edef.valtext = text
 	if not strfind("DEATHKNIGHT:DRUID:ROGUE",ABT_NS.class) then
-    edef:Hide()
+	edef:Hide()
   end 
 
 

@@ -1,4 +1,4 @@
-ABT_NS = {} -- namespace
+local _, ABT_NS = ... -- namespace
 local ABTFrame = CreateFrame("Frame")
 
 ABT_NS.API = {}
@@ -97,7 +97,7 @@ function ABT_NS.buff(n,target)
   return name,(timeleft or 0) - GetTime(),stack or 0,ismine
 end
 
-function ABT_NS.checkbuff(buffname,debuff,target,notmine)
+function ABT_NS.checkbuff(buffname, debuff, target, notmine)
   local fn
   local TL = 0
   local ST = 0
@@ -107,18 +107,18 @@ function ABT_NS.checkbuff(buffname,debuff,target,notmine)
     else
       fn = ABT_NS.buff
     end
-    local i=1
-    local testname,timeleft,stack,ismine=fn(1,target)
+    local i = 1
+    local testname, timeleft, stack, ismine = fn(1, target)
     while (testname) do
       -- if (ismine or notmine) and (ABT_NS.find(strupper(testname),strupper(buffname)) or testname == buffname) then
-        if (ismine=="player" or notmine) and (ABT_NS.find(strupper(testname),strupper(buffname)) or testname == buffname) then
+        if (ismine == "player" or notmine) and (ABT_NS.find(strupper(testname),strupper(buffname)) or testname == buffname) then
         if timeleft > TL then 
           TL = timeleft
           ST = stack 
         end
       end
-    	i=i+1
-    	testname,timeleft,stack,ismine=fn(i,target)
+    	i = i + 1
+    	testname, timeleft, stack, ismine = fn(i, target)
     end
   end
   return TL,ST
@@ -138,117 +138,134 @@ function ABT_NS.find(f1,f2)
 end
 
 function ABT_NS.getobi(spellname,spelltable,spellf)
-  local msg = ""
-  local fs,spos,fst = spelltable["FONTSIZE"] or 11,spelltable["SPOS"] or 1,spelltable["FONTSTYLE"] or 1
-  local buffname = spelltable["Buff"] or spellname
-  local debuff = spelltable["Debuff"]
-  local target = ABT_NS.targetvals[spelltable["TARGET"]] or "PLAYER"
-  local timeleft,charges,timeleft2,charges2 = 0,0,0,0
-  local msg = ""
-  local function timetomins(time)
-    local mins = ceil(time/60)
-    if mins > 1 then
-      return mins .. "m"
-    else
-      return floor(time)
-    end
-  end
-  if ABT_NS.API[buffname..spellname] then
-    msg = ABT_NS.needslash(msg,ABT_NS.API[buffname..spellname])
-  else
-    timeleft,charges = ABT_NS.checkbuff(buffname,debuff,target,spelltable["NOTMINE"])
-  end
-  if (spelltable["NoTime"] or false) == false then
-    if timeleft and timeleft > 0 then
-      msg = ABT_NS.needslash(msg,timetomins(timeleft))
-    end
-    --if timeleft2 and timeleft2 > 0 then
-    --  msg = ABT_NS.needslash(msg,timetomins(timeleft2))
-    --end
-  end
-  if (spelltable["Stack"] or false) == true and charges > 0 then
-    msg = ABT_NS.needslash(msg,charges)
-  end
-  local cp = 0
-  cp = GetComboPoints("PLAYER","TARGET") --WOTLK
-  if spelltable["CP"] and cp >= spelltable["CP"]-1 and UnitPowerType("PLAYER") == 3 then -- uses energy
-    msg = ABT_NS.needslash(msg,cp)
-  end
-  if (spelltable["SHOWDMG"] or 0) == 1 and ABT_NS.atkinfo[spellname] then
-    local info,time,crit = ABT_NS.atkinfo[spellname][1],ABT_NS.atkinfo[spellname][2],ABT_NS.atkinfo[spellname][3] 
-    if info and GetTime() - time < ABT_NS.sdint then
-      msg = ABT_NS.needslash(msg,info)
-      if crit then
-        fs = fs + 2
-      end
-    end
-  end
-  edef = spelltable["EDEF"]
-  if edef and (UnitPowerType("PLAYER") == 3 or UnitPowerType("PLAYER") == 6) then -- uses energy 
-    name,rank,icon,cost,isfunnel,powertype = GetSpellInfo(spellname.."()")
-    if cost and (powertype == 3 or powertype ==6) then
-      if ABT_NS.clearcasting then
-         msg = ABT_NS.needslash(msg,"00")
-      elseif cost > 0 then
-        def = UnitMana("PLAYER") - cost
-        if def < 0 then
-          if powertype == 3 then
-            if edef == 2 then
-              def = abs(floor(def / 20))
-              msg = ABT_NS.needslash(msg,def)
-            else
-              def = abs(def)
-              msg = ABT_NS.needslash(msg,def)
-            end
-          else
-            if edef == 2 or UnitAffectingCombat("PLAYER") then
-              def = abs(def)
-              msg = ABT_NS.needslash(msg,def)
-            end
-          end
-        end
-      end
-    end
-  end
-  ctoom = spelltable["CTOOM"] 
-  if ctoom and UnitPowerType("PLAYER") == 0 then -- uses mana
-    name,rank,icon,cost,isfunnel,powertype = GetSpellInfo(spellname.."()")
-    if cost and powertype == 0 then
-      if ABT_NS.clearcasting then
-        msg = "00"
-      elseif cost > 0 then
-        casts = floor(UnitMana("PLAYER") / cost)
-        if ctoom == 0 or casts <= ctoom then
-          msg = ABT_NS.needslash(msg,casts)
-        end
-      end
-    end
-  end
-  if msg == "0" then msg = " " end -- traps 0 CPs
-  return msg,fs,spos,ABT_NS.fontstylevals[fst]
+	local msg = ""
+	local fs,spos,fst = spelltable["FONTSIZE"] or 11,spelltable["SPOS"] or 1,spelltable["FONTSTYLE"] or 1
+	local buffname = spelltable["Buff"] or spellname
+	local debuff = spelltable["Debuff"]
+	local target = ABT_NS.targetvals[spelltable["TARGET"]] or "PLAYER"
+	local timeleft,charges,timeleft2,charges2 = 0,0,0,0
+	local msg = ""
+	local function timetomins(time)
+	local mins = ceil(time/60)
+	local name, rank, icon, cost, isfunnel, powertype
+	
+	if mins > 1 then
+		return mins .. "m"
+	else
+		return floor(time)
+	end
+	
+	end
+	
+	if ABT_NS.API[buffname..spellname] then
+		msg = ABT_NS.needslash(msg,ABT_NS.API[buffname..spellname])
+	else
+		timeleft,charges = ABT_NS.checkbuff(buffname,debuff,target,spelltable["NOTMINE"])
+	end
+	
+	if (spelltable["NoTime"] or false) == false then
+		if timeleft and timeleft > 0 then
+			msg = ABT_NS.needslash(msg,timetomins(timeleft))
+		end
+		--if timeleft2 and timeleft2 > 0 then
+		--  msg = ABT_NS.needslash(msg,timetomins(timeleft2))
+		--end
+	end
+	
+	if (spelltable["Stack"] or false) == true and charges > 0 then
+		msg = ABT_NS.needslash(msg,charges)
+	end
+	
+	local cp = 0
+	cp = GetComboPoints("PLAYER","TARGET") --WOTLK
+	if spelltable["CP"] and cp >= spelltable["CP"]-1 and UnitPowerType("PLAYER") == 3 then -- uses energy
+		msg = ABT_NS.needslash(msg,cp)
+	end
+	
+	if (spelltable["SHOWDMG"] or 0) == 1 and ABT_NS.atkinfo[spellname] then
+		local info,time,crit = ABT_NS.atkinfo[spellname][1],ABT_NS.atkinfo[spellname][2],ABT_NS.atkinfo[spellname][3]
+		
+		if info and GetTime() - time < ABT_NS.sdint then
+			msg = ABT_NS.needslash(msg,info)
+			
+			if crit then
+				fs = fs + 2
+			end
+		end
+	end
+	
+	local edef = spelltable["EDEF"]
+	if edef and (UnitPowerType("PLAYER") == 3 or UnitPowerType("PLAYER") == 6) then -- uses energy 
+		name,rank,icon,cost,isfunnel,powertype = GetSpellInfo(spellname.."()")
+		
+		if cost and (powertype == 3 or powertype ==6) then
+			if ABT_NS.clearcasting then
+				msg = ABT_NS.needslash(msg,"00")
+			elseif cost > 0 then
+				def = UnitMana("PLAYER") - cost
+				if def < 0 then
+					if powertype == 3 then
+						if edef == 2 then
+							def = abs(floor(def / 20))
+							msg = ABT_NS.needslash(msg,def)
+						else
+							def = abs(def)
+							msg = ABT_NS.needslash(msg,def)
+						end
+					else
+						if edef == 2 or UnitAffectingCombat("PLAYER") then
+							def = abs(def)
+							msg = ABT_NS.needslash(msg,def)
+						end
+					end
+				end
+			end
+		end
+	end
+	
+	local ctoom = spelltable["CTOOM"] 
+	if ctoom and UnitPowerType("PLAYER") == 0 then -- uses mana
+		name,rank,icon,cost,isfunnel,powertype = GetSpellInfo(spellname.."()")
+		
+		if cost and powertype == 0 then
+			if ABT_NS.clearcasting then
+				msg = "00"
+			elseif cost > 0 then
+				casts = floor(UnitMana("PLAYER") / cost)
+				
+				if ctoom == 0 or casts <= ctoom then
+					msg = ABT_NS.needslash(msg,casts)
+				end
+			end
+		end
+	end
+	
+	if msg == "0" then msg = " " end -- traps 0 CPs
+	return msg,fs,spos,ABT_NS.fontstylevals[fst]
 end
 
 function ABT_NS.btnname(i)
 	if ABT_NS.btnprefix ~= "" then
-	  return _G[ABT_NS.btnprefix..i]
-  else
-    barn = math.floor((i-1)/12)
-    btnn = i-(barn*12)
-    if btnn and barn and ABT_NS.defaultBars[barn+1] then
-  	 return _G[ABT_NS.defaultBars[barn+1]..btnn]
-  	else
-  	 return nil
-  	end
-  end
+		return _G[ABT_NS.btnprefix..i]
+	else
+		local barn = math.floor((i-1)/12)
+		local btnn = i-(barn*12)
+		if btnn and barn and ABT_NS.defaultBars[barn+1] then
+			return _G[ABT_NS.defaultBars[barn+1]..btnn]
+		else
+			return nil
+		end
+	end
 end
 
 function ABT_NS.gettext(button,id)
-  local buttontxt = _G[button:GetName().."ob"..id]
-  if buttontxt then
-    return buttontxt:GetText()
-  else
-   return ""
-  end 
+	local buttontxt = _G[button:GetName().."ob"..id]
+	
+	if buttontxt then
+		return buttontxt:GetText()
+	else
+		return ""
+	end 
 end
 
 function ABT_NS.getdefs()
@@ -312,7 +329,7 @@ function ABT_NS.init()
 
   _,ABT_NS.class = UnitClass("PLAYER")
 
-  tt = CreateFrame("GameTooltip","ABT_ToolTipScan",UIParent,"GameTooltipTemplate")
+  local tt = CreateFrame("GameTooltip","ABT_ToolTipScan",UIParent,"GameTooltipTemplate")
 
   ABT_NS.configinit()
   ABT_NS.optionsinit()
@@ -389,6 +406,7 @@ function ABT_NS.updtext()
         --DEFAULT_CHAT_FRAME:AddMessage((ac or "NOAC") .. (ty or "NOTY") .. (id or "NOID"))
         if ty then
           local spellname = ""
+		  local spellid
           if ty == "TRINITYSPELL" and TRspellIndex and TRspellIndex[strlower(ac)] then
             id = TRspellIndex[strlower(ac)][1]
             spellid = id

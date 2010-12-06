@@ -1,3 +1,5 @@
+local _, ABT_NS = ... -- namespace
+
 ABT_NS.battleshout = strupper(GetSpellInfo(2048) or "")  
 ABT_NS.rend = strupper(GetSpellInfo(25208) or "") 
 ABT_NS.judgement = strupper(GetSpellInfo(20271) or "")
