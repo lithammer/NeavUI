@@ -11,6 +11,7 @@ local memberSortCompare = function(a, b)
 end
 
 local lastUpdate = 0
+local result = nil
 local onUpdate = function(self, elapsed)
 	lastUpdate = lastUpdate + elapsed
 	
