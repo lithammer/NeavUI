@@ -47,27 +47,26 @@ SetItemRef = SetItemRefHook
 
 StaticPopupDialogs["UrlCopyDialog"] = {
 	text = "URL",
-	button2 = TEXT(CLOSE),
+	button2 = CLOSE,
 	hasEditBox = 1,
-	hasWideEditBox = 1,
-	OnShow = function(self)
-		local name = self:GetName()
-		local editBox = _G[name .. "EditBox"]
+	editBoxWidth = 400,
+	OnShow = function(frame)
+		local editBox = _G[frame:GetName().."EditBox"]
 		if editBox then
 			editBox:SetText(currentLink)
 			editBox:SetFocus()
 			editBox:HighlightText(0)
 		end
-		
-		local button = _G[name .. "Button2"]		
+		local button = _G[frame:GetName().."Button2"]
 		if button then
 			button:ClearAllPoints()
 			button:SetWidth(200)
 			button:SetPoint("CENTER", editBox, "CENTER", 0, -30)
 		end
 	end,
-	EditBoxOnEscapePressed = function(self) self:GetParent():Hide() end,
+	EditBoxOnEscapePressed = function(frame) frame:GetParent():Hide() end,
 	timeout = 0,
 	whileDead = 1,
 	hideOnEscape = 1,
+	maxLetters = 1024, -- this otherwise gets cached from other dialogs which caps it at 10..20..30...
 }
