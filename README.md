@@ -11,7 +11,7 @@
 
 - Now using the built-in heal prediction from oUF (kind of like healcomm).
 - Healing indicators for all classes (I hope), as well as soulstone, focus magic and dark intent.
-- Healing indicators now have a "cooldown spiral for duration".
+- Healing indicators now have a "cooldown spiral" for duration.
 - Mouse-over indicator (darkening the color when hovering over a frame).
 - Raid frames is a bit modified, now using the built-in heal prediction from oUF. And added healing indicators for all classes (I hope).
 
