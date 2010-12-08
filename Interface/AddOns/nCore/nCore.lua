@@ -4,7 +4,7 @@ f:RegisterEvent('PLAYER_LOGIN')
 f:SetScript('OnEvent', function(_, event, ...)
     if (event == 'PLAYER_LOGIN') then
         SetCVar('ScreenshotQuality', 10)
-        --SetCVar('ProcessAffinityMask', 3)
+		--SetCVar('ProcessAffinityMask', 3)
 		--SetCVar('timingmethod', 1)
     end
     
@@ -42,7 +42,10 @@ local a, b, c, d, e = RaidFrameNotInRaidRaidBrowserButton:GetPoint()
 RaidFrameNotInRaidRaidBrowserButton:SetPoint(a, b, c, d, e - 25)
 
 TicketStatusFrame:ClearAllPoints()
-TicketStatusFrame:SetPoint("BOTTOMRIGHT", UIParent, 0, 0)
+TicketStatusFrame:SetPoint('BOTTOMRIGHT', UIParent, 0, 0)
+
+WorldMapShowDigSites:ClearAllPoints()
+WorldMapShowDigSites:SetPoint('LEFT', WorldMapTrackQuest, 'RIGHT', 70, 0)
 
 --[[
 function UnitAura() 
