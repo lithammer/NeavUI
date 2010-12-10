@@ -234,20 +234,24 @@ end
 -- Fixes the issue with resizing exp bar when entering and exiting vehicles
 -- as well as the positioning the dividers properly
 hooksecurefunc('MainMenuExpBar_SetWidth', function(width)
-	if not InCombatLockdown() then
-		if math.floor(width) == EXP_DEFAULT_WIDTH then
-			MainMenuXPBarTextureMid:SetWidth(512 - 28)
-			MainMenuExpBar:SetWidth(512)
-			width = 512
-		end
-		local divWidth = width/10
-		local xpos = divWidth - 4.5
-		for i=1,9 do
-			local texture = _G["MainMenuXPBarDiv"..i]
-			local xalign = floor(xpos)
-			texture:SetPoint("LEFT", xalign, 1)
-			xpos = xpos + divWidth
-		end
+	if math.floor(width) == EXP_DEFAULT_WIDTH then
+		MainMenuXPBarTextureMid:SetWidth(512 - 28)
+		MainMenuExpBar:SetWidth(512)
+		width = 512
+	end
+	local divWidth = width/10
+	local xpos = divWidth - 4.5
+	for i=1,9 do
+		local texture = _G["MainMenuXPBarDiv"..i]
+		local xalign = floor(xpos)
+		texture:SetPoint("LEFT", xalign, 1)
+		xpos = xpos + divWidth
+	end
+end)
+
+MainMenuExpBar:HookScript('OnSizeChanged', function(self, width, height)
+	if math.floor(width) == EXP_DEFAULT_WIDTH then
+		MainMenuExpBar_SetWidth(512)
 	end
 end)
 
