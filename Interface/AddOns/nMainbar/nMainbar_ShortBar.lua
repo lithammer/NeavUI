@@ -235,7 +235,7 @@ end
 -- as well as the positioning the dividers properly
 hooksecurefunc('MainMenuExpBar_SetWidth', function(width)
 	if not InCombatLockdown() then
-		if width == EXP_DEFAULT_WIDTH then
+		if math.floor(width) == EXP_DEFAULT_WIDTH then
 			MainMenuXPBarTextureMid:SetWidth(512 - 28)
 			MainMenuExpBar:SetWidth(512)
 			width = 512
