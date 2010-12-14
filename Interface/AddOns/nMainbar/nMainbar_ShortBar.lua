@@ -231,38 +231,34 @@ for _, bar in pairs({
     -- bar:SetFrameStrata('BACKGROUND')
 end
 
--- Fixes the issue with resizing exp bar when entering and exiting vehicles
--- as well as the positioning the dividers properly
-hooksecurefunc('MainMenuExpBar_SetWidth', function(width)
-	if math.floor(width) == EXP_DEFAULT_WIDTH then
-		MainMenuXPBarTextureMid:SetWidth(512 - 28)
-		MainMenuExpBar:SetWidth(512)
-		width = 512
-	end
-	local divWidth = width/10
-	local xpos = divWidth - 4.5
-	for i=1,9 do
-		local texture = _G["MainMenuXPBarDiv"..i]
-		local xalign = floor(xpos)
-		texture:SetPoint("LEFT", xalign, 1)
-		xpos = xpos + divWidth
-	end
-end)
+	-- Remove superfluous experience bar dividers
 
-MainMenuExpBar:HookScript('OnSizeChanged', function(self, width, height)
-	if math.floor(width) == EXP_DEFAULT_WIDTH then
-		MainMenuExpBar_SetWidth(512)
-	end
-end)
-
--- Remove superfluous experience bar dividers
-for i = 10, 19 do
+for i = 1, 19, 2 do
     for _, frame in pairs({
         _G['MainMenuXPBarDiv'..i],
     }) do
         frame:Hide()
     end
 end
+
+	-- Re-position the dividers
+
+local divWidth = MainMenuExpBar:GetWidth() / 10
+local xpos = divWidth - 4.5
+for i = 2, 19, 2 do
+	local texture = _G["MainMenuXPBarDiv"..i]
+	local xalign = floor(xpos)
+	texture:SetPoint("LEFT", xalign, 1)
+	xpos = xpos + divWidth
+end
+
+	-- Fix expbar size when exiting vehicle
+	
+MainMenuExpBar:HookScript('OnSizeChanged', function(self, width, height)
+	if math.floor(width) == EXP_DEFAULT_WIDTH then
+		MainMenuExpBar_SetWidth(512)
+	end
+end)
 
 MainMenuBarTexture0:SetPoint('BOTTOM', MainMenuBarArtFrame, -128, 0)
 MainMenuBarTexture1:SetPoint('BOTTOM', MainMenuBarArtFrame, 128, 0)
