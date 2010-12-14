@@ -1,0 +1,8 @@
+<Bindings>	
+	<Binding name="OMENTOGGLE" header="OMEN">
+		Omen:Toggle()
+	</Binding>
+	<Binding name="OMENTOGGLEFOCUS">
+		Omen:ToggleFocus()
+	</Binding>
+</Bindings>

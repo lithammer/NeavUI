@@ -1,0 +1,21 @@
+tag v3.1.0
+eaf7b413ac1b53bde346ef3a5975f1423c1a677a
+Xinhuan <xinhuan@pacific.net.sg>
+2010-11-25 18:51:30 +0800
+
+Tag release v3.1.0
+
+
+--------------------
+
+Xinhuan:
+	- Update Omen's version to v3.1.0.
+	- Update texts in the configuration to change the "Fade/MI Bar Color" to "Temp Threat Bar Color", as well as the description. Remove the FAQ question on not parsing the combat log.
+	- When using class colored bars, the alpha transparency of the bars is now controlled by the "BG Bar Color" setting (which can only be modified if "Use Class Colors" is turned off).
+	- Remove an errorneous break statement.
+	- Remove pre-4.0 compat code, because its not really compatible anymore.
+	- Fix a potential Lua error in the code.
+	- Add glyphed Hand of Salvation to the Mirror Image/Fade list.
+	- Omen3 will now read the combat log and: - Track and estimate temporary threat created by Tricks and Misdirect - Track and estimate threat caused by damage while Fade and Invisibility are active - Display these *estimated* threat in a grey (default) color bar, with an expiry countdown next to the name.
+	- Update code to check for Frost Presence pre-patch 4.0, but check for Blood Presence post-patch 4.0.
+	- Update English localization.
