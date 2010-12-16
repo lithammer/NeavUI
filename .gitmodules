@@ -1,7 +1,3 @@
-[submodule "oUF"]
-	path = Interface/AddOns
+[submodule "Interface/AddOns/oUF"]
+	path = Interface/AddOns/oUF
 	url = git://github.com/haste/oUF.git
-
-[submodule "oGlow"]
-	path = Interface/AddOns
-	url = git://github.com/haste/oGlow.git
