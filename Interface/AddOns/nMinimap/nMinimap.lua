@@ -178,3 +178,24 @@ TicketStatusFrameButton:HookScript('OnShow', function(self)
         TicketStatusFrameButton.hasBorder = true
     end
 end)
+
+    -- skin the LFD tooltip
+
+LFDSearchStatus:HookScript('OnShow', function(self)
+--    LFDSearchStatus:SetBackdrop({
+--        bgFile = 'Interface\\Buttons\\WHITE8x8', 
+--        insets = {
+--            left = 3, 
+--            right = 3, 
+--            top = 3, 
+--            bottom = 3
+--        }
+--    })
+
+    LFDSearchStatus:SetBackdropColor(0, 0, 0, 0.5)
+
+    if (not LFDSearchStatus.hasBorder) then
+        CreateBorder(LFDSearchStatus, 12, 1, 1, 1)
+        LFDSearchStatus.hasBorder = true
+    end
+end)
