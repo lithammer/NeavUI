@@ -30,8 +30,8 @@ for _, bar in pairs({
     'MultiBarLeft',
     'MultiBarRight',
                 
-    'MultiBarBottomLeft',
-    'MultiBarBottomRight',
+    --'MultiBarBottomLeft',
+    --'MultiBarBottomRight',
 }) do
     _G[bar]:SetScale(nMainbar.MainMenuBar.scale)
 end
