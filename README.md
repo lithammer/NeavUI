@@ -18,7 +18,7 @@
 
 **nMainbar:**
 
-- Option to have a vertical petbar (`see nMainbar_Config.lua`).
+- Option to have a vertical petbar (see `nMainbar_Config.lua`).
 
 **Misc:**
 
