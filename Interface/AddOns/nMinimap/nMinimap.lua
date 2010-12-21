@@ -182,15 +182,15 @@ end)
     -- skin the LFD tooltip
 
 LFDSearchStatus:HookScript('OnShow', function(self)
---    LFDSearchStatus:SetBackdrop({
---        bgFile = 'Interface\\Buttons\\WHITE8x8', 
---        insets = {
---            left = 3, 
---            right = 3, 
---            top = 3, 
---            bottom = 3
---        }
---    })
+    LFDSearchStatus:SetBackdrop({
+        bgFile = 'Interface\\Buttons\\WHITE8x8', 
+        insets = {
+            left = 3, 
+            right = 3, 
+            top = 3, 
+            bottom = 3
+        }
+    })
 
     LFDSearchStatus:SetBackdropColor(0, 0, 0, 0.5)
 
