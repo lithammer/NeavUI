@@ -103,7 +103,7 @@ local function CreateIndicators(self, unit)
 				count:SetFont(NumberFontNormal:GetFont(), 10)
 				count:SetShadowColor(0, 0, 0)
 				count:SetShadowOffset(1, -1)
-            	count:SetPoint('RIGHT', icon, 'LEFT', -1, 0)
+            	count:SetPoint('TOP', icon, 'BOTTOM', 0, -1)
 				icon.count = count
 			elseif i == 3 then -- wild growth
 				icon:SetPoint('BOTTOMLEFT', self)
@@ -431,7 +431,9 @@ local function CreateRaidLayout(self, unit)
     self.Health.PostUpdate = UpdateHealth
 
     self.Health.colorClass = true
-    self.Health.Smooth = true
+	if not isHealer then
+		self.Health.Smooth = true
+	end
 
         -- health background
 
