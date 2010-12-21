@@ -82,12 +82,13 @@ oUF_Neav = {
             scale = 1.2, 
             iconSize = 20,
             indicatorSize = 9,
-            showSolo = true,
+            showSolo = false,
             numGroups = 5,
             position = {'LEFT', UIParent, 'CENTER', 447, 0},
             showTargetBorder = true,
             targetBorderColor = {1, 1, 1},
 			horizontalHealthBars = false,
+			smoothUpdatesForAllClasses = false, -- Set to true to enable smooth updates for healing classes
         },
     },
 

@@ -431,7 +431,7 @@ local function CreateRaidLayout(self, unit)
     self.Health.PostUpdate = UpdateHealth
 
     self.Health.colorClass = true
-	if not isHealer then
+	if not isHealer or oUF_Neav.units.raid.smoothUpdatesForAllClasses then
 		self.Health.Smooth = true
 	end
 
