@@ -14,10 +14,11 @@
 - Healing indicators now have a "cooldown spiral" for duration.
 - Mouse-over indicator (darkening the color when hovering over a frame).
 - Raid frames is a bit modified, now using the built-in heal prediction from oUF. And added healing indicators for all classes (I hope).
+- Disabled smooth updates for healing classes (can be enabled via `oUF_NeavConfig.lua`)
 
 **nMainbar:**
 
-- Option to have a vertical petbar (see nMainbar_Config.lua).
+- Option to have a vertical petbar (`see nMainbar_Config.lua`).
 
 **Misc:**
 
