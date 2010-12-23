@@ -737,7 +737,7 @@ local function CreateUnitLayout(self, unit)
 			ShardBarFrame:SetScale(oUF_Neav.units.player.scale * 0.8)
 			ShardBar_OnLoad(ShardBarFrame)
 			ShardBarFrame:ClearAllPoints()
-			ShardBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, 0)
+			ShardBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, -1)
 			ShardBarFrame:Show()
 		end
 
