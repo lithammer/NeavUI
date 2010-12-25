@@ -257,6 +257,8 @@ end
 MainMenuExpBar:HookScript('OnSizeChanged', function(self, width, height)
 	if math.floor(width) == EXP_DEFAULT_WIDTH then
 		MainMenuExpBar_SetWidth(512)
+		CharacterMicroButton:ClearAllPoints()
+		CharacterMicroButton:SetPoint('BOTTOMLEFT', UIParent, 9000, 9000)
 	end
 end)
 
