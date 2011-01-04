@@ -1,5 +1,12 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file='init.lua' />
+	<Script file='private.lua' />
 	<Script file='ouf.lua' />
+	<Script file='events.lua'/>
+	<Script file='factory.lua' />
+	<Script file='blizzard.lua' />
+	<Script file='colors.lua' />
+	<Script file='finalize.lua' />
 
 	<Script file='elements\power.lua' />
 	<Script file='elements\aura.lua' />
@@ -28,6 +35,7 @@
 	<Script file='elements\readycheck.lua' />
 	<Script file='elements\qicon.lua' />
 	<Script file='elements\eclipsebar.lua' />
+	<Script file='elements\altpowerbar.lua' />
 
 	<!-- Clique support -->
 	<Button name="oUF_ClickCastUnitTemplate" virtual="true" inherits="SecureActionButtonTemplate,SecureHandlerEnterLeaveTemplate">
