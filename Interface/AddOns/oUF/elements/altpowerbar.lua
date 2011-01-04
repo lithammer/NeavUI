@@ -26,7 +26,7 @@ local UpdatePower = function(self, event, unit, powerType)
 end
 
 local ForceUpdate = function(element)
-	return Path(element.__owner, 'ForceUpdate', element.__owner.unit, 'ALTERNATE')
+	return UpdatePower(element.__owner, 'ForceUpdate', element.__owner.unit, 'ALTERNATE')
 end
 
 local Toggler = function(self, event, unit)
@@ -34,7 +34,7 @@ local Toggler = function(self, event, unit)
 	local altpowerbar = self.AltPowerBar
 
 	local barType, minPower, _, _, _, hideFromOthers = UnitAlternatePowerInfo(unit)
-	if(barType and not hideFromOthers) then
+	if(barType and (not hideFromOthers or unit == 'player' or self.realUnit == 'player')) then
 		self:RegisterEvent('UNIT_POWER', UpdatePower)
 		self:RegisterEvent('UNIT_MAXPOWER', UpdatePower)
 
@@ -45,12 +45,12 @@ local Toggler = function(self, event, unit)
 		altpowerbar:SetMinMaxValues(minPower, max)
 		altpowerbar:SetValue(cur)
 
-		self:Show()
+		altpowerbar:Show()
 	else
 		self:UnregisterEvent('UNIT_POWER', UpdatePower)
 		self:UnregisterEvent('UNIT_MAXPOWER', UpdatePower)
 
-		self:Hide()
+		altpowerbar:Hide()
 	end
 end
 
@@ -85,4 +85,4 @@ local Disable = function(self, unit)
 	end
 end
 
-oUF:AddElement('AltPowerBar', Update, Enable, Disable)
+oUF:AddElement('AltPowerBar', Toggler, Enable, Disable)
