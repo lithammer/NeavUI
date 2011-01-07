@@ -23,45 +23,48 @@ end
 local playerClass = select(2, UnitClass('player'))
 local isHealer = (playerClass == 'DRUID' or playerClass == 'PALADIN' or playerClass == 'PRIEST' or playerClass == 'SHAMAN')
 
-local indicatorList = {}
-if playerClass == 'DRUID' then
-	indicatorList = {
-		774, -- rejuvenation #1
-		33763, -- lifebloom #2
-		48438, -- wild growth #3
+-- Classbuffs { spell ID, position [, {r, g, b, a}][, anyUnit][, hideCooldown] }
+-- For oUF_AuraWatch
+--do
+	local indicatorList = {
+		DRUID = {
+			{774, 'BOTTOMRIGHT', {1, 0.2, 1}}, -- Rejuvenation
+			{33763, 'TOPRIGHT', {0.5, 1, 0.5}}, -- Lifebloom
+			{48438, 'BOTTOMLEFT', {0.7, 1, 0}}, -- Wild Growth
+		},
+		MAGE = {
+			{54648, 'BOTTOMRIGHT', {0.7, 0, 1}, true, true}, -- Focus Magic
+		},
+		PALADIN = {
+			{53563, 'BOTTOMRIGHT', {0, 1, 0}}, -- Beacon of Light
+		},
+		PRIEST = {
+			{6788, 'BOTTOMRIGHT', {0.6, 0, 0}, true}, -- Weakened Soul
+			{17, 'BOTTOMRIGHT', {1, 1, 0}, true}, -- Power Word: Shield
+			{33076, 'TOPRIGHT', {1, 0.6, 0.6}, true, true}, -- Prayer of Mending
+			{139, 'BOTTOMLEFT', {0, 1, 0}}, -- Renew
+		},
+		SHAMAN = {
+			{61295, 'TOPLEFT', {0.7, 0.3, 0.7}}, -- Riptide
+			{51945, 'TOPRIGHT', {0.2, 0.7, 0.2}}, -- Earthliving
+			{16177, 'BOTTOMLEFT', {0.4, 0.7, 0.2}}, -- Ancestral Fortitude
+			{974, 'BOTTOMRIGHT', {0.7, 0.4, 0}, false, true}, -- Earth Shield
+		},
+		WARLOCK = {
+			{20707, 'BOTTOMRIGHT', {0.7, 0, 1}, true, true}, -- Soulstone
+			{85767, 'BOTTOMLEFT', {0.7, 0.5, 1}, true, true}, -- Dark Intent
+		},
+		ALL = {
+			{23333, 'LEFT', {1, 0, 0}}, -- Warsong flag
+		},
 	}
-elseif playerClass == 'MAGE' then
-	indicatorList = {
-		54648, -- focus magic #1
-	}
-elseif playerClass == 'PALADIN' then
-	indicatorList = {
-		53563, -- beacon of light #1
-	}
-elseif playerClass == 'PRIEST' then
-	indicatorList = {
-		6788, -- weakened soul #1
-		17, -- power word: shield #2
-		139, -- renew #3
-		33076, -- prayer of mending #4
-	}
-elseif playerClass == 'SHAMAN' then
-	indicatorList = {
-		974, -- earth shield #1
-		61295, -- riptide #1
-	}
-elseif playerClass == 'WARLOCK' then
-	indicatorList = {
-		20707, -- soulstone #1
-		85767, -- dark intent #2
-	}
-end
+--end
 
 function auraIcon(self, icon)
-	icon.icon:SetPoint("TOPLEFT", -1, 1)
-	icon.icon:SetPoint("BOTTOMRIGHT", 1, -1)
+	icon.icon:SetPoint('TOPLEFT', -1, 1)
+	icon.icon:SetPoint('BOTTOMRIGHT', 1, -1)
 	icon.icon:SetTexCoord(.08, .92, .08, .92)
-	icon.icon:SetDrawLayer("ARTWORK")
+	icon.icon:SetDrawLayer('ARTWORK')
 	
 	if (icon.cd) then
 		icon.cd:SetReverse()
@@ -78,108 +81,65 @@ local function CreateIndicators(self, unit)
     self.AuraWatch.noCooldownCount = true
     self.AuraWatch.icons = {}
 	self.AuraWatch.PostCreateIcon = auraIcon
+	
+	local buffs = {}
 
-    for i, id in pairs(indicatorList) do
-        icon = CreateFrame('Frame', nil, self.AuraWatch)
-        icon.spellID = id
-		icon.anyUnit = false
-
-        icon:SetWidth(oUF_Neav.units.raid.indicatorSize)
-        icon:SetHeight(oUF_Neav.units.raid.indicatorSize)
-
-        icon.icon = icon:CreateTexture(nil, 'OVERLAY')
-        icon.icon:SetAllPoints(icon)
-        icon.icon:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\borderIndicator')
-		
-		if playerClass == 'DRUID' then
-			if i == 1 then -- rejuvenation
-				icon:SetPoint('BOTTOMRIGHT', self)
-				icon.icon:SetVertexColor(1, 0.2, 1)
-			elseif i == 2 then -- lifebloom
-				icon:SetPoint('TOPRIGHT', self)
-				icon.icon:SetVertexColor(0.5, 1, 0.5)
-
-				local count = icon:CreateFontString(nil, 'OVERLAY')
-				count:SetFont(NumberFontNormal:GetFont(), 10)
-				count:SetShadowColor(0, 0, 0)
-				count:SetShadowOffset(1, -1)
-            	count:SetPoint('TOP', icon, 'BOTTOM', 0, -1)
-				icon.count = count
-			elseif i == 3 then -- wild growth
-				icon:SetPoint('BOTTOMLEFT', self)
-				icon.icon:SetVertexColor(0.7, 1, 0)
-				icon:SetFrameLevel(icon:GetFrameLevel() + 1)
-			end
-		elseif playerClass == 'MAGE' then
-			if i == 1 then -- focus magic
-				icon:SetPoint('TOPRIGHT', self)
-				icon.icon:SetVertexColor(180/255, 0, 1)
-				icon.anyUnit = true
-				icon.hideCooldown = true
-			end
-		elseif playerClass == 'PALADIN' then
-			if i == 1 then -- beacon of light
-				icon:SetPoint('TOPRIGHT', self)
-				icon.icon:SetVertexColor(0, 1, 0)
-			end
-		elseif playerClass == 'PRIEST' then
-			if i == 1 then -- weakened soul
-				icon:SetPoint('TOPRIGHT', self)
-				icon.icon:SetVertexColor(0.6, 0, 0)
-				icon.anyUnit = true
-			elseif i == 2 then -- power word: shield
-				icon:SetFrameLevel(icon:GetFrameLevel() + 5)
-				icon:SetPoint('TOPRIGHT', self)
-				icon.icon:SetVertexColor(1, 1, 0)
-				icon.anyUnit = true
-			elseif i == 3 then -- renew
-				icon:SetPoint('BOTTOMRIGHT', self)
-				icon.icon:SetVertexColor(0, 1, 0)
-			elseif i == 4 then -- prayer of mending
-				icon:SetPoint('BOTTOMLEFT', self)
-				icon.icon:SetVertexColor(1, 0.6, 0.6)
-				icon.anyUnit = true
-				icon.hideCooldown = true
-				
-				local count = icon:CreateFontString(nil, 'OVERLAY')
-				count:SetFont(NumberFontNormal:GetFont(), 10)
-				count:SetShadowColor(0, 0, 0)
-				count:SetShadowOffset(1, -1)
-            	count:SetPoint('BOTTOM', icon, 'TOP', 0, 1)
-				icon.count = count
-			end
-		elseif playerClass == 'SHAMAN' then
-			if i == 1 then -- earth shield
-				icon:SetPoint('TOPRIGHT', self)
-				icon.icon:SetVertexColor(0.4, 1, 0.4)
-				icon.anyUnit = true
-				icon.hideCooldown = true
-				
-				local count = icon:CreateFontString(nil, 'OVERLAY')
-				count:SetFont(NumberFontNormal:GetFont(), 10)
-				count:SetShadowColor(0, 0, 0)
-				count:SetShadowOffset(1, -1)
-            	count:SetPoint('RIGHT', icon, 'LEFT', -1, 0)
-				icon.count = count
-			elseif i == 2 then -- riptide
-				icon:SetPoint('BOTTOMRIGHT', self)
-				icon.icon:SetVertexColor(0.2, 0.2, 1)
-			end
-		elseif playerClass == 'WARLOCK' then
-			if i == 1 then -- soulstone
-				icon:SetPoint('BOTTOMRIGHT', self)
-				icon.icon:SetVertexColor(180/255, 0, 1)
-				icon.anyUnit = true
-				icon.hideCooldown = true
-			elseif i == 2 then -- dark intent
-				icon:SetPoint('TOPRIGHT', self)
-				icon.icon:SetVertexColor(180/255, 0.5, 1)
-				icon.anyUnit = true
-				icon.hideCooldown = true
-			end
+	if (indicatorList["ALL"]) then
+		for key, value in pairs(indicatorList["ALL"]) do
+			tinsert(buffs, value)
 		end
-        self.AuraWatch.icons[id] = icon
-    end
+	end
+	
+	if (indicatorList[playerClass]) then
+		for key, value in pairs(indicatorList[playerClass]) do
+			tinsert(buffs, value)
+		end
+	end
+
+	if (buffs) then
+		for key, spell in pairs(buffs) do
+			icon = CreateFrame('Frame', nil, self.AuraWatch)
+			icon.spellID = spell[1]
+			icon.anyUnit = spell[4]
+			icon.hideCooldown = spell[5]
+			icon:SetWidth(oUF_Neav.units.raid.indicatorSize)
+			icon:SetHeight(oUF_Neav.units.raid.indicatorSize)
+			icon:SetPoint(spell[2], self)
+			-- Exception to place PW:S above Weakened Soul
+			if spell[1] == 17 then
+				icon:SetFrameLevel(icon:GetFrameLevel() + 5)
+			end
+
+			icon.icon = icon:CreateTexture(nil, 'OVERLAY')
+			icon.icon:SetAllPoints(icon)
+			icon.icon:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\borderIndicator')
+			if (spell[3]) then
+				icon.icon:SetVertexColor(unpack(spell[3]))
+			else
+				icon.icon:SetVertexColor(0.8, 0.8, 0.8)
+			end
+			
+			local countOffsets = {
+				TOPLEFT = {'TOP', icon, 'BOTTOM', 0, 0},
+				TOPRIGHT = {'TOP', icon, 'BOTTOM', 0, 0},
+				BOTTOMLEFT = {'LEFT', icon, 'RIGHT', 1, 0},
+				BOTTOMRIGHT = {'RIGHT', icon, 'LEFT', -1, 0},
+				LEFT = {'LEFT', icon, 'RIGHT', 1, 0},
+				RIGHT = {'RIGHT', icon, 'LEFT', -1, 0},
+				TOP = {'CENTER', icon, 0, 0},
+				BOTTOM = {'CENTER', icon, 0, 0},
+			}
+
+			local count = icon:CreateFontString(nil, 'OVERLAY')
+			count:SetFont(NumberFontNormal:GetFont(), 10)
+			count:SetShadowColor(0, 0, 0)
+			count:SetShadowOffset(1, -1)
+			count:SetPoint(unpack(countOffsets[spell[2]]))
+			icon.count = count
+
+			self.AuraWatch.icons[spell[1]] = icon
+		end
+	end
 end
 
 local dispellPriority = {
@@ -454,6 +414,34 @@ local function CreateRaidLayout(self, unit)
     self.Health.Value:SetFont(oUF_Neav.media.font, 13)
     self.Health.Value:SetShadowOffset(1, -1)
     self:Tag(self.Health.Value, '[health:Raid]')
+	
+		-- power bar
+
+	if oUF_Neav.units.raid.manabar and UnitPowerType(unit) == 0 then -- Only show power bara for mana users
+		self.Power = CreateFrame('StatusBar', nil, self)
+		self.Power:SetStatusBarTexture(oUF_Neav.media.statusbar, 'ARTWORK')
+		self.Power:SetFrameStrata('LOW')
+		self.Power:SetPoint('BOTTOM', self, 0, 0)
+		self.Power:SetWidth(self:GetWidth())
+		self.Power:SetHeight(2)
+		self.Power:SetFrameLevel(1)
+		self.Power:SetOrientation('HORIZONTAL')
+		self.Power:SetBackdrop{
+			bgFile = 'Interface\\Buttons\\WHITE8x8',
+			insets = {
+				left = -1.5,
+				right = -1.5,
+				top = -1.5,
+				bottom = -1.5
+			},
+		}
+		self.Power:SetBackdropColor(0, 0, 0)
+		self.Power.colorPower = true
+		
+		self.Health:ClearAllPoints()
+		self.Health:SetPoint('TOPLEFT', self)
+		self.Health:SetPoint('BOTTOMRIGHT', self.Power, 'TOPRIGHT', 0, 1)
+	end
 
         -- name text
 
@@ -579,8 +567,8 @@ local function CreateRaidLayout(self, unit)
 
     if (oUF_Neav.units.raid.showTargetBorder) then
         self.TargetBorder = self.Health:CreateTexture(nil, 'BORDER', self)
-        self.TargetBorder:SetPoint('TOPRIGHT', self.Health, 7, 7)
-        self.TargetBorder:SetPoint('BOTTOMLEFT', self.Health, -7, -7)
+        self.TargetBorder:SetPoint('TOPRIGHT', self, 7, 7)
+        self.TargetBorder:SetPoint('BOTTOMLEFT', self, -7, -7)
         self.TargetBorder:SetTexture('Interface\\Addons\\oUF_Neav\\media\\borderTarget')
         self.TargetBorder:SetVertexColor(unpack(oUF_Neav.units.raid.targetBorderColor))
         self.TargetBorder:Hide()
