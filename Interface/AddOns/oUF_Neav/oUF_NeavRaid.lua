@@ -353,6 +353,25 @@ local function UpdateTargetBorder(self)
 	end
 end
 
+local function OnPowerTypeChange(self, event, unit)
+	if (self.unit ~= unit) then 
+        return 
+    end
+	
+	local powerType = UnitPowerType(unit)
+	
+	self.Health:ClearAllPoints()
+	if powerType == 0 then
+		self.Health:SetPoint('TOPLEFT', self)
+		self.Health:SetPoint('BOTTOMRIGHT', self.Power, 'TOPRIGHT', 0, 1)
+		self.Power:Show()
+	else
+		self.Health:SetAllPoints(self)
+		self.Power:Hide()
+	end
+	
+end
+
 local function CreateRaidLayout(self, unit)
     self:SetScript('OnEnter', function(self)
     	self.Health.Mouseover:SetAlpha(0.15)
@@ -417,7 +436,7 @@ local function CreateRaidLayout(self, unit)
 	
 		-- power bar
 
-	if oUF_Neav.units.raid.manabar and UnitPowerType(unit) == 0 then -- Only show power bara for mana users
+	if oUF_Neav.units.raid.manabar and (UnitPowerType(unit) == 0 or UnitClass(unit) == 'DRUID') then -- Only show power bara for mana users
 		self.Power = CreateFrame('StatusBar', nil, self)
 		self.Power:SetStatusBarTexture(oUF_Neav.media.statusbar, 'ARTWORK')
 		self.Power:SetFrameStrata('LOW')
@@ -441,6 +460,9 @@ local function CreateRaidLayout(self, unit)
 		self.Health:ClearAllPoints()
 		self.Health:SetPoint('TOPLEFT', self)
 		self.Health:SetPoint('BOTTOMRIGHT', self.Power, 'TOPRIGHT', 0, 1)
+		
+		table.insert(self.__elements, OnPowerTypeChange)
+		self:RegisterEvent('UNIT_DISPLAYPOWER', OnPowerTypeChange)
 	end
 
         -- name text
