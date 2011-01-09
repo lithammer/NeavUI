@@ -1,4 +1,4 @@
-# Readme Neav UI (fan update)
+# Neav UI (fan update)
 
 ## Changes and additions
 
@@ -13,8 +13,8 @@
 - Healing indicators for all classes (I hope), as well as soulstone, focus magic and dark intent.
 - Healing indicators now have a "cooldown spiral" for duration.
 - Mouse-over indicator (darkening the color when hovering over a frame).
-- Raid frames is a bit modified, now using the built-in heal prediction from oUF. And added healing indicators for all classes (I hope).
 - Disabled smooth updates for healing classes (can be enabled via `oUF_NeavConfig.lua`)
+- Mana bars (enabled in `oUF_NeavConfig.lua`)
 
 **nMainbar:**
 
@@ -31,8 +31,6 @@
 
 - The quest blob on the map is still a cause for taint, not really sure what's causing it and if it really needs fixing.
 - Changing glyphs sometimes doesn't work because of taint from somewhere
-
-Seems like taint are the only issues left, they don't seem overly important but bad nonetheless.
 
 
 ## Installation
