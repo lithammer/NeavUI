@@ -13,7 +13,7 @@
 - Healing indicators for all classes (I hope), as well as soulstone, focus magic and dark intent.
 - Healing indicators now have a "cooldown spiral" for duration.
 - Mouse-over indicator (darkening the color when hovering over a frame).
-- Disabled smooth updates for healing classes (can be enabled via `oUF_NeavConfig.lua`)
+- Disabled smooth updates for healing classes (can be enabled via `oUF_NeavConfig.lua`).
 - Mana bars (enabled in `oUF_NeavConfig.lua`)
 
 **nMainbar:**
@@ -30,7 +30,7 @@
 ## Known issues
 
 - The quest blob on the map is still a cause for taint, not really sure what's causing it and if it really needs fixing.
-- Changing glyphs sometimes doesn't work because of taint from somewhere
+- Changing glyphs sometimes doesn't work because of taint from somewhere.
 
 
 ## Installation
