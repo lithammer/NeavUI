@@ -2,7 +2,6 @@ local parent, ns = ...
 local oUF = ns.oUF
 local Private = oUF.Private
 
-local dummy = Private.dummy
 local enableTargetUpdate = Private.enableTargetUpdate
 
 local HandleFrame = function(baseName)
@@ -15,7 +14,7 @@ local HandleFrame = function(baseName)
 
 	if(frame) then
 		frame:UnregisterAllEvents()
-		frame.Show = dummy
+		frame.Show = frame.Hide
 		frame:Hide()
 
 		local health = frame.healthbar
@@ -31,6 +30,11 @@ local HandleFrame = function(baseName)
 		local spell = frame.spellbar
 		if(spell) then
 			spell:UnregisterAllEvents()
+		end
+
+		local altpowerbar = frame.powerBarAlt
+		if(altpowerbar) then
+			altpowerbar:UnregisterAllEvents()
 		end
 	end
 end
@@ -65,7 +69,8 @@ function oUF:DisableBlizzard(unit, object)
 			object:RegisterEvent('PLAYER_FOCUS_CHANGED', object.UpdateAllElements)
 		end
 
-		baseName = FocusFrame
+		HandleFrame(FocusFrame)
+		HandleFrame(TargetofFocusFrame)
 	elseif(unit:match'%w+target') then
 		if(unit == 'targettarget') then
 			baseName = TargetFrameToT
@@ -73,8 +78,6 @@ function oUF:DisableBlizzard(unit, object)
 
 		enableTargetUpdate(object)
 	elseif(unit:match'(boss)%d?$' == 'boss') then
-		enableTargetUpdate(object)
-
 		local id = unit:match'boss(%d)'
 		if(id) then
 			baseName = 'Boss' .. id .. 'TargetFrame'
