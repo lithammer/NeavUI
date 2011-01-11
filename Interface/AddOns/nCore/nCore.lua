@@ -1,11 +1,11 @@
 local f = CreateFrame('Frame')
 f:RegisterEvent('PLAYER_LOGIN')
 --f:RegisterEvent('CHAT_MSG_WHISPER')
+f:RegisterEvent('ACTIVE_TALENT_GROUP_CHANGED')
 f:SetScript('OnEvent', function(_, event, ...)
     if (event == 'PLAYER_LOGIN') then
         SetCVar('ScreenshotQuality', 10)
-		--SetCVar('ProcessAffinityMask', 3)
-		--SetCVar('timingmethod', 1)
+		SetCVar('digSites', 1)
     end
     
     -- if (event == 'CHAT_MSG_WHISPER') then 
@@ -14,6 +14,10 @@ f:SetScript('OnEvent', function(_, event, ...)
             -- InviteUnit(arg2)
         -- end
     -- end
+	
+	if (event == 'ACTIVE_TALENT_GROUP_CHANGED') then
+		--LoadAddOn("Blizzard_GlyphUI")
+	end
 end)
 
 SlashCmdList['FRAMENAME'] = function()
@@ -44,8 +48,9 @@ RaidFrameNotInRaidRaidBrowserButton:SetPoint(a, b, c, d, e - 25)
 TicketStatusFrame:ClearAllPoints()
 TicketStatusFrame:SetPoint('BOTTOMRIGHT', UIParent, 0, 0)
 
-WorldMapShowDigSites:ClearAllPoints()
-WorldMapShowDigSites:SetPoint('LEFT', WorldMapTrackQuest, 'RIGHT', 70, 0)
+--WorldMapShowDigSites:ClearAllPoints()
+--WorldMapShowDigSites:SetPoint('LEFT', WorldMapTrackQuest, 'RIGHT', 70, 0)
+WorldMapShowDigSites:HookScript('OnShow', function(self) self:Hide() end)
 
 --[[
 function UnitAura() 
