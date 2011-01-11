@@ -715,7 +715,7 @@ local function CreateUnitLayout(self, unit)
         -- lfg role icon
         
     if (self.partyUnit or unit == 'player') then  
-        self.LFDRole = self.Health:CreateTexture('$parentGlow', 'OVERLAY')     
+        self.LFDRole = self.Health:CreateTexture('$parentGlow', 'OVERLAY')
         self.LFDRole:SetHeight(20)
         self.LFDRole:SetWidth(20)
         
@@ -857,11 +857,11 @@ local function CreateUnitLayout(self, unit)
             self.PvPTimer:SetShadowOffset(1, -1)
             self.PvPTimer:SetPoint('BOTTOM', self.PvP, 'TOP', -12, 0)
 
-            self.LastUpdate = 0    
+            self.LastUpdate = 0
             self:HookScript('OnUpdate', function(self, elapsed)
                 local time = nil
-                if (IsPVPTimerRunning()) then 
-                    time = GetPVPTimer() 
+                if (IsPVPTimerRunning()) then
+                    time = GetPVPTimer()
                 end
 
                 if (time) then
@@ -1204,41 +1204,16 @@ oUF:Factory(function(self)
     focustarget:SetPoint('TOPLEFT', oUF_Neav_Focus, 'BOTTOMRIGHT', -78, -15)
     focustarget:SetScale(oUF_Neav.units.focustarget.scale)
     
-    local party = oUF:SpawnHeader("oUF_Neav_Party", nil, visible, 
-        "showParty", true, 
-        "yOffset", -30
+    local party = oUF:SpawnHeader('oUF_Neav_Party', nil, (oUF_Neav.units.party.hideInRaid and 'party') or 'party,raid',
+        'showParty', true,
+        'yOffset', -30
     )
-    party:SetPoint("TOPLEFT", 70, -20)
+    party:SetPoint('TOPLEFT', 70, -20)
     party:SetPoint(unpack(oUF_Neav.units.party.position))
     party:SetScale(oUF_Neav.units.party.scale)
     if (oUF_Neav.show.party) then
         party:Show()
     end
-    
-    local f = CreateFrame('Frame')
-    f:RegisterEvent('PLAYER_LOGIN')
-    f:RegisterEvent('RAID_ROSTER_UPDATE')
-    f:RegisterEvent('PARTY_LEADER_CHANGED')
-    f:RegisterEvent('PARTY_MEMBER_CHANGED')
-    f:SetScript('OnEvent', function(self, event)   
-        if (oUF_Neav.units.party.hideInRaid and oUF_Neav.show.party) then
-            if (GetNumRaidMembers() > 0) then
-                if (InCombatLockdown()) then
-                    self:RegisterEvent('PLAYER_REGEN_ENABLED')
-                else
-                    self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-                    party:Hide()
-                end
-            else
-                if (InCombatLockdown()) then
-                    self:RegisterEvent('PLAYER_REGEN_ENABLED')
-                else
-                    self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-                    party:Show()
-                end
-            end
-        end
-    end)
 end)
 
 --[[
