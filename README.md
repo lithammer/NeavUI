@@ -23,7 +23,6 @@
 **Misc:**
 
 - Healthbar on tooltips now have a textual representation on it as well.
-- Removed cursor coordinates for map simply because it doesn't really work anymore with the smaller map.
 - Fixed position and font size for player coordinates.
 - Added a copy chat function to nChat, use it by right-clicking on the chat tab. Also added a URL copy function.
 
@@ -31,7 +30,6 @@
 
 - The quest blob on the map is still a cause for taint, not really sure what's causing it and if it really needs fixing.
 - Changing glyphs sometimes doesn't work because of taint from somewhere.
-
 
 ## Installation
 
