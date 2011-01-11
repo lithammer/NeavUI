@@ -23,7 +23,7 @@
 **Misc:**
 
 - Healthbar on tooltips now have a textual representation on it as well.
-- Fixed position and font size for player coordinates.
+- Fixed position and font size for player/cursor coordinates on world map.
 - Added a copy chat function to nChat, use it by right-clicking on the chat tab. Also added a URL copy function.
 
 ## Known issues
