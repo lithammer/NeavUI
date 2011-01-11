@@ -81,7 +81,7 @@ local function CreateIndicators(self, unit)
     self.AuraWatch.noCooldownCount = true
     self.AuraWatch.icons = {}
 	self.AuraWatch.PostCreateIcon = auraIcon
-	
+
 	local buffs = {}
 
 	if (indicatorList["ALL"]) then
@@ -192,6 +192,7 @@ end
 local debuffList = setmetatable({
 	-- PvP
     [GetSpellName(5782)] = 3, -- Fear
+    [GetSpellName(30108)] = 2, -- Unstable Affliction
 	
 	-- PvE
 	
@@ -238,7 +239,7 @@ end})
     
 local function UpdateAura(self, event, unit)
 	if (self.unit ~= unit) then 
-        return 
+        return
     end
     
     local cur, tex, dis, co
@@ -303,25 +304,31 @@ end
     -- ----------------------------------------------------------------
 
 local function UpdateThreat(self, _, unit)
-	if (self.unit ~= unit) then 
-        return 
+	if (self.unit ~= unit) then
+        return
     end
 
     if (self.Aggro) then
         local threat = UnitThreatSituation(self.unit)
         if (threat == 3) then
             self.Aggro:SetText('|cFFFF0000AGGRO')
-            self.Health:SetBackdropColor(0.9, 0, 0) 
+            self.Health:SetBackdropColor(0.9, 0, 0)
+			if oUF_Neav.units.raid.manabar then
+				self.Power:SetBackdropColor(0.9, 0, 0)
+			end
         else
             self.Aggro:SetText('')
-            self.Health:SetBackdropColor(0, 0, 0) 
+            self.Health:SetBackdropColor(0, 0, 0)
+			if oUF_Neav.units.raid.manabar then
+				self.Power:SetBackdropColor(0, 0, 0)
+			end
         end
     end
 end
 
 local function UpdateHealth(Health, unit, min, max)
-	if (Health:GetParent().unit ~= unit) then 
-        return 
+	if (Health:GetParent().unit ~= unit) then
+        return
     end
 
     if (UnitIsDead(unit) or UnitIsGhost(unit) or not UnitIsConnected(unit)) then
@@ -354,16 +361,21 @@ local function UpdateTargetBorder(self)
 end
 
 local function OnPowerTypeChange(self, event, unit)
-	if (self.unit ~= unit) then 
+	if (self.unit ~= unit) then
         return 
     end
 	
-	local powerType = UnitPowerType(unit)
+	local powerType, powerToken = UnitPowerType(unit)
+	local r, g, b = unpack(oUF.colors.power[powerToken])
+	
+	if r and g and b then
+		self.Power.Background:SetVertexColor(r * 0.25, g * 0.25, b * 0.25)
+	end
 	
 	self.Health:ClearAllPoints()
-	if powerType == 0 then
+	if powerToken == 'MANA' then
 		self.Health:SetPoint('TOPLEFT', self)
-		self.Health:SetPoint('BOTTOMRIGHT', self.Power, 'TOPRIGHT', 0, 1)
+		self.Health:SetPoint('BOTTOMRIGHT', self.Power, 'TOPRIGHT', 0, 1.5)
 		self.Power:Show()
 	else
 		self.Health:SetAllPoints(self)
@@ -436,7 +448,7 @@ local function CreateRaidLayout(self, unit)
 	
 		-- power bar
 
-	if oUF_Neav.units.raid.manabar and (UnitPowerType(unit) == 0 or UnitClass(unit) == 'DRUID') then -- Only show power bara for mana users
+	if oUF_Neav.units.raid.manabar then
 		self.Power = CreateFrame('StatusBar', nil, self)
 		self.Power:SetStatusBarTexture(oUF_Neav.media.statusbar, 'ARTWORK')
 		self.Power:SetFrameStrata('LOW')
@@ -456,10 +468,11 @@ local function CreateRaidLayout(self, unit)
 		}
 		self.Power:SetBackdropColor(0, 0, 0)
 		self.Power.colorPower = true
-		
-		self.Health:ClearAllPoints()
-		self.Health:SetPoint('TOPLEFT', self)
-		self.Health:SetPoint('BOTTOMRIGHT', self.Power, 'TOPRIGHT', 0, 1)
+
+		self.Power.Background = self.Power:CreateTexture(nil, 'BORDER')
+		self.Power.Background:SetAllPoints(self.Power)
+		self.Power.Background:SetTexture(oUF_Neav.media.statusbar)
+		OnPowerTypeChange(self, _, unit) -- Force an update on init
 		
 		table.insert(self.__elements, OnPowerTypeChange)
 		self:RegisterEvent('UNIT_DISPLAYPOWER', OnPowerTypeChange)
