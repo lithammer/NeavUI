@@ -360,20 +360,21 @@ local function UpdateTargetBorder(self)
 	end
 end
 
-local function OnPowerTypeChange(self, event, unit)
+local function OnPowerTypeChange(self, _, unit)
 	if (self.unit ~= unit) then
         return 
     end
 	
 	local powerType, powerToken = UnitPowerType(unit)
-	local r, g, b = unpack(oUF.colors.power[powerToken])
+	--local r, g, b = unpack(oUF.colors.power[powerToken])
+	local unitPower = PowerBarColor[powerToken]
 	
-	if r and g and b then
-		self.Power.Background:SetVertexColor(r * 0.25, g * 0.25, b * 0.25)
+	if (unitPower) then
+		self.Power.Background:SetVertexColor(unitPower.r * 0.25, unitPower.g * 0.25, unitPower.b * 0.25)
 	end
 	
 	self.Health:ClearAllPoints()
-	if powerToken == 'MANA' then
+	if (powerToken == 'MANA') then
 		self.Health:SetPoint('TOPLEFT', self)
 		self.Health:SetPoint('BOTTOMRIGHT', self.Power, 'TOPRIGHT', 0, 1.5)
 		self.Power:Show()
