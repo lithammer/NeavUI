@@ -23,7 +23,7 @@ end
 local playerClass = select(2, UnitClass('player'))
 local isHealer = (playerClass == 'DRUID' or playerClass == 'PALADIN' or playerClass == 'PRIEST' or playerClass == 'SHAMAN')
 
--- Classbuffs { spell ID, position [, {r, g, b, a}][, anyUnit][, hideCooldown] }
+-- Classbuffs { spell ID, position [, {r, g, b, a}][, anyUnit][, hideCooldown][, hideCount] }
 -- For oUF_AuraWatch
 --do
 	local indicatorList = {
@@ -52,7 +52,7 @@ local isHealer = (playerClass == 'DRUID' or playerClass == 'PALADIN' or playerCl
 		},
 		WARLOCK = {
 			{20707, 'BOTTOMRIGHT', {0.7, 0, 1}, true, true}, -- Soulstone
-			{85767, 'BOTTOMLEFT', {0.7, 0.5, 1}, true, true}, -- Dark Intent
+			{85767, 'BOTTOMLEFT', {0.7, 0.5, 1}, true, true, true}, -- Dark Intent
 		},
 		ALL = {
 			{23333, 'LEFT', {1, 0, 0}}, -- Warsong flag
@@ -61,16 +61,12 @@ local isHealer = (playerClass == 'DRUID' or playerClass == 'PALADIN' or playerCl
 --end
 
 function auraIcon(self, icon)
-	icon.icon:SetPoint('TOPLEFT', -1, 1)
-	icon.icon:SetPoint('BOTTOMRIGHT', 1, -1)
-	icon.icon:SetTexCoord(.08, .92, .08, .92)
-	icon.icon:SetDrawLayer('ARTWORK')
-	
 	if (icon.cd) then
 		icon.cd:SetReverse()
+		icon.cd:SetAllPoints(icon.icon)
+		icon.cd:SetPoint('TOPLEFT', 2, -2)
+		icon.cd:SetPoint('BOTTOMRIGHT', -2, 2)
 	end
-	
-	--icon.overlay:SetTexture()
 end
 
 local function CreateIndicators(self, unit)
@@ -84,8 +80,8 @@ local function CreateIndicators(self, unit)
 
 	local buffs = {}
 
-	if (indicatorList["ALL"]) then
-		for key, value in pairs(indicatorList["ALL"]) do
+	if (indicatorList['ALL']) then
+		for key, value in pairs(indicatorList['ALL']) do
 			tinsert(buffs, value)
 		end
 	end
@@ -98,10 +94,11 @@ local function CreateIndicators(self, unit)
 
 	if (buffs) then
 		for key, spell in pairs(buffs) do
-			icon = CreateFrame('Frame', nil, self.AuraWatch)
+			local icon = CreateFrame('Frame', nil, self.AuraWatch)
 			icon.spellID = spell[1]
 			icon.anyUnit = spell[4]
 			icon.hideCooldown = spell[5]
+			icon.hideCount = spell[6]
 			icon:SetWidth(oUF_Neav.units.raid.indicatorSize)
 			icon:SetHeight(oUF_Neav.units.raid.indicatorSize)
 			icon:SetPoint(spell[2], self)
@@ -130,12 +127,11 @@ local function CreateIndicators(self, unit)
 				BOTTOM = {'CENTER', icon, 0, 0},
 			}
 
-			local count = icon:CreateFontString(nil, 'OVERLAY')
-			count:SetFont(NumberFontNormal:GetFont(), 10)
-			count:SetShadowColor(0, 0, 0)
-			count:SetShadowOffset(1, -1)
-			count:SetPoint(unpack(countOffsets[spell[2]]))
-			icon.count = count
+			icon.count = icon:CreateFontString(nil, 'OVERLAY')
+			icon.count:SetFont(NumberFontNormal:GetFont(), 10)
+			icon.count:SetShadowColor(0, 0, 0)
+			icon.count:SetShadowOffset(1, -1)
+			icon.count:SetPoint(unpack(countOffsets[spell[2]]))
 
 			self.AuraWatch.icons[spell[1]] = icon
 		end
@@ -366,7 +362,6 @@ local function OnPowerTypeChange(self, _, unit)
     end
 	
 	local powerType, powerToken = UnitPowerType(unit)
-	--local r, g, b = unpack(oUF.colors.power[powerToken])
 	local unitPower = PowerBarColor[powerToken]
 	
 	if (unitPower) then
