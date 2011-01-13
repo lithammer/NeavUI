@@ -126,12 +126,14 @@ local function CreateIndicators(self, unit)
 				TOP = {'CENTER', icon, 0, 0},
 				BOTTOM = {'CENTER', icon, 0, 0},
 			}
-
-			icon.count = icon:CreateFontString(nil, 'OVERLAY')
-			icon.count:SetFont(NumberFontNormal:GetFont(), 10)
-			icon.count:SetShadowColor(0, 0, 0)
-			icon.count:SetShadowOffset(1, -1)
-			icon.count:SetPoint(unpack(countOffsets[spell[2]]))
+			
+			if not icon.hideCount then
+				icon.count = icon:CreateFontString(nil, 'OVERLAY')
+				icon.count:SetFont(NumberFontNormal:GetFont(), 10)
+				icon.count:SetShadowColor(0, 0, 0)
+				icon.count:SetShadowOffset(1, -1)
+				icon.count:SetPoint(unpack(countOffsets[spell[2]]))
+			end
 
 			self.AuraWatch.icons[spell[1]] = icon
 		end
