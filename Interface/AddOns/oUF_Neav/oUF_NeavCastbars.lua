@@ -136,7 +136,8 @@ function CreateCastbars(self, unit)
                 for i = 1, 8 do
                     self.Shadow[i] = self.Castbar:CreateTexture(nil, 'BACKGROUND')
                     self.Shadow[i]:SetParent(self.Castbar)
-                    self.Shadow[i]:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\error')
+                    --self.Shadow[i]:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\error')
+                    self.Shadow[i]:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\borderBackground')
                     self.Shadow[i]:SetWidth(20) 
                     self.Shadow[i]:SetHeight(20)
                     self.Shadow[i]:SetVertexColor(unpack(config.interruptColor))
@@ -185,7 +186,8 @@ function CreateCastbars(self, unit)
             interruptFrame:RegisterEvent("PLAYER_FOCUS_CHANGED")
             
             interruptFrame:SetScript('OnEvent', function()
-                local name, _, _, _, _, _, _, _, interrupt = UnitCastingInfo(unit) 
+                local name, _, _, _, _, _, _, _, interrupt = UnitCastingInfo(unit)
+				local channelName, _, _, _, _, _, _, _, channelInterrupt = UnitChannelInfo(unit)
             
                 if (self.hasShadow) then   
                     for i = 1, 8 do
@@ -193,8 +195,8 @@ function CreateCastbars(self, unit)
                     end
                 end
                 
-                if (name) then
-                    if (interrupt) then
+                if (name or cname) then
+                    if (interrupt or cinterrupt) then
                         self.Castbar:SetStatusBarColor(unpack(config.interruptColor))
                         self.Castbar.Bg:SetVertexColor(config.interruptColor[1]*0.3, config.interruptColor[2]*0.3, config.interruptColor[3]*0.3, 0.8)
 
