@@ -195,8 +195,8 @@ function CreateCastbars(self, unit)
                     end
                 end
                 
-                if (name or cname) then
-                    if (interrupt or cinterrupt) then
+                if (name or channelName) then
+                    if (interrupt or channelInterrupt) then
                         self.Castbar:SetStatusBarColor(unpack(config.interruptColor))
                         self.Castbar.Bg:SetVertexColor(config.interruptColor[1]*0.3, config.interruptColor[2]*0.3, config.interruptColor[3]*0.3, 0.8)
 
