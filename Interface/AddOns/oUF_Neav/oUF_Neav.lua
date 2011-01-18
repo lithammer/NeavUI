@@ -1071,7 +1071,7 @@ local function CreateUnitLayout(self, unit)
     end
     
     if (self.partyUnit) then
-		--self:SetSize(105, 30)
+		self:SetSize(105, 30)
         
         self.Debuffs = CreateFrame('Frame', nil, self)
         self.Debuffs:SetFrameStrata('BACKGROUND')
