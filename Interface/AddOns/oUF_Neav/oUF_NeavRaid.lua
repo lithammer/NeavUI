@@ -525,7 +525,7 @@ local function CreateRaidLayout(self, unit)
 
     self.Aggro = self.Health:CreateFontString(nil, 'OVERLAY')
     self.Aggro:SetPoint('CENTER', self, 'TOP')
-    self.Aggro:SetFont(oUF_Neav.media.font, 11, 'OUTLINE')
+    self.Aggro:SetFont(oUF_Neav.media.font, 10, 'OUTLINE')
     self.Aggro:SetShadowColor(0, 0, 0, 0)
     self.Aggro:SetTextColor(1, 1, 1)
 
@@ -628,9 +628,16 @@ oUF:RegisterStyle('oUF_Neav_Raid', CreateRaidLayout)
 oUF:Factory(function(self)
 	self:SetActiveStyle('oUF_Neav_Raid')
 
-    raid = {}
+    local raid = {}
     for i = 1, oUF_Neav.units.raid.numGroups do
-        table.insert(raid, self:SpawnHeader('oUF_Neav_Raid'..i, nil, visible,
+        table.insert(raid, self:SpawnHeader('oUF_Neav_Raid'..i, nil, 'solo,party,raid',
+			'oUF-initialConfigFunction', [[
+				local header = self:GetParent()
+				self:SetWidth(header:GetAttribute('initial-width'))
+				self:SetHeight(header:GetAttribute('initial-height'))
+			]],
+			'initial-width', oUF_Neav.units.raid.width,
+			'initial-height', oUF_Neav.units.raid.height,
             'showParty', true,
             'showPlayer', true,
             'showSolo', (oUF_Neav.units.raid.showSolo and true) or false,
@@ -650,33 +657,34 @@ oUF:Factory(function(self)
         end
 
 		raid[i]:SetScale(oUF_Neav.units.raid.scale)
-        raid[i]:Show()
+        --raid[i]:Show()
     end
 end)
 
 -- Moves the raid frames a bit
---SlashCmdList["HEAL"] = function()
---	local pos = {'LEFT', UIParent, 'CENTER', 200, 0}
---    for i = 1, oUF_Neav.units.raid.numGroups do
---		if (i == 1) then
---			raid[i]:ClearAllPoints()
---			raid[i]:SetPoint(unpack(pos))
---		else
---			raid[i]:SetPoint('TOPLEFT', raid[i-1], 'TOPRIGHT', 7, 0)
---		end
---	end
---end
---SLASH_HEAL1 = "/heal"
---
----- Moves the raid frames a bit
---SlashCmdList["DPS"] = function()
---    for i = 1, oUF_Neav.units.raid.numGroups do
---		if (i == 1) then
---			raid[i]:ClearAllPoints()
---			raid[i]:SetPoint(unpack(oUF_Neav.units.raid.position))
---		else
---			raid[i]:SetPoint('TOPLEFT', raid[i-1], 'TOPRIGHT', 7, 0)
---		end
---	end
---end
---SLASH_DPS1 = "/dps"
+SlashCmdList['HEAL'] = function()
+	local pos = {'LEFT', UIParent, 'CENTER', 200, 0}
+	
+	for i = 1, oUF_Neav.units.raid.numGroups do
+		if (i == 1) then
+			_G['oUF_Neav_Raid'..i]:ClearAllPoints()
+			_G['oUF_Neav_Raid'..i]:SetPoint(unpack(pos))
+		else
+			_G['oUF_Neav_Raid'..i]:SetPoint('TOPLEFT', 'oUF_Neav_Raid'..i-1, 'TOPRIGHT', 7, 0)
+		end
+	end
+end
+SLASH_HEAL1 = '/heal'
+
+-- Moves the raid frames a bit
+SlashCmdList['DPS'] = function()
+	for i = 1, oUF_Neav.units.raid.numGroups do
+		if (i == 1) then
+			_G['oUF_Neav_Raid'..i]:ClearAllPoints()
+			_G['oUF_Neav_Raid'..i]:SetPoint(unpack(oUF_Neav.units.raid.position))
+		else
+			_G['oUF_Neav_Raid'..i]:SetPoint('TOPLEFT', 'oUF_Neav_Raid'..i-1, 'TOPRIGHT', 7, 0)
+		end
+	end
+end
+SLASH_DPS1 = '/dps'

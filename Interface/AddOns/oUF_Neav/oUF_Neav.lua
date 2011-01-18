@@ -1071,7 +1071,7 @@ local function CreateUnitLayout(self, unit)
     end
     
     if (self.partyUnit) then
-		self:SetSize(105, 30)
+		--self:SetSize(105, 30)
         
         self.Debuffs = CreateFrame('Frame', nil, self)
         self.Debuffs:SetFrameStrata('BACKGROUND')
@@ -1189,13 +1189,13 @@ oUF:Factory(function(self)
     focus:SetMovable(true)
     focus:RegisterForDrag('LeftButton')
     focus:SetUserPlaced(true)
-        
+
     focus:SetScript('OnDragStart', function(self)
         if (IsShiftKeyDown()) then
             self:StartMoving() 
         end
     end)
-            
+
     focus:SetScript('OnDragStop', function(self) 
         self:StopMovingOrSizing()
     end)
@@ -1205,15 +1205,19 @@ oUF:Factory(function(self)
     focustarget:SetScale(oUF_Neav.units.focustarget.scale)
     
     local party = oUF:SpawnHeader('oUF_Neav_Party', nil, (oUF_Neav.units.party.hideInRaid and 'party') or 'party,raid',
-        'showParty', true,
+        'oUF-initialConfigFunction', [[
+			self:SetWidth(30)
+			self:SetHeight(105)
+		]],
+		'showParty', true,
         'yOffset', -30
     )
     party:SetPoint('TOPLEFT', 70, -20)
     party:SetPoint(unpack(oUF_Neav.units.party.position))
     party:SetScale(oUF_Neav.units.party.scale)
-    if (oUF_Neav.show.party) then
-        party:Show()
-    end
+    --if (oUF_Neav.show.party) then
+        --party:Show()
+    --end
 end)
 
 --[[
