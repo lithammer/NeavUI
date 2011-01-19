@@ -1,7 +1,7 @@
 local f = CreateFrame('Frame')
 f:RegisterEvent('PLAYER_LOGIN')
 --f:RegisterEvent('CHAT_MSG_WHISPER')
-f:RegisterEvent('ACTIVE_TALENT_GROUP_CHANGED')
+--f:RegisterEvent('ACTIVE_TALENT_GROUP_CHANGED')
 f:SetScript('OnEvent', function(_, event, ...)
     if (event == 'PLAYER_LOGIN') then
         SetCVar('ScreenshotQuality', 10)
@@ -16,7 +16,7 @@ f:SetScript('OnEvent', function(_, event, ...)
     -- end
 	
 	if (event == 'ACTIVE_TALENT_GROUP_CHANGED') then
-		--LoadAddOn("Blizzard_GlyphUI")
+		LoadAddOn("Blizzard_GlyphUI")
 	end
 end)
 
