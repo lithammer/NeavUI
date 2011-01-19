@@ -2,7 +2,7 @@
    -- nmodify the lfg frame
     
 MiniMapLFGFrame:ClearAllPoints()
-MiniMapLFGFrame:SetPoint('TOPLEFT', Minimap, 4, -4)
+MiniMapLFGFrame:SetPoint('BOTTOMLEFT', Minimap, 4, 4)
 MiniMapLFGFrame:SetWidth(14)
 MiniMapLFGFrame:SetHeight(14)
 MiniMapLFGFrame:SetHighlightTexture(nil)
@@ -25,7 +25,7 @@ MiniMapLFGFrame.Text:SetHeight(14)
    -- modify the battlefield frame
    
 MiniMapBattlefieldFrame:ClearAllPoints()
-MiniMapBattlefieldFrame:SetPoint('TOPLEFT', Minimap, 4, -4)
+MiniMapBattlefieldFrame:SetPoint('BOTTOMLEFT', Minimap, 4, 4)
 MiniMapBattlefieldFrame:SetWidth(14)
 MiniMapBattlefieldFrame:SetHeight(14)
 
@@ -199,3 +199,12 @@ LFDSearchStatus:HookScript('OnShow', function(self)
         LFDSearchStatus.hasBorder = true
     end
 end)
+
+	-- NPCScan.Overlay uses this function to determine minimap shape
+	-- http://www.wowinterface.com/downloads/info14686-_NPCScan.Overlay.html
+	
+if IsAddOnLoaded('_NPCScan.Overlay') then
+	function GetMinimapShape()
+		return 'SQUARE'
+	end
+end
