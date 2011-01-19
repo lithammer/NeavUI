@@ -15,7 +15,7 @@ local function ApplyTooltipStyle(self)
     end
     
     self:SetBackdrop({
-        bgFile = 'Interface\\Buttons\\WHITE8x8', 
+        bgFile = 'Interface\\Buttons\\WHITE8x8',
         insets = {
             left = bgsize, 
             right = bgsize, 
@@ -231,7 +231,8 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
         end
 
         if (realm and realm ~= '') then
-            self:AppendText(' (*)')
+            --self:AppendText(' (*)')
+            self:AppendText(' - '..realm)
         end
         
         if (UnitIsDead(unit) or UnitIsGhost(unit)) then
