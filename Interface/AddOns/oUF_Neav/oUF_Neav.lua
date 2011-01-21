@@ -460,10 +460,10 @@ local function CreateUnitLayout(self, unit)
         self.Health:SetPoint('TOPLEFT', self.Texture, 47, -12)
         self.Health:SetHeight(7)
         self.Health:SetWidth(70) 
-    elseif (unit == "partypet1" or unit == "partypet2" or unit == "partypet3" or unit == "partypet4") then
+    elseif (unit == 'partypet1' or unit == 'partypet2' or unit == 'partypet3' or unit == 'partypet4') then
         self.Health:SetHeight(8)
         self.Health:SetWidth(69)
-        self.Health:SetPoint("TOPLEFT", self.f, 46, -22)
+        self.Health:SetPoint('TOPLEFT', self.f, 46, -22)
     end
 
     self.Health.frequentUpdates = true
@@ -978,6 +978,20 @@ local function CreateUnitLayout(self, unit)
         self.Auras.numBuffs = 40
         self.Auras.numDebuffs = 18
         self.Auras.spacing = 4.5
+		if (oUF_Neav.units.target.colorPlayerDebuffsOnly) then
+			self.Auras.PostUpdateIcon = function(self, unit, icon, index, offset)
+				if (unit ~= 'target') then return end
+				
+				if (icon.debuff) then
+					if (not UnitIsFriend('player', unit) and icon.owner ~= 'player' and icon.owner ~= 'vehicle') then
+						icon.overlay:SetVertexColor(0.45, 0.45, 0.45)
+						icon.icon:SetDesaturated(true)
+					else
+						icon.icon:SetDesaturated(false)
+					end
+				end
+			end
+		end
 
     elseif (unit == 'focus') then
         self.Debuffs = CreateFrame('Frame', nil, self)
@@ -1086,21 +1100,21 @@ local function CreateUnitLayout(self, unit)
         self.Debuffs.num = 3
     end
     
-    if (unit == "partypet1" or unit == "partypet2" or unit == "partypet3" or unit == "partypet4") then
+    if (unit == 'partypet1' or unit == 'partypet2' or unit == 'partypet3' or unit == 'partypet4') then
         self:SetHeight(53)
         self:SetWidth(128)
 
-        self.Texture:SetTexture("Interface\\TargetingFrame\\UI-SmallTargetingFrame")
-        self.Texture:SetPoint("TOPLEFT", self.f, 0, -2)
+        self.Texture:SetTexture('Interface\\TargetingFrame\\UI-SmallTargetingFrame')
+        self.Texture:SetPoint('TOPLEFT', self.f, 0, -2)
         self.Texture:SetHeight(64)
         self.Texture:SetWidth(128)
         
-        self.Name:SetPoint("BOTTOMLEFT", self.Health, "TOPLEFT", 0, 5)
-        self.Name:SetJustifyH("LEFT")
+        self.Name:SetPoint('BOTTOMLEFT', self.Health, 'TOPLEFT', 0, 5)
+        self.Name:SetJustifyH('LEFT')
         self.Name:SetWidth(100)
         self.Name:SetHeight(10)
         
-        self.Portrait:SetPoint("TOPLEFT", self.f, 7, -6)
+        self.Portrait:SetPoint('TOPLEFT', self.f, 7, -6)
     end
     
   --  for i = 1, MAX_BOSS_FRAMES do
@@ -1204,24 +1218,23 @@ oUF:Factory(function(self)
     focustarget:SetPoint('TOPLEFT', oUF_Neav_Focus, 'BOTTOMRIGHT', -78, -15)
     focustarget:SetScale(oUF_Neav.units.focustarget.scale)
     
-    local party = oUF:SpawnHeader('oUF_Neav_Party', nil, (oUF_Neav.units.party.hideInRaid and 'party') or 'party,raid',
-        'oUF-initialConfigFunction', [[
-			self:SetWidth(30)
-			self:SetHeight(105)
-		]],
-		'showParty', true,
-        'yOffset', -30
-    )
-    party:SetPoint('TOPLEFT', 70, -20)
-    party:SetPoint(unpack(oUF_Neav.units.party.position))
-    party:SetScale(oUF_Neav.units.party.scale)
-    --if (oUF_Neav.show.party) then
-        --party:Show()
-    --end
+	if (oUF_Neav.show.party) then
+		local party = oUF:SpawnHeader('oUF_Neav_Party', nil, (oUF_Neav.units.party.hideInRaid and 'party') or 'party,raid',
+			'oUF-initialConfigFunction', [[
+				self:SetWidth(30)
+				self:SetHeight(105)
+			]],
+			'showParty', true,
+			'yOffset', -30
+		)
+		party:SetPoint('TOPLEFT', 70, -20)
+		party:SetPoint(unpack(oUF_Neav.units.party.position))
+		party:SetScale(oUF_Neav.units.party.scale)
+    end
 end)
 
 --[[
-    local partypet1 = oUF:Spawn("partypet1", "oUF_PartyPet1")   
+    local partypet1 = oUF:Spawn('partypet1', 'oUF_PartyPet1')   
     partypet1:SetPoint(unpack(oUF_Neav.units.party.position))
     
 
@@ -1231,13 +1244,13 @@ end)
     end
 
         
-    local partypet2 = oUF:Spawn("partypet2", "oUF_PartyPet2")   
+    local partypet2 = oUF:Spawn('partypet2', 'oUF_PartyPet2')   
     partypet2:SetPoint(unpack(oUF_Neav.units.party.position))
 
-    local partypet3 = oUF:Spawn("partypet3", "oUF_PartyPet3")   
+    local partypet3 = oUF:Spawn('partypet3', 'oUF_PartyPet3')   
     partypet3:SetPoint(unpack(oUF_Neav.units.party.position))
 
-    local partypet4 = oUF:Spawn("partypet4", "oUF_PartyPet4")   
+    local partypet4 = oUF:Spawn('partypet4', 'oUF_PartyPet4')   
     partypet4:SetPoint(unpack(oUF_Neav.units.party.position))
         --]]
     --[[
