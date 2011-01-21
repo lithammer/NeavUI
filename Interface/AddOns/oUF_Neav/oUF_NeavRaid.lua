@@ -392,8 +392,6 @@ local function CreateRaidLayout(self, unit)
     	UnitFrame_OnLeave(self)
     end)
 
-	self:SetSize(oUF_Neav.units.raid.width, oUF_Neav.units.raid.height)
-
         -- health bar
 
     self.Health = CreateFrame('StatusBar', nil, self)
@@ -657,7 +655,6 @@ oUF:Factory(function(self)
         end
 
 		raid[i]:SetScale(oUF_Neav.units.raid.scale)
-        --raid[i]:Show()
     end
 end)
 
