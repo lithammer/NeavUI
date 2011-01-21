@@ -49,6 +49,7 @@ oUF_Neav = {
             showHealthPercent = true,
             showHealthAndPercent = true,   -- overrides showHealthPercent
             showPowerPercent = false,
+			colorPlayerDebuffsOnly = false,
         },
 
         targettarget = {
