@@ -292,9 +292,9 @@ hooksecurefunc('VehicleMenuBar_MoveMicroButtons', function(self)
 	end
 end)
 
-end
-
-MainMenuBarVehicleLeaveButton:HookScript('OnEvent', function(self, event, ...)
+MainMenuBarVehicleLeaveButton:HookScript('OnShow', function(self, event, ...)
 	MainMenuBarVehicleLeaveButton:ClearAllPoints()
 	MainMenuBarVehicleLeaveButton:SetPoint('LEFT', MainMenuBar, 'RIGHT', 10, 80)
 end)
+
+end
