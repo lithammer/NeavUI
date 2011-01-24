@@ -748,8 +748,11 @@ SLASH_DPS1 = '/dps'
 
 SlashCmdList['WORLDMARKERS'] = function()
 	local instanceName, instanceType = GetInstanceInfo()
+	local isLeader = (IsRealPartyLeader() or IsRealRaidLeader() or IsRaidOfficer())
+	local notPvPArea = (instanceType ~= ('arena' or 'pvp') and instanceName ~= ('Wintergrasp' or 'Tol Barad'))
 	
-	if (GetRealNumPartyMembers() > 0 and instanceType ~= ('arena' or 'pvp') and instanceName ~= ('Wintergrasp' or 'Tol Barad') and IsPartyLeader()) then
+	-- If eligible for marking
+	if (UnitInParty('player') and notPvPArea and isLeader) then
 		if CompactRaidFrameManager:IsVisible() then
 			CompactRaidFrameManager:Hide()
 		else
@@ -759,6 +762,7 @@ SlashCmdList['WORLDMARKERS'] = function()
 		if CompactRaidFrameManager:IsVisible() then
 			CompactRaidFrameManager:Hide()
 		else
+			PlaySound('igQuestFailed')
 			--DEFAULT_CHAT_FRAME:AddMessage('', 1, 0, 0)
 			UIErrorsFrame:AddMessage("You're not in a party and/or not eligible for marking", 1, 0, 0)
 		end
