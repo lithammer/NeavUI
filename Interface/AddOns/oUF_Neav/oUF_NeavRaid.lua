@@ -583,7 +583,7 @@ local function CreateRaidLayout(self, unit)
 
     self.Aggro = self.Health:CreateFontString(nil, 'OVERLAY')
     self.Aggro:SetPoint('CENTER', self, 'TOP')
-    self.Aggro:SetFont(oUF_Neav.media.font, 8, 'THINOUTLINE')
+    self.Aggro:SetFont(oUF_Neav.media.font, 9, 'THINOUTLINE')
     self.Aggro:SetShadowColor(0, 0, 0, 0)
     self.Aggro:SetTextColor(1, 1, 1)
 
@@ -755,6 +755,8 @@ SlashCmdList['WORLDMARKERS'] = function()
 		else
 			CompactRaidFrameManager:Show()
 		end
+	else
+		CompactRaidFrameManager:Hide()
 	end
 end
 SLASH_WORLDMARKERS1 = '/wm'
