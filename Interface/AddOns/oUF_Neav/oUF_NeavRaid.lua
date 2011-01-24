@@ -355,7 +355,7 @@ local function UpdateThreat(self, _, unit)
     if (self.Aggro) then
         local threat = UnitThreatSituation(self.unit)
         if (threat == 3) then
-            self.Aggro:SetText('|cFFFF0000AGGRO')
+            --self.Aggro:SetText('|cFFFF0000AGGRO')
             self.Health:SetBackdropColor(0.9, 0, 0)
 			if oUF_Neav.units.raid.manabar then
 				self.Power:SetBackdropColor(0.9, 0, 0)
@@ -749,14 +749,19 @@ SLASH_DPS1 = '/dps'
 SlashCmdList['WORLDMARKERS'] = function()
 	local instanceName, instanceType = GetInstanceInfo()
 	
-	if (GetRealNumPartyMembers() > 0 and instanceType ~= ('arena' or 'pvp') and instanceName ~= ('Wintergrasp' or 'Tol Barad')) then
+	if (GetRealNumPartyMembers() > 0 and instanceType ~= ('arena' or 'pvp') and instanceName ~= ('Wintergrasp' or 'Tol Barad') and IsPartyLeader()) then
 		if CompactRaidFrameManager:IsVisible() then
 			CompactRaidFrameManager:Hide()
 		else
 			CompactRaidFrameManager:Show()
 		end
 	else
-		CompactRaidFrameManager:Hide()
+		if CompactRaidFrameManager:IsVisible() then
+			CompactRaidFrameManager:Hide()
+		else
+			--DEFAULT_CHAT_FRAME:AddMessage('', 1, 0, 0)
+			UIErrorsFrame:AddMessage("You're not in a party and/or not eligible for marking", 1, 0, 0)
+		end
 	end
 end
 SLASH_WORLDMARKERS1 = '/wm'
