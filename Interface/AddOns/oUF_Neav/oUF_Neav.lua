@@ -28,6 +28,7 @@
 for _, button in pairs({
     'UnitFramePanelPartyBackground',
     'UnitFramePanelPartyPets',
+	'UnitFramePanelFullSizeFocusFrame',
 
     'CombatPanelTargetOfTarget',
     'CombatPanelTOTDropDown',
@@ -37,7 +38,6 @@ for _, button in pairs({
     'DisplayPanelShowAggroPercentage',
     
     'FrameCategoriesButton9',
-    'FrameCategoriesButton11',
 }) do
     _G['InterfaceOptions'..button]:SetAlpha(0.35)
     _G['InterfaceOptions'..button]:Disable()
@@ -54,17 +54,6 @@ local function FormatValue(self)
     else
         return self
     end
-end
-
--- Kill the Blizzard party/raid frames
-for _, frame in pairs({
-	CompactPartyFrame,
-	CompactRaidFrameManager,
-	CompactRaidFrameContainer,
-}) do
-	frame:UnregisterAllEvents()
-	frame.Show = function() end
-	frame:Hide()
 end
 
 local function CreateDropDown(self)   

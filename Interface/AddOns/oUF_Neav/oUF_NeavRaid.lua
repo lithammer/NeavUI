@@ -15,6 +15,52 @@
         
 --]]
 
+-- Kill the Blizzard party/raid frames
+for _, frame in pairs({
+	CompactPartyFrame,
+	--CompactRaidFrameManager, -- Actually usefull for world markers
+	CompactRaidFrameContainer,
+}) do
+	frame:UnregisterAllEvents()
+	frame.Show = function() end
+	frame:Hide()
+end
+
+for _, button in pairs({
+	'OptionsButton',
+
+    'FilterRoleTank',
+    'FilterRoleHealer',
+    'FilterRoleDamager',
+	
+	'FilterGroup1',
+	'FilterGroup2',
+	'FilterGroup3',
+	'FilterGroup4',
+	'FilterGroup5',
+	'FilterGroup6',
+	'FilterGroup7',
+	'FilterGroup8',
+	
+	'LockedModeToggle',
+	'HiddenModeToggle',
+}) do
+    --_G['CompactRaidFrameManagerDisplayFrame'..button]:SetAlpha(0.35)
+    _G['CompactRaidFrameManagerDisplayFrame'..button]:Hide()
+    _G['CompactRaidFrameManagerDisplayFrame'..button]:Disable()
+    _G['CompactRaidFrameManagerDisplayFrame'..button]:EnableMouse(false)
+end
+
+for _, button in pairs({
+    'UnitFramePanelRaidStylePartyFrames',
+
+    'FrameCategoriesButton11',
+}) do
+    _G['InterfaceOptions'..button]:SetAlpha(0.35)
+    _G['InterfaceOptions'..button]:Disable()
+    _G['InterfaceOptions'..button]:EnableMouse(false)
+end
+
 local function GetSpellName(spellID)
     local name = GetSpellInfo(spellID)
     return name
@@ -372,8 +418,13 @@ local function OnPowerTypeChange(self, _, unit)
 	
 	self.Health:ClearAllPoints()
 	if (powerToken == 'MANA') then
-		self.Health:SetPoint('TOPLEFT', self)
-		self.Health:SetPoint('BOTTOMRIGHT', self.Power, 'TOPRIGHT', 0, 1.5)
+		if (oUF_Neav.units.raid.horizontalHealthBars) then
+			self.Health:SetPoint('TOPLEFT', self)
+			self.Health:SetPoint('BOTTOMRIGHT', self.Power, 'TOPRIGHT', 0, 0)
+		else
+			self.Health:SetPoint('TOPLEFT', self)
+			self.Health:SetPoint('BOTTOMRIGHT', self.Power, 'BOTTOMLEFT', 0, 0)
+		end
 		self.Power:Show()
 	else
 		self.Health:SetAllPoints(self)
@@ -448,11 +499,20 @@ local function CreateRaidLayout(self, unit)
 		self.Power = CreateFrame('StatusBar', nil, self)
 		self.Power:SetStatusBarTexture(oUF_Neav.media.statusbar, 'ARTWORK')
 		self.Power:SetFrameStrata('LOW')
-		self.Power:SetPoint('BOTTOM', self, 0, 0)
-		self.Power:SetWidth(self:GetWidth())
-		self.Power:SetHeight(2)
+		
+		if (oUF_Neav.units.raid.horizontalHealthBars) then
+			self.Power:SetPoint('BOTTOM', self, 0, 0)
+			self.Power:SetWidth(self:GetWidth())
+			self.Power:SetHeight(3.5)
+			self.Power:SetOrientation('HORIZONTAL')
+		else
+			self.Power:SetPoint('RIGHT', self, 0, 0)
+			self.Power:SetWidth(3.5)
+			self.Power:SetHeight(self:GetHeight())
+			self.Power:SetOrientation('VERTICAL')
+		end
+		
 		self.Power:SetFrameLevel(1)
-		self.Power:SetOrientation('HORIZONTAL')
 		self.Power:SetBackdrop{
 			bgFile = 'Interface\\Buttons\\WHITE8x8',
 			insets = {
@@ -523,7 +583,7 @@ local function CreateRaidLayout(self, unit)
 
     self.Aggro = self.Health:CreateFontString(nil, 'OVERLAY')
     self.Aggro:SetPoint('CENTER', self, 'TOP')
-    self.Aggro:SetFont(oUF_Neav.media.font, 10, 'OUTLINE')
+    self.Aggro:SetFont(oUF_Neav.media.font, 8, 'THINOUTLINE')
     self.Aggro:SetShadowColor(0, 0, 0, 0)
     self.Aggro:SetTextColor(1, 1, 1)
 
@@ -685,3 +745,16 @@ SlashCmdList['DPS'] = function()
 	end
 end
 SLASH_DPS1 = '/dps'
+
+SlashCmdList['WORLDMARKERS'] = function()
+	local instanceName, instanceType = GetInstanceInfo()
+	
+	if (GetRealNumPartyMembers() > 0 and instanceType ~= ('arena' or 'pvp') and instanceName ~= ('Wintergrasp' or 'Tol Barad')) then
+		if CompactRaidFrameManager:IsVisible() then
+			CompactRaidFrameManager:Hide()
+		else
+			CompactRaidFrameManager:Show()
+		end
+	end
+end
+SLASH_WORLDMARKERS1 = '/wm'
