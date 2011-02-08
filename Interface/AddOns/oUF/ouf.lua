@@ -155,7 +155,7 @@ local updateActiveUnit = function(self, event, unit)
 	end
 
 	-- Drop out if the event unit doesn't match any of the frame units.
-	if(not UnitExists(modUnit) or unit ~= realUnit and unit ~= modUnit) then return end
+	if(not UnitExists(modUnit) or unit and unit ~= realUnit and unit ~= modUnit) then return end
 
 	if(modUnit ~= realUnit) then
 		self.realUnit = realUnit
@@ -166,7 +166,15 @@ local updateActiveUnit = function(self, event, unit)
 	-- Change the active unit and run a full update.
 	if(self.unit ~= modUnit) then
 		self.unit = modUnit
-		return self:UpdateAllElements('RefreshUnit')
+		self:UpdateAllElements('RefreshUnit')
+
+		return true
+	end
+end
+
+local OnShow = function(self)
+	if(not updateActiveUnit(self, 'OnShow')) then
+		return self:UpdateAllElements'OnShow'
 	end
 end
 
@@ -198,7 +206,13 @@ local initObject = function(unit, style, styleFunc, header, ...)
 		if(not ((objectUnit and objectUnit:match'target') or suffix == 'target')) then
 			object:RegisterEvent('UNIT_ENTERED_VEHICLE', updateActiveUnit)
 			object:RegisterEvent('UNIT_EXITED_VEHICLE', updateActiveUnit)
-			object:RegisterEvent('UNIT_PET', updateActiveUnit)
+
+			-- We don't need to register UNIT_PET for the player unit. We rigester it
+			-- mainly because UNIT_EXITED_VEHICLE and UNIT_ENTERED_VEHICLE doesn't always
+			-- have pet information when they fire for party and raid units.
+			if(objectUnit ~= 'player') then
+				object:RegisterEvent('UNIT_PET', updateActiveUnit)
+			end
 		end
 
 		local parent = object:GetParent()
@@ -224,7 +238,7 @@ local initObject = function(unit, style, styleFunc, header, ...)
 		end
 
 		object:SetScript("OnAttributeChanged", OnAttributeChanged)
-		object:SetScript("OnShow", object.UpdateAllElements)
+		object:SetScript("OnShow", OnShow)
 
 		for element in next, elements do
 			object:EnableElement(element, objectUnit)
