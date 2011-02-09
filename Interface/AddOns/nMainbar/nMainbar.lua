@@ -32,10 +32,10 @@ hooksecurefunc('PetActionBar_Update', function()
                 end
                 
                 local normal
-                if (name == 'PetActionButton') then 
-                    normal = _G[name..i..'NormalTexture2'] 
+                if (name == 'PetActionButton' or name == 'ShapeshiftButton') then 
+                    normal = _G[name..i..'NormalTexture2']
                 else 
-                    normal = _G[name..i..'NormalTexture'] 
+                    normal = _G[name..i..'NormalTexture']
                 end
                 normal:ClearAllPoints()
                 normal:SetPoint('TOPRIGHT', button, 1, 1)
