@@ -24,6 +24,9 @@ do
 
     MultiBarLeftButton1:ClearAllPoints() 
     MultiBarLeftButton1:SetPoint('TOPRIGHT', MultiBarRightButton1, 'TOPLEFT', -6, 0)
+	
+	-- to prevent scaling and visibility issues with the mouseover options
+	MultiBarLeft:SetParent(UIParent)
 end
 
 if (nMainbar.stanceBar.hide) then
@@ -100,9 +103,9 @@ end
 
 if (nMainbar.petbar.vertical) then
 	for i = 2, 10 do
-		button = _G["PetActionButton"..i]
+		button = _G['PetActionButton'..i]
 		button:ClearAllPoints()
-		button:SetPoint("TOP", _G["PetActionButton"..(i - 1)], "BOTTOM", 0, -8)
+		button:SetPoint('TOP', _G['PetActionButton'..(i - 1)], 'BOTTOM', 0, -8)
 	end
 end
 

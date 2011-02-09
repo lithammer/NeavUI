@@ -19,8 +19,8 @@ end
 for _, frame in pairs({
     'MultiBarLeft',
     'MultiBarRight',
-    --'MultiBarBottomLeft',
-    --'MultiBarBottomRight',
+    -- 'MultiBarBottomLeft', -- Don't reposition the frame based on exp/rep bar showing
+    -- 'MultiBarBottomRight', -- Don't reposition the frame based on exp/rep bar showing
     'ShapeshiftBarFrame',
     'PossessBarFrame',
         

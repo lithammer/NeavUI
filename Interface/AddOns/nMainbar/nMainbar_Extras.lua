@@ -27,7 +27,7 @@ MultiBarBottomRight:SetAlpha(nMainbar.multiBarBottomRight.alpha)
 for _, bar in pairs({
     'MainMenuBar',
                 
-    --'MultiBarLeft',
+    'MultiBarLeft',
     'MultiBarRight',
                 
     --'MultiBarBottomLeft',
