@@ -11,13 +11,15 @@ f.player = f:CreateFontString(nil, 'ARTWORK')
 f.player:SetFontObject('GameFontNormal')
 f.player:SetJustifyH('LEFT')
 
+local xOffset = (WorldMapDetailFrame:GetWidth() / 2) * WorldMapDetailFrame:GetEffectiveScale() - 170
+
 hooksecurefunc('WorldMapQuestShowObjectives_AdjustPosition', function()
 	f.player:ClearAllPoints()
 	f.cursor:ClearAllPoints()
 	
 	if (WORLDMAP_SETTINGS.size == WORLDMAP_WINDOWED_SIZE) then
 		--f.player:SetPoint('BOTTOMRIGHT', WorldMapDetailFrame, 'BOTTOM', -5, -20)
-		f.player:SetPoint('BOTTOMLEFT', WorldMapDetailFrame, 'BOTTOMLEFT', 175, -20)
+		f.player:SetPoint('BOTTOMLEFT', WorldMapDetailFrame, 'BOTTOMLEFT', xOffset, -20)
 		f.cursor:SetPoint('BOTTOMLEFT', WorldMapDetailFrame, 'BOTTOM', 5, -20)
 	else
 		f.player:SetPoint('BOTTOMRIGHT', WorldMapPositioningGuide, 'BOTTOM', -5, 10)
