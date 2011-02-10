@@ -1,30 +1,27 @@
-
 local f = CreateFrame('Frame')
 f:SetParent(WorldMapFrame)
 
+-- Cursor coordinates
 f.cursor = f:CreateFontString(nil, 'ARTWORK')
 f.cursor:SetFontObject('GameFontNormal')
 f.cursor:SetJustifyH('LEFT')
---f.cursor:SetPoint('BOTTOMLEFT', WorldMapFrame, 'BOTTOM', -125, -20) -- WorldMapButton
-        
+
+-- Player coordinates
 f.player = f:CreateFontString(nil, 'ARTWORK')
 f.player:SetFontObject('GameFontNormal')
-f.player:SetJustifyH('RIGHT')
-if WORLDMAP_SETTINGS.size == WORLDMAP_WINDOWED_SIZE then
-	f.player:SetPoint("BOTTOMRIGHT", WorldMapDetailFrame, "BOTTOM", -5, -20);
-	f.cursor:SetPoint("BOTTOMLEFT", WorldMapDetailFrame, "BOTTOM", 5, -20);
-else
-	f.player:SetPoint("BOTTOMRIGHT", WorldMapPositioningGuide, "BOTTOM", -5, 10);
-	f.cursor:SetPoint("BOTTOMLEFT", WorldMapPositioningGuide, "BOTTOM", 5, 10);
-end
+f.player:SetJustifyH('LEFT')
 
 hooksecurefunc('WorldMapQuestShowObjectives_AdjustPosition', function()
-	if WORLDMAP_SETTINGS.size == WORLDMAP_WINDOWED_SIZE then
-		f.player:SetPoint("BOTTOMRIGHT", WorldMapDetailFrame, "BOTTOM", -5, -20);
-		f.cursor:SetPoint("BOTTOMLEFT", WorldMapDetailFrame, "BOTTOM", 5, -20);
+	f.player:ClearAllPoints()
+	f.cursor:ClearAllPoints()
+	
+	if (WORLDMAP_SETTINGS.size == WORLDMAP_WINDOWED_SIZE) then
+		--f.player:SetPoint('BOTTOMRIGHT', WorldMapDetailFrame, 'BOTTOM', -5, -20)
+		f.player:SetPoint('BOTTOMLEFT', WorldMapDetailFrame, 'BOTTOMLEFT', 175, -20)
+		f.cursor:SetPoint('BOTTOMLEFT', WorldMapDetailFrame, 'BOTTOM', 5, -20)
 	else
-		f.player:SetPoint("BOTTOMRIGHT", WorldMapPositioningGuide, "BOTTOM", -5, 10);
-		f.cursor:SetPoint("BOTTOMLEFT", WorldMapPositioningGuide, "BOTTOM", 5, 10);
+		f.player:SetPoint('BOTTOMRIGHT', WorldMapPositioningGuide, 'BOTTOM', -5, 10)
+		f.cursor:SetPoint('BOTTOMLEFT', WorldMapPositioningGuide, 'BOTTOM', 5, 10)
 	end
 end)
 
