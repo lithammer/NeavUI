@@ -5,7 +5,7 @@ addon.comboColor = {}
 
 -- Set to true to show, else false
 addon.show.energy = true
-addon.show.focus = false
+addon.show.focus = true
 addon.show.rage = true
 addon.show.runes = true
 
