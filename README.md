@@ -25,6 +25,7 @@
 - Healthbar on tooltips now have a textual representation on it as well.
 - Fixed position and font size for player/cursor coordinates on world map.
 - Added a copy chat function to nChat, use it by right-clicking on the chat tab. Also added a URL copy function.
+- nRunes has been removed and replaced by nPower, which is essentially the same thing except with support for energy, focus and rage as well. The energy module also shows combo points in a similar fashion as nRunes showed runes.
 
 ## Known issues
 
