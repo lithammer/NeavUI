@@ -1,7 +1,7 @@
 local _, addon = ...
 
 local playerClass = select(2, UnitClass('player'))
-if (playerClass ~= 'WARRIOR' and playerClass ~= 'DRUID' and addon.show.rage) then
+if (playerClass ~= 'WARRIOR' and playerClass ~= 'DRUID' or not addon.show.rage) then
     return
 end
 
@@ -9,7 +9,7 @@ local Rage = CreateFrame('Frame', nil, UIParent)
 Rage:SetScale(1.4)
 Rage:SetWidth(18)
 Rage:SetHeight(18)
-Rage:SetPoint('CENTER', UIParent, 0, -223)
+Rage:SetPoint(unpack(addon.position))
 Rage:EnableMouse(false)
 
 Rage.Color = PowerBarColor['RAGE']

@@ -1,6 +1,6 @@
 local _, addon = ...
 
-if (select(2, UnitClass('player')) ~= 'DEATHKNIGHT' and addon.show.runes) then
+if (select(2, UnitClass('player')) ~= 'DEATHKNIGHT' or not addon.show.runes) then
     return
 end
 
@@ -21,7 +21,7 @@ local Rune = CreateFrame('Frame', nil, UIParent)
 Rune:SetScale(1.4)
 Rune:SetWidth(18)
 Rune:SetHeight(18)
-Rune:SetPoint('CENTER', UIParent, 0, -223)
+Rune:SetPoint(unpack(addon.position))
 Rune:EnableMouse(false)
 
 Rune:RegisterEvent('RUNE_TYPE_UPDATE')

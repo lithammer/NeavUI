@@ -1,7 +1,7 @@
 local _, addon = ...
 
 local playerClass = select(2, UnitClass('player'))
-if (playerClass ~= 'HUNTER' and addon.show.focus) then
+if (playerClass ~= 'HUNTER' or not addon.show.focus) then
     return
 end
 
@@ -9,7 +9,7 @@ local Focus = CreateFrame('Frame', nil, UIParent)
 Focus:SetScale(1.4)
 Focus:SetWidth(18)
 Focus:SetHeight(18)
-Focus:SetPoint('CENTER', UIParent, 0, -223)
+Focus:SetPoint(unpack(addon.position))
 Focus:EnableMouse(false)
 
 Focus.Color = PowerBarColor['FOCUS']

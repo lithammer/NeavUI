@@ -1,7 +1,7 @@
 local _, addon = ...
 
 local playerClass = select(2, UnitClass('player'))
-if (playerClass ~= 'ROGUE' and playerClass ~= 'DRUID' and addon.show.energy) then
+if (playerClass ~= 'ROGUE' and playerClass ~= 'DRUID' or not addon.show.energy) then
     return
 end
 
@@ -11,7 +11,7 @@ local Energy = CreateFrame('Frame', nil, UIParent)
 Energy:SetScale(1.4)
 Energy:SetWidth(18)
 Energy:SetHeight(18)
-Energy:SetPoint('CENTER', UIParent, 0, -223)
+Energy:SetPoint(unpack(addon.position))
 Energy:EnableMouse(false)
 
 Energy.Color = PowerBarColor['ENERGY']
