@@ -30,7 +30,7 @@ for i = 1, 5 do
     Energy.Combo[i]:SetShadowOffset(0, 0)
     Energy.Combo[i]:SetParent(Energy)
     Energy.Combo[i]:SetText(i)
-	Energy.Combo[i]:SetAlpha(0)
+    Energy.Combo[i]:SetAlpha(0)
 end
 
 Energy.Combo[1]:SetPoint('CENTER', -52, 0)
@@ -96,7 +96,7 @@ local SetComboAlpha = function(i)
 	if (UnitIsDeadOrGhost('target') or comboPoints == 0) then
 		return 0
 	elseif (i > comboPoints) then
-		return 0.2
+		return 0.1
 	else
 		return 1
 	end
@@ -138,7 +138,7 @@ Energy:SetScript('OnUpdate', function(self, elapsed)
 			if (UnitPower('player', ENERGY) < UnitPowerMax('player', ENERGY) and not InCombatLockdown()) then
 				UIFrameFadeIn(Energy.Power, 0.35, Energy.Power:GetAlpha(), 0.35)
 			elseif (InCombatLockdown()) then
-				UIFrameFadeIn(Energy.Power, 0.35, Energy.Power:GetAlpha(), 0.8)
+				UIFrameFadeIn(Energy.Power, 0.35, Energy.Power:GetAlpha(), 1.0)
 			else
 				UIFrameFadeOut(Energy.Power, 0.35, Energy.Power:GetAlpha(), 0)
 			end
@@ -146,6 +146,6 @@ Energy:SetScript('OnUpdate', function(self, elapsed)
 			UIFrameFadeOut(Energy.Power, 0.35, Energy.Power:GetAlpha(), 0)
 		end
         
-		updateTimer   = 0
+		updateTimer = 0
 	end
 end)
