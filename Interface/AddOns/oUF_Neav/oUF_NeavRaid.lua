@@ -61,6 +61,10 @@ for _, button in pairs({
     _G['InterfaceOptions'..button]:EnableMouse(false)
 end
 
+if IsAddOnLoaded('Aptechka') or IsAddOnLoaded('Grid') then
+	return
+end
+
 local function GetSpellName(spellID)
     local name = GetSpellInfo(spellID)
     return name
@@ -376,18 +380,8 @@ local function UpdateHealth(Health, unit, min, max)
     end
 
     if (UnitIsDead(unit) or UnitIsGhost(unit) or not UnitIsConnected(unit)) then
-     -- Health.Value:SetText((UnitIsDead(unit) and 'Dead') or (UnitIsGhost(unit) and 'Ghost') or (not UnitIsConnected(unit) and 'Offline'))
-        Health.Value:SetTextColor(0.5, 0.5, 0.5)
         Health:SetStatusBarColor(0.5, 0.5, 0.5)
     else
-        if ((min/max * 100) < 90) then
-         -- Health.Value:SetText(DeficitValue(max-min))
-            Health.Value:SetTextColor(1, 0, 0)
-        else
-         -- Health.Value:SetText('')
-            Health.Value:SetTextColor(1, 1, 1)
-        end
-
         local color = RAID_CLASS_COLORS[select(2, UnitClass(unit))]
         if (color) then
             Health:SetStatusBarColor(color.r, color.g, color.b)
@@ -408,8 +402,8 @@ local function OnPowerTypeChange(self, _, unit)
 	if (self.unit ~= unit) then
         return 
     end
-	
-	local powerType, powerToken = UnitPowerType(unit)
+
+	local powerType, powerToken, altR, altG, altB = UnitPowerType(unit)
 	local unitPower = PowerBarColor[powerToken]
 	
 	if (unitPower) then
@@ -421,9 +415,13 @@ local function OnPowerTypeChange(self, _, unit)
 		if (oUF_Neav.units.raid.horizontalHealthBars) then
 			self.Health:SetPoint('TOPLEFT', self)
 			self.Health:SetPoint('BOTTOMRIGHT', self.Power, 'TOPRIGHT', 0, 0)
+			self.HealPrediction.myBar:SetHeight(oUF_Neav.units.raid.height - 3.5)
+			self.HealPrediction.otherBar:SetHeight(oUF_Neav.units.raid.height - 3.5)
 		else
 			self.Health:SetPoint('TOPLEFT', self)
 			self.Health:SetPoint('BOTTOMRIGHT', self.Power, 'BOTTOMLEFT', 0, 0)
+			self.HealPrediction.myBar:SetWidth(oUF_Neav.units.raid.width - 3.5)
+			self.HealPrediction.otherBar:SetWidth(oUF_Neav.units.raid.width - 3.5)
 		end
 		self.Power:Show()
 	else
@@ -435,13 +433,13 @@ end
 
 local function CreateRaidLayout(self, unit)
     self:SetScript('OnEnter', function(self)
+		UnitFrame_OnEnter(self)
     	self.Health.Mouseover:SetAlpha(0.15)
-    	UnitFrame_OnEnter(self)
-    end)
+	end)
     self:SetScript('OnLeave', function(self)
+		UnitFrame_OnLeave(self)
     	self.Health.Mouseover:SetAlpha(0)
-    	UnitFrame_OnLeave(self)
-    end)
+	end)
 
         -- health bar
 
@@ -464,14 +462,16 @@ local function CreateRaidLayout(self, unit)
             bottom = -1.5
         },
     }
-    self.Health:SetBackdropColor(0, 0, 0) 
+    self.Health:SetBackdropColor(0, 0, 0)
+	self.Health.colorClass = true
+	
+	self.Health.frequentUpdates = true
 
-    self.Health.PostUpdate = UpdateHealth
-
-    self.Health.colorClass = true
-	if not isHealer or oUF_Neav.units.raid.smoothUpdatesForAllClasses then
+	if not isHealer then
 		self.Health.Smooth = true
 	end
+	
+	self.Health.PostUpdate = UpdateHealth
 
         -- health background
 
@@ -524,6 +524,7 @@ local function CreateRaidLayout(self, unit)
 		}
 		self.Power:SetBackdropColor(0, 0, 0)
 		self.Power.colorPower = true
+		self.Power.Smooth = true
 
 		self.Power.Background = self.Power:CreateTexture(nil, 'BORDER')
 		self.Power.Background:SetAllPoints(self.Power)
@@ -545,39 +546,37 @@ local function CreateRaidLayout(self, unit)
 
         -- heal prediction (new healcomm)
 	
-	if isHealer then
-		local mhpb = CreateFrame('StatusBar', nil, self.Health)
-		if oUF_Neav.units.raid.horizontalHealthBars then
-			mhpb:SetOrientation('HORIZONTAL')
-			mhpb:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT', 0, 0)
-		else
-			mhpb:SetOrientation('VERTICAL')
-			mhpb:SetPoint('BOTTOM', self.Health:GetStatusBarTexture(), 'TOP', 0, 0)
-		end
-		mhpb:SetStatusBarTexture(oUF_Neav.media.statusbar)
-		mhpb:SetWidth(oUF_Neav.units.raid.width)
-		mhpb:SetHeight(oUF_Neav.units.raid.height)
-		mhpb:SetStatusBarColor(0, 1, 0.5, 0.25)
-
-		local ohpb = CreateFrame('StatusBar', nil, self.Health)
-		if oUF_Neav.units.raid.horizontalHealthBars then
-			ohpb:SetOrientation('HORIZONTAL')
-			ohpb:SetPoint('LEFT', mhpb:GetStatusBarTexture(), 'RIGHT', 0, 0)
-		else
-			ohpb:SetOrientation('VERTICAL')
-			ohpb:SetPoint('BOTTOM', mhpb:GetStatusBarTexture(), 'TOP', 0, 0)
-		end
-		ohpb:SetStatusBarTexture(oUF_Neav.media.statusbar)
-		ohpb:SetWidth(oUF_Neav.units.raid.width)
-		ohpb:SetHeight(oUF_Neav.units.raid.height)
-		ohpb:SetStatusBarColor(0, 1, 0, 0.25)
-
-		self.HealPrediction = {
-			myBar = mhpb,
-			otherBar = ohpb,
-			maxOverflow = 1,
-		}
+	local mhpb = CreateFrame('StatusBar', nil, self.Health)
+	if oUF_Neav.units.raid.horizontalHealthBars then
+		mhpb:SetOrientation('HORIZONTAL')
+		mhpb:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT', 0, 0)
+	else
+		mhpb:SetOrientation('VERTICAL')
+		mhpb:SetPoint('BOTTOM', self.Health:GetStatusBarTexture(), 'TOP', 0, 0)
 	end
+	mhpb:SetStatusBarTexture(oUF_Neav.media.statusbar)
+	mhpb:SetWidth(oUF_Neav.units.raid.width)
+	mhpb:SetHeight(oUF_Neav.units.raid.height)
+	mhpb:SetStatusBarColor(0, 1, 0.5, 0.15)
+
+	local ohpb = CreateFrame('StatusBar', nil, self.Health)
+	if oUF_Neav.units.raid.horizontalHealthBars then
+		ohpb:SetOrientation('HORIZONTAL')
+		ohpb:SetPoint('LEFT', mhpb:GetStatusBarTexture(), 'RIGHT', 0, 0)
+	else
+		ohpb:SetOrientation('VERTICAL')
+		ohpb:SetPoint('BOTTOM', mhpb:GetStatusBarTexture(), 'TOP', 0, 0)
+	end
+	ohpb:SetStatusBarTexture(oUF_Neav.media.statusbar)
+	ohpb:SetWidth(oUF_Neav.units.raid.width)
+	ohpb:SetHeight(oUF_Neav.units.raid.height)
+	ohpb:SetStatusBarColor(0, 1, 0, 0.15)
+
+	self.HealPrediction = {
+		myBar = mhpb,
+		otherBar = ohpb,
+		maxOverflow = 1,
+	}
 	
         -- aggro text
 
@@ -689,13 +688,10 @@ oUF:Factory(function(self)
     local raid = {}
     for i = 1, oUF_Neav.units.raid.numGroups do
         table.insert(raid, self:SpawnHeader('oUF_Neav_Raid'..i, nil, 'solo,party,raid',
-			'oUF-initialConfigFunction', [[
-				local header = self:GetParent()
-				self:SetWidth(header:GetAttribute('initial-width'))
-				self:SetHeight(header:GetAttribute('initial-height'))
-			]],
-			'initial-width', oUF_Neav.units.raid.width,
-			'initial-height', oUF_Neav.units.raid.height,
+			'oUF-initialConfigFunction', ([[
+				self:SetWidth(%d)
+				self:SetHeight(%d)
+			]]):format(oUF_Neav.units.raid.width, oUF_Neav.units.raid.height),
             'showParty', true,
             'showPlayer', true,
             'showSolo', (oUF_Neav.units.raid.showSolo and true) or false,
@@ -718,41 +714,13 @@ oUF:Factory(function(self)
     end
 end)
 
--- Moves the raid frames a bit
-SlashCmdList['HEAL'] = function()
-	local pos = {'LEFT', UIParent, 'CENTER', 200, 0}
-	
-	for i = 1, oUF_Neav.units.raid.numGroups do
-		if (i == 1) then
-			_G['oUF_Neav_Raid'..i]:ClearAllPoints()
-			_G['oUF_Neav_Raid'..i]:SetPoint(unpack(pos))
-		else
-			_G['oUF_Neav_Raid'..i]:SetPoint('TOPLEFT', 'oUF_Neav_Raid'..i-1, 'TOPRIGHT', 7, 0)
-		end
-	end
-end
-SLASH_HEAL1 = '/heal'
-
--- Moves the raid frames a bit
-SlashCmdList['DPS'] = function()
-	for i = 1, oUF_Neav.units.raid.numGroups do
-		if (i == 1) then
-			_G['oUF_Neav_Raid'..i]:ClearAllPoints()
-			_G['oUF_Neav_Raid'..i]:SetPoint(unpack(oUF_Neav.units.raid.position))
-		else
-			_G['oUF_Neav_Raid'..i]:SetPoint('TOPLEFT', 'oUF_Neav_Raid'..i-1, 'TOPRIGHT', 7, 0)
-		end
-	end
-end
-SLASH_DPS1 = '/dps'
-
 SlashCmdList['WORLDMARKERS'] = function()
 	local instanceName, instanceType = GetInstanceInfo()
-	local isLeader = (IsRealPartyLeader() or IsRealRaidLeader() or IsRaidOfficer())
-	local notPvPArea = (instanceType ~= ('arena' or 'pvp') and instanceName ~= ('Wintergrasp' or 'Tol Barad'))
+	local isLeader = IsRealPartyLeader() or IsRealRaidLeader() or IsRaidOfficer()
+	local isPvPZone = instanceType == 'arena' or instanceType == 'pvp' and instanceName == 'Wintergrasp' or instanceName == 'Tol Barad'
 	
 	-- If eligible for marking
-	if (UnitInParty('player') and notPvPArea and isLeader) then
+	if (UnitInParty('player') and not isPvPZone and isLeader) then
 		if CompactRaidFrameManager:IsVisible() then
 			CompactRaidFrameManager:Hide()
 		else
@@ -769,3 +737,55 @@ SlashCmdList['WORLDMARKERS'] = function()
 	end
 end
 SLASH_WORLDMARKERS1 = '/wm'
+
+--[[
+
+local function MoveRaidFrames(point, parent, parentPoint, xOffset, yOffset)
+	for i = 1, oUF_Neav.units.raid.numGroups do
+		if (i == 1) then
+			_G['oUF_Neav_Raid'..i]:ClearAllPoints()
+			_G['oUF_Neav_Raid'..i]:SetPoint(point, parent, parentPoint, xOffset, yOffset)
+		else
+			_G['oUF_Neav_Raid'..i]:SetPoint('TOPLEFT', 'oUF_Neav_Raid'..i-1, 'TOPRIGHT', 7, 0)
+		end
+	end
+end
+
+-- Moves the raid frames a bit
+SlashCmdList['HEAL'] = function()
+	MoveRaidFrames('LEFT', UIParent, 'CENTER', 200, 0)
+end
+SLASH_HEAL1 = '/heal'
+
+-- Moves the raid frames a bit
+SlashCmdList['DPS'] = function()
+	MoveRaidFrames(unpack(oUF_Neav.units.raid.position))
+end
+SLASH_DPS1 = '/dps'
+
+
+-- Automatic moving of raid frames based on class, spec and party/size size
+local Mover = CreateFrame('Frame')
+Mover:RegisterEvent('PLAYER_ENTERING_WORLD')
+
+local function Mover_OnEvent(self, event, ...)
+	if event == 'PLAYER_ENTERING_WORLD' then
+		self:RegisterEvent('ACTIVE_TALENT_GROUP_CHANGED')
+		--self:UnregisterEvent('PLAYER_ENTERING_WORLD')
+		self:RegisterEvent('PARTY_MEMBERS_CHANGED')
+	end
+	
+	if (not InCombatLockdown()) then
+		local spec = GetPrimaryTalentTree()
+
+		-- If in healer spec and a party
+		if (GetNumPartyMembers() > 0) and ((playerClass == 'DRUID' and spec == 3) or (playerClass == 'PRIEST' and (spec == 1 or spec == 2)) or (playerClass == 'SHAMAN' and spec == 3)) then
+			MoveRaidFrames('LEFT', UIParent, 'CENTER', 200, 0)
+		else
+			MoveRaidFrames(unpack(oUF_Neav.units.raid.position))
+		end
+	end
+end
+Mover:SetScript('OnEvent', Mover_OnEvent)
+
+]]--
