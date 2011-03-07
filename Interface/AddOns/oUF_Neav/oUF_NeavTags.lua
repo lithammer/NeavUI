@@ -11,7 +11,7 @@ oUF.Tags['level'] = function(unit)
     local r, g, b
     local level = UnitLevel(unit)
     local colorL = GetQuestDifficultyColor(level)
-        
+
     if (level < 0) then 
         r, g, b = 1, 0, 0
         level = '??'
@@ -26,24 +26,24 @@ oUF.Tags['level'] = function(unit)
     return format('|cff%02x%02x%02x%s|r', r*255, g*255, b*255, level)
 end
 
-oUF.TagEvents['name'] = 'UNIT_NAME_UPDATE'
+oUF.TagEvents['name'] = 'UNIT_NAME_UPDATE UNIT_POWER'
 oUF.Tags['name'] = function(unit)
     local r, g, b
     local colorA, colorB
     local unitName, unitRealm = UnitName(unit)
     local _, class = UnitClass(unit)
-    
+
     if (unitRealm) and (unitRealm ~= '') then
         unitName = unitName..' (*)'
     end
-        
+
     for i = 1, 4 do
         if (unit == 'party'..i) then
             colorA = oUF.colors.class[class]
         end
     end
 
-    if (unit == 'pet' and GetPetHappiness()) then
+    if (unit == 'pet' and SPELL_POWER_HAPPINESS and GetPetHappiness()) then
 		colorA = oUF.colors.happiness[GetPetHappiness()]
     elseif (unit == 'player' or not UnitIsFriend('player', unit) and UnitIsPlayer(unit) and UnitClass(unit)) then
 		colorA = oUF.colors.class[class]
@@ -58,7 +58,7 @@ oUF.Tags['name'] = function(unit)
 	elseif (colorB) then
 		r, g, b = colorB[1], colorB[2], colorB[3]
 	end
-    
+
     return format('|cff%02x%02x%02x%s|r', r*255, g*255, b*255, unitName)
 end
 
@@ -67,12 +67,12 @@ oUF.Tags['name:Raid'] = function(unit)
     return UnitName(unit):sub(1, 4)
 end
 
-oUF.TagEvents['health:Raid'] = 'UNIT_MAXHEALTH UNIT_HEALTH'
+oUF.TagEvents['health:Raid'] = 'UNIT_MAXHEALTH UNIT_HEALTH UNIT_HEALTH_FREQUENT'
 oUF.Tags['health:Raid'] = function(unit)
-    local max = UnitHealthMax(unit) 
+    local max = UnitHealthMax(unit)
     local min = UnitHealth(unit)
-    
-    if (UnitIsDead(unit) or UnitIsGhost(unit) or not UnitIsConnected(unit)) then
+
+    if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
         return format('|cff%02x%02x%02x%s|r', 0.5*255, 0.5*255, 0.5*255, (UnitIsDead(unit) and 'Dead') or (UnitIsGhost(unit) and 'Ghost') or (not UnitIsConnected(unit) and 'Offline'))
     else
         if ((min/max * 100) < 90) then
