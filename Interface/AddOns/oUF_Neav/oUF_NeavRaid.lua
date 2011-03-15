@@ -73,10 +73,11 @@ end
 local playerClass = select(2, UnitClass('player'))
 local isHealer = (playerClass == 'DRUID' or playerClass == 'PALADIN' or playerClass == 'PRIEST' or playerClass == 'SHAMAN')
 
--- Classbuffs { spell ID, position [, {r, g, b, a}][, anyUnit][, hideCooldown][, hideCount] }
+-- Class buffs { spell ID, position [, {r, g, b, a}][, anyUnit][, hideCooldown][, hideCount] }
 -- For oUF_AuraWatch
---do
-	local indicatorList = {
+local indicatorList
+do
+	indicatorList = {
 		DRUID = {
 			{774, 'BOTTOMRIGHT', {1, 0.2, 1}}, -- Rejuvenation
 			{33763, 'TOPRIGHT', {0.5, 1, 0.5}}, -- Lifebloom
@@ -108,7 +109,7 @@ local isHealer = (playerClass == 'DRUID' or playerClass == 'PALADIN' or playerCl
 			{23333, 'LEFT', {1, 0, 0}}, -- Warsong flag
 		},
 	}
---end
+end
 
 function auraIcon(self, icon)
 	if (icon.cd) then
@@ -130,19 +131,19 @@ local function CreateIndicators(self, unit)
 
 	local buffs = {}
 
-	if (indicatorList['ALL']) then
+	if indicatorList['ALL'] then
 		for key, value in pairs(indicatorList['ALL']) do
 			tinsert(buffs, value)
 		end
 	end
 	
-	if (indicatorList[playerClass]) then
+	if indicatorList[playerClass] then
 		for key, value in pairs(indicatorList[playerClass]) do
 			tinsert(buffs, value)
 		end
 	end
 
-	if (buffs) then
+	if buffs then
 		for key, spell in pairs(buffs) do
 			local icon = CreateFrame('Frame', nil, self.AuraWatch)
 			icon.spellID = spell[1]
@@ -152,15 +153,17 @@ local function CreateIndicators(self, unit)
 			icon:SetWidth(oUF_Neav.units.raid.indicatorSize)
 			icon:SetHeight(oUF_Neav.units.raid.indicatorSize)
 			icon:SetPoint(spell[2], self)
+
 			-- Exception to place PW:S above Weakened Soul
-			if spell[1] == 17 then
+			if (spell[1] == 17) then
 				icon:SetFrameLevel(icon:GetFrameLevel() + 5)
 			end
 
 			icon.icon = icon:CreateTexture(nil, 'OVERLAY')
 			icon.icon:SetAllPoints(icon)
 			icon.icon:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\borderIndicator')
-			if (spell[3]) then
+
+			if spell[3] then
 				icon.icon:SetVertexColor(unpack(spell[3]))
 			else
 				icon.icon:SetVertexColor(0.8, 0.8, 0.8)
@@ -274,6 +277,20 @@ local debuffList = setmetatable({
 	-- Suby Sanctum
 	[GetSpellName(74562)] = 8, -- Fiery Combustion, Halion
 	[GetSpellName(74792)] = 8, -- Soul Consumption, Halion
+
+	-- Blackwing Descent
+	[GetSpellName(91911)] = 8, -- Constricting Chains, Magmaw
+	[GetSpellName(94617)] = 10, -- Mangle, Magmaw
+	[GetSpellName(79505)] = 8, -- Aquiring target/flamethrower, Omnotron Defense System
+	[GetSpellName(77699)] = 8, -- Flash Freeze, Maloriak
+	[GetSpellName(89084)] = 8, -- Low Health, Chimaeron
+	[GetSpellName(92956)] = 8, -- Wrack, Sinestra
+
+	-- The Bastion of Twilight
+	[GetSpellName(81836)] = 8, -- Corruption: Accelerated, Cho'gall
+
+	-- Throne of the Four Winds
+	-- nothing...
 
 },{ __index = function() 
     return 0 
@@ -409,7 +426,8 @@ local function OnPowerTypeChange(self, _, unit)
 	if (unitPower) then
 		self.Power.Background:SetVertexColor(unitPower.r * 0.25, unitPower.g * 0.25, unitPower.b * 0.25)
 	end
-	
+
+	-- TODO: Really need to improve how this ugly solution
 	self.Health:ClearAllPoints()
 	if (powerToken == 'MANA') then
 		if (oUF_Neav.units.raid.horizontalHealthBars) then
@@ -426,6 +444,13 @@ local function OnPowerTypeChange(self, _, unit)
 		self.Power:Show()
 	else
 		self.Health:SetAllPoints(self)
+		if (oUF_Neav.units.raid.horizontalHealthBars) then
+			self.HealPrediction.myBar:SetHeight(oUF_Neav.units.raid.height)
+			self.HealPrediction.otherBar:SetHeight(oUF_Neav.units.raid.height)
+		else
+			self.HealPrediction.myBar:SetWidth(oUF_Neav.units.raid.width)
+			self.HealPrediction.otherBar:SetWidth(oUF_Neav.units.raid.width)
+		end
 		self.Power:Hide()
 	end
 	
