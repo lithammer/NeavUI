@@ -72,7 +72,7 @@ local function Minimap_CreateDropDown()
     
     button[8] = {}
     button[8].text = PLAYER_V_PLAYER
-    button[8].func = function() ToggleFrame(PVPParentFrame) end
+    button[8].func = function() ToggleFrame(PVPFrame) end
     UIDropDownMenu_AddButton(button[8])
     
     button[9] = {}
@@ -145,8 +145,11 @@ TimeManagerClockButton:SetScript('OnEnter', function(self)
     local r, g, b = Minimap_ColorGradient((GetFramerate() / 40), 1, 0, 0, 1, 1, 0, 0, 1, 0)
     GameTooltip:AddDoubleLine('Framerate:', format('%.0f fps', GetFramerate()), classColor.r, classColor.g, classColor.b, r, g, b)
     
+    local _, _, lagHome, lagWorld = GetNetStats();
     local r, g, b = Minimap_ColorGradient((select(3, GetNetStats()) / 200), unpack(gradient))
-    GameTooltip:AddDoubleLine('Latency:', format('%d ms', select(3, GetNetStats())), classColor.r, classColor.g, classColor.b, r, g, b)
+    GameTooltip:AddLine(' ')
+    GameTooltip:AddDoubleLine('Home Latency:', format('%d ms', lagHome), classColor.r, classColor.g, classColor.b, r, g, b)
+    GameTooltip:AddDoubleLine('World Latency:', format('%d ms', lagWorld), classColor.r, classColor.g, classColor.b, r, g, b)
     GameTooltip:AddLine(' ')
 
     for _, content in pairs(addons) do
