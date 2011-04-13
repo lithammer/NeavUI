@@ -32,6 +32,18 @@
 - The quest blob on the map is still a cause for taint, not really sure what's causing it and if it really needs fixing.
 - Changing glyphs sometimes doesn't work because of taint from somewhere.
 
+## Next Steps
+
+- fix nMinimap (working on this - 13 april 11)
+- wait until can test the oUF boss frames
+- clean up nChat (working on this - 13 april 11)
+- create little config file for `nTooltip.lua` (for mouseover target, hp display etc.)
+
+## Ideas
+
+- create lightweight nameplates in neav ui style (with !Beautycase?) ? 
+- oUF_Neav - raid frames, get rid of the unit_aura event and use a OnUpdate event instead for better cpu usage?
+
 ## Installation
 
 ## Bugs?
