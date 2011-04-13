@@ -63,6 +63,8 @@ oUF_Neav = {
             showHealthPercent = false,
             showHealthAndPercent = false,   -- overrides showHealthPercent
             showPowerPercent = false,
+            enableFocusToggleKeybind = true,
+            focusToggleKey = 'type4',
         },
         
         focustarget = {
@@ -73,7 +75,7 @@ oUF_Neav = {
             mouseoverText = true,
             scale = 1.11,
             auraSize = 22,  
-            hideInRaid = true,
+            hideInRaid = false,
             position = {'TOPLEFT', UIParent, 25, -200},
         },
 
@@ -82,13 +84,14 @@ oUF_Neav = {
             height = 40,
             scale = 1, 
             iconSize = 20,
-            indicatorSize = 10,
+            indicatorSize = 11,
             showSolo = true,
             numGroups = 8,
             position = {'LEFT', UIParent, 'CENTER', 350, -60},
             showTargetBorder = true,
             targetBorderColor = {1, 1, 1},
 			horizontalHealthBars = false,
+			smoothUpdatesForAllClasses = false, -- Set to true to enable smooth updates for healing classes
 			manabar = false, -- Show mana bars
         },
     },
