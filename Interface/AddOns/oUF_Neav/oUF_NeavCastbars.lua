@@ -1,40 +1,7 @@
 
-    -- custom channeling function
-    
-local function UpdateChannelStart(self, event, unit, name, rank, text) 
-    if (self.Castbar.Latency) then
-        self.Castbar.Latency:ClearAllPoints()
-        self.Castbar.Latency:SetPoint('LEFT', self.Castbar, 'BOTTOMLEFT', 1, -1) 
+local interruptTexture = 'Interface\\AddOns\\oUF_Neav\\media\\textureInterrupt'
+local normalTexture = 'Interface\\AddOns\\!Beautycase\\media\\textureNormal'
         
-        local _, _, ms = GetNetStats()
-        self.Castbar.Latency:SetText(ms..'ms')
-    end
-
-	if (self.Castbar.SafeZone) then
-        self.Castbar.SafeZone:SetDrawLayer('ARTWORK')
-        self.Castbar.SafeZone:SetPoint('TOPLEFT', self.Castbar)
-        self.Castbar.SafeZone:SetPoint('BOTTOMLEFT', self.Castbar)
-	end
-end
-
-    -- custom casting function
-    
-local function UpdateCastStart(self, event, unit, name, rank, text, castid)
-    if (self.Castbar.Latency and unit == 'player') then
-        self.Castbar.Latency:ClearAllPoints()
-        self.Castbar.Latency:SetPoint('RIGHT', self.Castbar, 'BOTTOMRIGHT', -1, -1) 
-        
-        local _, _, ms = GetNetStats()
-        self.Castbar.Latency:SetText(ms..'ms')
-    end
-
-	if (self.Castbar.SafeZone) then
-        self.Castbar.SafeZone:SetDrawLayer('BORDER')
-        self.Castbar.SafeZone:SetPoint('TOPRIGHT', self.Castbar)
-        self.Castbar.SafeZone:SetPoint('BOTTOMRIGHT', self.Castbar)
-	end
-end
-
     -- create the castbars
     
 function CreateCastbars(self, unit)
@@ -83,26 +50,99 @@ function CreateCastbars(self, unit)
             
             if (oUF_Neav.castbar.player.safezone) then
                 self.Castbar.SafeZone = self.Castbar:CreateTexture(nil, 'BORDER') 
-                self.Castbar.SafeZone:SetTexture('Interface\\Buttons\\WHITE8x8')
-                self.Castbar.SafeZone:SetVertexColor(1, 0.5, 0, 1)
+                self.Castbar.SafeZone:SetTexture(unpack(oUF_Neav.castbar.player.safezoneColor))
             end
                 
             if (oUF_Neav.castbar.player.showLatency) then
-                self.Castbar.Latency = self:CreateFontString(nil, 'ARTWORK')
+                self.Castbar.Latency = self:CreateFontString(nil, 'OVERLAY')
                 self.Castbar.Latency:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontBig - 1)
                 self.Castbar.Latency:SetShadowOffset(1, -1)
                 self.Castbar.Latency:SetParent(self.Castbar)
-                self.Castbar.Latency:SetDrawLayer('OVERLAY')
-                self.Castbar.Latency:SetVertexColor(0.6, 0.6, 0.6)
-                self.Castbar.Latency:SetAlpha(1)
+                self.Castbar.Latency:SetVertexColor(0.6, 0.6, 0.6, 1)
             end
-            
-            self.PostCastStart = UpdateCastStart
-            self.PostChannelStart = UpdateChannelStart
         end
         
-        --CreateBorder(self.Castbar, 11, 1, 1, 1, 3)
-		CreateBorder(self.Castbar, 11, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3)
+        CreateBorder(self.Castbar, 11, 1, 1, 1, 3)
+        
+        -- ----------------------------------------------------------------
+        -- A new/better interrupt indicator (than the old one)
+        -- ----------------------------------------------------------------
+    
+        self.Castbar.PostCastStart = function(Castbar, unit, spell, spellrank)
+            if (unit == 'player') then
+                if (Castbar.Latency) then
+                    local down, up, lagHome, lagWorld = GetNetStats();
+                    local avgLag = (lagHome + lagWorld) / 2
+                    
+                    Castbar.Latency:ClearAllPoints()
+                    Castbar.Latency:SetPoint('RIGHT', Castbar, 'BOTTOMRIGHT', -1, -2) 
+                    
+                    Castbar.Latency:SetText(string.format("%.0f", avgLag)..'ms')
+                end
+            end
+            
+            if (unit == 'target' or unit == 'focus') then
+                if (Castbar.interrupt) then
+                    -- Castbar:SetStatusBarColor(unpack(config.interruptColor))
+                    -- Castbar.Bg:SetVertexColor(config.interruptColor[1]*0.3, config.interruptColor[2]*0.3, config.interruptColor[3]*0.3, 0.8)
+
+                    for i = 1, 8 do
+                        self.Castbar.Border[i]:SetTexture(interruptTexture)
+                    end
+                    
+                    ColorBorder(self.Castbar, unpack(config.interruptColor))
+                    ColorBorderShadow(self.Castbar, unpack(config.interruptColor))
+                else
+                    Castbar:SetStatusBarColor(unpack(config.color))
+                    Castbar.Bg:SetVertexColor(config.color[1]*0.3, config.color[2]*0.3, config.color[3]*0.3, 0.8)
+                    
+                    for i = 1, 8 do
+                        self.Castbar.Border[i]:SetTexture(normalTexture)
+                    end
+  
+                    ColorBorder(self.Castbar, 1, 1, 1)
+                    ColorBorderShadow(self.Castbar, 0, 0, 0)
+                end
+            end
+        end    
+
+        self.Castbar.PostChannelStart = function(Castbar, unit, spell, spellrank)
+            if (unit == 'player') then
+                if (Castbar.Latency) then
+                    local down, up, lagHome, lagWorld = GetNetStats();
+                    local avgLag = (lagHome + lagWorld) / 2
+                    
+                    Castbar.Latency:ClearAllPoints()
+                    Castbar.Latency:SetPoint('LEFT', self.Castbar, 'BOTTOMLEFT', 1, -2) 
+                    
+                    Castbar.Latency:SetText(string.format("%.0f", avgLag)..'ms')
+                end
+            end
+    
+            if (unit == 'target' or unit == 'focus') then
+                if (Castbar.interrupt) then
+                    -- Castbar:SetStatusBarColor(unpack(config.interruptColor))
+                    -- Castbar.Bg:SetVertexColor(config.interruptColor[1]*0.3, config.interruptColor[2]*0.3, config.interruptColor[3]*0.3, 0.8)
+
+                    for i = 1, 8 do
+                        self.Castbar.Border[i]:SetTexture(interruptTexture)
+                    end
+                    
+                    ColorBorder(self.Castbar, unpack(config.interruptColor))
+                    ColorBorderShadow(self.Castbar, unpack(config.interruptColor))
+                else
+                    Castbar:SetStatusBarColor(unpack(config.color))
+                    Castbar.Bg:SetVertexColor(config.color[1]*0.3, config.color[2]*0.3, config.color[3]*0.3, 0.8)
+                    
+                    for i = 1, 8 do
+                        self.Castbar.Border[i]:SetTexture(normalTexture)
+                    end
+  
+                    ColorBorder(self.Castbar, 1, 1, 1)
+                    ColorBorderShadow(self.Castbar, 0, 0, 0)
+                end
+            end
+        end    
 
         self.Castbar.CustomDelayText = function(self, duration)
             self.Time:SetFormattedText('[|cffff0000-%.1f|r] %.1f/%.1f', self.delay, duration, self.max)
@@ -128,129 +168,39 @@ function CreateCastbars(self, unit)
         self.Castbar.Text:SetHeight(10)
         self.Castbar.Text:SetJustifyH('LEFT')
         self.Castbar.Text:SetParent(self.Castbar)  
-
-        if (unit == 'target' or unit == 'focus') then
-            if ((unit == 'target' and oUF_Neav.castbar.target.showInterruptHighlight) or (unit == 'focus' and oUF_Neav.castbar.focus.showInterruptHighlight)) then
-                self.Shadow = {}
-                
-                for i = 1, 8 do
-                    self.Shadow[i] = self.Castbar:CreateTexture(nil, 'BACKGROUND')
-                    self.Shadow[i]:SetParent(self.Castbar)
-                    --self.Shadow[i]:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\error')
-                    self.Shadow[i]:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\borderBackground')
-                    self.Shadow[i]:SetWidth(20) 
-                    self.Shadow[i]:SetHeight(20)
-                    self.Shadow[i]:SetVertexColor(unpack(config.interruptColor))
-                end
-                
-                self.Shadow[1]:SetTexCoord(0, 1/3, 0, 1/3) 
-                self.Shadow[1]:SetPoint('TOPLEFT', self.Castbar, -10, 10)
-
-                self.Shadow[2]:SetTexCoord(2/3, 1, 0, 1/3)
-                self.Shadow[2]:SetPoint('TOPRIGHT', self.Castbar, 10, 10)
-
-                self.Shadow[3]:SetTexCoord(0, 1/3, 2/3, 1)
-                self.Shadow[3]:SetPoint('BOTTOMLEFT', self.Castbar, -10, -10)
-
-                self.Shadow[4]:SetTexCoord(2/3, 1, 2/3, 1)
-                self.Shadow[4]:SetPoint('BOTTOMRIGHT', self.Castbar, 10, -10)
-
-                self.Shadow[5]:SetTexCoord(1/3, 2/3, 0, 1/3)
-                self.Shadow[5]:SetPoint('TOPLEFT', self.Shadow[1], 'TOPRIGHT')
-                self.Shadow[5]:SetPoint('TOPRIGHT', self.Shadow[2], 'TOPLEFT')
-
-                self.Shadow[6]:SetTexCoord(1/3, 2/3, 2/3, 1)
-                self.Shadow[6]:SetPoint('BOTTOMLEFT', self.Shadow[3], 'BOTTOMRIGHT')
-                self.Shadow[6]:SetPoint('BOTTOMRIGHT', self.Shadow[4], 'BOTTOMLEFT')
-
-                self.Shadow[7]:SetTexCoord(0, 1/3, 1/3, 2/3)
-                self.Shadow[7]:SetPoint('TOPLEFT', self.Shadow[1], 'BOTTOMLEFT')
-                self.Shadow[7]:SetPoint('BOTTOMLEFT', self.Shadow[3], 'TOPLEFT')
-
-                self.Shadow[8]:SetTexCoord(2/3, 1, 1/3, 2/3)
-                self.Shadow[8]:SetPoint('TOPRIGHT', self.Shadow[2], 'BOTTOMRIGHT')
-                self.Shadow[8]:SetPoint('BOTTOMRIGHT', self.Shadow[4], 'TOPRIGHT')
-                
-                self.hasShadow = true
-            else
-                self.hasShadow = false
-            end
-            
-            local interruptFrame = CreateFrame('Frame')
-
-			interruptFrame:RegisterEvent('UNIT_SPELLCAST_START')
-			interruptFrame:RegisterEvent('UNIT_SPELLCAST_DELAYED')
-			interruptFrame:RegisterEvent('UNIT_SPELLCAST_CHANNEL_START')
-			interruptFrame:RegisterEvent('UNIT_SPELLCAST_CHANNEL_UPDATE')
-            interruptFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
-            interruptFrame:RegisterEvent("PLAYER_FOCUS_CHANGED")
-            
-            interruptFrame:SetScript('OnEvent', function()
-                local name, _, _, _, _, _, _, _, interrupt = UnitCastingInfo(unit)
-				local channelName, _, _, _, _, _, _, _, channelInterrupt = UnitChannelInfo(unit)
-            
-                if (self.hasShadow) then   
-                    for i = 1, 8 do
-                        self.Shadow[i]:Hide()
-                    end
-                end
-                
-                if (name or channelName) then
-                    if (interrupt or channelInterrupt) then
-                        self.Castbar:SetStatusBarColor(unpack(config.interruptColor))
-                        self.Castbar.Bg:SetVertexColor(config.interruptColor[1]*0.3, config.interruptColor[2]*0.3, config.interruptColor[3]*0.3, 0.8)
-
-                        if (self.hasShadow) then
-                            for i = 1, 8 do
-                                self.Shadow[i]:Show()
-                            end
-                        end
-                    else
-                        self.Castbar:SetStatusBarColor(unpack(config.color))
-                        self.Castbar.Bg:SetVertexColor(config.color[1]*0.3, config.color[2]*0.3, config.color[3]*0.3, 0.8)
-
-                        if (self.hasShadow) then
-                            for i = 1, 8 do
-                                self.Shadow[i]:Hide()
-                            end
-                        end
-                    end
-                end
-            end)
-        end
     end
 end
 
     -- mirrortimers
+
+for i = 1, MIRRORTIMER_NUMTIMERS do
+    local bar = _G["MirrorTimer" .. i]
+    bar:SetParent(UIParent)
+    bar:SetScale(1.132)
+    bar:SetHeight(18)
+    bar:SetWidth(220)
     
-for _, bar in pairs({
-    'MirrorTimer1',
-    'MirrorTimer2',
-    'MirrorTimer3',
-}) do   
-    for i, region in pairs({_G[bar]:GetRegions()}) do
-        if (region.GetTexture and region:GetTexture() == 'SolidTexture') then
-            region:Hide()
-        end
+    if (i > 1) then
+        p1, p2, p3, p4, p5 = bar:GetPoint()
+        bar:SetPoint(p1, p2, p3, p4, p5 - 15)
     end
-
-    CreateBorder(_G[bar], 11, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3)
-
-    _G[bar..'Border']:Hide()
+                    
+    local statusbar = _G["MirrorTimer" .. i .. "StatusBar"]
+    statusbar:SetStatusBarTexture(oUF_Neav.media.statusbar)
+    statusbar:SetAllPoints(bar)
     
-    _G[bar]:SetParent(UIParent)
-    _G[bar]:SetScale(1.132)
-    _G[bar]:SetHeight(18)
-    _G[bar]:SetWidth(220)
-      
-    _G[bar..'Background'] = _G[bar]:CreateTexture(bar..'Background', 'BACKGROUND', _G[bar])
-    _G[bar..'Background']:SetTexture('Interface\\Buttons\\WHITE8x8')
-    _G[bar..'Background']:SetAllPoints(bar)
-    _G[bar..'Background']:SetVertexColor(0, 0, 0, 0.5)
-        
-    _G[bar..'Text']:SetFont(CastingBarFrameText:GetFont(), 14)
-    _G[bar..'Text']:ClearAllPoints()
-    _G[bar..'Text']:SetPoint('CENTER', MirrorTimer1StatusBar, 0, 1)
-        
-    _G[bar..'StatusBar']:SetAllPoints(_G[bar])
+    local backdrop = select(1, bar:GetRegions())
+    backdrop:SetTexture('Interface\\Buttons\\WHITE8x8')
+    backdrop:SetVertexColor(0, 0, 0, 0.5)
+    backdrop:SetAllPoints(bar)
+    
+    local border = _G["MirrorTimer" .. i .. "Border"]
+    border:Hide()
+    
+    local text = _G["MirrorTimer" .. i .. "Text"]
+    text:SetFont(CastingBarFrameText:GetFont(), 14)
+    text:ClearAllPoints()
+    text:SetPoint('CENTER', bar)
+    
+    CreateBorder(bar, 11, 1, 1, 1, 3)
 end

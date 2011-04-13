@@ -26,13 +26,19 @@
     
 --]]
 
-local Shadow = {}
-
 local textureNormal = 'Interface\\AddOns\\!Beautycase\\media\\textureNormal'
 local textureShadow = 'Interface\\AddOns\\!Beautycase\\media\\textureShadow'
 
+local function PrintErr()
+    print('|cff00FF00!Beautycase:|r |cffFF0000Invalid frame!|r') 
+end
+
 function CreateBorder(self, borderSize, R, G, B, ...)
     local uL1, uL2, uR1, uR2, bL1, bL2, bR1, bR2 = ...
+    
+    if (uL1 and not uL2 and not uR1 or uR2) then
+        uL2, uR1, uR2, bL1, bL2, bR1, bR2 = uL1, uL1, uL1, uL1, uL1, uL1, uL1
+    end
     
     if (not self.HasBorder) then
         self.Border = {}
@@ -40,8 +46,7 @@ function CreateBorder(self, borderSize, R, G, B, ...)
             self.Border[i] = self:CreateTexture(nil, 'OVERLAY')
             self.Border[i]:SetParent(self)
             self.Border[i]:SetTexture(textureNormal)
-            self.Border[i]:SetWidth(borderSize) 
-            self.Border[i]:SetHeight(borderSize)
+            self.Border[i]:SetSize(borderSize, borderSize) 
             self.Border[i]:SetVertexColor(R or 1, G or 1, B or 1)
         end
         
@@ -79,43 +84,43 @@ function CreateBorder(self, borderSize, R, G, B, ...)
         else
             space = borderSize/3.5
         end
-        
+    
+        self.Shadow = {}
         for i = 1, 8 do
-            Shadow[i] = self:CreateTexture(nil, 'BORDER')
-            Shadow[i]:SetParent(self)
-            Shadow[i]:SetTexture(textureShadow)
-            Shadow[i]:SetWidth(borderSize) 
-            Shadow[i]:SetHeight(borderSize)
-            Shadow[i]:SetVertexColor(0, 0, 0, 1)
+            self.Shadow[i] = self:CreateTexture(nil, 'BORDER')
+            self.Shadow[i]:SetParent(self)
+            self.Shadow[i]:SetTexture(textureShadow)
+            self.Shadow[i]:SetSize(borderSize, borderSize)  
+            self.Shadow[i]:SetVertexColor(0, 0, 0, 1)
         end
         
-        Shadow[1]:SetTexCoord(0, 1/3, 0, 1/3) 
-        Shadow[1]:SetPoint('TOPLEFT', self, -(uL1 or 0)-space, (uL2 or 0)+space)
+        self.Shadow[1]:SetTexCoord(0, 1/3, 0, 1/3) 
+        self.Shadow[1]:SetPoint('TOPLEFT', self, -(uL1 or 0)-space, (uL2 or 0)+space)
 
-        Shadow[2]:SetTexCoord(2/3, 1, 0, 1/3)
-        Shadow[2]:SetPoint('TOPRIGHT', self, (uR1 or 0)+space, (uR2 or 0)+space)
+        self.Shadow[2]:SetTexCoord(2/3, 1, 0, 1/3)
+        self.Shadow[2]:SetPoint('TOPRIGHT', self, (uR1 or 0)+space, (uR2 or 0)+space)
 
-        Shadow[3]:SetTexCoord(0, 1/3, 2/3, 1)
-        Shadow[3]:SetPoint('BOTTOMLEFT', self, -(bL1 or 0)-space, -(bL2 or 0)-space)
+        self.Shadow[3]:SetTexCoord(0, 1/3, 2/3, 1)
+        self.Shadow[3]:SetPoint('BOTTOMLEFT', self, -(bL1 or 0)-space, -(bL2 or 0)-space)
 
-        Shadow[4]:SetTexCoord(2/3, 1, 2/3, 1)
-        Shadow[4]:SetPoint('BOTTOMRIGHT', self, (bR1 or 0)+space, -(bR2 or 0)-space)
+        self.Shadow[4]:SetTexCoord(2/3, 1, 2/3, 1)
+        self.Shadow[4]:SetPoint('BOTTOMRIGHT', self, (bR1 or 0)+space, -(bR2 or 0)-space)
 
-        Shadow[5]:SetTexCoord(1/3, 2/3, 0, 1/3)
-        Shadow[5]:SetPoint('TOPLEFT', Shadow[1], 'TOPRIGHT')
-        Shadow[5]:SetPoint('TOPRIGHT', Shadow[2], 'TOPLEFT')
+        self.Shadow[5]:SetTexCoord(1/3, 2/3, 0, 1/3)
+        self.Shadow[5]:SetPoint('TOPLEFT', self.Shadow[1], 'TOPRIGHT')
+        self.Shadow[5]:SetPoint('TOPRIGHT', self.Shadow[2], 'TOPLEFT')
 
-        Shadow[6]:SetTexCoord(1/3, 2/3, 2/3, 1)
-        Shadow[6]:SetPoint('BOTTOMLEFT', Shadow[3], 'BOTTOMRIGHT')
-        Shadow[6]:SetPoint('BOTTOMRIGHT', Shadow[4], 'BOTTOMLEFT')
+        self.Shadow[6]:SetTexCoord(1/3, 2/3, 2/3, 1)
+        self.Shadow[6]:SetPoint('BOTTOMLEFT', self.Shadow[3], 'BOTTOMRIGHT')
+        self.Shadow[6]:SetPoint('BOTTOMRIGHT', self.Shadow[4], 'BOTTOMLEFT')
 
-        Shadow[7]:SetTexCoord(0, 1/3, 1/3, 2/3)
-        Shadow[7]:SetPoint('TOPLEFT', Shadow[1], 'BOTTOMLEFT')
-        Shadow[7]:SetPoint('BOTTOMLEFT', Shadow[3], 'TOPLEFT')
+        self.Shadow[7]:SetTexCoord(0, 1/3, 1/3, 2/3)
+        self.Shadow[7]:SetPoint('TOPLEFT', self.Shadow[1], 'BOTTOMLEFT')
+        self.Shadow[7]:SetPoint('BOTTOMLEFT', self.Shadow[3], 'TOPLEFT')
 
-        Shadow[8]:SetTexCoord(2/3, 1, 1/3, 2/3)
-        Shadow[8]:SetPoint('TOPRIGHT', Shadow[2], 'BOTTOMRIGHT')
-        Shadow[8]:SetPoint('BOTTOMRIGHT', Shadow[4], 'TOPRIGHT')
+        self.Shadow[8]:SetTexCoord(2/3, 1, 1/3, 2/3)
+        self.Shadow[8]:SetPoint('TOPRIGHT', self.Shadow[2], 'BOTTOMRIGHT')
+        self.Shadow[8]:SetPoint('BOTTOMRIGHT', self.Shadow[4], 'TOPRIGHT')
         
         self.HasBorder = true
     end
@@ -127,13 +132,16 @@ function ColorBorder(self, R, G, B)
             self.Border[i]:SetVertexColor(R, G, B)
         end
     else
-        local name
-        if (self:GetName()) then
-            name = self:GetName()
-        else
-            name = 'Unnamed'
-        end
-        print('|cff00FF00Beautycase:|r '..name..'|cffFF0000 has no border!|r')        
+        PrintErr()        
     end
 end
 
+function ColorBorderShadow(self, R, G, B)
+    if (self.Shadow) then
+        for i = 1, 8 do
+            self.Shadow[i]:SetVertexColor(R, G, B)
+        end
+    else
+        PrintErr()
+    end
+end

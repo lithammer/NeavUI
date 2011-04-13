@@ -63,8 +63,8 @@ local function BuffFrame_SetPoint(self)
 end
 
 hooksecurefunc('BuffFrame_UpdatePositions', function()
-    if (CONSOLIDATED_BUFF_ROW_HEIGHT ~= 28) then
-        CONSOLIDATED_BUFF_ROW_HEIGHT = 2
+    if (CONSOLIDATED_BUFF_ROW_HEIGHT ~= 26) then
+        CONSOLIDATED_BUFF_ROW_HEIGHT = 26
     end
 end)
 

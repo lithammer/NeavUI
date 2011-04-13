@@ -80,17 +80,16 @@ oUF_Neav = {
         raid = {
             width = 42,
             height = 40,
-            scale = 1.2, 
+            scale = 1, 
             iconSize = 20,
-            indicatorSize = 9,
-            showSolo = false,
-            numGroups = 5,
-            position = {'LEFT', UIParent, 'CENTER', 447, 0},
+            indicatorSize = 10,
+            showSolo = true,
+            numGroups = 8,
+            position = {'LEFT', UIParent, 'CENTER', 350, -60},
             showTargetBorder = true,
             targetBorderColor = {1, 1, 1},
 			horizontalHealthBars = false,
-			smoothUpdatesForAllClasses = false, -- Set to true to enable smooth updates for healing classes
-			manabar = true, -- Show mana bars
+			manabar = false, -- Show mana bars
         },
     },
 
@@ -101,12 +100,12 @@ oUF_Neav = {
             height = 19,
             classcolor = true,
             safezone = true,
+            safezoneColor = {1, 0, 1},
             showLatency = true, 
             color = {1, 0.7, 0},
         },
         pet = {
-            --position = {'BOTTOM', UIParent, 0, 390},
-            position = {'BOTTOM', UIParent, 0, 9000},
+            position = {'BOTTOM', UIParent, 0, 390},
             width = 220,
             height = 19,
             color = {0, 0.65, 1},
@@ -117,7 +116,6 @@ oUF_Neav = {
             height = 19,
             color = {0.9, 0.1, 0.1},
             interruptColor = {1, 0, 1},
-            showInterruptHighlight = true,
         },
         focus = {
             width = 176,
