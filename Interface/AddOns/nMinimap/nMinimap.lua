@@ -1,8 +1,8 @@
-   
-   -- nmodify the lfg frame
+
+   -- modify the lfg frame
     
 MiniMapLFGFrame:ClearAllPoints()
-MiniMapLFGFrame:SetPoint('BOTTOMLEFT', Minimap, 4, 4)
+MiniMapLFGFrame:SetPoint('TOPLEFT', Minimap, 4, -4)
 MiniMapLFGFrame:SetWidth(14)
 MiniMapLFGFrame:SetHeight(14)
 MiniMapLFGFrame:SetHighlightTexture(nil)
@@ -19,15 +19,13 @@ MiniMapLFGFrame.Text:SetFont('Fonts\\ARIALN.ttf', 15, 'OUTLINE')
 MiniMapLFGFrame.Text:SetPoint('TOP', MiniMapLFGFrame)
 MiniMapLFGFrame.Text:SetTextColor(1, 0.4, 0)
 MiniMapLFGFrame.Text:SetText('L')
-MiniMapLFGFrame.Text:SetWidth(14)
-MiniMapLFGFrame.Text:SetHeight(14)
+MiniMapLFGFrame.Text:SetSize(14, 14)
 
    -- modify the battlefield frame
    
 MiniMapBattlefieldFrame:ClearAllPoints()
-MiniMapBattlefieldFrame:SetPoint('BOTTOMLEFT', Minimap, 4, 4)
-MiniMapBattlefieldFrame:SetWidth(14)
-MiniMapBattlefieldFrame:SetHeight(14)
+MiniMapBattlefieldFrame:SetPoint('TOPLEFT', Minimap, 4, -4)
+MiniMapBattlefieldFrame:SetSize(14, 14)
 
 MiniMapBattlefieldBorder:Hide()
 
@@ -42,8 +40,7 @@ MiniMapBattlefieldFrame.Text:SetFont('Fonts\\ARIALN.ttf', 15, 'OUTLINE')
 MiniMapBattlefieldFrame.Text:SetPoint('TOPLEFT', MiniMapBattlefieldFrame)
 MiniMapBattlefieldFrame.Text:SetTextColor(0, 0.75, 1)
 MiniMapBattlefieldFrame.Text:SetText('P')
-MiniMapBattlefieldFrame.Text:SetWidth(14)
-MiniMapBattlefieldFrame.Text:SetHeight(14)
+MiniMapBattlefieldFrame.Text:SetSize(14, 14)
 
     -- hide all unwanted stuff
     
@@ -109,29 +106,7 @@ MiniMapMailFrame:SetHeight(18)
 MiniMapMailFrame:ClearAllPoints()
 MiniMapMailFrame:SetPoint('BOTTOMRIGHT', Minimap, -4, 5)
 
-    -- modify the minimap tracking, remove the icon and add a mouseover text
-    
-local function GetTrackType()
-	local hasActiveTracking = false
-		
-	for i = 1, GetNumTrackingTypes() do
-		local trackingName, _, isActive = GetTrackingInfo(i)
-		if (isActive) then
-			hasActiveTracking = true
-			return trackingName
-		end
-	end
-	
-	if (not hasActiveTracking) then
-		return NONE
-	end
-end
-
-MinimapTrackingText = Minimap:CreateFontString('$parentTrackingText', 'OVERLAY')
-MinimapTrackingText:SetFont('Fonts\\ARIALN.ttf', 17, 'OUTLINE')
-MinimapTrackingText:SetPoint('CENTER', Minimap, 0, 20)
-MinimapTrackingText:SetWidth((Minimap:GetWidth() - 25))
-MinimapTrackingText:SetAlpha(0)
+    -- modify the minimap tracking
 
 Minimap:SetScript('OnMouseUp', function(self, button)
     if (button == 'RightButton') then
@@ -141,27 +116,17 @@ Minimap:SetScript('OnMouseUp', function(self, button)
     end
 end)
 
-MiniMapTracking:Hide()
-MiniMapTracking.Show = function() end
+    -- the dirty method, move it out of the screen, no error anymore? Will see.. 
 
-MiniMapTracking:SetScript('OnEvent', function(self, event)
-    MinimapTrackingText:SetText(GetTrackType())
-end)
-
-Minimap:HookScript('OnEnter', function()
-    MinimapTrackingText:SetText(GetTrackType())
-    UIFrameFadeIn(MinimapTrackingText, 0.15, MinimapTrackingText:GetAlpha(), 1)
-end)
-
-Minimap:HookScript('OnLeave', function()
-    MinimapTrackingText:SetText(GetTrackType())
-    UIFrameFadeOut(MinimapTrackingText, 0.15, MinimapTrackingText:GetAlpha(), 0)
-end)
+MiniMapTracking:UnregisterAllEvents()
+MiniMapTracking:ClearAllPoints()
+MiniMapTracking:SetPoint('CENTER', 9999, 9999)
+-- MiniMapTracking.Show = function() end
 
     -- skin the ticket status frame
     
 TicketStatusFrameButton:HookScript('OnShow', function(self)
-	TicketStatusFrameButton:SetBackdrop({
+	self:SetBackdrop({
         bgFile = 'Interface\\Buttons\\WHITE8x8', 
         insets = {
             left = 3, 
@@ -171,40 +136,10 @@ TicketStatusFrameButton:HookScript('OnShow', function(self)
         }
     })
     
-    TicketStatusFrameButton:SetBackdropColor(0, 0, 0, 0.5)
+    self:SetBackdropColor(0, 0, 0, 0.5)
     
-    if (not TicketStatusFrameButton.hasBorder) then
+    if (not self.hasBorder) then
         CreateBorder(TicketStatusFrameButton, 12, 1, 1, 1)
-        TicketStatusFrameButton.hasBorder = true
+        self.hasBorder = true
     end
 end)
-
-    -- skin the LFD tooltip
-
-LFDSearchStatus:HookScript('OnShow', function(self)
-    LFDSearchStatus:SetBackdrop({
-        bgFile = 'Interface\\Buttons\\WHITE8x8', 
-        insets = {
-            left = 3, 
-            right = 3, 
-            top = 3, 
-            bottom = 3
-        }
-    })
-
-    LFDSearchStatus:SetBackdropColor(0, 0, 0, 0.5)
-
-    if (not LFDSearchStatus.hasBorder) then
-        CreateBorder(LFDSearchStatus, 12, 1, 1, 1)
-        LFDSearchStatus.hasBorder = true
-    end
-end)
-
-	-- NPCScan.Overlay uses this function to determine minimap shape
-	-- http://www.wowinterface.com/downloads/info14686-_NPCScan.Overlay.html
-	
-if IsAddOnLoaded('_NPCScan.Overlay') then
-	function GetMinimapShape()
-		return 'SQUARE'
-	end
-end
