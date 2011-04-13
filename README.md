@@ -37,7 +37,7 @@
 ## Bugs?
 
 ## Credits
-ballagarba for updated this projekt.
-Anton 'Neav' Ickert for creating this wonderful UI.
+- ballagarba for updated this UI.
+- Neav for creating this wonderful UI.
 
 ## Screenshots
