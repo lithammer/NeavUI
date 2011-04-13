@@ -1,6 +1,16 @@
 
-MiniMapInstanceDifficulty:SetAlpha(0)
+--  MiniMapInstanceDifficulty:SetAlpha(0)
 
+MiniMapInstanceDifficulty:ClearAllPoints()
+MiniMapInstanceDifficulty:SetPoint('TOP', Minimap, 32, 8)
+
+local a = MiniMapInstanceDifficultyTexture:GetHeight()
+MiniMapInstanceDifficultyTexture:SetHeight(a*0.8)
+
+local b = MiniMapInstanceDifficultyTexture:GetWidth()
+MiniMapInstanceDifficultyTexture:SetWidth(b*0.8)
+
+--[[
 local isHeroic = false
 local function GetInstanceDifficulty2()
     local selectedRaidDifficulty
@@ -100,3 +110,4 @@ f.MouseOver:SetScript('OnLeave', function()
     end
     UIFrameFadeOut(f.text, 0.05, f.text:GetAlpha(), 0)
 end)
+--]]
