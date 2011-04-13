@@ -1,5 +1,18 @@
 
-DEFAULT_CHATFRAME_ALPHA = 0.25 -- chatframe mouseover alpha
+    -- ??? 
+    
+TIMESTAMP_FORMAT_HHMMSS_24HR = '%H:%M:%S ';
+TIMESTAMP_FORMAT_HHMM_24HR = '%H:%M ';
+TIMESTAMP_FORMAT_HHMM = '%I:%M ';
+TIMESTAMP_FORMAT_HHMMSS = '%I:%M:%S ';
+TIMESTAMP_FORMAT_HHMMSS_24HR = '%H:%M:%S ';
+TIMESTAMP_FORMAT_HHMMSS_AMPM = '%I:%M:%S %p ';
+TIMESTAMP_FORMAT_HHMM_24HR = '%H:%M ';
+TIMESTAMP_FORMAT_HHMM_AMPM = '%I:%M %p ';
+
+    -- chatframe mouseover alpha
+    
+DEFAULT_CHATFRAME_ALPHA = 0.25 
 
 CHAT_FRAME_TAB_SELECTED_MOUSEOVER_ALPHA = 1.0
 CHAT_FRAME_TAB_SELECTED_NOMOUSE_ALPHA = 0     -- set to 0 if u want to hide the tabs when no mouse is over them or the chat
@@ -36,8 +49,8 @@ CHAT_YELL_GET = '%s:\32'
 CHAT_WHISPER_GET = '[from] %s:\32'
 CHAT_WHISPER_INFORM_GET = '[to] %s:\32'
 
-CHAT_BN_WHISPER_GET = "[from] %s:\32"
-CHAT_BN_WHISPER_INFORM_GET = "[to] %s:\32"
+CHAT_BN_WHISPER_GET = '[from] %s:\32'
+CHAT_BN_WHISPER_INFORM_GET = '[to] %s:\32'
 
 CHAT_GUILD_GET = '[|Hchannel:Guild|hG|h] %s:\32'
 CHAT_OFFICER_GET = '[|Hchannel:o|hO|h] %s:\32'
@@ -67,19 +80,17 @@ ChatTypeInfo['RAID'].sticky = 1
 ChatTypeInfo['BATTLEGROUND'].sticky = 1
 ChatTypeInfo['BATTLEGROUND_LEADER'].sticky = 1
 ChatTypeInfo['WHISPER'].sticky = 0
-ChatTypeInfo["BN_WHISPER"].sticky = 0
+ChatTypeInfo['BN_WHISPER'].sticky = 0
 
 local AddMessage = ChatFrame1.AddMessage
 
 function FCF_AddMessage(self, text, ...)
     if (type(text) == 'string') then
         -- bnet names-
-        
         text = text:gsub('(|HBNplayer.-|h)%[(.-)%]|h', '%1%2|h')
         text = text:gsub('(|Hplayer.-|h)%[(.-)%]|h', '%1%2|h')
                 
         text = text:gsub('%[(%d+)%. (.+)%].+(|Hplayer.+)', '[|Hchannel:channel|h%1|h] %3') 
-    --  text = format('%s %s', date'%H:%M', text)  
     end
     return AddMessage(self, text, ...)
 end
@@ -146,10 +157,11 @@ hooksecurefunc('FloatingChatFrame_OnMouseScroll', function(self, direction)
     end
 end)
 
-    -- reposition toast frame
-BNToastFrame:HookScript("OnShow", function(self)
+    -- reposition toast frame (the popup when a bnet friend login)
+    
+BNToastFrame:HookScript('OnShow', function(self)
     BNToastFrame:ClearAllPoints()
-    BNToastFrame:SetPoint("TOPLEFT", ChatFrame1, 10, 90)
+    BNToastFrame:SetPoint('BOTTOMLEFT', ChatFrame1EditBox, 'TOPLEFT', 0, 15)
 end)
 
 
@@ -350,10 +362,12 @@ for i = 2, NUM_CHAT_WINDOWS do
     chatMinimize:EnableMouse(0)
 end
 
-    -- modify the gm chatframe
+    -- modify the gm chatframe and sound notification on incoming message
     
 local f = CreateFrame('Frame')
 f:RegisterEvent('ADDON_LOADED')
+f:RegisterEvent('CHAT_MSG_WHISPER')
+f:RegisterEvent('CHAT_MSG_BN_WHISPER')
 f:SetScript('OnEvent', function(_, event)
     if (event == 'ADDON_LOADED' and arg1 == 'Blizzard_GMChatUI') then
         GMChatFrame:EnableMouseWheel(true)
@@ -369,15 +383,9 @@ f:SetScript('OnEvent', function(_, event)
         GMChatFrameBottomButton:SetAlpha(0)
         GMChatFrameBottomButton:EnableMouse(false)
     end
-end)
-
-	-- play sound files system
-
-local SoundSys = CreateFrame('Frame')
-SoundSys:RegisterEvent('CHAT_MSG_WHISPER')
-SoundSys:RegisterEvent('CHAT_MSG_BN_WHISPER')
-SoundSys:HookScript('OnEvent', function(self, event, ...)
-	if event == 'CHAT_MSG_WHISPER' or 'CHAT_MSG_BN_WHISPER' then
+    
+    if (event == 'CHAT_MSG_WHISPER' or 'CHAT_MSG_BN_WHISPER') then
 		PlaySoundFile('Sound\\Spells\\Simongame_visual_gametick.wav')
+        PlaySoundFile('Sound\\Spells\\Simongame_visual_gametick.wav')
 	end
 end)
