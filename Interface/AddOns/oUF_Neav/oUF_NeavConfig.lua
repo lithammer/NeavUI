@@ -89,7 +89,6 @@ oUF_Neav = {
             showTargetBorder = true,
             targetBorderColor = {1, 1, 1},
 			horizontalHealthBars = false,
-			smoothUpdatesForAllClasses = false, -- Set to true to enable smooth updates for healing classes
 			manabar = false, -- Show mana bars
         },
     },
