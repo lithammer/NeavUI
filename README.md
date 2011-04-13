@@ -2,12 +2,12 @@
 
 ## Changes and additions
 
-**oUF_Neav:**
+#### oUF_Neav:
 
 - Different short value formatting (e.g. 1.1m instead of 1M 100K).
 - Added Blizzards holy power, eclipse and soulshard bars, they fit the UI very nicely.
 
-**Raid frames:**
+#### Raid frames:
 
 - Now using the built-in heal prediction from oUF (kind of like healcomm).
 - Healing indicators for all classes (I hope), as well as soulstone, focus magic and dark intent.
@@ -16,11 +16,11 @@
 - Disabled smooth updates for healing classes (can be enabled via `oUF_NeavConfig.lua`).
 - Mana bars (enabled in `oUF_NeavConfig.lua`)
 
-**nMainbar:**
+#### nMainbar:
 
 - Option to have a vertical petbar (see `nMainbar_Config.lua`).
 
-**Misc:**
+#### Misc:
 
 - Healthbar on tooltips now have a textual representation on it as well.
 - Fixed position and font size for player/cursor coordinates on world map.
