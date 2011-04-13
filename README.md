@@ -1,10 +1,10 @@
-# Neav UI (fan update)
+# Neav UI
 
 ## Changes and additions
 
 **oUF_Neav:**
 
-- Different short value formatting for player, target, pet and party frames is different (e.g. 1.1m instead of 1M 100K).
+- Different short value formatting (e.g. 1.1m instead of 1M 100K).
 - Added Blizzards holy power, eclipse and soulshard bars, they fit the UI very nicely.
 
 **Raid frames:**
@@ -37,6 +37,7 @@
 ## Bugs?
 
 ## Credits
+ballagarba for updated this projekt.
 Anton 'Neav' Ickert for creating this wonderful UI.
 
 ## Screenshots
