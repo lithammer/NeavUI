@@ -24,22 +24,23 @@ for _, texture in pairs({
     GameTimeCalendarEventAlarmTexture,
     GameTimeCalendarInvitesTexture,
     GameTimeCalendarInvitesGlow,
+    TimeManagerAlarmFiredTexture,
 }) do
     texture:SetTexture(nil)
     
     local classColor = RAID_CLASS_COLORS[select(2, UnitClass('player'))]
     
-    if (TimeManagerAlarmFiredTexture:IsShown()) then
+    if (texture:IsShown()) then
         GameTimeFrame:GetFontString():SetTextColor(1, 0, 1)
     else
         GameTimeFrame:GetFontString():SetTextColor(classColor.r, classColor.g, classColor.b)
     end
     
-    hooksecurefunc(TimeManagerAlarmFiredTexture, 'Show', function()
+    hooksecurefunc(texture, 'Show', function()
         GameTimeFrame:GetFontString():SetTextColor(1, 0, 1)
     end)
     
-    hooksecurefunc(TimeManagerAlarmFiredTexture, 'Hide', function()
+    hooksecurefunc(texture, 'Hide', function()
         GameTimeFrame:GetFontString():SetTextColor(classColor.r, classColor.g, classColor.b)
     end)
 end
