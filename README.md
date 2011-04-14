@@ -6,6 +6,7 @@
 
 - Different short value formatting (e.g. 1.1m instead of 1M 100K).
 - Added Blizzards holy power, eclipse and soulshard bars, they fit the UI very nicely.
+- Added boss frames, they looks good 
 
 #### Raid frames:
 
@@ -34,14 +35,15 @@
 
 ## Next Steps
 
-- fix nMinimap (working on this - 13 april 11)
-- wait until can test the oUF boss frames
-- clean up nChat (working on this - 13 april 11)
+- improve nMinimap (working on it - 15 april 11, should be finish in some days)
+- make nPower compact, add config file and put it on wowi
+- create optionals castbars and aura icons the boss frames (THEY WORK!11, no arena frames planned yet)
+- remove omen from the ui and create a file/addon which "skin" omen wihout modify the original data (for better updates)
 - create little config file for `nTooltip.lua` (for mouseover target, hp display etc.)
 
 ## Ideas
 
-- create lightweight nameplates in neav ui style (with !Beautycase?) ? 
+- create lightweight nameplates in neav ui style 
 - oUF_Neav - raid frames, get rid of the unit_aura event and use a OnUpdate event instead for better cpu usage?
 
 ## Installation
@@ -50,6 +52,6 @@
 
 ## Credits
 - ballagarba for updated this UI.
-- Neav for creating this wonderful UI.
+- Neav for creating this UI.
 
 ## Screenshots
