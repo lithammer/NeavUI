@@ -1,11 +1,16 @@
+
+if (not nChat.enableURLCopy) then
+    return
+end
+
 local gsub = _G.string.gsub
 local find = _G.string.find
 
 local urlStyle = "|cffffffff|Hurl:%1|h[%1]|h|r"
 local urlPatterns = {
-	"(http://%S+)", -- http://foo.com
-	"(www%.%S+)", -- www.foo.com/whatever/index.php
-	"(%d+%.%d+%.%d+%.%d+:?%d*)", -- 192.168.1.3, 192.3.4.5:43567
+	"(http://%S+)",                 -- http://xxx.com
+	"(www%.%S+)",                   -- www.xxx.com/site/index.php
+	"(%d+%.%d+%.%d+%.%d+:?%d*)",    -- 192.168.1.1 and 192.168.1.1:1110
 }
 
 local messageTypes = {
@@ -17,11 +22,11 @@ local messageTypes = {
 	"CHAT_MSG_WHISPER",
 }
 
-local urlFilter = function(self, event, text, ...)
+local function urlFilter(self, event, text, ...)
 	for _, pattern in ipairs(urlPatterns) do
 		local result, matches = gsub(text, pattern, urlStyle)
 
-		if matches > 0 then
+		if (matches > 0) then
 			return false, result, ...
 		end
 	end
@@ -49,24 +54,30 @@ StaticPopupDialogs["UrlCopyDialog"] = {
 	text = "URL",
 	button2 = CLOSE,
 	hasEditBox = 1,
-	editBoxWidth = 400,
+	editBoxWidth = 250,
+    
 	OnShow = function(frame)
 		local editBox = _G[frame:GetName().."EditBox"]
-		if editBox then
+		if (editBox) then
 			editBox:SetText(currentLink)
 			editBox:SetFocus()
 			editBox:HighlightText(0)
 		end
+        
 		local button = _G[frame:GetName().."Button2"]
-		if button then
+		if (button) then
 			button:ClearAllPoints()
-			button:SetWidth(200)
+			button:SetWidth(100)
 			button:SetPoint("CENTER", editBox, "CENTER", 0, -30)
 		end
 	end,
-	EditBoxOnEscapePressed = function(frame) frame:GetParent():Hide() end,
+    
+	EditBoxOnEscapePressed = function(frame) 
+        frame:GetParent():Hide() 
+    end,
+    
 	timeout = 0,
 	whileDead = 1,
 	hideOnEscape = 1,
-	maxLetters = 1024, -- this otherwise gets cached from other dialogs which caps it at 10..20..30...
+	maxLetters = 1024,
 }
