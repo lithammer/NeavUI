@@ -1,110 +1,167 @@
 
---  MiniMapInstanceDifficulty:SetAlpha(0)
+nMinimap = {
+    diffText = {
+        show = "TOP", -- possible: TOP, RIGHT, TOPRIGHT
+    },
+}
 
-MiniMapInstanceDifficulty:ClearAllPoints()
-MiniMapInstanceDifficulty:SetPoint('TOP', Minimap, 32, 8)
+    -- difficult indicator for normal groups
 
-local w, h = MiniMapInstanceDifficultyTexture:GetSize()
-MiniMapInstanceDifficultyTexture:SetSize(w*0.8, h*0.8)
+MiniMapInstanceDifficultyText:Show()
+MiniMapInstanceDifficultyText:SetFont('Fonts\\ARIALN.ttf', 15, 'OUTLINE')
+MiniMapInstanceDifficultyText:SetShadowOffset(0, 0)
+MiniMapInstanceDifficultyText:ClearAllPoints()
 
---[[
-local isHeroic = false
-local function GetInstanceDifficulty2()
-    local selectedRaidDifficulty
-    local allowedRaidDifficulty
-
-	local _, instanceType, difficulty, _, maxPlayers, playerDifficulty, isDynamicInstance = GetInstanceInfo()
-	if ((instanceType == 'party' or instanceType == 'raid') and not (difficulty == 1 and maxPlayers == 5 )) then		
-		if (instanceType == 'party' and difficulty == 2) then
-			isHeroic = true
-		elseif (instanceType == 'raid') then
-			if (isDynamicInstance) then
-				selectedRaidDifficulty = difficulty;
-				if (playerDifficulty == 1 ) then
-					if (selectedRaidDifficulty <= 2) then
-						selectedRaidDifficulty = selectedRaidDifficulty + 2
-					end
-					isHeroic = true
-				end
-
-				if (selectedRaidDifficulty == 1) then
-					allowedRaidDifficulty = 3
-				elseif (selectedRaidDifficulty == 2) then
-					allowedRaidDifficulty = 4
-				elseif (selectedRaidDifficulty == 3) then
-					allowedRaidDifficulty = 1
-				elseif (selectedRaidDifficulty == 4) then
-					allowedRaidDifficulty = 2
-				end
-				allowedRaidDifficulty = 'RAID_DIFFICULTY'..allowedRaidDifficulty
-			elseif (difficulty > 2) then
-				isHeroic = true
-			end
-		end
-
-		if (isHeroic) then
-            f.texture1:SetTexture('Interface\\AddOns\\nMinimap\\media\\heroDown')
-            f.text:SetTextColor(1, 0, 1)
-		else
-            f.texture1:SetTexture('Interface\\AddOns\\nMinimap\\media\\normalDown')
-            f.text:SetTextColor(1, 1, 1)
-		end
-        
-		f.MouseOver:Show()
-        f.text:Hide()
-        f.text:SetText(maxPlayers)
-	else
-		f.MouseOver:Hide()
-        f.text:Hide()
-        f.text:SetText(nil)
-	end
+if (nMinimap.diffText.show == 'RIGHT') then
+    MiniMapInstanceDifficultyText:SetPoint('TOPRIGHT', Minimap, -3.5, -20)
 end
 
-f = CreateFrame('Frame')
-f:RegisterEvent('PLAYER_LOGIN')
-f:RegisterEvent('PLAYER_DIFFICULTY_CHANGED')
-f:RegisterEvent('UPDATE_INSTANCE_INFO')
-f:RegisterEvent('ZONE_CHANGED')
-f:RegisterEvent('ZONE_CHANGED_INDOORS')
-f:RegisterEvent('ZONE_CHANGED_NEW_AREA')
-f:SetScript('OnEvent', function()
-    GetInstanceDifficulty2()
-end)
--- SetFrameLevel(Minimap:GetFrameLevel() + 1)
+if (nMinimap.diffText.show == 'TOP') then
+    MiniMapInstanceDifficultyText:SetPoint('TOP', Minimap, 0, -3.5)
+end
 
-f.MouseOver = CreateFrame('Frame')
-f.MouseOver:SetParent(Minimap)
-f.MouseOver:EnableMouse(true)
-f.MouseOver:SetPoint('TOPRIGHT', 15, 15)
-f.MouseOver:SetPoint('BOTTOMLEFT', -0, -15)
+if (nMinimap.diffText.show == 'TOPRIGHT') then
+    MiniMapInstanceDifficultyText:SetPoint('RIGHT', GameTimeFrame, 'Left', -6, 0)
+end
 
-f.text = f.MouseOver:CreateFontString(nil, 'OVERLAY')
-f.text:SetFont('Interface\\AddOns\\nMinimap\\media\\fontVisitor.ttf', 19, 'OUTLINE')    -- Fonts\\ARIALN.ttf
-f.text:SetPoint('BOTTOM', Minimap, 'TOP', 50, 2)
+local function colorDifficultTex()
+    MiniMapInstanceDifficultyTexture:SetTexture(nil)
 
-f.texture1 = f.MouseOver:CreateTexture(nil, 'BORDER')
-f.texture1:SetHeight(50)
-f.texture1:SetWidth(50)
-f.texture1:SetPoint('BOTTOM', f.text, 'BOTTOM', -10, 0)
-f.texture1:SetParent(f.MouseOver)
-
-f.MouseOver:SetAllPoints(f.texture1)
-
-f.MouseOver:SetScript('OnEnter', function()
-    if (isHeroic) then
-        f.texture1:SetTexture('Interface\\AddOns\\nMinimap\\media\\heroUp')
+    local a, b, c, d = MiniMapInstanceDifficultyTexture:GetTexCoord()
+    if (d == 0.4140625) then
+        MiniMapInstanceDifficultyText:SetTextColor(1, 0, 1)
     else
-        f.texture1:SetTexture('Interface\\AddOns\\nMinimap\\media\\normalUp')
+        MiniMapInstanceDifficultyText:SetTextColor(1, 1, 1)
     end
-    UIFrameFadeIn(f.text, 0.15, f.text:GetAlpha(), 1)
+end
+
+hooksecurefunc(MiniMapInstanceDifficultyTexture, 'SetTexCoord', function()
+    colorDifficultTex()
 end)
 
-f.MouseOver:SetScript('OnLeave', function()
-    if (isHeroic) then
-        f.texture1:SetTexture('Interface\\AddOns\\nMinimap\\media\\heroDown')
-    else
-        f.texture1:SetTexture('Interface\\AddOns\\nMinimap\\media\\normalDown')
-    end
-    UIFrameFadeOut(f.text, 0.05, f.text:GetAlpha(), 0)
+hooksecurefunc(MiniMapInstanceDifficulty, 'Show', function()
+    colorDifficultTex()
 end)
+
+hooksecurefunc(MiniMapInstanceDifficulty, 'Hide', function()
+    colorDifficultTex()
+end)
+
+    -- guild indicator 
+
+GuildInstanceDifficultyText:Show()
+GuildInstanceDifficultyText:SetFont('Fonts\\ARIALN.ttf', 15, 'OUTLINE')
+GuildInstanceDifficultyText:SetShadowOffset(0, 0)
+GuildInstanceDifficultyText:ClearAllPoints()
+
+if (nMinimap.diffText.show == 'RIGHT') then
+    GuildInstanceDifficultyText:SetPoint('TOPRIGHT', Minimap, -3.5, -20)
+end
+
+if (nMinimap.diffText.show == 'TOP') then
+    GuildInstanceDifficultyText:SetPoint('TOP', Minimap, 0, -3.5)
+end
+
+if (nMinimap.diffText.show == 'TOPRIGHT') then
+    GuildInstanceDifficultyText:SetPoint('RIGHT', GameTimeFrame, 'Left', -6, 0)
+end
+
+GuildInstanceDifficulty:SetSize(14, 14)
+GuildInstanceDifficulty:ClearAllPoints()
+GuildInstanceDifficulty:SetPoint('CENTER', GuildInstanceDifficultyText)
+
+local function colorGuildTex()
+    if (GuildInstanceDifficultyHeroicTexture:IsShown()) then
+        GuildInstanceDifficultyText:SetTextColor(1, 0, 1)
+    else
+        GuildInstanceDifficultyText:SetTextColor(1, 1, 1)
+    end
+    
+    for _, textures in pairs({
+        GuildInstanceDifficulty.emblem,
+        GuildInstanceDifficultyHanger,
+        GuildInstanceDifficultyBorder,
+        GuildInstanceDifficultyDarkBackground,
+        GuildInstanceDifficultyHeroicTexture,
+        GuildInstanceDifficultyBackground,
+    }) do
+        textures:SetTexture(nil)
+        textures:ClearAllPoints()
+        textures:SetPoint('TOP', 7000)
+    end
+end
+
+hooksecurefunc(GuildInstanceDifficulty, 'Show', function()
+    colorGuildTex()
+end)
+
+hooksecurefunc(GuildInstanceDifficultyHeroicTexture, 'Show', function()
+    colorGuildTex()
+end)
+
+hooksecurefunc(GuildInstanceDifficultyHeroicTexture, 'Hide', function()
+    colorGuildTex()
+end)
+
+--[[
+
+MiniMapInstanceDifficulty:ClearAllPoints()
+MiniMapInstanceDifficulty:SetPoint('TOP', Minimap, 0, 7)
+-- MiniMapInstanceDifficulty:SetPoint('TOP', Minimap, 32, 8)
+
+MiniMapInstanceDifficultyText:ClearAllPoints()
+MiniMapInstanceDifficultyText:SetPoint("CENTER", 0, 14);
+MiniMapInstanceDifficultyText.SetPoint = function() end
+MiniMapInstanceDifficultyText:SetTextColor(1, 1, 1)
+
+MiniMapInstanceDifficultyText:SetFont('Interface\\AddOns\\nMinimap\\media\\fontDifficultNumber.ttf', 9)
+
+local a = MiniMapInstanceDifficultyTexture:GetHeight()
+MiniMapInstanceDifficultyTexture:SetHeight(a*0.9)
+
+local b = MiniMapInstanceDifficultyTexture:GetWidth()
+MiniMapInstanceDifficultyTexture:SetWidth(b*0.9)
+
+local tex = MiniMapInstanceDifficultyTexture:GetTexture()
+
+    -- raid difficult indicator for guilds
+    
+GuildInstanceDifficultyBackground:SetTexture(tex)
+GuildInstanceDifficultyBackground:SetSize(b*0.9, a*0.9)
+GuildInstanceDifficultyBackground:ClearAllPoints()
+GuildInstanceDifficultyBackground:SetPoint('TOP', Minimap, 0, 5)
+
+GuildInstanceDifficulty:ClearAllPoints()
+GuildInstanceDifficulty:SetPoint('TOP', Minimap, 0, 7)
+
+GuildInstanceDifficultyBackground:SetTexCoord(0, 0.25, 0.5703125, 0.9140625);
+
+GuildInstanceDifficultyBackground:SetVertexColor(1, 1, 1)
+GuildInstanceDifficultyBackground.SetVertexColor = function() end
+
+hooksecurefunc(GuildInstanceDifficultyHeroicTexture, 'Show', function()
+    GuildInstanceDifficultyBackground:SetTexCoord(0, 0.25, 0.0703125, 0.4140625);
+end)
+
+hooksecurefunc(GuildInstanceDifficultyHeroicTexture, 'Hide', function()
+    GuildInstanceDifficultyBackground:SetTexCoord(0, 0.25, 0.5703125, 0.9140625);
+end)
+
+GuildInstanceDifficultyHanger:SetTexture(nil)
+GuildInstanceDifficultyBorder:SetTexture(nil)
+GuildInstanceDifficultyDarkBackground:SetTexture(nil)
+GuildInstanceDifficultyHeroicTexture:SetTexture(nil)
+
+GuildInstanceDifficultyText:ClearAllPoints()
+GuildInstanceDifficultyText:SetPoint("CENTER", 0, 15);
+GuildInstanceDifficultyText.SetPoint = function() end
+GuildInstanceDifficultyText:SetDrawLayer('OVERLAY')
+GuildInstanceDifficultyText:SetTextColor(1, 1, 1)
+
+GuildInstanceDifficultyText:SetFont('Interface\\AddOns\\nMinimap\\media\\fontDifficultNumber.ttf', 9)
+
+GuildInstanceDifficulty.emblem:ClearAllPoints()
+GuildInstanceDifficulty.emblem:SetPoint("CENTER", 0, -50000);
+-- GuildInstanceDifficulty.emblem:SetDrawLayer('OVERLAY')
+GuildInstanceDifficulty.emblem:SetTexture(nil)
 --]]
