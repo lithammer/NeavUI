@@ -15,10 +15,15 @@
         
 --]]
 
--- Kill the Blizzard party/raid frames
+if IsAddOnLoaded('Aptechka') or IsAddOnLoaded('Grid') then
+	return
+end
+
+    -- Kill the Blizzard party/raid frames
+    
 for _, frame in pairs({
 	CompactPartyFrame,
-	--CompactRaidFrameManager, -- Actually usefull for world markers
+	-- CompactRaidFrameManager, -- Actually usefull for world markers
 	CompactRaidFrameContainer,
 }) do
 	frame:UnregisterAllEvents()
@@ -53,16 +58,11 @@ end
 
 for _, button in pairs({
     'UnitFramePanelRaidStylePartyFrames',
-
     'FrameCategoriesButton11',
 }) do
     _G['InterfaceOptions'..button]:SetAlpha(0.35)
     _G['InterfaceOptions'..button]:Disable()
     _G['InterfaceOptions'..button]:EnableMouse(false)
-end
-
-if IsAddOnLoaded('Aptechka') or IsAddOnLoaded('Grid') then
-	return
 end
 
 local function GetSpellName(spellID)
@@ -72,15 +72,16 @@ end
 
 local playerClass = select(2, UnitClass('player'))
 local isHealer = (playerClass == 'DRUID' or playerClass == 'PALADIN' or playerClass == 'PRIEST' or playerClass == 'SHAMAN')
-
--- Class buffs { spell ID, position [, {r, g, b, a}][, anyUnit][, hideCooldown][, hideCount] }
--- For oUF_AuraWatch
+   
+    -- oUF_AuraWatch
+    -- Class buffs { spell ID, position [, {r, g, b, a}][, anyUnit][, hideCooldown][, hideCount] }
+    
 local indicatorList
 do
 	indicatorList = {
 		DRUID = {
 			{774, 'BOTTOMRIGHT', {1, 0.2, 1}}, -- Rejuvenation
-			{33763, 'TOPRIGHT', {0.5, 1, 0.5}}, -- Lifebloom
+			{33763, 'BOTTOM', {0.5, 1, 0.5}, false, false, true}, -- Lifebloom
 			{48438, 'BOTTOMLEFT', {0.7, 1, 0}}, -- Wild Growth
 		},
 		MAGE = {
@@ -131,19 +132,19 @@ local function CreateIndicators(self, unit)
 
 	local buffs = {}
 
-	if indicatorList['ALL'] then
+	if (indicatorList['ALL']) then
 		for key, value in pairs(indicatorList['ALL']) do
 			tinsert(buffs, value)
 		end
 	end
 	
-	if indicatorList[playerClass] then
+	if (indicatorList[playerClass]) then
 		for key, value in pairs(indicatorList[playerClass]) do
 			tinsert(buffs, value)
 		end
 	end
 
-	if buffs then
+	if (buffs) then
 		for key, spell in pairs(buffs) do
 			local icon = CreateFrame('Frame', nil, self.AuraWatch)
 			icon.spellID = spell[1]
@@ -154,7 +155,8 @@ local function CreateIndicators(self, unit)
 			icon:SetHeight(oUF_Neav.units.raid.indicatorSize)
 			icon:SetPoint(spell[2], self)
 
-			-- Exception to place PW:S above Weakened Soul
+                -- Exception to place PW:S above Weakened Soul
+                
 			if (spell[1] == 17) then
 				icon:SetFrameLevel(icon:GetFrameLevel() + 5)
 			end
@@ -163,7 +165,7 @@ local function CreateIndicators(self, unit)
 			icon.icon:SetAllPoints(icon)
 			icon.icon:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\borderIndicator')
 
-			if spell[3] then
+			if (spell[3]) then
 				icon.icon:SetVertexColor(unpack(spell[3]))
 			else
 				icon.icon:SetVertexColor(0.8, 0.8, 0.8)
@@ -179,13 +181,13 @@ local function CreateIndicators(self, unit)
 				TOP = {'CENTER', icon, 0, 0},
 				BOTTOM = {'CENTER', icon, 0, 0},
 			}
-			
-			if not icon.hideCount then
+
+			if (not icon.hideCount) then
 				icon.count = icon:CreateFontString(nil, 'OVERLAY')
-				icon.count:SetFont(NumberFontNormal:GetFont(), 10)
 				icon.count:SetShadowColor(0, 0, 0)
 				icon.count:SetShadowOffset(1, -1)
-				icon.count:SetPoint(unpack(countOffsets[spell[2]]))
+                icon.count:SetPoint(unpack(countOffsets[spell[2]]))
+                icon.count:SetFont('Interface\\AddOns\\oUF_Neav\\media\\fontVisitor.ttf', 13)
 			end
 
 			self.AuraWatch.icons[spell[1]] = icon
@@ -247,6 +249,7 @@ local debuffList = setmetatable({
 	
 	-- PvE
 	
+    
 	-- Naxxramas
 	[GetSpellName(27808)] = 9, -- Frost Blast, Kel'Thuzad
 	
@@ -290,7 +293,7 @@ local debuffList = setmetatable({
 	[GetSpellName(81836)] = 8, -- Corruption: Accelerated, Cho'gall
 
 	-- Throne of the Four Winds
-	-- nothing...
+
 
 },{ __index = function() 
     return 0 
@@ -376,13 +379,13 @@ local function UpdateThreat(self, _, unit)
     if (self.Aggro) then
         local threat = UnitThreatSituation(self.unit)
         if (threat == 3) then
-            --self.Aggro:SetText('|cFFFF0000AGGRO')
+            -- self.Aggro:SetText('|cFFFF0000AGGRO')
             self.Health:SetBackdropColor(0.9, 0, 0)
 			if oUF_Neav.units.raid.manabar then
 				self.Power:SetBackdropColor(0.9, 0, 0)
 			end
         else
-            self.Aggro:SetText('')
+            -- self.Aggro:SetText('')
             self.Health:SetBackdropColor(0, 0, 0)
 			if oUF_Neav.units.raid.manabar then
 				self.Power:SetBackdropColor(0, 0, 0)
@@ -492,7 +495,7 @@ local function CreateRaidLayout(self, unit)
 	
 	self.Health.frequentUpdates = true
 
-	if not isHealer then
+	if (not isHealer) then
 		self.Health.Smooth = true
 	end
 	
@@ -569,10 +572,10 @@ local function CreateRaidLayout(self, unit)
     self.Name:SetTextColor(1, 1, 1)
     self:Tag(self.Name, '[name:Raid]')
 
-        -- heal prediction (new healcomm)
+        -- heal prediction, new healcomm
 	
 	local mhpb = CreateFrame('StatusBar', nil, self.Health)
-	if oUF_Neav.units.raid.horizontalHealthBars then
+	if (oUF_Neav.units.raid.horizontalHealthBars) then
 		mhpb:SetOrientation('HORIZONTAL')
 		mhpb:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT', 0, 0)
 	else
@@ -585,7 +588,7 @@ local function CreateRaidLayout(self, unit)
 	mhpb:SetStatusBarColor(0, 1, 0.5, 0.15)
 
 	local ohpb = CreateFrame('StatusBar', nil, self.Health)
-	if oUF_Neav.units.raid.horizontalHealthBars then
+	if (oUF_Neav.units.raid.horizontalHealthBars) then
 		ohpb:SetOrientation('HORIZONTAL')
 		ohpb:SetPoint('LEFT', mhpb:GetStatusBarTexture(), 'RIGHT', 0, 0)
 	else
@@ -738,79 +741,3 @@ oUF:Factory(function(self)
 		raid[i]:SetScale(oUF_Neav.units.raid.scale)
     end
 end)
-
-SlashCmdList['WORLDMARKERS'] = function()
-	local instanceName, instanceType = GetInstanceInfo()
-	local isLeader = IsRealPartyLeader() or IsRealRaidLeader() or IsRaidOfficer()
-	local isPvPZone = instanceType == 'arena' or instanceType == 'pvp' and instanceName == 'Wintergrasp' or instanceName == 'Tol Barad'
-	
-	-- If eligible for marking
-	if (UnitInParty('player') and not isPvPZone and isLeader) then
-		if CompactRaidFrameManager:IsVisible() then
-			CompactRaidFrameManager:Hide()
-		else
-			CompactRaidFrameManager:Show()
-		end
-	else
-		if CompactRaidFrameManager:IsVisible() then
-			CompactRaidFrameManager:Hide()
-		else
-			PlaySound('igQuestFailed')
-			--DEFAULT_CHAT_FRAME:AddMessage('', 1, 0, 0)
-			UIErrorsFrame:AddMessage("You're not in a party and/or not eligible for marking", 1, 0, 0)
-		end
-	end
-end
-SLASH_WORLDMARKERS1 = '/wm'
-
---[[
-
-local function MoveRaidFrames(point, parent, parentPoint, xOffset, yOffset)
-	for i = 1, oUF_Neav.units.raid.numGroups do
-		if (i == 1) then
-			_G['oUF_Neav_Raid'..i]:ClearAllPoints()
-			_G['oUF_Neav_Raid'..i]:SetPoint(point, parent, parentPoint, xOffset, yOffset)
-		else
-			_G['oUF_Neav_Raid'..i]:SetPoint('TOPLEFT', 'oUF_Neav_Raid'..i-1, 'TOPRIGHT', 7, 0)
-		end
-	end
-end
-
--- Moves the raid frames a bit
-SlashCmdList['HEAL'] = function()
-	MoveRaidFrames('LEFT', UIParent, 'CENTER', 200, 0)
-end
-SLASH_HEAL1 = '/heal'
-
--- Moves the raid frames a bit
-SlashCmdList['DPS'] = function()
-	MoveRaidFrames(unpack(oUF_Neav.units.raid.position))
-end
-SLASH_DPS1 = '/dps'
-
-
--- Automatic moving of raid frames based on class, spec and party/size size
-local Mover = CreateFrame('Frame')
-Mover:RegisterEvent('PLAYER_ENTERING_WORLD')
-
-local function Mover_OnEvent(self, event, ...)
-	if event == 'PLAYER_ENTERING_WORLD' then
-		self:RegisterEvent('ACTIVE_TALENT_GROUP_CHANGED')
-		--self:UnregisterEvent('PLAYER_ENTERING_WORLD')
-		self:RegisterEvent('PARTY_MEMBERS_CHANGED')
-	end
-	
-	if (not InCombatLockdown()) then
-		local spec = GetPrimaryTalentTree()
-
-		-- If in healer spec and a party
-		if (GetNumPartyMembers() > 0) and ((playerClass == 'DRUID' and spec == 3) or (playerClass == 'PRIEST' and (spec == 1 or spec == 2)) or (playerClass == 'SHAMAN' and spec == 3)) then
-			MoveRaidFrames('LEFT', UIParent, 'CENTER', 200, 0)
-		else
-			MoveRaidFrames(unpack(oUF_Neav.units.raid.position))
-		end
-	end
-end
-Mover:SetScript('OnEvent', Mover_OnEvent)
-
-]]--
