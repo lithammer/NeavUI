@@ -4,11 +4,8 @@
 MiniMapInstanceDifficulty:ClearAllPoints()
 MiniMapInstanceDifficulty:SetPoint('TOP', Minimap, 32, 8)
 
-local a = MiniMapInstanceDifficultyTexture:GetHeight()
-MiniMapInstanceDifficultyTexture:SetHeight(a*0.8)
-
-local b = MiniMapInstanceDifficultyTexture:GetWidth()
-MiniMapInstanceDifficultyTexture:SetWidth(b*0.8)
+local w, h = MiniMapInstanceDifficultyTexture:GetSize()
+MiniMapInstanceDifficultyTexture:SetSize(w*0.8, h*0.8)
 
 --[[
 local isHeroic = false
