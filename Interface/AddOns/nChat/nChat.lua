@@ -1,7 +1,4 @@
 
--- true to add OUTLINE to chat text
-local chatOutline = false
-
     -- ??? 
     
 TIMESTAMP_FORMAT_HHMMSS_24HR = '%H:%M:%S ';
@@ -16,15 +13,6 @@ TIMESTAMP_FORMAT_HHMM_AMPM = '%I:%M %p ';
     -- chatframe mouseover alpha
     
 DEFAULT_CHATFRAME_ALPHA = 0.25 
-
-CHAT_FRAME_TAB_SELECTED_MOUSEOVER_ALPHA = 1.0
-CHAT_FRAME_TAB_SELECTED_NOMOUSE_ALPHA = 0     -- set to 0 if u want to hide the tabs when no mouse is over them or the chat
-    
-CHAT_FRAME_TAB_NORMAL_MOUSEOVER_ALPHA = 0.5
-CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA = 0      -- set to 0 if u want to hide the tabs when no mouse is over them or the chat
-    
-CHAT_FRAME_FADE_OUT_TIME = 0.5
-CHAT_FRAME_FADE_TIME = 0.1
 
 CHAT_FONT_HEIGHTS = {
     [1] = 8,
@@ -130,6 +118,7 @@ FriendsMicroButton:UnregisterAllEvents()
 
 ChatFrameMenuButton:SetAlpha(0)
 ChatFrameMenuButton:EnableMouse(false)
+
     -- tab text colors for the tabs
    
 hooksecurefunc('FCFTab_UpdateColors', function(self, selected)
@@ -160,7 +149,7 @@ hooksecurefunc('FloatingChatFrame_OnMouseScroll', function(self, direction)
     end
 end)
 
-    -- reposition toast frame (the popup when a bnet friend login)
+    -- reposit toast frame (the popup when a bnet friend login)
     
 BNToastFrame:HookScript('OnShow', function(self)
     BNToastFrame:ClearAllPoints()
@@ -168,7 +157,7 @@ BNToastFrame:HookScript('OnShow', function(self)
 end)
 
 
-    -- modify the tabs
+    -- modify the chat tabs
     
 function SkinTab(self)
     local chat = _G[self]
@@ -183,11 +172,15 @@ function SkinTab(self)
     tabRight:SetTexture(nil)
     
     local tabText = _G[self..'TabText']
-    tabText:SetFont('Fonts\\ARIALN.ttf', 14, 'OUTLINE')
-    tabText:SetShadowOffset(0, 0)   -- (1, -1)
+    if (nChat.tab.fontOutline) then
+        tabText:SetFont('Fonts\\ARIALN.ttf', nChat.tab.fontSize, 'THINOUTLINE')
+        tabText:SetShadowOffset(0, 0)
+    else
+        tabText:SetFont('Fonts\\ARIALN.ttf', nChat.tab.fontSize)
+        tabText:SetShadowOffset(1, -1)
+    end
     tabText:SetJustifyH('CENTER')
     tabText:SetWidth(60)
-    -- tabText:SetTextColor(1, 1, 1)
     
     local a1, a2, a3, a4, a5 = tabText:GetPoint()
     tabText:SetPoint(a1, a2, a3, a4, 1)
@@ -213,30 +206,33 @@ function SkinTab(self)
     local tabGlow = _G[self..'TabGlow']
     tabGlow:SetTexture(nil)
     
-    tabGlow.Show = function()
-        tabText:SetTextColor(1, 0, 1, CHAT_FRAME_TAB_SELECTED_NOMOUSE_ALPHA)
-    end
+    local s1, s2, s3 = unpack(nChat.tab.specialColor)
+    local e1, e2, e3 = unpack(nChat.tab.selectedColor)
+    local n1, n2, n3 = unpack(nChat.tab.normalColor)
+        
+    hooksecurefunc(tabGlow, 'Show', function()
+        tabText:SetTextColor(s1, s2, s3, CHAT_FRAME_TAB_NORMAL_MOUSEOVER_ALPHA)
+    end)
     
-    tabGlow.Hide = function()
-        tabText:SetTextColor(1, 1, 1)
-    end
+    hooksecurefunc(tabGlow, 'Hide', function()
+        tabText:SetTextColor(n1, n2, n3)
+    end)
     
     local tab = _G[self..'Tab']
     tab:SetScript('OnEnter', function()
-        local al = tabText:GetAlpha()
-        tabText:SetTextColor(1, 0, 1, al)
+        tabText:SetTextColor(s1, s2, s3, tabText:GetAlpha())
     end)
     
     tab:SetScript('OnLeave', function()
         local r, g, b
         local hasNofication = tabGlow:IsShown()
-
+        
         if (_G[self] == SELECTED_CHAT_FRAME) then
-            r, g, b = 0, 0.75, 1
+            r, g, b = e1, e2, e3
         elseif (hasNofication) then
-            r, g, b = 1, 0, 1
+            r, g, b = s1, s2, s3
         else
-            r, g, b = 1, 1, 1
+            r, g, b = n1, n2, n3
         end
 
         tabText:SetTextColor(r, g, b)
@@ -249,11 +245,12 @@ end
 
 local function ModChat(self)
     local chat = _G[self]
-	if not chatOutline then
+	if (not nChat.chatOutline) then
 		chat:SetShadowOffset(1, -1)
 	end
+    
 	local font, fontsize, fontflags = chat:GetFont()
-	chat:SetFont(font, fontsize, chatOutline and 'THINOUTLINE' or fontflags)
+	chat:SetFont(font, fontsize, nChat.chatOutline and 'THINOUTLINE' or fontflags)
     chat:SetClampedToScreen(false)
     
     chat:SetClampRectInsets(0, 0, 0, 0)
