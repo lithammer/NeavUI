@@ -1,4 +1,7 @@
 
+-- true to add OUTLINE to chat text
+local chatOutline = false
+
     -- ??? 
     
 TIMESTAMP_FORMAT_HHMMSS_24HR = '%H:%M:%S ';
@@ -246,7 +249,11 @@ end
 
 local function ModChat(self)
     local chat = _G[self]
-    chat:SetShadowOffset(1, -1)
+	if not chatOutline then
+		chat:SetShadowOffset(1, -1)
+	end
+	local font, fontsize, fontflags = chat:GetFont()
+	chat:SetFont(font, fontsize, chatOutline and 'THINOUTLINE' or fontflags)
     chat:SetClampedToScreen(false)
     
     chat:SetClampRectInsets(0, 0, 0, 0)
@@ -384,8 +391,7 @@ f:SetScript('OnEvent', function(_, event)
         GMChatFrameBottomButton:EnableMouse(false)
     end
     
-    if (event == 'CHAT_MSG_WHISPER' or 'CHAT_MSG_BN_WHISPER') then
+    if (event == 'CHAT_MSG_WHISPER' or event == 'CHAT_MSG_BN_WHISPER') then
 		PlaySoundFile('Sound\\Spells\\Simongame_visual_gametick.wav')
-        PlaySoundFile('Sound\\Spells\\Simongame_visual_gametick.wav')
 	end
 end)
