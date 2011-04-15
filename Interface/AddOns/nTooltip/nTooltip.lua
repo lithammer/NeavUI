@@ -1,5 +1,5 @@
 
-UIDROPDOWNMENU_DEFAULT_TEXT_HEIGHT = 14
+UIDROPDOWNMENU_DEFAULT_TEXT_HEIGHT = nTooltip.fontSize
 
 GameTooltipStatusBar:SetHeight(7)
 GameTooltipStatusBar:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
@@ -31,7 +31,7 @@ local function ApplyTooltipStyle(self)
     CreateBorder(self, bsize)
 end
 
-hooksecurefunc("GameTooltip_ShowCompareItem", function(self)  
+hooksecurefunc('GameTooltip_ShowCompareItem', function(self)  
 	if (not self) then
 		self = GameTooltip
 	end
@@ -139,9 +139,13 @@ local function GameTooltip_UnitType(unit)
 end
 
 GameTooltip.Icon = GameTooltip:CreateTexture('$parentRaidIcon', 'OVERLAY')
-GameTooltip.Icon:SetPoint('TOPLEFT', GameTooltip, 10, -10)
-GameTooltip.Icon:SetWidth(16)
-GameTooltip.Icon:SetHeight(16)
+GameTooltip.Icon:SetPoint('TOPLEFT', GameTooltip, 10, -11)
+GameTooltip.Icon:SetSize(14, 14)
+
+if (nTooltip.showMouseoverTarget) then
+    GameTooltip.TargetIcon = GameTooltip:CreateTexture('$parentRaidIcon', 'OVERLAY')
+    GameTooltip.TargetIcon:SetSize(12, 12)
+end
 
 hooksecurefunc('GameTooltip_SetDefaultAnchor', function(self)
 	self:SetPoint('BOTTOMRIGHT', UIParent, -27.35, 27.35)
@@ -153,9 +157,14 @@ GameTooltip:HookScript('OnTooltipCleared', function(self)
     GameTooltipStatusBar:SetPoint('TOPRIGHT', self, 'BOTTOMRIGHT', -2, -2)
     
     self.Icon:SetTexture(nil)
+    
+    if (self.TargetIcon) then
+        self.TargetIcon:SetTexture(nil)
+    end
 end)
 
--- function to short-display HP value on StatusBar
+    -- function to short-display HP value on StatusBar
+    
 local function ShortValue(value)
 	if value >= 1e7 then
 		return ('%.1fm'):format(value / 1e6):gsub('%.?0+([km])$', '%1')
@@ -173,15 +182,14 @@ end
 local PowerBarColor = PowerBarColor
 GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
     local unit = GameTooltip_GetUnit(self)
-
+            
 	if (UnitExists(unit) and UnitName(unit) ~= UNKNOWN) then
         local name, realm = UnitName(unit)
-        if UnitPVPName(unit) then name = UnitPVPName(unit) end
         
-        local unitTargetName = UnitName(unit .. 'target');
-		local unitTargetClassColor = RAID_CLASS_COLORS[select(2,UnitClass(unit .. 'target'))] or { r = 1, g = 0, b = 1 };
-		local unitTargetReactionColor = { r = select(1, UnitSelectionColor(unit .. 'target')), g = select(2, UnitSelectionColor(unit .. 'target')), b = select(3, UnitSelectionColor(unit .. 'target')) };
-
+        if (UnitPVPName(unit)) then 
+            name = UnitPVPName(unit) 
+        end
+        
         GameTooltipTextLeft1:SetText(name)
         
         if (GetGuildInfo(unit)) then
@@ -189,25 +197,60 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
                GameTooltipTextLeft2:SetText('|cffFF66CC'..GameTooltipTextLeft2:GetText()..'|r')
             end
         end
-
+        
         for i = 2, GameTooltip:NumLines() do
             if (_G['GameTooltipTextLeft'..i]:GetText():find('^'..TOOLTIP_UNIT_LEVEL:gsub('%%s', '.+'))) then
                 _G['GameTooltipTextLeft'..i]:SetText(GameTooltip_UnitType(unit))
             end
         end
         
-        if ( UnitExists(unit .. 'target') ) then
-			if ( UnitName('player') == unitTargetName ) then
-				self:AddLine('|cffff00ff' .. string.upper(YOU) .. '|r', 1, 1, 1)
-			else
-				if UnitIsPlayer(unit .. 'target') then
-					self:AddLine(format('|cff%02x%02x%02x%s|r', unitTargetClassColor.r*255, unitTargetClassColor.g*255, unitTargetClassColor.b*255, unitTargetName), 1, 1, 1)
-				else
-					self:AddLine(format('|cff%02x%02x%02x%s|r', unitTargetReactionColor.r*255, unitTargetReactionColor.g*255, unitTargetReactionColor.b*255, unitTargetName), 1, 1, 1)
-				end
-			end
-		end
+            -- mouse over target with raidicon support
+            
+        if (nTooltip.showMouseoverTarget) then
+            local unitTargetName = UnitName(unit .. 'target');
+            local unitTargetClassColor = RAID_CLASS_COLORS[select(2,UnitClass(unit .. 'target'))] or { r = 1, g = 0, b = 1 };
+            local unitTargetReactionColor = { 
+                r = select(1, UnitSelectionColor(unit .. 'target')), 
+                g = select(2, UnitSelectionColor(unit .. 'target')), 
+                b = select(3, UnitSelectionColor(unit .. 'target')) 
+            };
+        
+            if (UnitExists(unit .. 'target')) then
+                if (UnitName('player') == unitTargetName) then
+                    self:AddLine('|cffff00ff' .. string.upper(YOU) .. '|r', 1, 1, 1)
+                else
+                    if (UnitIsPlayer(unit .. 'target')) then
+                        if (GetRaidTargetIndex(unit .. 'target') and not UnitIsDead(unit .. 'target')) then
+                            self:AddLine(format('     |cff%02x%02x%02x%s|r', unitTargetClassColor.r*255, unitTargetClassColor.g*255, unitTargetClassColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)
+                            for i = 3, GameTooltip:NumLines() do
+                                if (_G['GameTooltipTextLeft'..i]:GetText():find(unitTargetName)) then
+                                        
+                                    self.TargetIcon:SetPoint('LEFT', _G['GameTooltipTextLeft'..i], 10, 0)
+                                    self.TargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..GetRaidTargetIndex(unit .. 'target'))      
+                                end
+                            end
+                       else
+                            self:AddLine(format('  |cff%02x%02x%02x%s|r', unitTargetClassColor.r*255, unitTargetClassColor.g*255, unitTargetClassColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)
+                        end
+                    else
+                        if (GetRaidTargetIndex(unit .. 'target') and not UnitIsDead(unit .. 'target')) then
+                            self:AddLine(format('     |cff%02x%02x%02x%s|r', unitTargetReactionColor.r*255, unitTargetReactionColor.g*255, unitTargetReactionColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)                 
+                            for i = 3, GameTooltip:NumLines() do
+                                if (_G['GameTooltipTextLeft'..i]:GetText():find(unitTargetName)) then
+                                        
+                                    self.TargetIcon:SetPoint('LEFT', _G['GameTooltipTextLeft'..i], 10, 0)
+                                    self.TargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..GetRaidTargetIndex(unit .. 'target'))         
 
+                                end
+                            end 
+                       else
+                            self:AddLine(format('  |cff%02x%02x%02x%s|r', unitTargetReactionColor.r*255, unitTargetReactionColor.g*255, unitTargetReactionColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)
+                        end
+                    end
+                end
+            end
+        end
+        
 		for i = 3, GameTooltip:NumLines() do
 			if (_G['GameTooltipTextLeft'..i]:GetText():find(PVP_ENABLED)) then
 				_G['GameTooltipTextLeft'..i]:SetText(nil)
@@ -220,7 +263,7 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
 		end
         
         if (GetRaidTargetIndex(unit) and not UnitIsDead(unit)) then
-           GameTooltipTextLeft1:SetText('   '..GameTooltipTextLeft1:GetText())
+            GameTooltipTextLeft1:SetText('   '..GameTooltipTextLeft1:GetText())
             self.Icon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..GetRaidTargetIndex(unit))
         end
 
@@ -231,8 +274,11 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
         end
 
         if (realm and realm ~= '') then
-            --self:AppendText(' (*)')
-            self:AppendText(' - '..realm)
+            if (nTooltip.abbrevRealmNames)   then
+                self:AppendText(' (*)')
+            else
+                self:AppendText(' - '..realm)
+            end
         end
         
         if (UnitIsDead(unit) or UnitIsGhost(unit)) then
@@ -246,59 +292,68 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
         GameTooltipStatusBar:SetPoint('LEFT', self:GetName()..'TextLeft'..self:NumLines(), 1, -3)
         GameTooltipStatusBar:SetPoint('RIGHT', self, -10, 0)
 		
-		--update HP value on status bar
-		GameTooltipStatusBar:SetScript("OnValueChanged", function(self, value)
-			if not value then
-				return
-			end
-			local min, max = self:GetMinMaxValues()
-			
-			if (value < min) or (value > max) then
-				return
-			end
-			local _, unit = GameTooltip:GetUnit()
-			
-			-- fix target of target returning nil
-			if (not unit) then
-				local GMF = GetMouseFocus()
-				unit = GMF and GMF:GetAttribute("unit")
-			end
+            -- tooltip HP bar & value
+            
+        if (not GameTooltipStatusBar.hasHealthText and nTooltip.showTooltipHealth) then
+            GameTooltipStatusBar:SetScript('OnValueChanged', function(self, value)
+                if (not value) then
+                    return
+                end
+                
+                local min, max = self:GetMinMaxValues()
+                
+                if (value < min) or (value > max) then
+                    return
+                end
+                
+                local _, unit = GameTooltip:GetUnit()
 
-			if not self.text then
-				self.text = self:CreateFontString(nil, 'LOW')
-				self.text:SetPoint('CENTER', GameTooltipStatusBar, 0, 0)
-				self.text:SetFont('Fonts\\ARIALN.ttf', 13, 'THINOUTLINE')
-				self.text:Show()
-				if unit then
-					min, max = UnitHealth(unit), UnitHealthMax(unit)
-					local hp = ShortValue(min).." / "..ShortValue(max)
-					if UnitIsGhost(unit) then
-						self.text:SetText('Ghost')
-					elseif min == 0 or UnitIsDead(unit) or UnitIsGhost(unit) then
-						self.text:SetText('Dead')
-					else
-						self.text:SetText(hp)
-					end
-				end
-			else
-				if unit then
-					min, max = UnitHealth(unit), UnitHealthMax(unit)
-					self.text:Show()
-					local hp = ShortValue(min).." / "..ShortValue(max)
-					if UnitIsGhost(unit) then
-						self.text:SetText('Ghost')
-					elseif min == 0 or UnitIsDead(unit) or UnitIsGhost(unit) then
-						self.text:SetText('Dead')
-					else
-						self.text:SetText(hp)
-					end
-				else
-					self.text:Hide()
-				end
-			end
-		end)
-		
+                if (not unit) then
+                    unit = GetMouseFocus() and GetMouseFocus():GetAttribute('unit')
+                end
+
+                if (not self.text) then
+                    self.text = self:CreateFontString(nil, 'MEDIUM')
+                    
+                    if (nTooltip.healthbar.textPos == 'TOP') then
+                        self.text:SetPoint('RIGHT', GameTooltipStatusBar, 'TOPRIGHT', -10, 1)
+                        self.text:SetPoint('LEFT', GameTooltipStatusBar, 'TOPLEFT', 10, 1)
+                    elseif (nTooltip.healthbar.textPos == 'BOTTOM') then
+                        self.text:SetPoint('RIGHT', GameTooltipStatusBar, 'BOTTOMRIGHT', -10, 1)
+                        self.text:SetPoint('LEFT', GameTooltipStatusBar, 'BOTTOMLEFT', 10, 1)
+                    else
+                        self.text:SetPoint('RIGHT', GameTooltipStatusBar, 'RIGHT', -10, 0)
+                        self.text:SetPoint('LEFT', GameTooltipStatusBar, 'LEFT', 10, 0)
+                    end
+                    
+                    if (nTooltip.healthbar.showOutline) then
+                        self.text:SetFont(nTooltip.healthbar.font, nTooltip.healthbar.fontSize, 'THINOUTLINE')
+                        self.text:SetShadowOffset(0, 0)
+                    else
+                        self.text:SetFont(nTooltip.healthbar.font, nTooltip.healthbar.fontSize)
+                        self.text:SetShadowOffset(1, -1)
+                    end
+                    
+                    self.text:Show()
+                end
+                    if (unit) then
+                        min = UnitHealth(unit)
+                        max = UnitHealthMax(unit)
+                        local hp = ShortValue(min)..' / '..ShortValue(max)
+                        
+                        if (UnitIsGhost(unit)) then
+                            self.text:SetText('Ghost')
+                        elseif (min == 0 or UnitIsDead(unit) or UnitIsGhost(unit)) then
+                            self.text:SetText('Dead')
+                        else
+                            self.text:SetText(hp)
+                        end
+                    end
+        
+
+                self.hasHealthText = true
+            end)
+        end
     end
 end)
-
-
+		
