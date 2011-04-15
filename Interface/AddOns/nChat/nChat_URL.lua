@@ -6,20 +6,20 @@ end
 local gsub = _G.string.gsub
 local find = _G.string.find
 
-local urlStyle = "|cffffffff|Hurl:%1|h[%1]|h|r"
+local urlStyle = '|cffff00ff|Hurl:%1|h%1|h|r'
 local urlPatterns = {
-	"(http://%S+)",                 -- http://xxx.com
-	"(www%.%S+)",                   -- www.xxx.com/site/index.php
-	"(%d+%.%d+%.%d+%.%d+:?%d*)",    -- 192.168.1.1 and 192.168.1.1:1110
+	'(http://%S+)',                 -- http://xxx.com
+	'(www%.%S+)',                   -- www.xxx.com/site/index.php
+	'(%d+%.%d+%.%d+%.%d+:?%d*)',    -- 192.168.1.1 and 192.168.1.1:1110
 }
 
 local messageTypes = {
-	"CHAT_MSG_CHANNEL",
-	"CHAT_MSG_GUILD",
-	"CHAT_MSG_PARTY",
-	"CHAT_MSG_RAID",
-	"CHAT_MSG_SAY",
-	"CHAT_MSG_WHISPER",
+	'CHAT_MSG_CHANNEL',
+	'CHAT_MSG_GUILD',
+	'CHAT_MSG_PARTY',
+	'CHAT_MSG_RAID',
+	'CHAT_MSG_SAY',
+	'CHAT_MSG_WHISPER',
 }
 
 local function urlFilter(self, event, text, ...)
@@ -39,9 +39,9 @@ end
 local origSetItemRef = _G.SetItemRef
 local currentLink
 local SetItemRefHook = function(link, text, button)
-	if link:sub(0, 3) == "url" then
+	if link:sub(0, 3) == 'url' then
 		currentLink = link:sub(5)
-		StaticPopup_Show("UrlCopyDialog")
+		StaticPopup_Show('UrlCopyDialog')
 		return
 	end
 	
@@ -50,25 +50,25 @@ end
 
 SetItemRef = SetItemRefHook
 
-StaticPopupDialogs["UrlCopyDialog"] = {
-	text = "URL",
+StaticPopupDialogs['UrlCopyDialog'] = {
+	text = 'URL',
 	button2 = CLOSE,
 	hasEditBox = 1,
 	editBoxWidth = 250,
     
 	OnShow = function(frame)
-		local editBox = _G[frame:GetName().."EditBox"]
+		local editBox = _G[frame:GetName()..'EditBox']
 		if (editBox) then
 			editBox:SetText(currentLink)
 			editBox:SetFocus()
 			editBox:HighlightText(0)
 		end
         
-		local button = _G[frame:GetName().."Button2"]
+		local button = _G[frame:GetName()..'Button2']
 		if (button) then
 			button:ClearAllPoints()
 			button:SetWidth(100)
-			button:SetPoint("CENTER", editBox, "CENTER", 0, -30)
+			button:SetPoint('CENTER', editBox, 'CENTER', 0, -30)
 		end
 	end,
     
