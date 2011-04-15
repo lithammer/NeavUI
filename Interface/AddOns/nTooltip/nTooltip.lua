@@ -322,8 +322,8 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
                         self.text:SetPoint('RIGHT', GameTooltipStatusBar, 'BOTTOMRIGHT', -10, 1)
                         self.text:SetPoint('LEFT', GameTooltipStatusBar, 'BOTTOMLEFT', 10, 1)
                     else
-                        self.text:SetPoint('RIGHT', GameTooltipStatusBar, 'RIGHT', -10, 0)
-                        self.text:SetPoint('LEFT', GameTooltipStatusBar, 'LEFT', 10, 0)
+                        self.text:SetPoint('RIGHT', GameTooltipStatusBar, 'RIGHT', -10, 1)
+                        self.text:SetPoint('LEFT', GameTooltipStatusBar, 'LEFT', 10, 1)
                     end
                     
                     if (nTooltip.healthbar.showOutline) then
@@ -349,8 +349,7 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
                             self.text:SetText(hp)
                         end
                     end
-        
-
+    
                 self.hasHealthText = true
             end)
         end
