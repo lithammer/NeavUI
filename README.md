@@ -27,24 +27,24 @@
 - Fixed position and font size for player/cursor coordinates on world map.
 - Added a copy chat function to nChat, use it by right-clicking on the chat tab. Also added a URL copy function.
 - nRunes has been removed and replaced by nPower, which is essentially the same thing except with support for energy, focus and rage as well. The energy module also shows combo points in a similar fashion as nRunes showed runes.
+- nTooltip the target of the mouseover unit has now a raidtarget support
 
 ## Known issues
 
-- The quest blob on the map is still a cause for taint, not really sure what's causing it and if it really needs fixing.
-- Changing glyphs sometimes doesn't work because of taint from somewhere.
+- ??? The quest blob on the map is still a cause for taint, not really sure what's causing it and if it really needs fixing.
+- ??? Changing glyphs sometimes doesn't work because of taint from somewhere.
 
 ## Next Steps
 
-- improve nMinimap (working on it - 15 april 11, should be finish in some days)
-- make nPower compact, add config file and put it on wowi
 - create optionals castbars and aura icons the boss frames (THEY WORK!11, no arena frames planned yet)
-- remove omen from the ui and create a file/addon which "skin" omen wihout modify the original data (for better updates)
-- create little config file for `nTooltip.lua` (for mouseover target, hp display etc.)
+- make nPower compact, add config file and put it on wowi
+
 
 ## Ideas
 
 - create lightweight nameplates in neav ui style 
 - oUF_Neav - raid frames, get rid of the unit_aura event and use a OnUpdate event instead for better cpu usage?
+- remove omen from the ui and create a file/addon which "skin" omen wihout modify the original data (for better updates)
 
 ## Installation
 
