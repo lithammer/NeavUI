@@ -8,7 +8,7 @@
             borderSize   -> The size of the simple square Border. 10, 11 or 12 looks amazing
             R, G, B      -> The colors of the Border. R = Red, G = Green, B = Blue
             uL1, uL2     -> top left x, top left y
-            uR1, uR2     -> top right x, top right] y
+            uR1, uR2     -> top right x, top right y
             bL1, bL2     -> bottom left x, bottom left y
             bR1, bR2     -> bottom right x, bottom right y
             
@@ -29,17 +29,14 @@
 local textureNormal = 'Interface\\AddOns\\!Beautycase\\media\\textureNormal'
 local textureShadow = 'Interface\\AddOns\\!Beautycase\\media\\textureShadow'
 
-local function PrintErr()
-    print('|cff00FF00!Beautycase:|r |cffFF0000Invalid frame!|r') 
-end
-
-function CreateBorder(self, borderSize, R, G, B, ...)
-    local uL1, uL2, uR1, uR2, bL1, bL2, bR1, bR2 = ...
-    
-    if (uL1 and not uL2 and not uR1 or uR2) then
-        uL2, uR1, uR2, bL1, bL2, bR1, bR2 = uL1, uL1, uL1, uL1, uL1, uL1, uL1
+function CreateBorder(self, borderSize, R, G, B, uL1, ...)
+    local uL2, uR1, uR2, bL1, bL2, bR1, bR2 = ...
+    if (uL1) then
+        if (not uL2 and not uR1 and not uR2 and not bL1 and not bL2 and not bR1 and not bR2) then
+            uL2, uR1, uR2, bL1, bL2, bR1, bR2 = uL1, uL1, uL1, uL1, uL1, uL1, uL1
+        end
     end
-    
+
     if (not self.HasBorder) then
         self.Border = {}
         for i = 1, 8 do
@@ -127,21 +124,25 @@ function CreateBorder(self, borderSize, R, G, B, ...)
 end
 
 function ColorBorder(self, R, G, B)
-    if (self.Border) then
+    if (not self) then
+        print('|cff00FF00!Beautycase:|r |cffFF0000This frame does not exist!|r') 
+    elseif (self.Border) then
         for i = 1, 8 do
             self.Border[i]:SetVertexColor(R, G, B)
         end
     else
-        PrintErr()        
+        print('|cff00FF00!Beautycase:|r |cffFF0000Invalid frame!|r') 
     end
 end
 
 function ColorBorderShadow(self, R, G, B)
-    if (self.Shadow) then
+    if (not self) then
+        print('|cff00FF00!Beautycase:|r |cffFF0000This frame does not exist!|r') 
+    elseif (self.Shadow) then
         for i = 1, 8 do
             self.Shadow[i]:SetVertexColor(R, G, B)
         end
     else
-        PrintErr()
+        print('|cff00FF00!Beautycase:|r |cffFF0000Invalid frame!|r') 
     end
 end
