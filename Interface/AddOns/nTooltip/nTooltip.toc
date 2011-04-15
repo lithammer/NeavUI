@@ -2,4 +2,6 @@
 ## Title: |cffCC3333 n|rTooltip
 ## RequiredDeps: !Beautycase
 
+nTooltip_Config.lua
+
 nTooltip.lua
