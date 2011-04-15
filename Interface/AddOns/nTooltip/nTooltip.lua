@@ -179,15 +179,16 @@ local function ShortValue(value)
 	end
 end
 
-local PowerBarColor = PowerBarColor
 GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
     local unit = GameTooltip_GetUnit(self)
             
 	if (UnitExists(unit) and UnitName(unit) ~= UNKNOWN) then
         local name, realm = UnitName(unit)
         
-        if (UnitPVPName(unit)) then 
-            name = UnitPVPName(unit) 
+        if (nTooltip.showPlayerTitles) then
+            if (UnitPVPName(unit)) then 
+                name = UnitPVPName(unit) 
+            end
         end
         
         GameTooltipTextLeft1:SetText(name)
@@ -294,7 +295,7 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
 		
             -- tooltip HP bar & value
             
-        if (not GameTooltipStatusBar.hasHealthText and nTooltip.showTooltipHealth) then
+        if (not GameTooltipStatusBar.hasHealthText and nTooltip.healthbar.showHealthValue) then
             GameTooltipStatusBar:SetScript('OnValueChanged', function(self, value)
                 if (not value) then
                     return
@@ -336,20 +337,21 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
                     
                     self.text:Show()
                 end
-                    if (unit) then
-                        min = UnitHealth(unit)
-                        max = UnitHealthMax(unit)
-                        local hp = ShortValue(min)..' / '..ShortValue(max)
+                
+                if (unit and self.text) then
+                    min = UnitHealth(unit)
+                    max = UnitHealthMax(unit)
+                    local hp = ShortValue(min)..' / '..ShortValue(max)
                         
-                        if (UnitIsGhost(unit)) then
-                            self.text:SetText('Ghost')
-                        elseif (min == 0 or UnitIsDead(unit) or UnitIsGhost(unit)) then
-                            self.text:SetText('Dead')
-                        else
-                            self.text:SetText(hp)
-                        end
+                    if (UnitIsGhost(unit)) then
+                        self.text:SetText('Ghost')
+                    elseif (min == 0 or UnitIsDead(unit) or UnitIsGhost(unit)) then
+                        self.text:SetText('Dead')
+                    else
+                        self.text:SetText(hp)
                     end
-    
+                end
+                
                 self.hasHealthText = true
             end)
         end
