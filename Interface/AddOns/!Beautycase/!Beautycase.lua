@@ -1,35 +1,80 @@
 --[[
     
     How to use:
+         
+    ----------------------------------------------
     
-        CreateBorder(self, borderSize, R, G, B, uL1, uL2, uR1, uR2, bL1, bL2, bR1, bR2)
+    CreateBorder(myFrame, borderSize, r, g, b, uL1, uL2, uR1, uR2, bL1, bL2, bR1, bR2)
         
-            self         -> The name of your frame, It must be a frame not a texture
-            borderSize   -> The size of the simple square Border. 10, 11 or 12 looks amazing
-            R, G, B      -> The colors of the Border. R = Red, G = Green, B = Blue
-            uL1, uL2     -> top left x, top left y
-            uR1, uR2     -> top right x, top right y
-            bL1, bL2     -> bottom left x, bottom left y
-            bR1, bR2     -> bottom right x, bottom right y
-            
-        A sample:
-            CreateBorder(myFrameName, 12, R, G, B, 1, 1, 1, 1, 1, 1, 1, 1)
-            
-        or
-            CreateBorder(myFrameName, 12, R, G, B)
+        myFrame         -> The name of your frame, It must be a frame not a texture/fontstring
+        borderSize      -> The size of the simple square Border. 10-12 looks amazing with the default beautycase texture
+        r, g, b         -> The colors of the Border. r = Red, g = Green, b = Blue
+        uL1, uL2        -> top left x, top left y
+        uR1, uR2        -> top right x, top right y
+        bL1, bL2        -> bottom left x, bottom left y
+        bR1, bR2        -> bottom right x, bottom right y
     
-    If you want you recolor the Border (for aggrowarning or similar) you can make this with this little trick
     
-        ColorBorder(myFrameName, R, G, B)
+    for example:
+            
+            local r, g, b = 1, 1, 0 -- for yellow
+            CreateBorder(myFrame, 12, r, g, b, 1, 1, 1, 1, 1, 1, 1, 1)
+        
+        
+        shorter method if the spacing between the frame is always the same
+        
+            CreateBorder(myFrame, 12, r, g, b, 1)
+            
+        
+        or for no spacing
+        
+            CreateBorder(myFrame, 12, r, g, b)
+    
+    
+    ----------------------------------------------
+    
+    If you want you recolor the border or shadow (for aggrowarning or similar) you can make this with this little trick
+    
+        ColorBorder(myFrame, r, g, b, alpha)
+        ColorBorderShadow(myFrame, r, g, b, alpha)
+        
+    ----------------------------------------------
+    
+    For changing the border or shadow texture
+    
+        SetBorderTexture(myFrame, texture.tga)
+        SetBorderShadowTexture(myFrame, texture.tga)
+     
+    ----------------------------------------------
+    
+    For all Border Infos
+    
+        local size, texture, r, g, b, alpha = GetBorderInfo(myFrame)
+     
+    ----------------------------------------------
     
     Thanks to Phanx (http://www.wowinterface.com/list.php?skinnerid=28751) for the idea and help.
     
 --]]
 
+local addonName = select(1, GetAddOnInfo('!Beautycase'))
+local formatName = '|cffFF0000'..addonName
+
 local textureNormal = 'Interface\\AddOns\\!Beautycase\\media\\textureNormal'
 local textureShadow = 'Interface\\AddOns\\!Beautycase\\media\\textureShadow'
 
 function CreateBorder(self, borderSize, R, G, B, uL1, ...)
+    if (not self) then
+        print(formatName..' error:|r This frame does not exist!') 
+        return
+    end
+    
+    if (not self:IsObjectType('Frame')) then
+        local frame  = 'frame'
+        print(formatName..' error:|r The entered object is not a '..frame..'!') 
+        return
+    end
+    
     local uL2, uR1, uR2, bL1, bL2, bR1, bR2 = ...
     if (uL1) then
         if (not uL2 and not uR1 and not uR2 and not bL1 and not bL2 and not bR1 and not bR2) then
@@ -81,7 +126,7 @@ function CreateBorder(self, borderSize, R, G, B, uL1, ...)
         else
             space = borderSize/3.5
         end
-    
+        
         self.Shadow = {}
         for i = 1, 8 do
             self.Shadow[i] = self:CreateTexture(nil, 'BORDER')
@@ -123,26 +168,94 @@ function CreateBorder(self, borderSize, R, G, B, uL1, ...)
     end
 end
 
-function ColorBorder(self, R, G, B)
+function ColorBorder(self, ...)
+    local r, g, b, a = ...
     if (not self) then
-        print('|cff00FF00!Beautycase:|r |cffFF0000This frame does not exist!|r') 
+        print(formatName..' error:|r This frame does not exist!') 
     elseif (self.Border) then
         for i = 1, 8 do
-            self.Border[i]:SetVertexColor(R, G, B)
+            self.Border[i]:SetVertexColor(r, g, b, a or 1)
         end
     else
-        print('|cff00FF00!Beautycase:|r |cffFF0000Invalid frame!|r') 
+        print(formatName..' error:|r Invalid frame! This object has no '..addonName..' border')  
     end
 end
 
-function ColorBorderShadow(self, R, G, B)
+function ColorBorderShadow(self, ...)
+    local r, g, b, a = ...
     if (not self) then
-        print('|cff00FF00!Beautycase:|r |cffFF0000This frame does not exist!|r') 
+        print(formatName..' error:|r This frame does not exist!') 
     elseif (self.Shadow) then
         for i = 1, 8 do
-            self.Shadow[i]:SetVertexColor(R, G, B)
+            self.Shadow[i]:SetVertexColor(r, g, b, a or 1)
         end
     else
-        print('|cff00FF00!Beautycase:|r |cffFF0000Invalid frame!|r') 
+        print(formatName..' error:|r Invalid frame! This object has no '..addonName..' border')  
     end
 end
+
+function SetBorderTexture(self, texture)
+    if (not self) then
+        print(formatName..' error:|r This frame does not exist!') 
+    elseif (self.Border) then
+        for i = 1, 8 do
+            self.Border[i]:SetTexture(texture)
+        end
+    else
+        print(formatName..' error:|r Invalid frame! This object has no '..addonName..' border')  
+    end
+end
+
+function SetBorderShadowTexture(self, texture)
+    if (not self) then
+        print(formatName..' error:|r This frame does not exist!') 
+    elseif (self.Shadow) then
+        for i = 1, 8 do
+            self.Shadow[i]:SetTexture(texture)
+        end
+    else
+        print(formatName..' error:|r Invalid frame! This object has no '..addonName..' border')  
+    end
+end
+
+function GetBorderInfo(self)
+    if (not self) then
+        print(formatName..' error:|r This frame does not exist!') 
+    elseif (self.Border) then
+        local tex = self.Border[1]:GetTexture()
+        local size = self.Border[1]:GetSize()
+        local r, g, b, a = self.Border[1]:GetVertexColor()
+        
+        return size, tex, r, g, b, a
+    else
+        print(formatName..' error:|r Invalid frame! This object has no '..addonName..' border')   
+    end
+end
+
+--[[
+Beautycase = {}
+
+function Beautycase:CreateBorder(self, borderSize, R, G, B, uL1, ...)
+    CreateBorder(self, borderSize, R, G, B, uL1, ...)
+end
+
+function Beautycase:ColorBorder(self, R, G, B)
+    ColorBorder(self, R, G, B)
+end
+
+function Beautycase:ColorBorderShadow(self, R, G, B)
+    ColorBorderShadow(self, R, G, B)
+end
+
+function Beautycase:SetBorderTexture(self, texture)
+    SetBorderTexture(self, texture)
+end
+
+function Beautycase:SetBorderShadowTexture(self, texture)
+    SetBorderShadowTexture(self, texture)
+end
+
+function Beautycase:GetBorderInfo(self)
+    return unpack(GetBorderInfo(self))
+end
+--]]
