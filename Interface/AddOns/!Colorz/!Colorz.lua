@@ -1,14 +1,5 @@
 
-local UnitClass = UnitClass
-local UnitIsPVP = UnitIsPVP
-local UnitReaction = UnitReaction
-local UnitIsPlayer = UnitIsPlayer
-local PowerBarColor = PowerBarColor
-local UnitCanAttack = UnitCanAttack
-local UnitPlayerControlled = UnitPlayerControlled
-
-local FACTION_BAR_COLORS = FACTION_BAR_COLORS
-
+--[[
 PowerBarColor['MANA'] = { r = 0/255, g = 0.55, b = 1 }
 PowerBarColor['RAGE'] = { r = 240/255, g = 45/255, b = 75/255 }
 PowerBarColor['FOCUS'] = { r = 255/255, g = 175/255, b = 0 }
@@ -25,7 +16,20 @@ FACTION_BAR_COLORS = {
     [7] = {r = 0, g = 1, b = 0},
     [8] = {r = 0, g = 1, b = 0},
 }
+--]]
     
+
+CUSTOM_FACTION_BAR_COLORS = {
+    [1] = {r = 1, g = 0, b = 0},
+    [2] = {r = 1, g = 0, b = 0},
+    [3] = {r = 1, g = 1, b = 0},
+    [4] = {r = 1, g = 1, b = 0},
+    [5] = {r = 0, g = 1, b = 0},
+    [6] = {r = 0, g = 1, b = 0},
+    [7] = {r = 0, g = 1, b = 0},
+    [8] = {r = 0, g = 1, b = 0},
+}
+
 function GameTooltip_UnitColor(unit)
     local r, g, b
     if (UnitIsDead(unit) or UnitIsGhost(unit) or UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit)) then
@@ -70,9 +74,9 @@ function GameTooltip_UnitColor(unit)
     else
         local reaction = UnitReaction(unit, 'player')
         if (reaction) then
-            r = FACTION_BAR_COLORS[reaction].r
-            g = FACTION_BAR_COLORS[reaction].g
-            b = FACTION_BAR_COLORS[reaction].b
+            r = CUSTOM_FACTION_BAR_COLORS[reaction].r
+            g = CUSTOM_FACTION_BAR_COLORS[reaction].g
+            b = CUSTOM_FACTION_BAR_COLORS[reaction].b
         else
             r = 157/255
             g = 197/255
