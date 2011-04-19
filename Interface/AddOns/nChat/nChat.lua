@@ -1,6 +1,6 @@
 
     -- ??? 
-    
+--[[
 TIMESTAMP_FORMAT_HHMMSS_24HR = '%H:%M:%S ';
 TIMESTAMP_FORMAT_HHMM_24HR = '%H:%M ';
 TIMESTAMP_FORMAT_HHMM = '%I:%M ';
@@ -9,6 +9,7 @@ TIMESTAMP_FORMAT_HHMMSS_24HR = '%H:%M:%S ';
 TIMESTAMP_FORMAT_HHMMSS_AMPM = '%I:%M:%S %p ';
 TIMESTAMP_FORMAT_HHMM_24HR = '%H:%M ';
 TIMESTAMP_FORMAT_HHMM_AMPM = '%I:%M %p ';
+]]
 
     -- chatframe mouseover alpha
     
