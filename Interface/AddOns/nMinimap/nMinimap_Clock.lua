@@ -100,6 +100,7 @@ TimeManagerClockButton:SetHeight(18)
 TimeManagerClockButton:SetPoint('BOTTOM', Minimap, 0, 2)
 
 TimeManagerAlarmFiredTexture:SetTexture(nil)
+
 hooksecurefunc(TimeManagerAlarmFiredTexture, 'Show', function()
     TimeManagerClockTicker:SetTextColor(1, 0, 1)
 end)

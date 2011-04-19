@@ -74,6 +74,7 @@ if (nMinimap.diffIndicator.mode == 'TEXT') then
             GuildInstanceDifficultyBackground,
         }) do
             textures:SetTexture(nil)
+           
             textures:ClearAllPoints()
             textures:SetPoint('TOP', 7000)
         end
@@ -126,23 +127,44 @@ else
     GuildInstanceDifficultyBackground:ClearAllPoints()
     GuildInstanceDifficultyBackground:SetPoint('TOP', Minimap, 0, 5)
 
-    GuildInstanceDifficulty:ClearAllPoints()
+    
     GuildInstanceDifficulty:SetSize(14, 14)
+    GuildInstanceDifficulty:ClearAllPoints()
     GuildInstanceDifficulty:SetPoint('TOP', Minimap, 0, 3)
+  --  GuildInstanceDifficulty.SetPoint = function() end 
 
     local function hideGuildTex()
         GuildInstanceDifficultyHanger:SetTexture(nil)
-        GuildInstanceDifficultyBorder:SetTexture(nil)
-        GuildInstanceDifficultyDarkBackground:SetTexture(nil)
-        GuildInstanceDifficultyHeroicTexture:SetTexture(nil)
-        GuildInstanceDifficulty.emblem:SetTexture(nil)
         
+        
+        GuildInstanceDifficultyBorder:SetTexture(nil)
+        
+        
+        GuildInstanceDifficultyDarkBackground:SetTexture(nil)
+        
+        
+        GuildInstanceDifficultyHeroicTexture:SetTexture(nil)
+        
+        
+        GuildInstanceDifficulty.emblem:SetTexture(nil)
+        --GuildInstanceDifficulty.SetTexture = function() end
+         
         GuildInstanceDifficultyBackground:SetVertexColor(1, 1, 1)
+        GuildInstanceDifficultyBackground.SetVertexColor = function() end
+        
         GuildInstanceDifficultyText:SetTextColor(1, 1, 1)
     end
+    
+    GuildInstanceDifficulty:HookScript('OnEvent', function(self)
+        hideGuildTex()
+    end)
 
     hooksecurefunc(GuildInstanceDifficulty, 'Show', function()
         hideGuildTex()
+        
+        GuildInstanceDifficultyText:ClearAllPoints()
+        GuildInstanceDifficultyText:SetPoint('CENTER', GuildInstanceDifficulty, 0, 3);
+        GuildInstanceDifficultyText.SetPoint = function() end 
     end)
 
     hooksecurefunc(GuildInstanceDifficultyBackground, 'Show', function()
@@ -161,8 +183,7 @@ else
         hideGuildTex()
     end)
     
-    GuildInstanceDifficultyText:ClearAllPoints()
-    GuildInstanceDifficultyText:SetPoint('CENTER', GuildInstanceDifficulty, 0, 3);
+
     GuildInstanceDifficultyText:SetDrawLayer('OVERLAY')
     
     GuildInstanceDifficultyText:SetFont('Interface\\AddOns\\nMinimap\\media\\fontDifficultNumber.ttf', 9)
