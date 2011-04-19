@@ -17,10 +17,12 @@
 	Features:
 		Aggro highlighting
         PvP Timer on the Playerframe
-        Combat/Resting Flashing
-        Combat and Resting Icons
+        Combat & Resting Flashing
+        Combat & Resting Icons
         Leader-, MasterLooter- and Raidicons
         Role Icon (DD, Tank or Healer)
+        Castbars for Player, Target, Focus and Pet
+        Raidicons
 
 --]]
 
@@ -48,7 +50,7 @@ end
 do 
     for k, v in pairs(UnitPopupMenus) do
         for x, i in pairs(UnitPopupMenus[k]) do
-            if (i == "SET_FOCUS" or i == "CLEAR_FOCUS") then
+            if (i == 'SET_FOCUS' or i == 'CLEAR_FOCUS') then
                 table.remove(UnitPopupMenus[k],x)
             end
         end
@@ -67,37 +69,37 @@ local function FormatValue(self)
     end
 end
 
-local dropdown = CreateFrame("Frame", "MyAddOnUnitDropDownMenu", UIParent, "UIDropDownMenuTemplate")
+local dropdown = CreateFrame('Frame', 'MyAddOnUnitDropDownMenu', UIParent, 'UIDropDownMenuTemplate')
 
 UIDropDownMenu_Initialize(dropdown, function(self)
 	local unit = self:GetParent().unit
 	if not unit then return end
 
 	local menu, name, id
-	if UnitIsUnit(unit, "player") then
-		menu = "SELF"
-	elseif UnitIsUnit(unit, "vehicle") then
-		menu = "VEHICLE"
-	elseif UnitIsUnit(unit, "pet") then
-		menu = "PET"
+	if UnitIsUnit(unit, 'player') then
+		menu = 'SELF'
+	elseif UnitIsUnit(unit, 'vehicle') then
+		menu = 'VEHICLE'
+	elseif UnitIsUnit(unit, 'pet') then
+		menu = 'PET'
 	elseif UnitIsPlayer(unit) then
 		id = UnitInRaid(unit)
 		if id then
-			menu = "RAID_PLAYER"
+			menu = 'RAID_PLAYER'
 			name = GetRaidRosterInfo(id)
 		elseif UnitInParty(unit) then
-			menu = "PARTY"
+			menu = 'PARTY'
 		else
-			menu = "PLAYER"
+			menu = 'PLAYER'
 		end
 	else
-		menu = "TARGET"
+		menu = 'TARGET'
 		name = RAID_TARGET_ICON
 	end
 	if menu then
 		UnitPopup_ShowMenu(self, menu, unit, name, id)
 	end
-end, "MENU")
+end, 'MENU')
 
 local function CreateDropDown(self)
 	dropdown:SetParent(self)
@@ -111,10 +113,12 @@ local function PlayerToVehicleTexture(self, event, unit)
     self.Level:Hide()
     self.LFDRole:SetAlpha(0)
 
-    UIFrameFlashStop(self.Status)
-    self.Status:Hide()
-    self.Status:SetAlpha(0)
-
+    if (self.Status) then
+        UIFrameFlashStop(self.Status)
+        self.Status:Hide()
+        self.Status:SetAlpha(0)
+    end
+    
     self.Texture:SetHeight(121)
     self.Texture:SetWidth(240)
     self.Texture:SetPoint('CENTER', self, 0, -8)
@@ -150,7 +154,11 @@ end
 local function VehicleToPlayerTexture(self, event, unit)
     self.Level:Show()
     self.Glow:Show()
-    self.Status:Show()
+    
+    if (self.Status) then
+        self.Status:Show()
+    end
+    
     self.LFDRole:SetAlpha(1)
 
     self.Texture:SetHeight(100)
@@ -177,7 +185,7 @@ local function VehicleToPlayerTexture(self, event, unit)
     self.Group[3]:SetPoint('BOTTOMLEFT', self, 'TOP', -40, 0)
 end
 
-    -- check if the player is in a vehicle
+    -- cehicle check
 
 local function CheckVehicleStatus(self, event, unit)
     if (UnitHasVehicleUI('player')) then
@@ -235,6 +243,43 @@ local function UpdateFrame(self, event, unit)
             self.Texture:SetTexture(texturePath..'-Elite')
         else
             self.Texture:SetTexture(texturePath)
+        end
+    end
+end
+
+local function UpdateDruidPower(self, event, unit)
+    if (unit and unit ~= self.unit) then
+        return 
+    end
+    
+    if (self.Druid) then
+        local unitPower = PowerBarColor['MANA']
+        local mana = UnitPowerType('player') == 0
+        local index = GetShapeshiftForm()
+
+        if (index == 1 or index == 3) then
+            if (unitPower) then
+                self.Druid.Power:SetStatusBarColor(unitPower.r, unitPower.g, unitPower.b)
+            end
+
+            self.Druid.Power:SetAlpha(1)
+            self.Druid.Power.Value:SetAlpha(1)
+            self.Druid.Texture:SetAlpha(1)
+
+            local min, max = UnitPower('player', 0), UnitPowerMax('player', 0)
+
+            self.Druid.Power:SetMinMaxValues(0, max)
+            self.Druid.Power:SetValue(min)
+
+            if (min == max) then
+                self.Druid.Power.Value:SetText(FormatValue(min))
+            else
+                self.Druid.Power.Value:SetText(FormatValue(min)..'/'..FormatValue(max))
+            end
+        else
+            self.Druid.Power:SetAlpha(0)
+            self.Druid.Power.Value:SetAlpha(0)
+            self.Druid.Texture:SetAlpha(0)
         end
     end
 end
@@ -373,41 +418,6 @@ local function UpdatePower(Power, unit, min, max)
 	end
 end
 
-local function UpdateDruidPower(self, event, unit)
-    if (unit and unit ~= self.unit) then
-        return 
-    end
-
-	local unitPower = PowerBarColor['MANA']
-    local mana = UnitPowerType('player') == 0
-    local index = GetShapeshiftForm()
-
-    if (index == 1 or index == 3) then
-        if (unitPower) then
-            self.Druid.Power:SetStatusBarColor(unitPower.r, unitPower.g, unitPower.b)
-        end
-
-        self.Druid.Power:SetAlpha(1)
-        self.Druid.Power.Value:SetAlpha(1)
-        self.Druid.Texture:SetAlpha(1)
-
-        local min, max = UnitPower('player', 0), UnitPowerMax('player', 0)
-
-        self.Druid.Power:SetMinMaxValues(0, max)
-        self.Druid.Power:SetValue(min)
-
-        if (min == max) then
-            self.Druid.Power.Value:SetText(FormatValue(min))
-        else
-            self.Druid.Power.Value:SetText(FormatValue(min)..'/'..FormatValue(max))
-        end
-    else
-        self.Druid.Power:SetAlpha(0)
-        self.Druid.Power.Value:SetAlpha(0)
-        self.Druid.Texture:SetAlpha(0)
-    end
-end
-
 local function CreateUnitLayout(self, unit)
 	self:RegisterForClicks('AnyUp')
     self:EnableMouse(true)
@@ -528,7 +538,7 @@ local function CreateUnitLayout(self, unit)
     self.Power:SetHeight((self.Health:GetHeight() - 1))
     self.Power.frequentUpdates = true
     self.Power.Smooth = true
-
+    
     self.Power.PostUpdate = UpdatePower
 
         -- power text
@@ -605,6 +615,7 @@ local function CreateUnitLayout(self, unit)
         -- portrait
 
     self.Portrait = self:CreateTexture('$parentPortrait', 'BACKGROUND')
+    
     if (unit == 'player') then
         self.Portrait:SetWidth(64)
         self.Portrait:SetHeight(64)
@@ -630,6 +641,7 @@ local function CreateUnitLayout(self, unit)
 
     if (oUF_Neav.show.pvpicons) then
         self.PvP = self.Health:CreateTexture('$parentPVPIcon', 'OVERLAY', self)
+        
         if (unit == 'player') then
             self.PvP:SetHeight(64)
             self.PvP:SetWidth(64)
@@ -766,6 +778,7 @@ local function CreateUnitLayout(self, unit)
 		self:SetSize(175, 42)
 
 			-- warlock soulshard bar
+            
 		if (select(2, UnitClass('player')) == 'WARLOCK') then
 			ShardBarFrame:SetParent(oUF_Neav_Player)
 			ShardBarFrame:SetScale(oUF_Neav.units.player.scale * 0.8)
@@ -776,6 +789,7 @@ local function CreateUnitLayout(self, unit)
 		end
 
 			-- holy power bar
+            
 		if (select(2, UnitClass('player')) == 'PALADIN') then
 			PaladinPowerBar:SetParent(oUF_Neav_Player)
 			PaladinPowerBar:SetScale(oUF_Neav.units.player.scale * 0.81)
@@ -786,6 +800,7 @@ local function CreateUnitLayout(self, unit)
 		end
 
 			-- druid eclipse bar
+            
 		if (select(2, UnitClass('player')) == 'DRUID') then
 			EclipseBarFrame:SetParent(oUF_Neav_Player)
 			EclipseBarFrame:SetScale(oUF_Neav.units.player.scale * 0.82)
@@ -795,7 +810,7 @@ local function CreateUnitLayout(self, unit)
 			EclipseBarFrame:Show()
 		end
 		
-            -- runebar
+            -- deathknight runebar
 
         if (RuneFrame:IsShown() and RuneButtonIndividual1:IsShown()) then
             RuneFrame:ClearAllPoints()
@@ -829,8 +844,9 @@ local function CreateUnitLayout(self, unit)
         self:RegisterEvent('RAID_ROSTER_UPDATE', UpdatePartyStatus)
         self:RegisterEvent('PARTY_MEMBER_CHANGED', UpdatePartyStatus)
 
-            -- statusflashing
-
+            -- statusflashing, removed until I found a better solution
+            
+        --[[
         self.Status = self.Health:CreateTexture('$parentStatusTexture', 'OVERLAY', self)
         self.Status:SetHeight(66)
         self.Status:SetWidth(191)
@@ -859,12 +875,12 @@ local function CreateUnitLayout(self, unit)
             if (UnitHasVehicleUI('player')) then
                 UIFrameFlashStop(self.Status)
                 self.Status:Hide()
-            elseif (IsResting()) then
-                self.Status:SetVertexColor(1, 0.88, 0.25, 1)
-                UIFrameFlash(self.Status, 0.5, 0.5, 10^10, false, 0.1, 0.1)
-                self.Status:Show();
             elseif (UnitAffectingCombat('player') and InCombatLockdown()) then
                 self.Status:SetVertexColor(1, 0.1, 0.1, 1)
+                UIFrameFlash(self.Status, 0.5, 0.5, 10^10, false, 0.1, 0.1)
+                self.Status:Show();
+            elseif (IsResting()) then
+                self.Status:SetVertexColor(1, 0.88, 0.25, 1)
                 UIFrameFlash(self.Status, 0.5, 0.5, 10^10, false, 0.1, 0.1)
                 self.Status:Show();
             elseif (UnitIsDeadOrGhost('player')) then
@@ -875,7 +891,8 @@ local function CreateUnitLayout(self, unit)
                 self.Status:Hide();
             end
         end)
-
+        --]]
+        
         table.insert(self.__elements, CheckVehicleStatus)
         self:RegisterEvent('UNIT_ENTERED_VEHICLE', CheckVehicleStatus)
         self:RegisterEvent('UNIT_ENTERING_VEHICLE', CheckVehicleStatus)
@@ -960,11 +977,34 @@ local function CreateUnitLayout(self, unit)
             self.Druid.Power.Value:SetPoint('CENTER', self.Druid.Power, 0, 0.5)
 
             table.insert(self.__elements, UpdateDruidPower)
-            self:RegisterEvent('UNIT_MANA', UpdateDruidPower)
-            self:RegisterEvent('UNIT_RAGE', UpdateDruidPower)
-            self:RegisterEvent('UNIT_ENERGY', UpdateDruidPower)
-            self:RegisterEvent('UPDATE_SHAPESHIFT_FORM', UpdateDruidPower)
-
+            
+                -- on_update timer for the druid mana
+                
+            --[[
+            local updateTimer = 0
+            self.Druid:SetScript("OnUpdate", function(_, elapsed)
+                updateTimer = updateTimer + elapsed
+                
+                if (updateTimer > TOOLTIP_UPDATE_TIME/2) then
+                    UpdateDruidPower(self, event, unit)
+                    updateTimer = 0
+                end
+            end)
+            --]]
+            
+                -- event "timer" for the druid mana, less cpu usage
+                
+            self:RegisterEvent('UNIT_POWER', UpdateDruidPower)
+            self:RegisterEvent('PLAYER_ENTERING_WORLD', UpdateDruidPower)
+            self:RegisterEvent('UNIT_DISPLAYPOWER', UpdateDruidPower)
+            
+            -- self:RegisterEvent('UNIT_RAGE', UpdateDruidPower)
+            -- self:RegisterEvent('UNIT_ENERGY', UpdateDruidPower)
+            -- self:RegisterEvent('UPDATE_SHAPESHIFT_FORM', UpdateDruidPower)
+            -- self:RegisterEvent('UNIT_MAXPOWER', UpdateDruidPower)
+            
+            
+            
             if (oUF_Neav.units.player.mouseoverText) then
                 self.Druid.Power.Value:Hide()
 
@@ -976,6 +1016,7 @@ local function CreateUnitLayout(self, unit)
                     self.Druid.Power.Value:Hide()
                 end)
             end
+            
         end
     end
 
@@ -1011,9 +1052,12 @@ local function CreateUnitLayout(self, unit)
         self.Auras.numBuffs = 40
         self.Auras.numDebuffs = 18
         self.Auras.spacing = 4.5
+        
 		if (oUF_Neav.units.target.colorPlayerDebuffsOnly) then
 			self.Auras.PostUpdateIcon = function(self, unit, icon, index, offset)
-				if (unit ~= 'target') then return end
+				if (unit ~= 'target') then 
+                    return 
+                end
 				
 				if (icon.debuff) then
 					if (not UnitIsFriend('player', unit) and icon.owner ~= 'player' and icon.owner ~= 'vehicle') then

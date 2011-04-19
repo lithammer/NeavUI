@@ -49,7 +49,7 @@ oUF_Neav = {
             showHealthPercent = true,
             showHealthAndPercent = true,   -- overrides showHealthPercent
             showPowerPercent = false,
-			colorPlayerDebuffsOnly = false,
+			colorPlayerDebuffsOnly = true,
         },
 
         targettarget = {
@@ -82,12 +82,12 @@ oUF_Neav = {
         raid = {
             width = 42,
             height = 40,
-            scale = 1, 
+            scale = 1.1, 
             iconSize = 20,
-            indicatorSize = 11,
+            indicatorSize = 7,
             showSolo = true,
             numGroups = 8,
-            position = {'LEFT', UIParent, 'CENTER', 350, -60},
+            position = {'LEFT', UIParent, 'CENTER', 350, -30},
             showTargetBorder = true,
             targetBorderColor = {1, 1, 1},
 			horizontalHealthBars = false,
@@ -96,8 +96,9 @@ oUF_Neav = {
         },
         
         bossframes = {
-            scale = 1.193,
-            position = {'TOPRIGHT', UIParent, 'TOPRIGHT', -90, -305},
+            scale = 1,
+            position = {'TOPRIGHT', UIParent, 'TOPRIGHT', -80, -300},
+            showCastbar = false,
         },
         
     },
@@ -131,7 +132,9 @@ oUF_Neav = {
             height = 19,
             color = {0, 0.65, 1},
             interruptColor = {1, 0, 1},
-            showInterruptHighlight = true,
+        },
+        bossframes = {
+            color = {1, 0, 0},
         },
     },
 }

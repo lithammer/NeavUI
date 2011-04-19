@@ -1,3 +1,22 @@
+--[[
+
+	Supported Units:
+        Boss
+        
+	Supported Plugins:
+		oUF_Smooth
+
+	Features:
+        Castbars
+        Bufficons (for boss abilities)
+        Raidicons
+
+--]]
+
+--[[
+local interruptTexture = 'Interface\\AddOns\\oUF_Neav\\media\\textureInterrupt'
+local normalTexture = 'Interface\\AddOns\\!Beautycase\\media\\textureNormal'
+--]]
 
 local function FormatValue(self)
     if (self >= 1000000) then
@@ -11,6 +30,7 @@ local function FormatValue(self)
     end
 end
 
+--[[
 local function UpdateThreat(self, event, unit)
 	if (self.unit ~= unit) then 
         return 
@@ -28,6 +48,7 @@ local function UpdateThreat(self, event, unit)
         end
 	end
 end
+--]]
 
 local function UpdateHealth(Health, unit, min, max)
     local self = Health:GetParent()
@@ -40,7 +61,6 @@ local function UpdateHealth(Health, unit, min, max)
             Health.Value:SetText(FormatValue(min))
         else
             Health.Value:SetText(FormatValue(min)..' - '..format('%d%%', min/max * 100))
-
         end
     end
 
@@ -74,13 +94,43 @@ local function UpdatePower(Power, unit, min, max)
 end
 
 
+local function UpdateAuraIcons(auras, button)
+    button.icon:SetTexCoord(0.03, 0.97, 0.03, 0.97)
+
+	button.overlay:SetTexture(oUF_Neav.media.border)
+	button.overlay:SetTexCoord(0, 1, 0, 1)
+    button.overlay:ClearAllPoints()
+    button.overlay:SetPoint('TOPRIGHT', button, 1.35, 1.35)
+    button.overlay:SetPoint('BOTTOMLEFT', button, -1.35, -1.35)
+
+    button.cd:SetReverse()
+    button.cd:ClearAllPoints()
+    button.cd:SetPoint('TOPRIGHT', button.icon, 'TOPRIGHT', -1, -1)
+    button.cd:SetPoint('BOTTOMLEFT', button.icon, 'BOTTOMLEFT', 1, 1)
+
+    button.count:SetFont('Fonts\\ARIALN.ttf', 13, 'OUTLINE')
+    button.count:ClearAllPoints()
+    button.count:SetPoint('BOTTOMRIGHT', 1, 1)
+
+    if (not button.background) then
+        button.background = button:CreateTexture(nil, 'BACKGROUND')
+        button.background:SetPoint('TOPLEFT', button.icon, 'TOPLEFT', -4, 4)
+        button.background:SetPoint('BOTTOMRIGHT', button.icon, 'BOTTOMRIGHT', 4, -4)
+        button.background:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\borderBackground')
+        button.background:SetVertexColor(0, 0, 0, 1)
+    end
+
+	button.overlay.Hide = function(self)
+        self:SetVertexColor(1, 0, 0) -- 0.45, 0.45, 0.45, 1)
+    end
+end
+
 local function CreateBossLayout(self, unit)
 	self:RegisterForClicks('AnyUp')
     self:EnableMouse(true)
 
 	self:SetScript('OnEnter', UnitFrame_OnEnter)
 	self:SetScript('OnLeave', UnitFrame_OnLeave)
-
 
     self:SetFrameStrata('MEDIUM')
 
@@ -178,57 +228,154 @@ local function CreateBossLayout(self, unit)
     self.RaidIcon:SetSize(26, 26)
 
         -- glow textures
-
-    self.Glow = self:CreateTexture('$parentGlow', 'BACKGROUND')
+    --[[
+    self.Glow = self:CreateTexture('$parentGlow', 'OVERLAY')
     self.Glow:SetAlpha(0)
     self.Glow:SetSize(241, 100)
     self.Glow:SetPoint('TOPRIGHT', self.Texture, -11, 3)
-	self.Glow:SetTexture("Interface\\TargetingFrame\\UI-UnitFrame-Boss-Flash");
+	self.Glow:SetTexture('Interface\\TargetingFrame\\UI-UnitFrame-Boss-Flash');
 	self.Glow:SetTexCoord(0.0, 0.945, 0.0, 0.73125);
 
     table.insert(self.__elements, UpdateThreat)
 	self:RegisterEvent('PLAYER_TARGET_CHANGED', UpdateThreat)
     self:RegisterEvent('UNIT_THREAT_LIST_UPDATE', UpdateThreat)
     self:RegisterEvent('UNIT_THREAT_SITUATION_UPDATE', UpdateThreat)
+    --]]
+    
+    self.Buffs = CreateFrame('Frame', nil, self)
+    self.Buffs.size = oUF_Neav.units.target.auraSize
+    self.Buffs:SetHeight(self.Buffs.size * 3)
+    self.Buffs:SetWidth(self.Buffs.size * 5)
+    self.Buffs:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 3, -6)
+    self.Buffs.initialAnchor = 'TOPLEFT'
+    self.Buffs['growth-x'] = 'RIGHT'
+    self.Buffs['growth-y'] = 'DOWN'
+    self.Buffs.numBuffs = 8
+    self.Buffs.spacing = 4.5
+
+    self.Buffs.PostCreateIcon = UpdateAuraIcons
 
     self:SetSize(132, 46)
     self:SetScale(oUF_Neav.units.bossframes.scale)
-        
-    self.MoveableFrames = true
+    
+    if (oUF_Neav.units.bossframes.showCastbar) then
+        self.Castbar = CreateFrame('StatusBar', self:GetName()..'Castbar', self)
+        self.Castbar:SetStatusBarTexture(oUF_Neav.media.statusbar)
+        self.Castbar:SetParent(self)
+        -- self.Castbar:SetScale(oUF_Neav.units.bossframes.scale)
+        self.Castbar:SetHeight(18)
+        self.Castbar:SetWidth(150)
+        self.Castbar:SetStatusBarColor(unpack(oUF_Neav.castbar.bossframes.color))
+        self.Castbar:SetPoint('BOTTOM', self, 'TOP', 10, 13)
 
+        self.Castbar.Bg = self.Castbar:CreateTexture(nil, 'BACKGROUND')
+        self.Castbar.Bg:SetTexture('Interface\\Buttons\\WHITE8x8')
+        self.Castbar.Bg:SetAllPoints(self.Castbar)
+        self.Castbar.Bg:SetVertexColor(oUF_Neav.castbar.bossframes.color[1]*0.3, oUF_Neav.castbar.bossframes.color[2]*0.3, oUF_Neav.castbar.bossframes.color[3]*0.3, 0.8)
+            
+        CreateBorder(self.Castbar, 11, 1, 1, 1, 3)  
+
+        self.Castbar.Time = self:CreateFontString(nil, 'ARTWORK')
+        self.Castbar.Time:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontBig - 2)
+        self.Castbar.Time:SetShadowOffset(1, -1)
+        self.Castbar.Time:SetPoint('RIGHT', self.Castbar, 'RIGHT', -7, 0)  
+        self.Castbar.Time:SetHeight(10)
+        self.Castbar.Time:SetJustifyH('RIGHT')
+        self.Castbar.Time:SetParent(self.Castbar)
+            
+        self.Castbar.Text = self:CreateFontString(nil, 'ARTWORK')
+        self.Castbar.Text:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontBig - 2)
+        self.Castbar.Text:SetShadowOffset(1, -1)
+        self.Castbar.Text:SetPoint('LEFT', self.Castbar, 4, 0)
+        self.Castbar.Text:SetPoint('RIGHT', self.Castbar.Time, 'LEFT', -5, 0)
+        self.Castbar.Text:SetHeight(10)
+        self.Castbar.Text:SetJustifyH('LEFT')
+        self.Castbar.Text:SetParent(self.Castbar)  
+        
+        --[[
+        self.Castbar.PostCastStart = function(Castbar, unit, spell, spellrank)
+            if (Castbar.interrupt) then
+                SetBorderTexture(self.Castbar, interruptTexture)
+                ColorBorder(self.Castbar, 1, 0, 1)
+                ColorBorderShadow(self.Castbar, 1, 0, 1)
+            else
+                SetBorderTexture(self.Castbar, normalTexture)
+                ColorBorder(self.Castbar, 1, 1, 1)
+                ColorBorderShadow(self.Castbar, 0, 0, 0)
+            end
+        end    
+
+        self.Castbar.PostChannelStart = function(Castbar, unit, spell, spellrank)
+            if (Castbar.interrupt) then
+                SetBorderTexture(self.Castbar, interruptTexture)
+                ColorBorder(self.Castbar, 1, 0, 1)
+                ColorBorderShadow(self.Castbar, 1, 0, 1)
+            else
+                SetBorderTexture(self.Castbar, normalTexture)
+                ColorBorder(self.Castbar, 1, 1, 1)
+                ColorBorderShadow(self.Castbar, 0, 0, 0)
+            end
+        end    
+        --]]
+        
+        self.Castbar.CustomDelayText = function(self, duration)
+            self.Time:SetFormattedText('[|cffff0000-%.1f|r] %.1f/%.1f', self.delay, duration, self.max)
+        end
+        
+        self.Castbar.CustomTimeText = function(self, duration)
+            self.Time:SetFormattedText('%.1f/%.1f', duration, self.max)
+        end
+    end
+    
 	return self
 end
 
 oUF:RegisterStyle('oUF_Neav_Boss', CreateBossLayout)
-
 oUF:Factory(function(self)
-	oUF:SetActiveStyle("oUF_Neav_Boss")
+	oUF:SetActiveStyle('oUF_Neav_Boss')
 
 	local boss = {}
     for i = 1, MAX_BOSS_FRAMES do
-        boss[i] = self:Spawn("boss"..i, "oUF_Neav_BossFrame"..i)
+        boss[i] = self:Spawn('boss'..i, 'oUF_Neav_BossFrame'..i)
 
         if (i == 1) then
             boss[i]:SetPoint(unpack(oUF_Neav.units.bossframes.position))
         else
-            boss[i]:SetPoint("TOPLEFT", boss[i-1], "BOTTOMLEFT", 0, -50)
+            boss[i]:SetPoint('TOPLEFT', boss[i-1], 'BOTTOMLEFT', 0, (oUF_Neav.units.bossframes.showCastbar and -80) or -50)
         end
     end
 end)
 
-
 --[[
-
     -- Just for testing the layout
-    
+
 function ma1()
     oUF_Neav_BossFrame1:Show() 
     oUF_Neav_BossFrame1.Hide = function() end
 
+    
     oUF_Neav_BossFrame2:Show() 
     oUF_Neav_BossFrame2.Hide = function() end
 
     oUF_Neav_BossFrame3:Show() 
     oUF_Neav_BossFrame3.Hide = function() end
+    
+    oUF_Neav_BossFrame4:Show() 
+    oUF_Neav_BossFrame4.Hide = function() end
 end
+
+function ma1_1()
+    oUF_Neav_BossFrame1Castbar:Show() 
+    oUF_Neav_BossFrame1Castbar.Hide = function() end
+
+    oUF_Neav_BossFrame2Castbar:Show() 
+    oUF_Neav_BossFrame2Castbar.Hide = function() end
+    
+    oUF_Neav_BossFrame3Castbar:Show() 
+    oUF_Neav_BossFrame3Castbar.Hide = function() end
+    
+    oUF_Neav_BossFrame4Castbar:Show() 
+    oUF_Neav_BossFrame4Castbar.Hide = function() end
+end
+    
 --]]

@@ -10,12 +10,10 @@ modules\oUF_SpellRange.lua
 modules\oUF_Smooth.lua
 
 oUF_NeavConfig.lua
-
 oUF_NeavTags.lua
 oUF_NeavCastbars.lua
 
 oUF_Neav.lua
-
 oUF_NeavRaid.lua
 oUF_NeavBoss.lua
 
