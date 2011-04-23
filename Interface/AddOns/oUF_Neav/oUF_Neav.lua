@@ -284,6 +284,17 @@ local function UpdateDruidPower(self, event, unit)
     end
 end
 
+local function UpdateCombo(self, event, unit)
+	local cp
+	if (UnitHasVehicleUI('player')) then
+		cp = GetComboPoints('vehicle', 'target')
+	else
+		cp = GetComboPoints('player', 'target')
+	end
+    
+    self.ComboPoints:SetText(cp == 0 and '' or cp)
+end
+
 local function UpdateThreat(self, event, unit)
 	if (self.unit ~= unit) then 
         return 
@@ -1003,8 +1014,6 @@ local function CreateUnitLayout(self, unit)
             -- self:RegisterEvent('UPDATE_SHAPESHIFT_FORM', UpdateDruidPower)
             -- self:RegisterEvent('UNIT_MAXPOWER', UpdateDruidPower)
             
-            
-            
             if (oUF_Neav.units.player.mouseoverText) then
                 self.Druid.Power.Value:Hide()
 
@@ -1114,11 +1123,15 @@ local function CreateUnitLayout(self, unit)
     if (unit == 'target' or unit == 'focus') then
         if (oUF_Neav.units.target.showComboPoints) then
             if (oUF_Neav.units.target.showComboPointsAsNumber) then
-                self.CPoints = self.Health:CreateFontString(nil, 'ARTWORK')
-                self.CPoints:SetFont(DAMAGE_TEXT_FONT, 22, 'OUTLINE')
-                self.CPoints:SetShadowOffset(0, 0)
-                self.CPoints:SetPoint('LEFT', self.Portrait, 'RIGHT', 8, 4)
-                self.CPoints:SetTextColor(unpack(oUF_Neav.units.target.numComboPointsColor))
+                self.ComboPoints = self.Health:CreateFontString(nil, 'ARTWORK')
+                self.ComboPoints:SetFont(DAMAGE_TEXT_FONT, 22, 'OUTLINE')
+                self.ComboPoints:SetShadowOffset(0, 0)
+                self.ComboPoints:SetPoint('LEFT', self.Portrait, 'RIGHT', 8, 4)
+                self.ComboPoints:SetTextColor(unpack(oUF_Neav.units.target.numComboPointsColor))
+                
+                table.insert(self.__elements, UpdateCombo)
+                self:RegisterEvent('UNIT_COMBO_POINTS', UpdateCombo)
+                self:RegisterEvent('PLAYER_TARGET_CHANGED', UpdateCombo)
             else
                 self.CPoints = {}
 
