@@ -1,10 +1,3 @@
---[[
-
-    nMainbar
-    Copyright (c) 2008-2010, Anton "Neav" I. (Neav @ Alleria-EU)
-    All rights reserved.
-
---]]
 
 local function GetNumShapeSlots()
     local _, class = UnitClass('Player')

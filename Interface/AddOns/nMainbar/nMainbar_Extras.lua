@@ -1,10 +1,3 @@
---[[
-
-    nMainbar
-    Copyright (c) 2008-2010, Anton "Neav" I. (Neav @ Alleria-EU)
-    All rights reserved.
-
---]]
 
 SlashCmdList['GM'] = function()
     ToggleHelpFrame() 
@@ -30,17 +23,24 @@ for _, bar in pairs({
     'MultiBarLeft',
     'MultiBarRight',
                 
-    --'MultiBarBottomLeft',
-    --'MultiBarBottomRight',
+    -- 'MultiBarBottomLeft',
+    -- 'MultiBarBottomRight',
 }) do
     _G[bar]:SetScale(nMainbar.MainMenuBar.scale)
 end
 
--- scaling of the vehicle frame
+    -- scaling of the vehicle frame
+
 VehicleMenuBar:SetScale(nMainbar.vehicle.scale)
--- scaling of the shapeshiftbar
+
+    -- scaling of the shapeshiftbar
+    
 ShapeshiftBarFrame:SetScale(nMainbar.stanceBar.scale)
--- scaling of the possessbar
+
+    -- scaling of the possessbar
+
 PossessBarFrame:SetScale(nMainbar.possessbar.scale)
--- scaling of the petbar
+
+    -- scaling of the petbar
+    
 PetActionBarFrame:SetScale(nMainbar.petbar.scale)

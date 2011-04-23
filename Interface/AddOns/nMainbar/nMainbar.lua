@@ -1,10 +1,3 @@
---[[
-
-    nMainbar
-    Copyright (c) 2008-2010, Anton "Neav" I. (Neav @ Alleria-EU)
-    All rights reserved.
-
---]]
 
 local path = 'Interface\\AddOns\\nMainbar\\media\\'
 
@@ -14,6 +7,7 @@ hooksecurefunc('PetActionBar_Update', function()
         'PossessButton',    
         'ShapeshiftButton', 
     }) do
+
         for i = 1, 12 do
             local button = _G[name..i]
             if (button) then
@@ -41,7 +35,7 @@ hooksecurefunc('PetActionBar_Update', function()
                 normal:SetPoint('TOPRIGHT', button, 1, 1)
                 normal:SetPoint('BOTTOMLEFT', button, -1, -1)
                 normal:SetVertexColor(nMainbar.color.Normal[1], nMainbar.color.Normal[2], nMainbar.color.Normal[3], 1)
-
+    
                 local flash = _G[name..i..'Flash']
                 flash:SetTexture(flashtex)
                 
@@ -56,27 +50,41 @@ hooksecurefunc('PetActionBar_Update', function()
                 button:SetHighlightTexture(path..'textureHighlight')
                 button:GetHighlightTexture():SetAllPoints(normal)
                 
-                if (not button.Background) then
-                    button.Background = button:CreateTexture(nil, 'BACKGROUND')
-                    button.Background:SetParent(button)  
-                    button.Background:SetPoint('TOPRIGHT', normal, 4, 4)
-                    button.Background:SetPoint('BOTTOMLEFT', normal, -4, -4)
-                    button.Background:SetTexture('Interface\\AddOns\\nMainbar\\media\\textureShadow')
-                    button.Background:SetVertexColor(0, 0, 0, 1)
+                if (not button.Shadow) then
+                    button.Shadow = button:CreateTexture(nil, 'BACKGROUND')
+                    button.Shadow:SetParent(button)  
+                    button.Shadow:SetPoint('TOPRIGHT', normal, 4, 4)
+                    button.Shadow:SetPoint('BOTTOMLEFT', normal, -4, -4)
+                    button.Shadow:SetTexture('Interface\\AddOns\\nMainbar\\media\\textureShadow')
+                    button.Shadow:SetVertexColor(0, 0, 0, 1)
                 end
             end
         end
     end
 end)
 
--- ActionButton_OnEvent
 hooksecurefunc('ActionButton_Update', function(self)
-    local isTotemButton = self:GetName():match('MultiCastActionButton') or self:GetName():match('MultiCastSlotButton')
+    local isTotemButton = self:GetName():match('MultiCast') --ActionButton') --or self:GetName():match('MultiCastSlotButton') or self:GetName():match('MultiCastRecallButton') or self:GetName():match('MultiCastSummonSpellButton')
     
     if (isTotemButton) then
-        local normal = _G[self:GetName()..'NormalTexture']
-        normal:SetAlpha(0)
-        normal:SetDrawLayer('BACKGROUND')
+        for _, icon in pairs({
+            self:GetName(),
+            'MultiCastRecallSpellButton',
+            'MultiCastSummonSpellButton',
+        }) do
+            local button = _G[icon]
+            
+            _G[icon..'NormalTexture']:SetTexture(nil)
+            
+            if (not button.Shadow) then
+                button.Shadow = button:CreateTexture(nil, 'BACKGROUND')
+                button.Shadow:SetParent(button)  
+                button.Shadow:SetPoint('TOPRIGHT', button, 4.5, 4.5)
+                button.Shadow:SetPoint('BOTTOMLEFT', button, -4.5, -4.5)
+                button.Shadow:SetTexture('Interface\\AddOns\\nMainbar\\media\\textureShadow')
+                button.Shadow:SetVertexColor(0, 0, 0, 0.85)
+            end
+        end
     end
     
     if (not isTotemButton) then  

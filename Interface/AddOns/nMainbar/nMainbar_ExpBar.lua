@@ -1,10 +1,3 @@
---[[
-
-    nMainbar
-    Copyright (c) 2008-2010, Anton "Neav" I. (Neav @ Alleria-EU)
-    All rights reserved.
-
---]]
 
 ReputationWatchStatusBarText:SetFont(nMainbar.repBar.font, nMainbar.repBar.fontsize, 'OUTLINE')
 ReputationWatchStatusBarText:SetShadowOffset(0, 0)

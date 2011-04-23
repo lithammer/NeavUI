@@ -1,12 +1,7 @@
---[[
 
-    nMainbar
-    Copyright (c) 2008-2010, Anton "Neav" I. (Neav @ Alleria-EU)
-    All rights reserved.
-
---]]
-
-if (nMainbar.MainMenuBar.shortBar) then
+if (not nMainbar.MainMenuBar.shortBar) then
+    return
+end
 
 MultiBarBottomRight:ClearAllPoints()
 MultiBarBottomRight:SetPoint('BOTTOM', MultiBarBottomLeft, 'TOP', 0, 4)
@@ -47,10 +42,7 @@ for _, frame in pairs({
     frame:EnableMouse(false)
 end
 
-    -- -----------------------------------
     -- make the new totemmanager moveable
-    -- -----------------------------------
-
 
 local f = CreateFrame('Frame', 'MultiCastActionBarFrameAnchor')
 f:RegisterEvent('PLAYER_ENTERING_WORLD')
@@ -60,7 +52,7 @@ f:SetScript('OnEvent', function(self, event)
     MultiCastActionBarFrame:ClearAllPoints()   
     MultiCastActionBarFrame:SetPoint('CENTER', MultiCastActionBarFrameAnchor) 
     MultiCastActionBarFrame.SetPoint = function() end
-    -- MultiCastActionBarFrame:UnregisterAllEvents()
+
     self:UnregisterAllEvents()
 end)
 
@@ -139,17 +131,21 @@ end)
 
 MultiCastFlyoutFrame:SetScale(nMainbar.totemManager.scale * 1.1)
 
-if (nMainbar.totemManager.hideRecallButton) then
+if (not nMainbar.totemManager.hideRecallButton) then
+    hooksecurefunc(MultiCastRecallSpellButton, 'Show', function(self)
+        self:Hide()
+    end)
+    
+    --[[
     MultiCastRecallSpellButton:SetAlpha(0)
     MultiCastRecallSpellButton.SetAlpha = function() end
     MultiCastRecallSpellButton:EnableMouse(false)
     MultiCastRecallSpellButton.EnableMouse = function() end
+    --]]
 end
 
-    -- -----------------------------------
     -- moveable bars
-    -- -----------------------------------
-    
+
 for _, button in pairs({        
     _G['PossessButton1'],
     _G['PetActionButton1'],
@@ -185,12 +181,22 @@ for _, button in pairs({
     _G['CharacterBag2Slot'],
     _G['CharacterBag3Slot'],
 }) do
-    button:SetAlpha(0)
-    button:EnableMouse(false)
+    -- button:SetAlpha(0)
+    -- button:EnableMouse(false)
+    
+    button:Hide()
+    
+    -- button:SetScript('OnShow', function(self) 
+    --     self:Hide()
+    -- end)
+    
+    hooksecurefunc(button, 'Show', function(self)
+        self:Hide()
+        end)
 end
 
-local f = CreateFrame('Frame')
-f:Hide()
+-- local f = CreateFrame('Frame')
+-- f:Hide()
 
 for i = 2, 3 do
     for _, texture in pairs({
@@ -215,7 +221,13 @@ for i = 2, 3 do
     }) do
         -- texture:ClearAllPoints()
         -- texture:SetPoint('TOP', UIParent, 99999, 99999)
-        texture:SetParent(f)
+        -- texture:SetParent(f)
+        
+        texture:Hide()
+        
+        hooksecurefunc(texture, 'Show', function(self)
+            self:Hide()
+        end)
     end
 end
 
@@ -238,6 +250,10 @@ for i = 1, 19, 2 do
         _G['MainMenuXPBarDiv'..i],
     }) do
         frame:Hide()
+        
+        hooksecurefunc(frame, 'Show', function(self)
+            self:Hide()
+        end)
     end
 end
 
@@ -255,7 +271,7 @@ end
 	-- Fix expbar size when exiting vehicle
 	
 MainMenuExpBar:HookScript('OnSizeChanged', function(self, width, height)
-	if math.floor(width) == EXP_DEFAULT_WIDTH then
+	if (math.floor(width) == EXP_DEFAULT_WIDTH) then
 		MainMenuExpBar_SetWidth(512)
 		CharacterMicroButton:ClearAllPoints()
 		CharacterMicroButton:SetPoint('BOTTOMLEFT', UIParent, 9000, 9000)
@@ -296,5 +312,3 @@ MainMenuBarVehicleLeaveButton:HookScript('OnShow', function(self, event, ...)
 	MainMenuBarVehicleLeaveButton:ClearAllPoints()
 	MainMenuBarVehicleLeaveButton:SetPoint('LEFT', MainMenuBar, 'RIGHT', 10, 80)
 end)
-
-end

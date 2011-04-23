@@ -1,17 +1,3 @@
---[[
-
-    nMainbar
-    Copyright (c) 2008-2010, Anton "Neav" I. (Neav @ Alleria-EU)
-    All rights reserved.
-
---]]
-
-local neav
-if (UnitName('player') == 'Neava') then
-    neav = false
-else
-    neav = true
-end
 
 nMainbar = {
     indicator = { 
