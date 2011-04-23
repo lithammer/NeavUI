@@ -33,12 +33,16 @@ end
     
 for _, frame in pairs({
 	CompactPartyFrame,
-	CompactRaidFrameManager, -- Actually usefull for world markers
+	CompactRaidFrameManager,
 	CompactRaidFrameContainer,
 }) do
 	frame:UnregisterAllEvents()
-	frame.Show = function() end
-	frame:Hide()
+	-- frame.Show = function() end
+	--  frame:Hide()
+    
+    hooksecurefunc(frame, 'Show', function(self)
+        self:Hide()
+    end)
 end
 
 for _, button in pairs({
