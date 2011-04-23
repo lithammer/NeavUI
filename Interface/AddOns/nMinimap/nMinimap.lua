@@ -7,10 +7,12 @@ MiniMapLFGFrame:SetWidth(14)
 MiniMapLFGFrame:SetHeight(14)
 MiniMapLFGFrame:SetHighlightTexture(nil)
 
-MiniMapLFGFrame.eye:Hide()
+MiniMapLFGFrameBorder:SetTexture()
 
-hooksecurefunc('EyeTemplate_StartAnimating', function(eye)
-	eye:SetScript('OnUpdate', nil)
+MiniMapLFGFrame.eye:Hide()
+    
+hooksecurefunc('EyeTemplate_StartAnimating', function(self)
+	self:SetScript('OnUpdate', nil)
 end)
 
 MiniMapLFGFrame.Text = MiniMapLFGFrame:CreateFontString(nil, 'OVERLAY')

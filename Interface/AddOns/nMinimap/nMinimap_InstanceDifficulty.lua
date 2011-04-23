@@ -1,4 +1,106 @@
+MiniMapInstanceDifficulty:UnregisterAllEvents()
+MiniMapInstanceDifficulty:Hide()
 
+GuildInstanceDifficulty:UnregisterAllEvents()
+GuildInstanceDifficulty:Hide()
+
+local IS_GUILD_GROUP
+
+Minimap:RegisterEvent('GUILD_PARTY_STATE_UPDATED')
+Minimap:RegisterEvent('PLAYER_GUILD_UPDATE')
+
+Minimap:HookScript('OnEvent', function(self, event, ...)
+	if (event == "GUILD_PARTY_STATE_UPDATED") then
+		local isGuildGroup = ...
+        
+		if (isGuildGroup ~= IS_GUILD_GROUP) then
+			IS_GUILD_GROUP = isGuildGroup
+		end
+	elseif ( event == "PLAYER_GUILD_UPDATE" ) then
+		if (not IsInGuild()) then
+			IS_GUILD_GROUP = nil
+		end
+	end
+end)
+
+local f = CreateFrame('Frame')
+f:SetAlpha(0)
+f:SetParent(Minimap)
+
+f.Text = f:CreateFontString(nil, 'OVERLAY')
+f.Text:SetParent(f)
+f.Text:SetFont('Fonts\\ARIALN.ttf', 15, 'OUTLINE')
+f.Text:SetPoint('TOP', Minimap, 0, -3.5)
+f.Text:SetTextColor(1, 1, 1)
+
+
+f.Text1 = f:CreateFontString(nil, 'OVERLAY')
+f.Text1:SetParent(f)
+f.Text1:SetFont('Fonts\\ARIALN.ttf', 15, 'OUTLINE')
+-- f.Text1:SetPoint('TOP', f.Text, 'BOTTOM', 0, 1)
+-- f.Text1:SetTextColor(1, 1, 1)
+
+--[[
+f.Text2 = f:CreateFontString(nil, 'OVERLAY')
+f.Text2:SetParent(f)
+f.Text2:SetFont('Fonts\\ARIALN.ttf', 15, 'OUTLINE')
+f.Text2:SetPoint('TOP', f.Text1, 'BOTTOM', 0, 1)
+f.Text2:SetTextColor(1, 1, 1)
+--]]
+
+local function SetDifficultyText()
+    local _, instancetype, _, difficultyName, maxPlayers = GetInstanceInfo()
+    
+    if (instancetype == 'party' or instancetype == 'raid') then
+        local guildgrp
+            
+        if (IS_GUILD_GROUP) then
+            guildgrp = '|cffffff00G|r' -- ..GUILD_GROUP..'|r'
+        else
+            guildgrp = ''
+        end
+
+        f.Text1:SetText(difficultyName)
+        
+        if (f.Text1:GetText() and f.Text1:GetText():match(PLAYER_DIFFICULTY2)) then
+            f.Text:SetText(maxPlayers..guildgrp..'|cffff00ffH|r')
+            -- f.Text1:SetText(PLAYER_DIFFICULTY2)
+        elseif (not difficultyName)then
+            f.Text:SetText(maxPlayers..guildgrp)
+        else
+            f.Text:SetText(maxPlayers..guildgrp)
+            -- f.Text1:SetText('')
+        end
+            
+        -- f.Text2:SetText(guildgrp)
+    end
+end
+
+Minimap:HookScript('OnEnter', function()
+    if (IsInInstance()) then
+        SetDifficultyText()
+    end
+    
+    if (not IsInInstance()) then
+        f.Text:SetText('')
+        f.Text1:SetText('')
+        -- f.Text2:SetText('')
+    end
+    
+    UIFrameFadeIn(f, 0.235, f:GetAlpha(), 1)
+end)
+
+Minimap:HookScript('OnLeave', function()
+    UIFrameFadeOut(f, 0.235, f:GetAlpha(), 0)
+    
+    if (not IsInInstance()) then
+        f.Text:SetText('')
+        f.Text1:SetText('')
+        -- f.Text2:SetText('')
+    end
+end)
+
+--[[
 if (nMinimap.diffIndicator.mode == 'TEXT') then
 
         -- difficult indicator for normal groups
@@ -192,3 +294,5 @@ else
     GuildInstanceDifficulty.emblem:SetPoint('CENTER', 0, -50000);
     -- GuildInstanceDifficulty.emblem:SetDrawLayer('OVERLAY')
 end
+
+]]
