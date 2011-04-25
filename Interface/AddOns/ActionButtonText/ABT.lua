@@ -91,13 +91,13 @@ end
 
 
 function ABT_NS.debuff(n,target)
-	local name,_,_,stack,_,_,timeleft,ismine = UnitDebuff(target,n)
-	return name,(timeleft or 0) - GetTime(),stack or 0,ismine
+	local name, _, _, stack, _, _, timeleft, ismine = UnitDebuff(target,n)
+	return name, (timeleft or 0) - GetTime(), stack or 0, ismine
 end
 
 function ABT_NS.buff(n,target)
-	local name,_,_,stack,_,_,timeleft,ismine = UnitBuff(target,n) 
-	return name,(timeleft or 0) - GetTime(),stack or 0,ismine
+	local name, _, _, stack, _, _, timeleft, ismine = UnitBuff(target,n) 
+	return name, (timeleft or 0) - GetTime(), stack or 0, ismine
 end
 
 function ABT_NS.checkbuff(buffname, debuff, target, notmine)
@@ -132,7 +132,7 @@ function ABT_NS.checkbuff(buffname, debuff, target, notmine)
 end
 
 function ABT_NS.find(f1,f2)
-	local _,_,pf2,rf2 = strfind(f2.."~","^([^~]*)~(.*)$")
+	local _, _, pf2, rf2 = strfind(f2.."~","^([^~]*)~(.*)$")
 	
 	while pf2 or rf2 do
 		if pf2 and pf2 ~= "" then
@@ -141,30 +141,30 @@ function ABT_NS.find(f1,f2)
 			end
 		end
 		
-		_,_,pf2,rf2 = strfind(rf2,"^([^~]*)~(.*)$")  
+		_, _, pf2, rf2 = strfind(rf2,"^([^~]*)~(.*)$")  
 	end
   
 	return false
 end
 
 function ABT_NS.getobi(spellname,spelltable,spellf)
-	local msg = ""
-	local fs,spos,fst = spelltable["FONTSIZE"] or 11,spelltable["SPOS"] or 1,spelltable["FONTSTYLE"] or 1
+	local fs = spelltable["FONTSIZE"] or 11
+	local spos = spelltable["SPOS"] or 1
+	local fst = spelltable["FONTSTYLE"] or 1
 	local buffname = spelltable["Buff"] or spellname
 	local debuff = spelltable["Debuff"]
 	local target = ABT_NS.targetvals[spelltable["TARGET"]] or "PLAYER"
 	local timeleft,charges,timeleft2,charges2 = 0,0,0,0
 	local msg = ""
-	local function timetomins(time)
-	local mins = ceil(time/60)
 	local name, rank, icon, cost, isfunnel, powertype
-	
-	if mins > 1 then
-		return mins .. "m"
-	else
-		return floor(time)
-	end
-	
+	local function timetomins(time)
+		local mins = ceil(time/60)
+		
+		if mins > 1 then
+			return mins .. "m"
+		else
+			return floor(time)
+		end	
 	end
 	
 	if ABT_NS.API[buffname..spellname] then
@@ -175,7 +175,7 @@ function ABT_NS.getobi(spellname,spelltable,spellf)
 	
 	if (spelltable["NoTime"] or false) == false then
 		if timeleft and timeleft > 0 then
-			msg = ABT_NS.needslash(msg,timetomins(timeleft))
+			msg = ABT_NS.needslash(msg, timetomins(timeleft))
 		end
 		--if timeleft2 and timeleft2 > 0 then
 		--  msg = ABT_NS.needslash(msg,timetomins(timeleft2))
@@ -187,13 +187,13 @@ function ABT_NS.getobi(spellname,spelltable,spellf)
 	end
 	
 	local cp = 0
-	cp = GetComboPoints("PLAYER","TARGET") --WOTLK
+	cp = GetComboPoints("PLAYER", "TARGET") --WOTLK
 	if spelltable["CP"] and cp >= spelltable["CP"]-1 and UnitPowerType("PLAYER") == 3 then -- uses energy
 		msg = ABT_NS.needslash(msg,cp)
 	end
 	
 	if (spelltable["SHOWDMG"] or 0) == 1 and ABT_NS.atkinfo[spellname] then
-		local info,time,crit = ABT_NS.atkinfo[spellname][1],ABT_NS.atkinfo[spellname][2],ABT_NS.atkinfo[spellname][3]
+		local info, time, crit = ABT_NS.atkinfo[spellname][1],ABT_NS.atkinfo[spellname][2],ABT_NS.atkinfo[spellname][3]
 		
 		if info and GetTime() - time < ABT_NS.sdint then
 			msg = ABT_NS.needslash(msg,info)
@@ -206,7 +206,7 @@ function ABT_NS.getobi(spellname,spelltable,spellf)
 	
 	local edef = spelltable["EDEF"]
 	if edef and (UnitPowerType("PLAYER") == 3 or UnitPowerType("PLAYER") == 6) then -- uses energy 
-		name,rank,icon,cost,isfunnel,powertype = GetSpellInfo(spellname.."()")
+		name, rank, icon, cost, isfunnel, powertype = GetSpellInfo(spellname.."()")
 		
 		if cost and (powertype == 3 or powertype ==6) then
 			if ABT_NS.clearcasting then
@@ -235,7 +235,7 @@ function ABT_NS.getobi(spellname,spelltable,spellf)
 	
 	local ctoom = spelltable["CTOOM"] 
 	if ctoom and UnitPowerType("PLAYER") == 0 then -- uses mana
-		name,rank,icon,cost,isfunnel,powertype = GetSpellInfo(spellname.."()")
+		name, rank, icon, cost, isfunnel, powertype = GetSpellInfo(spellname.."()")
 		
 		if cost and powertype == 0 then
 			if ABT_NS.clearcasting then
@@ -258,8 +258,8 @@ function ABT_NS.btnname(i)
 	if ABT_NS.btnprefix ~= "" then
 		return _G[ABT_NS.btnprefix..i]
 	else
-		local barn = math.floor((i-1)/12)
-		local btnn = i-(barn*12)
+		local barn = math.floor((i - 1) / 12)
+		local btnn = i - (barn * 12)
 		if btnn and barn and ABT_NS.defaultBars[barn+1] then
 			return _G[ABT_NS.defaultBars[barn+1]..btnn]
 		else
@@ -336,9 +336,9 @@ else
 end
 
 function ABT_NS.init()
-	_,ABT_NS.class = UnitClass("PLAYER")
+	_, ABT_NS.class = UnitClass("PLAYER")
 
-	local tt = CreateFrame("GameTooltip","ABT_ToolTipScan",UIParent,"GameTooltipTemplate")
+	local tt = CreateFrame("GameTooltip", "ABT_ToolTipScan", UIParent, "GameTooltipTemplate")
 
 	ABT_NS.configinit()
 	ABT_NS.optionsinit()
@@ -406,13 +406,13 @@ function ABT_NS.event(self, event, arg1)
 end
 
 function ABT_NS.updtext()
-	for x=1,120 do
+	for x = 1, 120 do
 		local button = ABT_NS.btnname(x)
 
 		if button and button:IsVisible() then
 			ABT_NS.cleartext(button)
 
-			local ac,ty,id = ABT_NS.btnid(button,x)
+			local ac, ty, id = ABT_NS.btnid(button,x)
 			if ac and ac ~= "()" then
 				if not ty then
 				ty,id = GetActionInfo(ac)
@@ -426,7 +426,7 @@ function ABT_NS.updtext()
 					if ty == "TRINITYSPELL" and TRspellIndex and TRspellIndex[strlower(ac)] then
 						id = TRspellIndex[strlower(ac)][1]
 						spellid = id
-						spellname = GetSpellBookItemName(id,BOOKTYPE_SPELL)
+						spellname = GetSpellBookItemName(id, BOOKTYPE_SPELL)
 					elseif ty == "spell" and id ~= 0 then
 						spellid = id
 						spellname = GetSpellInfo(id)
@@ -445,10 +445,10 @@ function ABT_NS.updtext()
 						if ABT_spelldb then
 							for spell in pairs(ABT_spelldb) do
 								local msg = ""
-								local spellf,fs,spos,fst
+								local spellf, fs, spos, fst
 								
 								if strfind(spell,"#") then
-								   _,_,spellf = strfind(spell,"#(.*)")
+								   _, _, spellf = strfind(spell,"#(.*)")
 								else
 								  spellf = spell
 								end
@@ -470,7 +470,7 @@ function ABT_NS.updtext()
 										end
 										
 										local tiptext = ""
-										for i=1,ABT_ToolTipScan:NumLines() do
+										for i = 1, ABT_ToolTipScan:NumLines() do
 											tiptext = tiptext .. strupper(_G['ABT_ToolTipScanTextLeft'..i]:GetText() or "")
 											tiptext = tiptext .. strupper(_G['ABT_ToolTipScanTextRight'..i]:GetText() or "")
 										end
@@ -479,11 +479,11 @@ function ABT_NS.updtext()
 									end
 									
 									if ABT_NS.tipdb[spellid] and ABT_NS.find(ABT_NS.tipdb[spellid],spellf) then
-										msg,fs,spos,fst = ABT_NS.getobi(spellname,ABT_spelldb[spell],spellf)
+										msg, fs, spos, fst = ABT_NS.getobi(spellname,ABT_spelldb[spell],spellf)
 									end
 								else
 									if ABT_NS.find(strupper(spellname),spellf) then
-										msg,fs,spos,fst = ABT_NS.getobi(spellname,ABT_spelldb[spell],spellf)
+										msg, fs, spos, fst = ABT_NS.getobi(spellname,ABT_spelldb[spell],spellf)
 									end
 								end
 	
