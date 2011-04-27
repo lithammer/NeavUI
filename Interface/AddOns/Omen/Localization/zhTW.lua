@@ -74,34 +74,33 @@ L["Frequently Asked Questions"] = "常見問題"
 L["FuBar Options"] = "FuBar 選項"
 L["GENERAL_FAQ"] = [=[|cffffd200Omen3 與 Omen2 的區別|r
 
-Omen3 使用 Blizzard 所提供的仇恨應用程式界面,與 Omen2 不一樣,Omen3 不會去預測或者計算仇恨,仇恨值是通過應用程式界面直接向伺服器端獲取.
+Omen3 使用 Blizzard 所提供的仇恨應用程式界面，與 Omen2 不一樣，Omen3 不會去預測或者計算仇恨，仇恨值是通過應用程式界面直接向伺服器端獲取。
 
-Omen2 使用 Threat-2.0 數據庫,這個數據庫是根據檢測的戰鬥記錄,法術,增益與減益,姿態和裝備來計算不同的仇恨值.仇恨的計算是根據現有的資料與檢測所得到的數據計算的.很多技能是假設值,無法驗證(如擊退,我們假設擊退仇恨降低50%).
+Omen2 使用 Threat-2.0 數據庫，這個數據庫是根據檢測的戰鬥記錄，法術，增益與減益，姿態和裝備來計算不同的仇恨值。仇恨的計算是根據現有的資料與檢測所得到的數據計算的。很多技能是假設值，無法驗證（如擊退，我們假設擊退仇恨降低50%）。
 
-Threat 2.0數據庫也包含了其他人都用這個數據庫的時候同步整個團隊的威脅值,這些威脅數據用來提供給整個團隊以供參考.
+Threat 2.0數據庫也包含了其他人都用這個數據庫的時候同步整個團隊的威脅值，這些威脅數據用來提供給整個團隊以供參考。
 
-從 Patch 3.0.2 開始 Omen 將不再做這些動作,Threat 資料庫不再需要.Omen3 所使用 Blizzard 內建威脅監視器,並從中獲取威脅資料,這也造成 Omen 不再需要同步資料,檢測戰鬥記錄與猜測數據.效果因減少資料的傳送而提升,包括 CPU 與內存的使用量都會減少,針對特殊首領的威脅變化事件也不再需要.
+從 Patch 3.0.2 開始 Omen 將不再做這些動作，Threat 資料庫不再需要。Omen3 所使用 Blizzard 內建威脅監視器，並從中獲取威脅資料，這也造成 Omen 不再需要同步資料，檢測戰鬥記錄與猜測數據。效果因減少資料的傳送而提升，包括 CPU 與內存的使用量都會減少，針對特殊首領的威脅變化事件也不再需要。
 
-更進一步說受益包括一些 NPC 對怪物的威脅,比如太陽之井高地人類形態的卡雷苟斯的威脅.但是也有一些不利的地方,威脅數據更新也變得慢了,團隊中如果沒有人的目標是那個 NPC 的話,他的威脅也無法得到,而你沒有直接參與的戰鬥你也無法獲得威脅(如你沒有造成任何傷害,或者製造任何威脅你將無法得到威脅值,就算你讓你的寵物上去攻擊而你沒有攻擊也一樣不能得到威脅值).
+更進一步說受益包括一些 NPC 對怪物的威脅，比如太陽之井高地人類形態的卡雷苟斯的威脅。但是也有一些不利的地方，威脅數據更新也變得慢了，團隊中如果沒有人的目標是那個 NPC 的話，他的威脅也無法得到，而你沒有直接參與的戰鬥你也無法獲得威脅（如你沒有造成任何傷害，或者製造任何威脅你將無法得到威脅值，就算你讓你的寵物上去攻擊而你沒有攻擊也一樣不能得到威脅值）。
 
-|cffffd200我如何去除中間2條灰色垂直線?|r
+|cffffd200我如何去除中間2條灰色垂直線？|r
 
-鎖定 Omen.鎖定 Omen 將防止它被移動或調整大小,以及防止欄被調整.如果你沒有注意到,那兩條灰色垂直線是用來調整欄的大小.
+鎖定 Omen。鎖定 Omen 將防止它被移動或調整大小，以及防止欄被調整。如果你沒有注意到，那兩條灰色垂直線是用來調整欄的大小。
 
-|cffffd200如何將 Omen3 的外觀改成與 Omen2 類似?|r
+|cffffd200如何將 Omen3 的外觀改成與 Omen2 類似？|r
 
-改變背景材質與邊框材質為 Blizzard Tooltip,將背景顏色改成黑色(通過拖動亮度條調節底部顏色),邊框顏色改為藍色.
+改變背景材質與邊框材質為 Blizzard Tooltip，將背景顏色改成黑色（通過拖動亮度條調節底部顏色），邊框顏色改為藍色。
 
-|cffffd200為什麼就算我再戰鬥中也看不到任何威脅值?|r
+|cffffd200為什麼就算我再戰鬥中也看不到任何威脅值？|r
 
-除非你對怪物有作出任何傷害或者造成任何威脅,否則 Blizzard 仇恨應用程式界面不會給出任何威脅值,我們估計這可能是 Blizzard 為了減少網絡資料的傳送.
+除非你對怪物有作出任何傷害或者造成任何威脅，否則 Blizzard 仇恨應用程式界面不會給出任何威脅值，我們估計這可能是 Blizzard 為了減少網絡資料的傳送。
 
-|cffffd200有沒有辦法解決 Blizzard 的這個的限制?攻擊之前無法看到我的寵物的威脅.|r
+|cffffd200有沒有辦法解決 Blizzard 的這個的限制？攻擊之前無法看到我的寵物的威脅。|r
 
-我們沒有辦法在短期內解決這個限制(正如 Omen2 沒有一樣).
+我們沒有辦法在短期內解決這個限制（正如 Omen2 沒有一樣）。
 
-Omen3 的目標是提供準確的威脅數據,我們不再打算推測你的數據並降低你的 FPS.你需信任你的寵物/坦克,或者攻擊之前等待2秒並用低傷害法術(如冰槍)攻擊,這樣可以讓你可以得到初步的威脅讀數.
-]=]
+Omen3 的目標是提供準確的威脅數據，我們不再打算推測你的數據並降低你的 FPS。你需信任你的寵物/坦克，或者攻擊之前等待2秒並用低傷害法術（如冰槍）攻擊，這樣可以讓你可以得到初步的威脅讀數。]=]
 L["GENERAL_FAQ2"] = [=[|cffffd200我們能讓 AoE 模組回來嗎?|r
 
 同樣,如不使用猜測威脅值的方式是不可能做得到的. Blizzard 的仇恨應用程式界面僅限我們查詢團隊目標中某人的威脅數據.這意味著假如20個怪物中只有6個被團隊選定,那麼就沒有辦法獲得其他14個怪物的威脅數據.
@@ -138,21 +137,20 @@ L["HUNTER"] = "獵人"
 L["Heading BG Color"] = "主標題的背景顏色"
 L["Heading background color"] = "主標題的背景顏色"
 L["Height of each bar"] = "每個棒條的高度"
-L["Height of the title bar. The minimum height allowed is twice the background border thickness."] = "標題欄高度. 最小厚度為背景邊框厚度的一倍."
+L["Height of the title bar. The minimum height allowed is twice the background border thickness."] = "標題欄高度。最小厚度為背景邊框厚度的一倍。"
 L["Help File"] = "幫助文件"
 L["Hide Omen"] = "隱藏 Omen"
 L["Hide Omen entirely if it collapses to show 0 bars"] = "當沒有棒條時收起並隱藏 Omen"
 L["Hide Omen on 0 bars"] = "當沒有棒條時隱藏 Omen"
 L["Hide minimap/FuBar icon"] = "隱藏小地圖/Fubar 小圖標"
-L["However, hide Omen if any of the following are true (higher priority than the above)."] = "但是，選定以下項目時 Omen 將被隱藏(比以上項更具優先級)。"
-L["IGNORE_PLAYER_PETS_DESC"] = [=[讓 Omen 忽略敵對玩家寵物以確定顯示哪些單位的威脅.
+L["However, hide Omen if any of the following are true (higher priority than the above)."] = "但是，選定以下項目時 Omen 將被隱藏（比以上項更具優先級）。"
+L["IGNORE_PLAYER_PETS_DESC"] = [=[讓 Omen 忽略敵對玩家寵物以確定顯示哪些單位的威脅。
 
-玩家寵物|cffffff78攻擊|r或者|cffffff78防禦|r狀態保持威脅與正常的怪物相同,正被攻擊目標具有最高的威脅.如果寵物指定攻擊一個具體目標,寵物仍然保持在威脅列表,但保持在指定的目標定義100%威脅之上.玩家寵物可以被嘲諷以攻擊你.
+玩家寵物|cffffff78攻擊|r或者|cffffff78防禦|r狀態保持威脅與正常的怪物相同，正被攻擊目標具有最高的威脅。如果寵物指定攻擊一個具體目標，寵物仍然保持在威脅列表，但保持在指定的目標定義100%威脅之上。玩家寵物可以被嘲諷以攻擊你。
 
-然而,玩家寵物在|cffffff78被動|r模式並沒有威脅列表,嘲諷依然不起作用.它們只攻擊玩家所指定的目標且沒有仇恨列表.
+然而，玩家寵物在|cffffff78被動|r模式並沒有威脅列表，嘲諷依然不起作用。它們只攻擊玩家所指定的目標且沒有仇恨列表。
 
-當玩家寵物處於|cffffff78跟隨|r狀態時,寵物的威脅列表被消除並立刻停止攻擊,雖然它可能會立即重新指定目標位於攻擊/防禦模式.
-]=]
+當玩家寵物處於|cffffff78跟隨|r狀態時，寵物的威脅列表被消除並立刻停止攻擊，雖然它可能會立即重新指定目標位於攻擊/防禦模式。]=]
 L["Ignore Player Pets"] = "忽略玩家寵物"
 L["Invert Bar/Text Colors"] = "互換棒條/文本顏色"
 L["Left"] = "左邊"
@@ -166,7 +164,7 @@ L["Name"] = "名字"
 L["None"] = "無"
 L["OMEN_DESC"] = "Omen 是一個佔用少量系統資源監控威脅的 UI,可以顯示你和同伴參與戰鬥中怪物的威脅列表.你可以改變 Omen 的外觀,並且根據不同的角色儲存不同的設定."
 L["OMEN_SLASH_DESC"] = "這些按鈕與斜槓命令有相同的效果(/omen)"
-L["OMEN_WARNINGS_DESC"] = "這裡可以調整 Omen 在何時用何種方式給你提出仇恨警報."
+L["OMEN_WARNINGS_DESC"] = "這裡可以調整 Omen 在何時用何種方式給你提出仇恨警報。"
 L["Omen Quick Menu"] = "Omen 快捷選單"
 L["Open Config"] = "打開配置"
 L["Open Omen's configuration panel"] = "打開 Omen 配置面板"
@@ -224,14 +222,14 @@ L["TPS_WINDOW_DESC"] = "每秒威脅值的計算是根據最後X秒視窗內的�
 L["Tank Bar Color"] = "坦克棒條顏色"
 L["Tells Omen to additionally check your 'focus' and 'focustarget' before your 'target' and 'targettarget' in that order for threat display."] = "讓 Omen 額外檢查您的「focus」和「focus目標」位於「目標」和「目標的目標」之前的順序顯示威脅."
 L["Tells Omen to enter Test Mode so that you can configure Omen's display much more easily."] = "讓 Omen 進入測試模式,你可以更容易的配置 Omen 顯示."
-L["Temp Threat Bar Color"] = "暫時威脅條顏色"
+L["Temp Threat Bar Color"] = "臨時威脅計量條顏色"
 L["Test Mode"] = "測試模式"
 L["Test warnings"] = "測試警報"
 L["Texture to use for the frame's background"] = "框體背景材質"
 L["Texture to use for the frame's border"] = "框體邊框材質"
 L["The background color for all threat bars"] = "所有威脅棒條背景顏色"
 L["The background color for pets"] = "寵物棒條背景顏色"
-L["The background color for players under the effects of Fade, Mirror Image, glyphed Hand of Salvation, Tricks of the Trade and Misdirection"] = "玩家背景顏色在幻鏡之像，雕紋 - 拯救聖禦，偷天換日和誤導影響的淡入淡出效果" -- Needs review
+L["The background color for players under the effects of Fade, Mirror Image, glyphed Hand of Salvation, Tricks of the Trade and Misdirection"] = "當玩家受到漸隱術，幻鏡之像，拯救雕紋，偷天換日和誤導效果影響時的背景顏色。"
 L["The background color for your Pull Aggro bar"] = "獲得仇恨棒條背景顏色"
 L["The background color for your tank's threat bar"] = "坦克威脅棒條背景顏色"
 L["The background color for your threat bar"] = "威脅棒條的背景顏色"
@@ -256,9 +254,9 @@ L["Title Bar Settings"] = "標題欄設定"
 L["Title Text Options"] = "標題文字選項"
 L["Toggle Focus"] = "開/關focus"
 L["Toggle Omen"] = "開/關 Omen"
-L["Turning this on will cause Omen to hide whenever you are in a battleground or arena."] = "啟用此項後當您位於戰場或競技場時將會使 Omen 隱藏."
-L["Turning this on will cause Omen to hide whenever you are in a city or inn."] = "啟用此項時當您位於城市或者旅店時將會使 Omen 隱藏."
-L["Turning this on will cause Omen to hide whenever you are not in combat."] = "啟用此項後當您離開戰鬥後 Omen 將會被隱藏."
+L["Turning this on will cause Omen to hide whenever you are in a battleground or arena."] = "啟用此項後當您位於戰場或競技場時將會使 Omen 隱藏。"
+L["Turning this on will cause Omen to hide whenever you are in a city or inn."] = "啟用此項時當您位於城市或者旅店時將會使 Omen 隱藏。"
+L["Turning this on will cause Omen to hide whenever you are not in combat."] = "啟用此項後當您離開戰鬥後 Omen 將會被隱藏。"
 L["Use !ClassColors"] = "使用 !ClassColors"
 L["Use !ClassColors addon for class colors for the background color of threat bars"] = "使用 !ClassColors 職業顏色為威脅條背景顏色。"
 L["Use 'My Bar' color"] = "使用「My Bar」顏色"
@@ -321,5 +319,5 @@ L["You are in a raid"] = "有團隊"
 L["You are not in combat"] = "你不在戰鬥"
 L["You are resting"] = "當你在休息"
 L["You have a pet"] = "有寵物"
-L["|cffff0000Error:|r Omen cannot use shake warning if you have turned on nameplates at least once since logging in."] = "|cffff0000錯誤:|r 如果您在登錄後啟動過一次名牌,Omen 將無法使用震動警報功能."
+L["|cffff0000Error:|r Omen cannot use shake warning if you have turned on nameplates at least once since logging in."] = "|cffff0000錯誤：|r 如果您在登錄後啟動過一次名牌，Omen 將無法使用震動警報功能。"
 

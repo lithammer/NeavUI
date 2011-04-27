@@ -1,5 +1,5 @@
-## Interface: 40000
-## Version: 3.1.0
+## Interface: 40100
+## Version: 3.1.1
 ## Title: Omen3
 ## Notes: A lightweight, flexible, multi-target threat meter.
 ## Notes-ruRU: Лёгкий, гибкий, измеритель угрозы.
@@ -14,7 +14,7 @@
 ## X-Category: Combat
 ## X-ConfigMode: true
 ## SavedVariables: Omen3DB
-## X-Curse-Packaged-Version: v3.1.0
+## X-Curse-Packaged-Version: v3.1.1
 ## X-Curse-Project-Name: Omen Threat Meter
 ## X-Curse-Project-ID: omen-threat-meter
 ## X-Curse-Repository-ID: wow/omen-threat-meter/mainline

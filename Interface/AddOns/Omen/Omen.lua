@@ -1358,7 +1358,20 @@ The combat log offers no hint as to which version of Hand of Salvation is casted
 so we record anyway.
 ]]
 
-function Omen:COMBAT_LOG_EVENT_UNFILTERED(event, timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
+local TOC -- Pre-4.1 CLEU compat
+local dummyTable = {}
+do
+	-- Because GetBuildInfo() still returns 40000 on the PTR
+	local major, minor, rev = strsplit(".", (GetBuildInfo()))
+	TOC = major*10000 + minor*100
+end
+function Omen:COMBAT_LOG_EVENT_UNFILTERED(event, timestamp, eventtype, hideCaster, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
+	-- Pre-4.1 CLEU compat
+	if TOC < 40100 and hideCaster ~= dummyTable then
+		-- Insert a dummy for the new argument introduced in 4.1 and perform a tail call
+		return self:COMBAT_LOG_EVENT_UNFILTERED(event, timestamp, eventtype, dummyTable, hideCaster, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
+	end
+
 	if eventtype == "SPELL_CAST_SUCCESS" then
 		local spellID = ...
 		if spellID == 34477 or spellID == 57934 then  -- Misdirection and Tricks of the Trade
