@@ -121,12 +121,13 @@ do
 			{85767, 'BOTTOMLEFT', {0.7, 0.5, 1}, true, true, true}, -- Dark Intent
 		},
 		ALL = {
-			{23333, 'LEFT', {1, 0, 0}}, -- Warsong flag
+			{23333, 'LEFT', {1, 0, 0}}, -- Warsong flag, Horde
+			{23335, 'LEFT', {0, 0, 1}}, -- Warsong flag, Alliance
 		},
 	}
 end
 
-function auraIcon(self, icon)
+local function auraIcon(self, icon)
 	if (icon.cd) then
 		icon.cd:SetReverse()
 		icon.cd:SetAllPoints(icon.icon)
