@@ -399,7 +399,6 @@ end
 local function UpdatePower(Power, unit, min, max)
     local self = Power:GetParent()
 
-    local unitHappiness = self.colors.happiness[GetPetHappiness()]
 	local _, powerType, altR, altG, altB = UnitPowerType(unit)
 	local unitPower = PowerBarColor[powerType]
 
@@ -420,9 +419,7 @@ local function UpdatePower(Power, unit, min, max)
         Power.Value:SetText((min/max * 100 < 100 and format('%d%%', min/max * 100)) or '')
     end
 
-    if (unit == 'pet' and GetPetHappiness()) then
-        Power:SetStatusBarColor(unitHappiness[1], unitHappiness[2], unitHappiness[3])
-	elseif (unitPower) then
+	if (unitPower) then
         Power:SetStatusBarColor(unitPower.r, unitPower.g, unitPower.b)
 	else
         Power:SetStatusBarColor(altR, altG, altB)

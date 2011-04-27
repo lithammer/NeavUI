@@ -26,7 +26,7 @@ oUF.Tags['level'] = function(unit)
     return format('|cff%02x%02x%02x%s|r', r*255, g*255, b*255, level)
 end
 
-oUF.TagEvents['name'] = 'UNIT_NAME_UPDATE UNIT_POWER'
+oUF.TagEvents['name'] = 'UNIT_NAME_UPDATE'
 oUF.Tags['name'] = function(unit)
     local r, g, b
     local colorA, colorB
@@ -43,9 +43,7 @@ oUF.Tags['name'] = function(unit)
         end
     end
 
-    if (unit == 'pet' and SPELL_POWER_HAPPINESS and GetPetHappiness()) then
-		colorA = oUF.colors.happiness[GetPetHappiness()]
-    elseif (unit == 'player' or not UnitIsFriend('player', unit) and UnitIsPlayer(unit) and UnitClass(unit)) then
+    if (unit == 'player' or not UnitIsFriend('player', unit) and UnitIsPlayer(unit) and UnitClass(unit)) then
 		colorA = oUF.colors.class[class]
 	elseif (unit == 'targettarget' and UnitIsPlayer(unit) and UnitClass(unit)) then
 		colorA = oUF.colors.class[class]
