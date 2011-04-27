@@ -1,4 +1,4 @@
-## Interface: 40000
+## Interface: 40100
 ## Title: oUF AuraWatch
 ## Author: Astromech
 ## Version: 1.3.28-6
