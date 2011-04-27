@@ -32,7 +32,7 @@ ABT_NS.defaultBars = { 'ActionButton', 'MultiBarBottomLeftButton', 'MultiBarBott
 
 ABT_NS.clearcasting = false
 
-function ABT_NS.settext(button,id,text,fs,ol)
+function ABT_NS.settext(button, id, text, fs, ol)
 	local buttontxt = _G[button:GetName()..'ob'..id] 
 	
 	if not buttontxt and text ~= '' then
@@ -348,9 +348,9 @@ function ABT_NS.init()
 end
 
 function ABT_NS.combat()
-	if (arg4) and (arg4 == ABT_NS.playername) then
+	if (arg5) and (arg5 == ABT_NS.playername) then
 		if arg2 == 'SPELL_DAMAGE' or arg2 == 'SPELL_MISSED' or arg2 == 'SPELL_HEAL' then -- or arg2 == 'SPELL_PERIODIC_DAMAGE' 
-			if arg10 and arg12 then
+			if arg11 and arg13 then
 				ABT_NS.atkinfo[arg10] = {arg12,GetTime(),arg17}
 				ABT_NS.lastbuttonupdate = 0
 			end
@@ -372,7 +372,7 @@ function ABT_NS.combat()
 		end
 	end
 
-	if (arg7) and (arg7 == ABT_NS.playername) then
+	if (arg8) and (arg8 == ABT_NS.playername) then
 		if arg10 == 'Clearcasting' then
 			if arg2 == 'SPELL_AURA_APPLIED' then
 				ABT_NS.clearcasting = true
