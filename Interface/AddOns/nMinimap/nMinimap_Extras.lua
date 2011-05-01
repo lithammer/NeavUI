@@ -48,7 +48,11 @@ frameGuild:RegisterEvent('GUILD_MOTD')
 
 frameGuild.Text = frameGuild:CreateFontString(nil, 'OVERLAY')
 frameGuild.Text:SetFont('Fonts\\ARIALN.ttf', 12)
-frameGuild.Text:SetPoint("BOTTOMLEFT", Minimap, "TOPLEFT", 18, 3)
+if nMinimap.positionDrawerBelow then
+	frameGuild.Text:SetPoint('TOPLEFT', Minimap, 'BOTTOMLEFT', 18, -3)
+else
+	frameGuild.Text:SetPoint('BOTTOMLEFT', Minimap, 'TOPLEFT', 18, 3)
+end
 frameGuild.Text:SetShadowColor(0, 0, 0)
 frameGuild.Text:SetShadowOffset(1, -1)
 frameGuild:SetAllPoints(frameGuild.Text)
@@ -72,7 +76,11 @@ frameFriends:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 frameFriends.Text = frameFriends:CreateFontString(nil, 'OVERLAY')
 frameFriends.Text:SetFont('Fonts\\ARIALN.ttf', 12)
-frameFriends.Text:SetPoint('BOTTOMRIGHT', Minimap, 'TOPRIGHT', -18, 3)
+if nMinimap.positionDrawerBelow then
+	frameFriends.Text:SetPoint('TOPRIGHT', Minimap, 'BOTTOMRIGHT', -18, -3)	
+else
+	frameFriends.Text:SetPoint('BOTTOMRIGHT', Minimap, 'TOPRIGHT', -18, 3)
+end
 frameFriends.Text:SetShadowColor(0, 0, 0)
 frameFriends.Text:SetShadowOffset(1, -1)
 frameFriends:SetAllPoints(frameFriends.Text)
@@ -82,8 +90,13 @@ local function fadeOut()
     UIFrameFadeOut(xFavGuild, 0.05, xFavGuild:GetAlpha(), 0)
     UIFrameFadeOut(xFavFriend, 0.05, xFavFriend:GetAlpha(), 0)
 
-    f:SetPoint('BOTTOMLEFT', Minimap, 'TOPLEFT', 10, -23)
-    f:SetPoint('BOTTOMRIGHT', Minimap, 'TOPRIGHT', -10, -23)
+	if nMinimap.positionDrawerBelow then
+		f:SetPoint('TOPLEFT', Minimap, 'BOTTOMLEFT', 10, 23)
+		f:SetPoint('TOPRIGHT', Minimap, 'BOTTOMRIGHT', -10, 23)
+	else
+		f:SetPoint('BOTTOMLEFT', Minimap, 'TOPLEFT', 10, -23)
+		f:SetPoint('BOTTOMRIGHT', Minimap, 'TOPRIGHT', -10, -23)
+	end
     
     xFav:SetAlpha(0.5)
     
@@ -94,16 +107,22 @@ local function fadeIn()
     UIFrameFadeIn(xFavGuild, 0.135, xFavGuild:GetAlpha(), 1)
     UIFrameFadeIn(xFavFriend, 0.135, xFavFriend:GetAlpha(), 1)
 
-    f:SetPoint('BOTTOMLEFT', Minimap, 'TOPLEFT', 10, -10)
-    f:SetPoint('BOTTOMRIGHT', Minimap, 'TOPRIGHT', -10, -10)
+	if nMinimap.positionDrawerBelow then
+		f:SetPoint('TOPLEFT', Minimap, 'BOTTOMLEFT', 10, 10)
+		f:SetPoint('TOPRIGHT', Minimap, 'BOTTOMRIGHT', -10, 10)
+	else
+		f:SetPoint('BOTTOMLEFT', Minimap, 'TOPLEFT', 10, -10)
+		f:SetPoint('BOTTOMRIGHT', Minimap, 'TOPRIGHT', -10, -10)
+	end
+
     xFav:SetAlpha(1)
 end
 
-xFav:SetScript("OnEnter", function(self)
+xFav:SetScript('OnEnter', function(self)
     fadeIn()
 end)
 
-xFav:SetScript("OnLeave", function(self)
+xFav:SetScript('OnLeave', function(self)
     fadeOut()
 end)
 
@@ -114,6 +133,16 @@ end)
 frameFriends:SetScript('OnLeave', function(self) 
     fadeOut()
 end)
+
+if nMinimap.showDrawerOnMinimapMouseOver then
+	Minimap:SetScript('OnEnter', function(self)
+		fadeIn()
+	end)
+
+	Minimap:SetScript('OnLeave', function(self)
+		fadeOut()
+	end)
+end
 
 fadeOut()
 
