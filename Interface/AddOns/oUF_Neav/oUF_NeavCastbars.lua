@@ -1,5 +1,5 @@
 
-local interruptTexture = 'Interface\\AddOns\\oUF_Neav\\media\\textureInterrupt'
+local interruptTexture = 'Interface\\AddOns\\!Beautycase\\media\\textureNormalWhite'
 local normalTexture = 'Interface\\AddOns\\!Beautycase\\media\\textureNormal'
         
     -- create the castbars
@@ -103,15 +103,15 @@ function CreateCastbars(self, unit)
                 if (Castbar.interrupt) then
                     -- Castbar:SetStatusBarColor(unpack(config.interruptColor))
                     -- Castbar.Bg:SetVertexColor(config.interruptColor[1]*0.3, config.interruptColor[2]*0.3, config.interruptColor[3]*0.3, 0.8)
-                    SetBorderTexture(self.Castbar, interruptTexture)
-                    ColorBorder(self.Castbar, unpack(config.interruptColor))
-                    ColorBorderShadow(self.Castbar, unpack(config.interruptColor))
+                    self.Castbar:SetBorderTexture(interruptTexture)
+                    self.Castbar:SetBorderColor(unpack(config.interruptColor))
+                    self.Castbar:SetBorderShadowColor(unpack(config.interruptColor))
                 else
                     -- Castbar:SetStatusBarColor(unpack(config.color))
                     -- Castbar.Bg:SetVertexColor(config.color[1]*0.3, config.color[2]*0.3, config.color[3]*0.3, 0.8)
-                    SetBorderTexture(self.Castbar, normalTexture)
-                    ColorBorder(self.Castbar, 1, 1, 1)
-                    ColorBorderShadow(self.Castbar, 0, 0, 0)
+                    self.Castbar:SetBorderTexture(normalTexture)
+                    self.Castbar:SetBorderColor(1, 1, 1)
+                    self.Castbar:SetBorderShadowColor(0, 0, 0)
                 end
             end
         end    
@@ -132,15 +132,15 @@ function CreateCastbars(self, unit)
                 if (Castbar.interrupt) then
                     -- Castbar:SetStatusBarColor(unpack(config.interruptColor))
                     -- Castbar.Bg:SetVertexColor(config.interruptColor[1]*0.3, config.interruptColor[2]*0.3, config.interruptColor[3]*0.3, 0.8)
-                    SetBorderTexture(self.Castbar, interruptTexture)
-                    ColorBorder(self.Castbar, unpack(config.interruptColor))
-                    ColorBorderShadow(self.Castbar, unpack(config.interruptColor))
+                    self.Castbar:SetBorderTexture(interruptTexture)
+                    self.Castbar:SetBorderColor(unpack(config.interruptColor))
+                    self.Castbar:SetBorderShadowColor(unpack(config.interruptColor))
                 else
                     -- Castbar:SetStatusBarColor(unpack(config.color))
                     -- Castbar.Bg:SetVertexColor(config.color[1]*0.3, config.color[2]*0.3, config.color[3]*0.3, 0.8)
-                    SetBorderTexture(self.Castbar, normalTexture)
-                    ColorBorder(self.Castbar, 1, 1, 1)
-                    ColorBorderShadow(self.Castbar, 0, 0, 0)
+                    self.Castbar:SetBorderTexture(normalTexture)
+                    self.Castbar:SetBorderColor(1, 1, 1)
+                    self.Castbar:SetBorderShadowColor(0, 0, 0)
                 end
             end
         end    
