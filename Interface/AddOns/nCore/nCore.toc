@@ -3,7 +3,11 @@
 
 nCore.lua
 
+modules\altbuy.lua
 modules\coords.lua
+modules\durability.lua
 modules\errors.lua
 modules\fonts.lua
 modules\warning.lua
+modules\watchframe.lua
+
