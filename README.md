@@ -36,13 +36,14 @@
 
 ## Next Steps
 
-- nameplates? nameplates!
+- test nPlates in raid/instance situations and optimize his code
+- `nPlates` find better coloring or a other threat indicator
+- skin mdoule for external addons like omen, recount etc.
 - unhappy with the raidframe situation
 - make the oUF_Neav layout more usefull with tags for class specific buffs
 - create arena frames
 - nCore module for open all mails (and ignore mails with COD)
 - make nPower compact, add config file and put it on wowi
-- skin mdoule for external addons like omen, recount etc.
 
 ## Ideas
 
