@@ -1,6 +1,6 @@
+PowerBarColor['MANA'] = { r = 0/255, g = 0.55, b = 1 }
 
 --[[
-PowerBarColor['MANA'] = { r = 0/255, g = 0.55, b = 1 }
 PowerBarColor['RAGE'] = { r = 240/255, g = 45/255, b = 75/255 }
 PowerBarColor['FOCUS'] = { r = 255/255, g = 175/255, b = 0 }
 PowerBarColor['ENERGY'] = { r = 1, g = 1, b = 35/255 }
