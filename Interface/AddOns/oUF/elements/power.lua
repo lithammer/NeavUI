@@ -1,5 +1,3 @@
-local WoW41 = select(4, GetBuildInfo()) == 40100
-
 local parent, ns = ...
 local oUF = ns.oUF
 
@@ -10,13 +8,23 @@ for power, color in next, PowerBarColor do
 	end
 end
 
+local GetDisplayPower = function(power, unit)
+	local _, _, _, _, _, _, showOnRaid = UnitAlternatePowerInfo(unit)
+	if(power.displayAltPower and showOnRaid) then
+		return ALTERNATE_POWER_INDEX
+	else
+		return (UnitPowerType(unit))
+	end
+end
+
 local Update = function(self, event, unit)
 	if(self.unit ~= unit) then return end
 	local power = self.Power
 
 	if(power.PreUpdate) then power:PreUpdate(unit) end
 
-	local min, max = UnitPower(unit), UnitPowerMax(unit)
+	local displayType = GetDisplayPower(power, unit)
+	local min, max = UnitPower(unit, displayType), UnitPowerMax(unit, displayType)
 	local disconnected = not UnitIsConnected(unit)
 	power:SetMinMaxValues(0, max)
 
@@ -33,8 +41,6 @@ local Update = function(self, event, unit)
 		t = self.colors.tapped
 	elseif(power.colorDisconnected and not UnitIsConnected(unit)) then
 		t = self.colors.disconnected
-	elseif(not WoW41 and power.colorHappiness and UnitIsUnit(unit, "pet") and GetPetHappiness()) then
-		t = self.colors.happiness[GetPetHappiness()]
 	elseif(power.colorPower) then
 		local ptype, ptoken, altR, altG, altB = UnitPowerType(unit)
 
@@ -76,12 +82,6 @@ local Path = function(self, ...)
 	return (self.Power.Override or Update) (self, ...)
 end
 
-local UNIT_HAPPINESS = function(self, event, unit, powerType, ...)
-	if(powerType == 'HAPPINESS') then
-		return Path(self, event, unit, powerType, ...)
-	end
-end
-
 local ForceUpdate = function(element)
 	return Path(element.__owner, 'ForceUpdate', element.__owner.unit)
 end
@@ -92,7 +92,7 @@ do
 	OnPowerUpdate = function(self)
 		if(self.disconnected) then return end
 		local unit = self.__owner.unit
-		local power = UnitPower(unit)
+		local power = UnitPower(unit, GetDisplayPower(self, unit))
 
 		if(power ~= self.min) then
 			self.min = power
@@ -110,16 +110,13 @@ local Enable = function(self, unit)
 
 		if(power.frequentUpdates and (unit == 'player' or unit == 'pet')) then
 			power:SetScript("OnUpdate", OnPowerUpdate)
-
-			-- Without this happiness won't really update corretly when using
-			-- frequentUpdates
-			if(unit == 'pet') then
-				power:RegisterEvent('UNIT_POWER', UNIT_HAPPINESS)
-			end
 		else
 			self:RegisterEvent('UNIT_POWER', Path)
 		end
 
+		self:RegisterEvent('UNIT_POWER_BAR_SHOW', Path)
+		self:RegisterEvent('UNIT_POWER_BAR_HIDE', Path)
+		self:RegisterEvent('UNIT_DISPLAYPOWER', Path)
 		self:RegisterEvent('UNIT_CONNECTION', Path)
 		self:RegisterEvent('UNIT_MAXPOWER', Path)
 
@@ -139,7 +136,6 @@ local Disable = function(self)
 	if(power) then
 		if(power:GetScript'OnUpdate') then
 			power:SetScript("OnUpdate", nil)
-			self:UnregisterEvent('UNIT_POWER', UNIT_HAPPINESS)
 		else
 			self:UnregisterEvent('UNIT_POWER', Path)
 		end
