@@ -6,7 +6,7 @@
 
 - Different short value formatting (e.g. 1.1m instead of 1M 100K).
 - Added Blizzards holy power, eclipse and soulshard bars, they fit the UI very nicely.
-- Added boss frames, they looks good 
+- Added boss frames
 
 #### Raid frames:
 
@@ -24,21 +24,25 @@
 #### Misc:
 
 - Healthbar on tooltips now have a textual representation on it as well.
-- Fixed position and font size for player/cursor coordinates on world map.
 - Added a copy chat function to nChat, use it by right-clicking on the chat tab. Also added a URL copy function.
 - nRunes has been removed and replaced by nPower, which is essentially the same thing except with support for energy, focus and rage as well. The energy module also shows combo points in a similar fashion as nRunes showed runes.
-- nTooltip the target of the mouseover unit has now a raidtarget support
+- nTooltip: the target of the mouseover unit has now a raidtarget support
+- nTooltip has now a reaction coloring for the border and healthbar and itemquality border support!
 
 ## Known issues
 
 - ??? The quest blob on the map is still a cause for taint, not really sure what's causing it and if it really needs fixing.
-- ??? Changing glyphs sometimes doesn't work because of taint from somewhere.
+- !Colorz cause an ui-block-error (not lua error!), because we change the value of a global table, ignore this or delete `PowerBarColor['MANA'] = {r = 0/255, g = 0.55, b = 1}` in the `!Colorz.lua` file.
 
 ## Next Steps
 
-- create optionals castbars and aura icons the boss frames (THEY WORK!11, no arena frames planned yet)
+- nameplates? nameplates!
+- unhappy with the raidframe situation
+- make the oUF_Neav layout more usefull with tags for class specific buffs
+- create arena frames
+- nCore module for open all mails (and ignore mails with COD)
 - make nPower compact, add config file and put it on wowi
-
+- skin mdoule for external addons like omen, recount etc.
 
 ## Ideas
 
