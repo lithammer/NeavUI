@@ -6,3 +6,5 @@ nMinimap.lua
 nMinimap_GameTime.lua
 nMinimap_Clock.lua
 nMinimap_InstanceDifficulty.lua
+
+nMinimap_Extras.lua

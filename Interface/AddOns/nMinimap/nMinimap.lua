@@ -1,14 +1,30 @@
+    
+    -- a "new" mail notification    
+
+MiniMapMailFrame.Text = MiniMapMailFrame:CreateFontString(nil, 'OVERLAY')
+MiniMapMailFrame.Text:SetParent(MiniMapMailFrame)
+MiniMapMailFrame.Text:SetFont('Fonts\\ARIALN.ttf', 15, 'OUTLINE')
+MiniMapMailFrame.Text:SetPoint('BOTTOMRIGHT', MiniMapMailFrame)
+MiniMapMailFrame.Text:SetTextColor(1, 0, 1)
+MiniMapMailFrame.Text:SetText('N')
+
+MiniMapMailFrame:SetSize(14, 14)
+MiniMapMailFrame:ClearAllPoints()
+MiniMapMailFrame:SetPoint('BOTTOMRIGHT', Minimap, -4, 5)
+
+hooksecurefunc(MiniMapMailFrame, 'Show', function()
+    MiniMapMailBorder:SetTexture(nil)
+    MiniMapMailIcon:SetTexture(nil)
+end)
 
    -- modify the lfg frame
     
 MiniMapLFGFrame:ClearAllPoints()
 MiniMapLFGFrame:SetPoint('TOPLEFT', Minimap, 4, -4)
-MiniMapLFGFrame:SetWidth(14)
-MiniMapLFGFrame:SetHeight(14)
+MiniMapLFGFrame:SetSize(14, 14)
 MiniMapLFGFrame:SetHighlightTexture(nil)
 
 MiniMapLFGFrameBorder:SetTexture()
-
 MiniMapLFGFrame.eye:Hide()
     
 hooksecurefunc('EyeTemplate_StartAnimating', function(self)
@@ -21,28 +37,25 @@ MiniMapLFGFrame.Text:SetFont('Fonts\\ARIALN.ttf', 15, 'OUTLINE')
 MiniMapLFGFrame.Text:SetPoint('TOP', MiniMapLFGFrame)
 MiniMapLFGFrame.Text:SetTextColor(1, 0.4, 0)
 MiniMapLFGFrame.Text:SetText('L')
-MiniMapLFGFrame.Text:SetSize(14, 14)
 
    -- modify the battlefield frame
    
 MiniMapBattlefieldFrame:ClearAllPoints()
-MiniMapBattlefieldFrame:SetPoint('TOPLEFT', Minimap, 4, -4)
+MiniMapBattlefieldFrame:SetPoint('BOTTOMLEFT', Minimap, 5, 5)
 MiniMapBattlefieldFrame:SetSize(14, 14)
 
-MiniMapBattlefieldBorder:Hide()
-
-MiniMapBattlefieldIcon:SetTexture(nil)
-MiniMapBattlefieldIcon.SetTexture = function() end
-
-BattlegroundShine:Hide()
+hooksecurefunc(MiniMapBattlefieldFrame, 'Show', function()
+    MiniMapBattlefieldIcon:SetTexture(nil)
+    MiniMapBattlefieldBorder:SetTexture(nil)
+    BattlegroundShine:SetTexture(nil)
+end)
 
 MiniMapBattlefieldFrame.Text = MiniMapBattlefieldFrame:CreateFontString(nil, 'OVERLAY')
 MiniMapBattlefieldFrame.Text:SetParent(MiniMapBattlefieldFrame)
 MiniMapBattlefieldFrame.Text:SetFont('Fonts\\ARIALN.ttf', 15, 'OUTLINE')
-MiniMapBattlefieldFrame.Text:SetPoint('TOPLEFT', MiniMapBattlefieldFrame)
+MiniMapBattlefieldFrame.Text:SetPoint('BOTTOMLEFT', MiniMapBattlefieldFrame)
 MiniMapBattlefieldFrame.Text:SetTextColor(0, 0.75, 1)
 MiniMapBattlefieldFrame.Text:SetText('P')
-MiniMapBattlefieldFrame.Text:SetSize(14, 14)
 
     -- hide all unwanted stuff
     
@@ -77,13 +90,14 @@ Minimap:SetPoint('TOPRIGHT', UIParent, -26, -26)
     
 Minimap:SetMaskTexture('Interface\\ChatFrame\\ChatFrameBackground')
 
-CreateBorder(Minimap, 12, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+Minimap:CreateBorder(11)
+Minimap:SetBorderPadding(1)
 
     -- enable mousewheel zooming
 
 Minimap:EnableMouseWheel(true)
 Minimap:SetScript("OnMouseWheel", function(self, delta)
-	if delta > 0 then
+	if (delta > 0) then
 		_G.MinimapZoomIn:Click()
 	elseif delta < 0 then
 		_G.MinimapZoomOut:Click()
@@ -92,8 +106,7 @@ end)
 
     -- a "new" mail notification    
     
-MiniMapMailBorder:Hide()
-
+MiniMapMailBorder:SetTexture(nil)
 MiniMapMailIcon:SetTexture(nil)
 
 MiniMapMailFrame.Text = MiniMapMailFrame:CreateFontString(nil, 'OVERLAY')
@@ -121,12 +134,16 @@ end)
     -- the dirty method, move it out of the screen, no error anymore? Will see.. 
 
 MiniMapTracking:UnregisterAllEvents()
-MiniMapTracking:ClearAllPoints()
-MiniMapTracking:SetPoint('CENTER', 9999, 9999)
+MiniMapTracking:Hide()
+-- MiniMapTracking:ClearAllPoints()
+-- MiniMapTracking:SetPoint('CENTER', 9999, 9999)
 -- MiniMapTracking.Show = function() end
 
     -- skin the ticket status frame
-    
+
+TicketStatusFrame:ClearAllPoints()
+TicketStatusFrame:SetPoint('BOTTOMRIGHT', UIParent, 0, 0)
+
 TicketStatusFrameButton:HookScript('OnShow', function(self)
 	self:SetBackdrop({
         bgFile = 'Interface\\Buttons\\WHITE8x8', 
@@ -140,8 +157,8 @@ TicketStatusFrameButton:HookScript('OnShow', function(self)
     
     self:SetBackdropColor(0, 0, 0, 0.5)
     
-    if (not self.hasBorder) then
-        CreateBorder(TicketStatusFrameButton, 12, 1, 1, 1)
-        self.hasBorder = true
-    end
+    -- if (not self.hasBorder) then
+        CreateBorder(self, 12, 1, 1, 1)
+        -- self.hasBorder = true
+    -- end
 end)

@@ -6,8 +6,7 @@ for i = 1, select('#', GameTimeFrame:GetRegions()) do
     end
 end
 
-GameTimeFrame:SetWidth(14)
-GameTimeFrame:SetHeight(14)
+GameTimeFrame:SetSize(14, 14)
 GameTimeFrame:SetHitRectInsets(0, 0, 0, 0)
 GameTimeFrame:ClearAllPoints()
 GameTimeFrame:SetPoint('TOPRIGHT', Minimap, -3.5, -3.5)
