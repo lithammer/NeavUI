@@ -264,7 +264,7 @@ frameGuild:SetScript('OnEnter', function(self)
 	GameTooltip:AddLine(' ')
 	
     GameTooltip:AddLine(GUILD_MOTD, nil, nil, nil) 
-    GameTooltip:AddLine(GetGuildRosterMOTD() or '-', 1, 1, 1) 
+    GameTooltip:AddLine(GetGuildRosterMOTD() or '-', 1, 1, 1, true) 
 	
 	GameTooltip:AddLine(' ')
     
