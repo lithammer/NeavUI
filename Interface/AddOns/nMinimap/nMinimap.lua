@@ -96,7 +96,7 @@ Minimap:SetBorderPadding(1)
     -- enable mousewheel zooming
 
 Minimap:EnableMouseWheel(true)
-Minimap:SetScript("OnMouseWheel", function(self, delta)
+Minimap:SetScript('OnMouseWheel', function(self, delta)
 	if (delta > 0) then
 		_G.MinimapZoomIn:Click()
 	elseif delta < 0 then
