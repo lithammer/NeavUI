@@ -90,7 +90,7 @@ local textureNormal = 'Interface\\AddOns\\!Beautycase\\media\\textureNormal'
 local textureShadow = 'Interface\\AddOns\\!Beautycase\\media\\textureShadow'
 
 local function GetBorder(self)
-    if (self.Border) then
+    if (self.beautyBorder) then
         return true
     else
         return false
@@ -100,10 +100,10 @@ end
 function GetBorderInfo(self)
     if (not self) then
         print(formatName..' error:|r This frame does not exist!') 
-    elseif (self.Border) then
-        local tex = self.Border[1]:GetTexture()
-        local size = self.Border[1]:GetSize()
-        local r, g, b, a = self.Border[1]:GetVertexColor()
+    elseif (self.beautyBorder) then
+        local tex = self.beautyBorder[1]:GetTexture()
+        local size = self.beautyBorder[1]:GetSize()
+        local r, g, b, a = self.beautyBorder[1]:GetVertexColor()
         
         return size, tex, r, g, b, a
     else
@@ -137,18 +137,18 @@ local function SetBorderPadding(self, uL1, ...)
         space = GetBorderInfo(self)/3.5
     end
         
-    if (self.Border) then
-        self.Border[1]:SetPoint('TOPLEFT', self, -(uL1 or 0), uL2 or 0)
-        self.Shadow[1]:SetPoint('TOPLEFT', self, -(uL1 or 0)-space, (uL2 or 0)+space)
+    if (self.beautyBorder) then
+        self.beautyBorder[1]:SetPoint('TOPLEFT', self, -(uL1 or 0), uL2 or 0)
+        self.beautyShadow[1]:SetPoint('TOPLEFT', self, -(uL1 or 0)-space, (uL2 or 0)+space)
         
-        self.Border[2]:SetPoint('TOPRIGHT', self, uR1 or 0, uR2 or 0)
-        self.Shadow[2]:SetPoint('TOPRIGHT', self, (uR1 or 0)+space, (uR2 or 0)+space)
+        self.beautyBorder[2]:SetPoint('TOPRIGHT', self, uR1 or 0, uR2 or 0)
+        self.beautyShadow[2]:SetPoint('TOPRIGHT', self, (uR1 or 0)+space, (uR2 or 0)+space)
         
-        self.Border[3]:SetPoint('BOTTOMLEFT', self, -(bL1 or 0), -(bL2 or 0))
-        self.Shadow[3]:SetPoint('BOTTOMLEFT', self, -(bL1 or 0)-space, -(bL2 or 0)-space)
+        self.beautyBorder[3]:SetPoint('BOTTOMLEFT', self, -(bL1 or 0), -(bL2 or 0))
+        self.beautyShadow[3]:SetPoint('BOTTOMLEFT', self, -(bL1 or 0)-space, -(bL2 or 0)-space)
         
-        self.Border[4]:SetPoint('BOTTOMRIGHT', self, bR1 or 0, -(bR2 or 0))
-        self.Shadow[4]:SetPoint('BOTTOMRIGHT', self, (bR1 or 0)+space, -(bR2 or 0)-space)
+        self.beautyBorder[4]:SetPoint('BOTTOMRIGHT', self, bR1 or 0, -(bR2 or 0))
+        self.beautyShadow[4]:SetPoint('BOTTOMRIGHT', self, (bR1 or 0)+space, -(bR2 or 0)-space)
     end
 end
 
@@ -157,9 +157,9 @@ function ColorBorder(self, ...)
     
     if (not self) then
         print(formatName..' error:|r This frame does not exist!') 
-    elseif (self.Border) then
+    elseif (self.beautyBorder) then
         for i = 1, 8 do
-            self.Border[i]:SetVertexColor(r, g, b, a or 1)
+            self.beautyBorder[i]:SetVertexColor(r, g, b, a or 1)
         end
     else
         print(formatName..' error:|r Invalid frame! This object has no '..addonName..' border')  
@@ -171,9 +171,9 @@ function ColorBorderShadow(self, ...)
     
     if (not self) then
         print(formatName..' error:|r This frame does not exist!') 
-    elseif (self.Shadow) then
+    elseif (self.beautyShadow) then
         for i = 1, 8 do
-            self.Shadow[i]:SetVertexColor(r, g, b, a or 1)
+            self.beautyShadow[i]:SetVertexColor(r, g, b, a or 1)
         end
     else
         print(formatName..' error:|r Invalid frame! This object has no '..addonName..' border')  
@@ -183,9 +183,9 @@ end
 function SetBorderTexture(self, texture)
     if (not self) then
         print(formatName..' error:|r This frame does not exist!') 
-    elseif (self.Border) then
+    elseif (self.beautyBorder) then
         for i = 1, 8 do
-            self.Border[i]:SetTexture(texture)
+            self.beautyBorder[i]:SetTexture(texture)
         end
     else
         print(formatName..' error:|r Invalid frame! This object has no '..addonName..' border')  
@@ -195,9 +195,9 @@ end
 function SetBorderShadowTexture(self, texture)
     if (not self) then
         print(formatName..' error:|r This frame does not exist!') 
-    elseif (self.Shadow) then
+    elseif (self.beautyShadow) then
         for i = 1, 8 do
-            self.Shadow[i]:SetTexture(texture)
+            self.beautyShadow[i]:SetTexture(texture)
         end
     else
         print(formatName..' error:|r Invalid frame! This object has no '..addonName..' border')  
@@ -207,10 +207,10 @@ end
 local function SetBorderSize(self, size)
     if (not self) then
         print(formatName..' error:|r This frame does not exist!') 
-    elseif (self.Shadow) then
+    elseif (self.beautyShadow) then
         for i = 1, 8 do
-            self.Border[i]:SetSize(size, size) 
-            self.Shadow[i]:SetSize(size, size) 
+            self.beautyBorder[i]:SetSize(size, size) 
+            self.beautyShadow[i]:SetSize(size, size) 
         end
     else
         print(formatName..' error:|r Invalid frame! This object has no '..addonName..' border')  
@@ -220,10 +220,10 @@ end
 local function HideBorder(self)
     if (not self) then
         print(formatName..' error:|r This frame does not exist!') 
-    elseif (self.Shadow) then
+    elseif (self.beautyShadow) then
         for i = 1, 8 do
-            self.Border[i]:Hide()
-            self.Shadow[i]:Hide()
+            self.beautyBorder[i]:Hide()
+            self.beautyShadow[i]:Hide()
         end
     else
         print(formatName..' error:|r Invalid frame! This object has no '..addonName..' border')  
@@ -233,10 +233,10 @@ end
 local function ShowBorder(self)
     if (not self) then
         print(formatName..' error:|r This frame does not exist!') 
-    elseif (self.Shadow) then
+    elseif (self.beautyShadow) then
         for i = 1, 8 do
-            self.Border[i]:Show()
-            self.Shadow[i]:Show()
+            self.beautyBorder[i]:Show()
+            self.beautyShadow[i]:Show()
         end
     else
         print(formatName..' error:|r Invalid frame! This object has no '..addonName..' border')  
@@ -255,6 +255,10 @@ local function ApplyBorder(self, borderSize, R, G, B, uL1, ...)
         return
     end
     
+    if (self.HasBeautyBorder) then
+        return
+    end
+    
     local uL2, uR1, uR2, bL1, bL2, bR1, bR2 = ...
     if (uL1) then
         if (not uL2 and not uR1 and not uR2 and not bL1 and not bL2 and not bR1 and not bR2) then
@@ -269,83 +273,83 @@ local function ApplyBorder(self, borderSize, R, G, B, uL1, ...)
         space = borderSize/3.5
     end
         
-    if (not self.HasBorder) then
+    if (not self.HasBeautyBorder) then
     
-        self.Shadow = {}
+        self.beautyShadow = {}
         for i = 1, 8 do
-            self.Shadow[i] = self:CreateTexture(nil, 'BORDER')
-            self.Shadow[i]:SetParent(self)
-            self.Shadow[i]:SetTexture(textureShadow)
-            self.Shadow[i]:SetSize(borderSize, borderSize)  
-            self.Shadow[i]:SetVertexColor(0, 0, 0, 1)
+            self.beautyShadow[i] = self:CreateTexture(nil, 'BORDER')
+            self.beautyShadow[i]:SetParent(self)
+            self.beautyShadow[i]:SetTexture(textureShadow)
+            self.beautyShadow[i]:SetSize(borderSize, borderSize)  
+            self.beautyShadow[i]:SetVertexColor(0, 0, 0, 1)
         end
         
-        self.Border = {}
+        self.beautyBorder = {}
         for i = 1, 8 do
-            self.Border[i] = self:CreateTexture(nil, 'OVERLAY')
-            self.Border[i]:SetParent(self)
-            self.Border[i]:SetTexture(textureNormal)
-            self.Border[i]:SetSize(borderSize, borderSize) 
-            self.Border[i]:SetVertexColor(R or 1, G or 1, B or 1)
+            self.beautyBorder[i] = self:CreateTexture(nil, 'OVERLAY')
+            self.beautyBorder[i]:SetParent(self)
+            self.beautyBorder[i]:SetTexture(textureNormal)
+            self.beautyBorder[i]:SetSize(borderSize, borderSize) 
+            self.beautyBorder[i]:SetVertexColor(R or 1, G or 1, B or 1)
         end
         
-        self.Border[1]:SetTexCoord(0, 1/3, 0, 1/3) 
-        self.Border[1]:SetPoint('TOPLEFT', self, -(uL1 or 0), uL2 or 0)
+        self.beautyBorder[1]:SetTexCoord(0, 1/3, 0, 1/3) 
+        self.beautyBorder[1]:SetPoint('TOPLEFT', self, -(uL1 or 0), uL2 or 0)
 
-        self.Border[2]:SetTexCoord(2/3, 1, 0, 1/3)
-        self.Border[2]:SetPoint('TOPRIGHT', self, uR1 or 0, uR2 or 0)
+        self.beautyBorder[2]:SetTexCoord(2/3, 1, 0, 1/3)
+        self.beautyBorder[2]:SetPoint('TOPRIGHT', self, uR1 or 0, uR2 or 0)
 
-        self.Border[3]:SetTexCoord(0, 1/3, 2/3, 1)
-        self.Border[3]:SetPoint('BOTTOMLEFT', self, -(bL1 or 0), -(bL2 or 0))
+        self.beautyBorder[3]:SetTexCoord(0, 1/3, 2/3, 1)
+        self.beautyBorder[3]:SetPoint('BOTTOMLEFT', self, -(bL1 or 0), -(bL2 or 0))
 
-        self.Border[4]:SetTexCoord(2/3, 1, 2/3, 1)
-        self.Border[4]:SetPoint('BOTTOMRIGHT', self, bR1 or 0, -(bR2 or 0))
+        self.beautyBorder[4]:SetTexCoord(2/3, 1, 2/3, 1)
+        self.beautyBorder[4]:SetPoint('BOTTOMRIGHT', self, bR1 or 0, -(bR2 or 0))
 
-        self.Border[5]:SetTexCoord(1/3, 2/3, 0, 1/3)
-        self.Border[5]:SetPoint('TOPLEFT', self.Border[1], 'TOPRIGHT')
-        self.Border[5]:SetPoint('TOPRIGHT', self.Border[2], 'TOPLEFT')
+        self.beautyBorder[5]:SetTexCoord(1/3, 2/3, 0, 1/3)
+        self.beautyBorder[5]:SetPoint('TOPLEFT', self.beautyBorder[1], 'TOPRIGHT')
+        self.beautyBorder[5]:SetPoint('TOPRIGHT', self.beautyBorder[2], 'TOPLEFT')
 
-        self.Border[6]:SetTexCoord(1/3, 2/3, 2/3, 1)
-        self.Border[6]:SetPoint('BOTTOMLEFT', self.Border[3], 'BOTTOMRIGHT')
-        self.Border[6]:SetPoint('BOTTOMRIGHT', self.Border[4], 'BOTTOMLEFT')
+        self.beautyBorder[6]:SetTexCoord(1/3, 2/3, 2/3, 1)
+        self.beautyBorder[6]:SetPoint('BOTTOMLEFT', self.beautyBorder[3], 'BOTTOMRIGHT')
+        self.beautyBorder[6]:SetPoint('BOTTOMRIGHT', self.beautyBorder[4], 'BOTTOMLEFT')
 
-        self.Border[7]:SetTexCoord(0, 1/3, 1/3, 2/3)
-        self.Border[7]:SetPoint('TOPLEFT', self.Border[1], 'BOTTOMLEFT')
-        self.Border[7]:SetPoint('BOTTOMLEFT', self.Border[3], 'TOPLEFT')
+        self.beautyBorder[7]:SetTexCoord(0, 1/3, 1/3, 2/3)
+        self.beautyBorder[7]:SetPoint('TOPLEFT', self.beautyBorder[1], 'BOTTOMLEFT')
+        self.beautyBorder[7]:SetPoint('BOTTOMLEFT', self.beautyBorder[3], 'TOPLEFT')
 
-        self.Border[8]:SetTexCoord(2/3, 1, 1/3, 2/3)
-        self.Border[8]:SetPoint('TOPRIGHT', self.Border[2], 'BOTTOMRIGHT')
-        self.Border[8]:SetPoint('BOTTOMRIGHT', self.Border[4], 'TOPRIGHT')
+        self.beautyBorder[8]:SetTexCoord(2/3, 1, 1/3, 2/3)
+        self.beautyBorder[8]:SetPoint('TOPRIGHT', self.beautyBorder[2], 'BOTTOMRIGHT')
+        self.beautyBorder[8]:SetPoint('BOTTOMRIGHT', self.beautyBorder[4], 'TOPRIGHT')
         
-        self.Shadow[1]:SetTexCoord(0, 1/3, 0, 1/3) 
-        self.Shadow[1]:SetPoint('TOPLEFT', self, -(uL1 or 0)-space, (uL2 or 0)+space)
+        self.beautyShadow[1]:SetTexCoord(0, 1/3, 0, 1/3) 
+        self.beautyShadow[1]:SetPoint('TOPLEFT', self, -(uL1 or 0)-space, (uL2 or 0)+space)
 
-        self.Shadow[2]:SetTexCoord(2/3, 1, 0, 1/3)
-        self.Shadow[2]:SetPoint('TOPRIGHT', self, (uR1 or 0)+space, (uR2 or 0)+space)
+        self.beautyShadow[2]:SetTexCoord(2/3, 1, 0, 1/3)
+        self.beautyShadow[2]:SetPoint('TOPRIGHT', self, (uR1 or 0)+space, (uR2 or 0)+space)
 
-        self.Shadow[3]:SetTexCoord(0, 1/3, 2/3, 1)
-        self.Shadow[3]:SetPoint('BOTTOMLEFT', self, -(bL1 or 0)-space, -(bL2 or 0)-space)
+        self.beautyShadow[3]:SetTexCoord(0, 1/3, 2/3, 1)
+        self.beautyShadow[3]:SetPoint('BOTTOMLEFT', self, -(bL1 or 0)-space, -(bL2 or 0)-space)
 
-        self.Shadow[4]:SetTexCoord(2/3, 1, 2/3, 1)
-        self.Shadow[4]:SetPoint('BOTTOMRIGHT', self, (bR1 or 0)+space, -(bR2 or 0)-space)
+        self.beautyShadow[4]:SetTexCoord(2/3, 1, 2/3, 1)
+        self.beautyShadow[4]:SetPoint('BOTTOMRIGHT', self, (bR1 or 0)+space, -(bR2 or 0)-space)
 
-        self.Shadow[5]:SetTexCoord(1/3, 2/3, 0, 1/3)
-        self.Shadow[5]:SetPoint('TOPLEFT', self.Shadow[1], 'TOPRIGHT')
-        self.Shadow[5]:SetPoint('TOPRIGHT', self.Shadow[2], 'TOPLEFT')
+        self.beautyShadow[5]:SetTexCoord(1/3, 2/3, 0, 1/3)
+        self.beautyShadow[5]:SetPoint('TOPLEFT', self.beautyShadow[1], 'TOPRIGHT')
+        self.beautyShadow[5]:SetPoint('TOPRIGHT', self.beautyShadow[2], 'TOPLEFT')
 
-        self.Shadow[6]:SetTexCoord(1/3, 2/3, 2/3, 1)
-        self.Shadow[6]:SetPoint('BOTTOMLEFT', self.Shadow[3], 'BOTTOMRIGHT')
-        self.Shadow[6]:SetPoint('BOTTOMRIGHT', self.Shadow[4], 'BOTTOMLEFT')
+        self.beautyShadow[6]:SetTexCoord(1/3, 2/3, 2/3, 1)
+        self.beautyShadow[6]:SetPoint('BOTTOMLEFT', self.beautyShadow[3], 'BOTTOMRIGHT')
+        self.beautyShadow[6]:SetPoint('BOTTOMRIGHT', self.beautyShadow[4], 'BOTTOMLEFT')
 
-        self.Shadow[7]:SetTexCoord(0, 1/3, 1/3, 2/3)
-        self.Shadow[7]:SetPoint('TOPLEFT', self.Shadow[1], 'BOTTOMLEFT')
-        self.Shadow[7]:SetPoint('BOTTOMLEFT', self.Shadow[3], 'TOPLEFT')
+        self.beautyShadow[7]:SetTexCoord(0, 1/3, 1/3, 2/3)
+        self.beautyShadow[7]:SetPoint('TOPLEFT', self.beautyShadow[1], 'BOTTOMLEFT')
+        self.beautyShadow[7]:SetPoint('BOTTOMLEFT', self.beautyShadow[3], 'TOPLEFT')
 
-        self.Shadow[8]:SetTexCoord(2/3, 1, 1/3, 2/3)
-        self.Shadow[8]:SetPoint('TOPRIGHT', self.Shadow[2], 'BOTTOMRIGHT')
-        self.Shadow[8]:SetPoint('BOTTOMRIGHT', self.Shadow[4], 'TOPRIGHT')
+        self.beautyShadow[8]:SetTexCoord(2/3, 1, 1/3, 2/3)
+        self.beautyShadow[8]:SetPoint('TOPRIGHT', self.beautyShadow[2], 'BOTTOMRIGHT')
+        self.beautyShadow[8]:SetPoint('BOTTOMRIGHT', self.beautyShadow[4], 'TOPRIGHT')
         
-        self.HasBorder = true
+        self.HasBeautyBorder = true
     end
 end
 
