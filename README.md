@@ -28,6 +28,7 @@
 - nRunes has been removed and replaced by nPower, which is essentially the same thing except with support for energy, focus and rage as well. The energy module also shows combo points in a similar fashion as nRunes showed runes.
 - nTooltip: the target of the mouseover unit has now a raidtarget support
 - nTooltip has now a reaction coloring for the border and healthbar and itemquality border support!
+- skin module for external addons like omen, recount etc is now online, with some example code snippets
 
 ## Known issues
 
@@ -36,20 +37,19 @@
 
 ## Next Steps
 
-- test nPlates in raid/instance situations and optimize his code
+- test nPlates in raid/instance situations and code optimizing 
 - `nPlates` find better coloring or a other threat indicator
-- skin mdoule for external addons like omen, recount etc.
+
 - unhappy with the raidframe situation
 - make the oUF_Neav layout more usefull with tags for class specific buffs
 - create arena frames
+
 - nCore module for open all mails (and ignore mails with COD)
 - make nPower compact, add config file and put it on wowi
 
 ## Ideas
 
-- create lightweight nameplates in neav ui style 
 - oUF_Neav - raid frames, get rid of the unit_aura event and use a OnUpdate event instead for better cpu usage?
-- remove omen from the ui and create a file/addon which "skin" omen wihout modify the original data (for better updates)
 
 ## Installation
 
