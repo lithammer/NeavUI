@@ -1,4 +1,7 @@
 
+local select = select
+local format = string.format
+
 local _, class = UnitClass('player')
 
 local activezone = {r = 0.3, g = 1.0, b = 0}
@@ -18,7 +21,7 @@ local function RGBToHex(r, g, b)
 	r = r <= 1 and r >= 0 and r or 0
 	g = g <= 1 and g >= 0 and g or 0
 	b = b <= 1 and b >= 0 and b or 0
-	return string.format('|cff%02x%02x%02x', r*255, g*255, b*255)
+	return format('|cff%02x%02x%02x', r*255, g*255, b*255)
 end
 
 local classHex = RGBToHex(RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b)
@@ -39,6 +42,7 @@ frameGuild:SetFrameLevel(3)
 frameGuild:SetParent(xFav)
 frameGuild:SetAlpha(0)
 
+frameGuild:RegisterEvent('MODIFIER_STATE_CHANGED')
 frameGuild:RegisterEvent('GUILD_ROSTER_SHOW')
 frameGuild:RegisterEvent('PLAYER_ENTERING_WORLD')
 frameGuild:RegisterEvent('GUILD_ROSTER_UPDATE')
@@ -48,11 +52,6 @@ frameGuild:RegisterEvent('GUILD_MOTD')
 
 frameGuild.Text = frameGuild:CreateFontString(nil, 'OVERLAY')
 frameGuild.Text:SetFont('Fonts\\ARIALN.ttf', 12)
-if nMinimap.positionDrawerBelow then
-	frameGuild.Text:SetPoint('TOPLEFT', Minimap, 'BOTTOMLEFT', 18, -3)
-else
-	frameGuild.Text:SetPoint('BOTTOMLEFT', Minimap, 'TOPLEFT', 18, 3)
-end
 frameGuild.Text:SetShadowColor(0, 0, 0)
 frameGuild.Text:SetShadowOffset(1, -1)
 frameGuild:SetAllPoints(frameGuild.Text)
@@ -76,11 +75,15 @@ frameFriends:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 frameFriends.Text = frameFriends:CreateFontString(nil, 'OVERLAY')
 frameFriends.Text:SetFont('Fonts\\ARIALN.ttf', 12)
-if nMinimap.positionDrawerBelow then
+
+if (nMinimap.positionDrawerBelow) then
+    frameGuild.Text:SetPoint('TOPLEFT', Minimap, 'BOTTOMLEFT', 18, -3)
 	frameFriends.Text:SetPoint('TOPRIGHT', Minimap, 'BOTTOMRIGHT', -18, -3)	
 else
+    frameGuild.Text:SetPoint('BOTTOMLEFT', Minimap, 'TOPLEFT', 18, 3)
 	frameFriends.Text:SetPoint('BOTTOMRIGHT', Minimap, 'TOPRIGHT', -18, 3)
 end
+
 frameFriends.Text:SetShadowColor(0, 0, 0)
 frameFriends.Text:SetShadowOffset(1, -1)
 frameFriends:SetAllPoints(frameFriends.Text)
@@ -90,7 +93,7 @@ local function fadeOut()
     UIFrameFadeOut(xFavGuild, 0.05, xFavGuild:GetAlpha(), 0)
     UIFrameFadeOut(xFavFriend, 0.05, xFavFriend:GetAlpha(), 0)
 
-	if nMinimap.positionDrawerBelow then
+	if (nMinimap.positionDrawerBelow) then
 		f:SetPoint('TOPLEFT', Minimap, 'BOTTOMLEFT', 10, 23)
 		f:SetPoint('TOPRIGHT', Minimap, 'BOTTOMRIGHT', -10, 23)
 	else
@@ -107,7 +110,7 @@ local function fadeIn()
     UIFrameFadeIn(xFavGuild, 0.135, xFavGuild:GetAlpha(), 1)
     UIFrameFadeIn(xFavFriend, 0.135, xFavFriend:GetAlpha(), 1)
 
-	if nMinimap.positionDrawerBelow then
+	if (nMinimap.positionDrawerBelow) then
 		f:SetPoint('TOPLEFT', Minimap, 'BOTTOMLEFT', 10, 10)
 		f:SetPoint('TOPRIGHT', Minimap, 'BOTTOMRIGHT', -10, 10)
 	else
@@ -205,6 +208,95 @@ local function UpdateGuildXP()
 	guildXP[1] = { dailyXP, maxDailyXP, percentDaily }
 end
 
+local function GuildTip(self)
+	if (not IsInGuild()) then
+        return 
+    end
+    
+    GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMLEFT')
+    
+    fadeIn()
+    
+    local col = RGBToHex(1, 0, 1)
+	local zonec, classc, levelc
+	local online = totalOnline
+
+	GameTooltip:AddLine(GetGuildInfo('player')..' - '..LEVEL..' '..GetGuildLevel())
+
+	GameTooltip:AddLine(' ')
+	
+    GameTooltip:AddLine(GUILD_MOTD, nil, nil, nil) 
+    GameTooltip:AddLine(GetGuildRosterMOTD() or '-', 1, 1, 1, true) 
+	
+	GameTooltip:AddLine(' ')
+    
+	if (GetGuildLevel() ~= 25) then
+		local currentXP, nextLevelXP, percentTotal = unpack(guildXP[0])
+		local dailyXP, maxDailyXP, percentDaily = unpack(guildXP[1])
+		GameTooltip:AddLine(format(col..GUILD_EXPERIENCE_CURRENT, '|r |cFFFFFFFF'..ShortValue(currentXP), ShortValue(nextLevelXP), percentTotal))
+		GameTooltip:AddLine(format(col..GUILD_EXPERIENCE_DAILY, '|r |cFFFFFFFF'..ShortValue(dailyXP), ShortValue(maxDailyXP), percentDaily))
+	end
+	
+	local _, _, standingID, min, max, curr = GetGuildFactionInfo()
+    
+	if (standingID ~= 4) then
+		max = max - min
+		curr = curr - min
+		min = 0
+        GameTooltip:AddLine(COMBAT_FACTION_CHANGE)
+		GameTooltip:AddLine(format('|cFFFFFFFF%s/%s (%s%%)', ShortValue(curr), ShortValue(max), math.ceil((curr / max) * 100)))
+	end
+    
+    GameTooltip:AddLine(' ')
+        
+    GameTooltip:AddLine('Online')
+    GameTooltip:AddLine(format('|cffffffff%d/%d|r', online, #guildTable))
+    
+	if (online > 1) then
+		GameTooltip:AddLine(' ')
+        
+		for i = 1, #guildTable do
+			if (online <= 1) then
+				if (online > 1) then 
+                    GameTooltip:AddLine(format('+ %d More...', online - modules.Guild.maxguild), nil, nil, nil) 
+                end
+                
+				break
+			end
+
+			local name, rank, level, zone, note, officernote, connected, status, class = unpack(guildTable[i])
+        
+			if (connected and name ~= select(1, UnitName('player'))) then
+				if (GetRealZoneText() == zone) then 
+                    zonec = activezone 
+                else 
+                    zonec = inactivezone 
+                end
+                
+				local classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class], GetQuestDifficultyColor(level)
+                
+                if (IsShiftKeyDown()) then
+                    local pii = RGBToHex(1, 0, 1)
+                    GameTooltip:AddDoubleLine(format('|cff%02x%02x%02x%d|r %s '..pii..'(%s)|r', levelc.r*255, levelc.g*255, levelc.b*255, level, name, rank), zone, classc.r, classc.g, classc.b, zonec.r, zonec.g, zonec.b)
+					
+                    if (note ~= '') then 
+                        GameTooltip:AddLine(format("    |cffffffff'%s'|r", note), 1, 1, 0, 1) 
+                    end
+                    
+					if (officernote ~= '') then 
+                        local oCOL = RGBToHex(0.3, 1, 0.15)
+                        GameTooltip:AddLine(format(oCOL.."    o: '%s'", officernote), 1, 0, 1, 1) 
+                    end
+				else
+					GameTooltip:AddDoubleLine(format('|cff%02x%02x%02x%d|r %s %s', levelc.r*255, levelc.g*255, levelc.b*255, level, name, status), zone, classc.r, classc.g, classc.b, zonec.r, zonec.g, zonec.b)
+				end
+            end
+		end
+	end
+    
+	GameTooltip:Show()
+end
+
 frameGuild:SetScript('OnEvent', function(self, event, ...)	
 	if (IsInGuild()) then
 		BuildGuildTable()
@@ -215,6 +307,24 @@ frameGuild:SetScript('OnEvent', function(self, event, ...)
 		frameGuild.Text:SetText('No guild')
 		frameGuild:SetScript('OnMouseDown', nil)
 	end
+    
+    if (event == 'MODIFIER_STATE_CHANGED') then
+        if (IsShiftKeyDown()) then
+            if (self:IsMouseOver()) then
+                GameTooltip:Hide()
+                GuildTip(self)
+            end
+        else
+             if (self:IsMouseOver()) then
+                GameTooltip:Hide()
+                GuildTip(self)
+            end   
+        end
+    end
+end)
+
+frameGuild:SetScript('OnEnter', function(self)
+    GuildTip(self)
 end)
 
 frameGuild:SetScript('OnMouseDown', function(self, button)
@@ -246,7 +356,7 @@ frameGuild:SetScript('OnMouseDown', function(self, button)
                     menuCountInvites = menuCountInvites +1
                     grouped = ''
                     menuList[2].menuList[menuCountInvites] = {
-                        text = string.format('|cff%02x%02x%02x%d|r |cff%02x%02x%02x%s|r %s', levelc.r*255, levelc.g*255, levelc.b*255, guildTable[i][3], classc.r*255, classc.g*255, classc.b*255, guildTable[i][1], ''), 
+                        text = format('|cff%02x%02x%02x%d|r |cff%02x%02x%02x%s|r %s', levelc.r*255, levelc.g*255, levelc.b*255, guildTable[i][3], classc.r*255, classc.g*255, classc.b*255, guildTable[i][1], ''), 
                         arg1 = guildTable[i][1], 
                         notCheckable = true, 
                         func = function(self, arg1)
@@ -260,7 +370,7 @@ frameGuild:SetScript('OnMouseDown', function(self, button)
                 menuCountWhispers = menuCountWhispers + 1
                 
                 menuList[3].menuList[menuCountWhispers] = {
-                    text = string.format('|cff%02x%02x%02x%d|r |cff%02x%02x%02x%s|r %s', levelc.r*255, levelc.g*255, levelc.b*255, guildTable[i][3], classc.r*255, classc.g*255, classc.b*255, guildTable[i][1], grouped), 
+                    text = format('|cff%02x%02x%02x%d|r |cff%02x%02x%02x%s|r %s', levelc.r*255, levelc.g*255, levelc.b*255, guildTable[i][3], classc.r*255, classc.g*255, classc.b*255, guildTable[i][1], grouped), 
                     arg1 = guildTable[i][1], 
                     notCheckable = true, 
                     func = function(self, arg1)
@@ -275,79 +385,7 @@ frameGuild:SetScript('OnMouseDown', function(self, button)
     end
 end)
 
-frameGuild:SetScript('OnEnter', function(self)
-	if (not IsInGuild()) then
-        return 
-    end
-    
-    GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMLEFT')
-    
-    fadeIn()
-    
-    local col = RGBToHex(1, 0, 1)
-	local zonec, classc, levelc
-	local online = totalOnline
 
-	GameTooltip:AddLine(GetGuildInfo('player')..' - '..LEVEL..' '..GetGuildLevel())
-
-	GameTooltip:AddLine(' ')
-	
-    GameTooltip:AddLine(GUILD_MOTD, nil, nil, nil) 
-    GameTooltip:AddLine(GetGuildRosterMOTD() or '-', 1, 1, 1, true) 
-	
-	GameTooltip:AddLine(' ')
-    
-	if (GetGuildLevel() ~= 25) then
-		local currentXP, nextLevelXP, percentTotal = unpack(guildXP[0])
-		local dailyXP, maxDailyXP, percentDaily = unpack(guildXP[1])
-		GameTooltip:AddLine(string.format(col..GUILD_EXPERIENCE_CURRENT, '|r |cFFFFFFFF'..ShortValue(currentXP), ShortValue(nextLevelXP), percentTotal))
-		GameTooltip:AddLine(string.format(col..GUILD_EXPERIENCE_DAILY, '|r |cFFFFFFFF'..ShortValue(dailyXP), ShortValue(maxDailyXP), percentDaily))
-	end
-	
-	local _, _, standingID, min, max, curr = GetGuildFactionInfo()
-    
-	if (standingID ~= 4) then
-		max = max - min
-		curr = curr - min
-		min = 0
-        GameTooltip:AddLine(COMBAT_FACTION_CHANGE)
-		GameTooltip:AddLine(string.format('|cFFFFFFFF%s/%s (%s%%)', ShortValue(curr), ShortValue(max), math.ceil((curr / max) * 100)))
-	end
-    
-    GameTooltip:AddLine(' ')
-        
-    GameTooltip:AddLine('Online')
-    GameTooltip:AddLine(string.format('|cffffffff%d/%d|r', online, #guildTable))
-    
-	if (online > 1) then
-		GameTooltip:AddLine(' ')
-        
-		for i = 1, #guildTable do
-			if (online <= 1) then
-				if (online > 1) then 
-                    GameTooltip:AddLine(format('+ %d More...', online - modules.Guild.maxguild), nil, nil, nil) 
-                end
-                
-				break
-			end
-
-			local name, rank, level, zone, note, officernote, connected, status, class = unpack(guildTable[i])
-        
-			if (connected and name ~= select(1, UnitName('player'))) then
-				if (GetRealZoneText() == zone) then 
-                    zonec = activezone 
-                else 
-                    zonec = inactivezone 
-                end
-                
-				local classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class], GetQuestDifficultyColor(level)
-				GameTooltip:AddDoubleLine(string.format('|cff%02x%02x%02x%d|r %s %s', levelc.r*255, levelc.g*255, levelc.b*255, level, name, status), zone, classc.r, classc.g, classc.b, zonec.r, zonec.g, zonec.b)
-			end
-		end
-	end
-    
-	GameTooltip:Show()
-end)
 
 local function GetTableIndex(table, fieldIndex, value)
 	for k, v in ipairs(table) do

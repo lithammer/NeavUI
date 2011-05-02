@@ -27,6 +27,12 @@ local function CreateDropDown()
 
     if (GetLocale() == 'enUS') then
         calendar = 'Calendar'
+    elseif (GetLocale() == 'frFR') then
+        calendar = 'Calandre'
+    elseif (GetLocale() == 'esES') then
+        calendar = 'Calendario'
+    elseif (GetLocale() == 'ruRU') then
+        calendar = 'Календарь'
     elseif (GetLocale() == 'deDE') then
         calendar = 'Kalender'
     else
@@ -148,9 +154,11 @@ hooksecurefunc(TimeManagerAlarmFiredTexture, 'Hide', function()
     TimeManagerClockTicker:SetTextColor(classColor.r, classColor.g, classColor.b)
 end)
 
-local addons = {}   
 local entry
 local total
+local addons = {}
+local select = select
+local sort = table.sort
 
 local function AddonMem()
     total = 0
@@ -165,19 +173,20 @@ local function AddonMem()
                 memory = memory
             }
           
-        tinsert(addons, entry)
-        --[[
-        table.sort(addons, function(a, b) 
-            return a.memory > b.memory 
-        end)
-        --]]
+            tinsert(addons, entry)
+        
+            if (IsShiftKeyDown()) then
+                sort(addons, function(a, b) 
+                    return a.memory > b.memory 
+                end)
+            end
         end
     end
 end
 
-TimeManagerClockButton:SetScript('OnEnter', function(self)
+local function ShowTip()
     GameTooltip:ClearLines()
-    GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMLEFT')
+    GameTooltip:SetOwner(TimeManagerClockButton, 'ANCHOR_BOTTOMLEFT')
     
     local gradient = {0, 1, 0, 1, 1, 0, 1, 0, 0}
     
@@ -210,10 +219,30 @@ TimeManagerClockButton:SetScript('OnEnter', function(self)
     GameTooltip:AddDoubleLine('Total', FormatValue(total), nil, nil, nil, r, g, b)
     
     GameTooltip:Show()
+end
+
+local f = CreateFrame('Frame')
+f:RegisterEvent('MODIFIER_STATE_CHANGED')
+f:SetScript('OnEvent', function()
+    if (IsShiftKeyDown()) then
+        if (TimeManagerClockButton:IsMouseOver()) then
+            GameTooltip:Hide()
+            ShowTip()
+        end
+    else
+         if (TimeManagerClockButton:IsMouseOver()) then
+            GameTooltip:Hide()
+            ShowTip()
+        end   
+    end
+end)
+
+TimeManagerClockButton:SetScript('OnEnter', function(self)
+    ShowTip()
 end)
 
 TimeManagerClockButton:SetScript('OnClick', function(self, button)
-    if (button == 'RightButton') then
+    if (button == 'LeftButton') then
         ToggleDropDownMenu(1, nil, TimeManagerClockDropDown, self, -0, -0)
         GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMLEFT')
     else
