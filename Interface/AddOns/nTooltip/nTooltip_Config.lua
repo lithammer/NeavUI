@@ -1,11 +1,16 @@
 
 nTooltip = {
+    position = {
+        'BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT', -27.35, 27.35
+    },
+    
     disableFade = false, -- can cause errors or a buggy tooltip!
     
     reactionBorderColor = false, -- WOHA! Try this out!
-    itemqualityBorderColor = false,
+    itemqualityBorderColor = true,
     
     showPlayerTitles = false,
+    showPVPIcons = true, -- show pvp icons instead of just a prefix
     abbrevRealmNames = false, 
     showMouseoverTarget = true,
     

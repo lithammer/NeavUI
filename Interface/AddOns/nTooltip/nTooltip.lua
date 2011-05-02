@@ -1,11 +1,19 @@
 
+local select = select
+
+    -- font settings
+    
 GameTooltipHeaderText:SetFont('Fonts\\ARIALN.ttf', 17)
 GameTooltipText:SetFont('Fonts\\ARIALN.ttf', 15)
 GameTooltipTextSmall:SetFont('Fonts\\ARIALN.ttf', 15)
-
+    
+    -- healthbar settings
+    
 GameTooltipStatusBar:SetHeight(7)
 GameTooltipStatusBar:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
-
+    
+    -- load texture paths locally
+    
 local whiteTexture = 'Interface\\AddOns\\!Beautycase\\media\\textureNormalWhite'
 local normalTexture = 'Interface\\AddOns\\!Beautycase\\media\\textureNormal'
     
@@ -59,6 +67,8 @@ hooksecurefunc('GameTooltip_ShowCompareItem', function(self)
     end
 end)
     
+    -- tooltips like cookies!
+    
 for _, tooltip in pairs({
     GameTooltip,
     ItemRefTooltip,
@@ -73,17 +83,13 @@ for _, tooltip in pairs({
     DropDownList2MenuBackdrop,
     
     ConsolidatedBuffsTooltip,
-    -- FrameStackTooltip,
-    -- PaperDollStatTooltip,
-    
-    -- ChatMenu,
-	-- EmoteMenu,
-	-- LanguageMenu,
-	-- DropDownList1,
+
 }) do
     ApplyTooltipStyle(tooltip)
 end
 
+    -- itemquaility border, we use our beautycase functions
+    
 if (nTooltip.itemqualityBorderColor) then
     for _, tooltip in pairs({
         GameTooltip,
@@ -93,7 +99,7 @@ if (nTooltip.itemqualityBorderColor) then
         ShoppingTooltip2,
         ShoppingTooltip3,   
     }) do
-        tooltip:HookScript("OnTooltipSetItem", function(self)
+        tooltip:HookScript('OnTooltipSetItem', function(self)
             local name, item = self:GetItem()
                 
             if (item) then
@@ -114,6 +120,8 @@ if (nTooltip.itemqualityBorderColor) then
     end
 end
 
+    -- make sure we get a unit
+    
 local function GameTooltip_GetUnit(self)
     if (GetMouseFocus() and not GetMouseFocus():GetAttribute('unit') and GetMouseFocus() ~= WorldFrame) then
         return select(2, self:GetUnit())
@@ -174,6 +182,19 @@ local function GameTooltip_UnitType(unit)
     end
 end
 
+local function GameTooltip_GetUnitPVPIcon(unit) 
+    local factionGroup = UnitFactionGroup(unit)
+    if (UnitIsPVPFreeForAll(unit)) then
+        return 'Interface\\TargetingFrame\\UI-PVP-FFA'
+    elseif (factionGroup and UnitIsPVP(unit)) then
+        return 'Interface\\TargetingFrame\\UI-PVP-'..factionGroup
+    else
+        return ''
+    end
+end
+        
+    -- create some icons, they dont like cookies
+    
 GameTooltip.Icon = GameTooltip:CreateTexture('$parentRaidIcon', 'OVERLAY')
 GameTooltip.Icon:SetPoint('TOPLEFT', GameTooltip, 10, -11)
 GameTooltip.Icon:SetSize(14, 14)
@@ -183,14 +204,27 @@ if (nTooltip.showMouseoverTarget) then
     GameTooltip.TargetIcon:SetSize(12, 12)
 end
 
+if (nTooltip.showPVPIcons) then
+    GameTooltip.PVPIcon = GameTooltip:CreateTexture('$parentRaidIcon', 'OVERLAY')
+    GameTooltip.PVPIcon:SetSize(45, 45)
+end
+
+    -- tooltip position
+    
 hooksecurefunc('GameTooltip_SetDefaultAnchor', function(self)
-	self:SetPoint('BOTTOMRIGHT', UIParent, -27.35, 27.35)
+	self:SetPoint(unpack(nTooltip.position))
 end)
 
+    -- set all to the defaults if tooltip hides
+    
 GameTooltip:HookScript('OnTooltipCleared', function(self)
     GameTooltipStatusBar:ClearAllPoints()
     GameTooltipStatusBar:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 2, -2)
     GameTooltipStatusBar:SetPoint('TOPRIGHT', self, 'BOTTOMRIGHT', -2, -2)
+    
+    if (GameTooltip.PVPIcon) then
+        GameTooltip.PVPIcon:SetTexture(nil)
+    end
     
     if (self.TargetIcon) then
         self.Icon:SetTexture(nil)
@@ -206,6 +240,8 @@ GameTooltip:HookScript('OnTooltipCleared', function(self)
     end
 end)
 
+    -- healthbar coloring funtion
+    
 local function HealthBarColor(unit)
     local r, g, b
 
@@ -221,7 +257,7 @@ local function HealthBarColor(unit)
     GameTooltipStatusBar:SetBackdropColor(r, g, b, 0.3)
 end
 
-    -- itemlvl (by cokedrivers)
+    -- itemlvl (by Gsuz) - http://www.tukui.org/forums/topic.php?id=10151
 
 local SlotName = {
         'Head',
@@ -283,6 +319,8 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
 	if (UnitExists(unit) and UnitName(unit) ~= UNKNOWN) then
         local name, realm = UnitName(unit)
         
+            -- hide player titles
+            
         if (nTooltip.showPlayerTitles) then
             if (UnitPVPName(unit)) then 
                 name = UnitPVPName(unit) 
@@ -291,12 +329,16 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
         
         GameTooltipTextLeft1:SetText(name)
         
+            -- color guildnames
+            
         if (GetGuildInfo(unit)) then
             if (GetGuildInfo(unit) == GetGuildInfo('player') and IsInGuild('player')) then
                GameTooltipTextLeft2:SetText('|cffFF66CC'..GameTooltipTextLeft2:GetText()..'|r')
             end
         end
-        
+            
+            -- tooltip level text
+            
         for i = 2, GameTooltip:NumLines() do
             if (_G['GameTooltipTextLeft'..i]:GetText():find('^'..TOOLTIP_UNIT_LEVEL:gsub('%%s', '.+'))) then
                 _G['GameTooltipTextLeft'..i]:SetText(GameTooltip_UnitType(unit))
@@ -347,22 +389,41 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
                 end
             end
         end
-        
-		for i = 3, GameTooltip:NumLines() do
-			if (_G['GameTooltipTextLeft'..i]:GetText():find(PVP_ENABLED)) then
-				_G['GameTooltipTextLeft'..i]:SetText(nil)
-                if (UnitIsPVPFreeForAll(unit)) then
-                    GameTooltipTextLeft1:SetText('|cffFF0000# |r'..GameTooltipTextLeft1:GetText())
-                elseif (UnitIsPVP(unit)) then
-                    GameTooltipTextLeft1:SetText('|cff00FF00# |r'..GameTooltipTextLeft1:GetText())
-                end
-			end
-		end
-        
+
+            -- raid icon
+            
         if (GetRaidTargetIndex(unit) and not UnitIsDead(unit)) then
             GameTooltipTextLeft1:SetText('   '..GameTooltipTextLeft1:GetText())
             self.Icon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..GetRaidTargetIndex(unit))
         end
+                
+            -- pvp flag prefix 
+            
+		for i = 3, GameTooltip:NumLines() do
+			if (_G['GameTooltipTextLeft'..i]:GetText():find(PVP_ENABLED)) then
+				_G['GameTooltipTextLeft'..i]:SetText(nil)
+                if (nTooltip.showPVPIcons) then
+                    if (GetRaidTargetIndex(unit) and not UnitIsDead(unit)) then
+                        GameTooltipTextLeft1:SetText('    '..GameTooltipTextLeft1:GetText())
+                        GameTooltip.PVPIcon:ClearAllPoints()
+                        GameTooltip.PVPIcon:SetPoint('TOPLEFT', GameTooltip, 24, -4)
+                    else
+                        GameTooltipTextLeft1:SetText('   '..GameTooltipTextLeft1:GetText())
+                        GameTooltip.PVPIcon:ClearAllPoints()
+                        GameTooltip.PVPIcon:SetPoint('TOPLEFT', GameTooltip, 2, -4)
+                    end
+                    GameTooltip.PVPIcon:SetTexture(GameTooltip_GetUnitPVPIcon(unit))
+                else
+                    if (UnitIsPVPFreeForAll(unit)) then
+                        GameTooltipTextLeft1:SetText('|cffFF0000# |r'..GameTooltipTextLeft1:GetText())
+                    elseif (UnitIsPVP(unit)) then
+                        GameTooltipTextLeft1:SetText('|cff00FF00# |r'..GameTooltipTextLeft1:GetText())
+                    end
+                end
+			end
+		end
+        
+            -- afk and dnd prefix
 
         if (UnitIsAFK(unit)) then 
             self:AppendText(' |cffffffff[|r|cff00ff00AFK|r|cffffffff]|r')   
@@ -370,6 +431,8 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             self:AppendText(' |cffffffff[|r|cff00ff00DND|r|cffffffff]|r')
         end
 
+            -- player realm names
+            
         if (realm and realm ~= '') then
             if (nTooltip.abbrevRealmNames)   then
                 self:AppendText(' (*)')
@@ -378,11 +441,15 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             end
         end
 
+            -- move the healthbar inside the tooltip
+            
         self:AddLine(' ')
         GameTooltipStatusBar:ClearAllPoints()
         GameTooltipStatusBar:SetPoint('LEFT', self:GetName()..'TextLeft'..self:NumLines(), 1, -3)
         GameTooltipStatusBar:SetPoint('RIGHT', self, -10, 0)
         
+            -- show player item lvl
+            
         if (nTooltip.showItemLevel) then
             if (unit and CanInspect(unit)) then
                 if (not ((InspectFrame and InspectFrame:IsShown()) or (Examiner and Examiner:IsShown()))) then
@@ -393,6 +460,8 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             end
         end
         
+            -- border coloring
+            
         if (nTooltip.reactionBorderColor) then
             local r, g, b = UnitSelectionColor(unit)
             
@@ -400,6 +469,8 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             self:SetBorderColor(r, g, b)
         end
         
+            -- dead or ghost recoloring
+            
         if (UnitIsDead(unit) or UnitIsGhost(unit)) then
             GameTooltipStatusBar:SetBackdropColor(0.5, 0.5, 0.5, 0.3)
         else
@@ -430,6 +501,8 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
                     unit = GetMouseFocus() and GetMouseFocus():GetAttribute('unit')
                 end
                 
+                    -- custom healthbar coloring
+                    
                 HealthBarColor(unit)
                 
                 if (not GameTooltipStatusBar.hasHealthText and nTooltip.healthbar.showHealthValue) then
@@ -479,6 +552,8 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
     end
 end)
 
+    -- disable fade
+    
 if (nTooltip.disableFade) then
     GameTooltip.UpdateTime = 0
     GameTooltip:HookScript('OnUpdate', function(self, elapsed)
