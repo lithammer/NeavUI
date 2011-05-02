@@ -1,5 +1,6 @@
 ## Interface: 40100
 ## Title: |cffCC3333 n|rCore
+## OptionalDeps: Recount, Omen, DBM, PitBull4
 
 nCore.lua
 
@@ -8,6 +9,7 @@ modules\coords.lua
 modules\durability.lua
 modules\errors.lua
 modules\fonts.lua
+modules\skins.lua
 modules\warning.lua
 modules\watchframe.lua
 
