@@ -32,7 +32,7 @@
 
 ## Known issues
 
-- ??? The quest blob on the map is still a cause for taint, not really sure what's causing it and if it really needs fixing.
+- The quest area overlay on the world map gets blocked from showing if you open the map while in combat.
 - !Colorz cause an ui-block-error (not lua error!), because we change the value of a global table, ignore this or delete `PowerBarColor['MANA'] = {r = 0/255, g = 0.55, b = 1}` in the `!Colorz.lua` file.
 
 ## Next Steps
