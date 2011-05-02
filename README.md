@@ -39,11 +39,9 @@
 
 - Test nPlates in raid/instance situations and code optimizing.
 - `nPlates` find better coloring or a other threat indicator.
-
 - Unhappy with the raidframe situation.
 - Make the oUF_Neav layout more usefull with tags for class specific buffs.
 - Create arena frames.
-
 - nCore module for open all mails (and ignore mails with COD).
 - Make nPower compact, add config file and put it on WoWI.
 
