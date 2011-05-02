@@ -165,7 +165,7 @@ for i = 1, MIRRORTIMER_NUMTIMERS do
     bar:SetWidth(220)
     
     if (i > 1) then
-        p1, p2, p3, p4, p5 = bar:GetPoint()
+        local p1, p2, p3, p4, p5 = bar:GetPoint()
         bar:SetPoint(p1, p2, p3, p4, p5 - 15)
     end
                     
