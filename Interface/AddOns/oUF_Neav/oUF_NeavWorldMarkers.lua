@@ -63,8 +63,8 @@ SlashCmdList['ROLECHECK'] = function()
     InitiateRolePoll()
 end
 
-ROLECHECK1 = '/rolecheck'
-ROLECHECK2 = '/rcheck'
+SLASH_ROLECHECK1 = '/rolecheck'
+SLASH_ROLECHECK2 = '/rcheck'
 
     -- DoReadyCheck()
     
