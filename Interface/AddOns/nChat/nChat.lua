@@ -103,20 +103,12 @@ if (nChat.enableBorderColoring) then
     
     hooksecurefunc('ChatEdit_UpdateHeader', function(editBox)
         local type = editBox:GetAttribute('chatType')
+        
         if (not type) then
             return
         end
-        
-        
+
         local info = ChatTypeInfo[type]
-        
-        --[[
-        local header = _G[editBox:GetName()..'Header']
-        if (not header) then
-            return
-        end
-        --]]
-        
         ChatFrame1EditBox:SetBorderColor(info.r, info.g, info.b)
     end)
 end
@@ -148,11 +140,14 @@ local function FCF_FadeOutChatFrameHook(chatFrame)
 
 	local frameName = chatFrame:GetName()
     local chatTab = _G[frameName..'Tab']
+    local tabGlow = _G[frameName..'TabGlow']
     
-	if (frameName.isDocked) then
-        UIFrameFadeOut(chatTab, CHAT_FRAME_FADE_OUT_TIME, chatTab:GetAlpha(), CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA)
-    else
-        UIFrameFadeOut(chatTab, CHAT_FRAME_FADE_OUT_TIME, chatTab:GetAlpha(), CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA)
+    if (not tabGlow:IsShown()) then
+        if (frameName.isDocked) then
+            UIFrameFadeOut(chatTab, CHAT_FRAME_FADE_OUT_TIME, chatTab:GetAlpha(), CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA)
+        else
+            UIFrameFadeOut(chatTab, CHAT_FRAME_FADE_OUT_TIME, chatTab:GetAlpha(), CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA)
+        end
     end
 end
 FCF_FadeOutChatFrame = FCF_FadeOutChatFrameHook
@@ -194,7 +189,6 @@ BNToastFrame:HookScript('OnShow', function(self)
     BNToastFrame:ClearAllPoints()
     BNToastFrame:SetPoint('BOTTOMLEFT', ChatFrame1EditBox, 'TOPLEFT', 0, 15)
 end)
-
 
     -- modify the chat tabs
     
@@ -308,6 +302,7 @@ end
 
 local function ModChat(self)
     local chat = _G[self]
+    
 	if (not nChat.chatOutline) then
 		chat:SetShadowOffset(1, -1)
 	end
@@ -432,10 +427,10 @@ for i = 1, NUM_CHAT_WINDOWS do
     SkinTab('ChatFrame'..i)
 end
 
-    -- new position for the minimize button (only chat frame 2 - 10)
+    -- new position for the minimize button
     
 for i = 2, NUM_CHAT_WINDOWS do
-    local chat = _G['ChatFrame'..i]
+    -- local chat = _G['ChatFrame'..i]
 
     local chatMinimize = _G['ChatFrame'..i..'ButtonFrameMinimizeButton']
     chatMinimize:SetAlpha(0)
@@ -526,6 +521,7 @@ local chatLog = {
 local origFCF_Tab_OnClick = _G.FCF_Tab_OnClick
 local function FCF_Tab_OnClickHook(chatTab, ...)
 	origFCF_Tab_OnClick(chatTab, ...)
+    
 	combatLog.arg1 = chatTab
 	UIDropDownMenu_AddButton(combatLog)
     
