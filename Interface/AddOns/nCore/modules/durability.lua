@@ -39,25 +39,25 @@ f:RegisterEvent('PLAYER_ENTERING_WORLD')
 f:RegisterEvent('UPDATE_INVENTORY_DURABILITY')
 f:RegisterEvent('MERCHANT_SHOW')
 
-f.Header = {}
+f.Tab = {}
 
 for i = 1, 3 do
-    f.Header[i] = f:CreateTexture(nil, 'BACKGROUND', self)
-    f.Header[i]:SetTexture('Interface\\PaperDollInfoFrame\\UI-Character-InActiveTab')
+    f.Tab[i] = f:CreateTexture(nil, 'BACKGROUND', self)
+    f.Tab[i]:SetTexture('Interface\\PaperDollInfoFrame\\UI-Character-InActiveTab')
 end
 
-f.Header[1]:SetSize(21, 32)     
-f.Header[1]:SetTexCoord(0, 0.15625, 0, 1)
-f.Header[1]:SetPoint('BOTTOMLEFT', f)
+f.Tab[1]:SetSize(21, 32)     
+f.Tab[1]:SetTexCoord(0, 0.15625, 0, 1)
+f.Tab[1]:SetPoint('BOTTOMLEFT', f)
 
-f.Header[2]:SetSize(88, 32)     
-f.Header[2]:SetTexCoord(0.15625, 0.84375, 0, 1)
-f.Header[2]:SetPoint('LEFT', f.Header[1], 'RIGHT')
-f.Header[2]:SetPoint('RIGHT', f.Header[3], 'LEFT')
+f.Tab[2]:SetSize(88, 32)     
+f.Tab[2]:SetTexCoord(0.15625, 0.84375, 0, 1)
+f.Tab[2]:SetPoint('LEFT', f.Tab[1], 'RIGHT')
+f.Tab[2]:SetPoint('RIGHT', f.Tab[3], 'LEFT')
 
-f.Header[3]:SetSize(21, 32)     
-f.Header[3]:SetTexCoord(0.84375, 1, 0, 1)
-f.Header[3]:SetPoint('BOTTOMRIGHT', f)
+f.Tab[3]:SetSize(21, 32)     
+f.Tab[3]:SetTexCoord(0.84375, 1, 0, 1)
+f.Tab[3]:SetPoint('BOTTOMRIGHT', f)
 
 f.Text = f:CreateFontString(nil, 'OVERLAY')
 f.Text:SetFont('Fonts\\ARIALN.ttf', 13)
