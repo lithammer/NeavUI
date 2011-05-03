@@ -83,7 +83,11 @@ for _, tooltip in pairs({
     DropDownList2MenuBackdrop,
     
     ConsolidatedBuffsTooltip,
-
+    
+    ChatMenu,
+    EmoteMenu,
+    LanguageMenu,
+    VoiceMacroMenu,
 }) do
     ApplyTooltipStyle(tooltip)
 end

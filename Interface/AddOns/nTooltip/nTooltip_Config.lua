@@ -10,7 +10,7 @@ nTooltip = {
     itemqualityBorderColor = true,
     
     showPlayerTitles = false,
-    showPVPIcons = true, -- show pvp icons instead of just a prefix
+    showPVPIcons = false, -- show pvp icons instead of just a prefix
     abbrevRealmNames = false, 
     showMouseoverTarget = true,
     
