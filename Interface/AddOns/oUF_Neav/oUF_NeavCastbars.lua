@@ -4,7 +4,7 @@ local normalTexture = 'Interface\\AddOns\\!Beautycase\\media\\textureNormal'
         
     -- create the castbars
     
-function CreateCastbars(self, unit)
+function oUF_Neav.CreateCastbars(self, unit)
     local config
     if (unit == 'player') then
         config = oUF_Neav.castbar.player

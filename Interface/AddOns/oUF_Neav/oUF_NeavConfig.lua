@@ -27,6 +27,8 @@ oUF_Neav = {
             position = {'TOPLEFT', UIParent, 34, -30},
             showHealthPercent = false,
             showPowerPercent = false,
+            
+            style = 'NORMAL', -- 'NORMAL', 'RARE' or 'ELITE'
         },
 
         pet = {
@@ -75,7 +77,7 @@ oUF_Neav = {
             mouseoverText = true,
             scale = 1.11,
             auraSize = 22,  
-            hideInRaid = false,
+            hideInRaid = true,
             position = {'TOPLEFT', UIParent, 25, -200},
         },
 

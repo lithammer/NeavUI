@@ -115,8 +115,9 @@ local function PlayerToVehicleTexture(self, event, unit)
 
     if (self.Status) then
         UIFrameFlashStop(self.Status)
-        self.Status:Hide()
+        
         self.Status:SetAlpha(0)
+        self.Status:Hide()
     end
     
     self.Texture:SetHeight(121)
@@ -125,6 +126,7 @@ local function PlayerToVehicleTexture(self, event, unit)
     self.Texture:SetTexCoord(0, 1, 0, 1)
 
     self.Health:SetHeight(9)
+    
 	if (UnitVehicleSkin('player') == 'Natural') then
         self.Health:SetWidth(103)
         self.Health:SetPoint('TOPLEFT', self.Texture, 100, -54)
@@ -164,8 +166,15 @@ local function VehicleToPlayerTexture(self, event, unit)
     self.Texture:SetHeight(100)
     self.Texture:SetWidth(232)
     self.Texture:SetPoint('CENTER', self, -20, -7)
-    self.Texture:SetTexture('Interface\\TargetingFrame\\UI-TargetingFrame')
     self.Texture:SetTexCoord(1, 0.09375, 0, 0.78125)
+    
+    if (oUF_Neav.units.player.style == 'NORMAL') then
+		self.Texture:SetTexture('Interface\\TargetingFrame\\UI-TargetingFrame')
+	elseif (oUF_Neav.units.player.style == 'RARE') then
+		self.Texture:SetTexture('Interface\\TargetingFrame\\UI-TargetingFrame-Rare')
+	elseif (oUF_Neav.units.player.style == 'ELITE') then
+		self.Texture:SetTexture('Interface\\TargetingFrame\\UI-TargetingFrame-Elite')
+    end
 
     self.Health:SetHeight(12)
     self.Health:SetWidth(119)
@@ -185,7 +194,7 @@ local function VehicleToPlayerTexture(self, event, unit)
     self.Group[3]:SetPoint('BOTTOMLEFT', self, 'TOP', -40, 0)
 end
 
-    -- cehicle check
+    -- vehicle check
 
 local function CheckVehicleStatus(self, event, unit)
     if (UnitHasVehicleUI('player')) then
@@ -195,6 +204,8 @@ local function CheckVehicleStatus(self, event, unit)
     end
 end
 
+    -- group indicator abouve the playerframe
+    
 local function UpdatePartyStatus(self)
     for i = 1, MAX_RAID_MEMBERS do
         if (GetNumRaidMembers() > 0) then
@@ -214,6 +225,8 @@ local function UpdatePartyStatus(self)
     end
 end
 
+    -- generic frame update
+    
 local function UpdateFrame(self, event, unit)
 	if (self.unit ~= unit) then 
         return
@@ -254,7 +267,7 @@ local function UpdateDruidPower(self, event, unit)
     
     if (self.Druid) then
         local unitPower = PowerBarColor['MANA']
-        local mana = UnitPowerType('player') == 0
+        local mana = UnitPowerType('player', SPELL_POWER_MANA)
         local index = GetShapeshiftForm()
 
         if (index == 1 or index == 3) then
@@ -625,23 +638,18 @@ local function CreateUnitLayout(self, unit)
     self.Portrait = self:CreateTexture('$parentPortrait', 'BACKGROUND')
     
     if (unit == 'player') then
-        self.Portrait:SetWidth(64)
-        self.Portrait:SetHeight(64)
+        self.Portrait:SetSize(64, 64)
     elseif (unit == 'pet') then
-        self.Portrait:SetWidth(37)
-        self.Portrait:SetHeight(37)
+        self.Portrait:SetSize(37, 37)
         self.Portrait:SetPoint('TOPLEFT', self.Texture, 7, -6)
     elseif (unit == 'target' or unit == 'focus') then
-        self.Portrait:SetWidth(64)
-        self.Portrait:SetHeight(64)
+        self.Portrait:SetSize(64, 64)
         self.Portrait:SetPoint('TOPRIGHT', self.Texture, -42, -12)
     elseif (self.targetUnit) then
-        self.Portrait:SetWidth(37)
-        self.Portrait:SetHeight(37)
+        self.Portrait:SetSize(37, 37)
         self.Portrait:SetPoint('LEFT', self, 'CENTER', -43, 0)
     elseif (self.partyUnit) then
-        self.Portrait:SetWidth(37)
-        self.Portrait:SetHeight(37)
+        self.Portrait:SetSize(37, 37)
         self.Portrait:SetPoint('TOPLEFT', self.Texture, 7, -6)
     end
 
@@ -651,19 +659,15 @@ local function CreateUnitLayout(self, unit)
         self.PvP = self.Health:CreateTexture('$parentPVPIcon', 'OVERLAY', self)
         
         if (unit == 'player') then
-            self.PvP:SetHeight(64)
-            self.PvP:SetWidth(64)
+            self.PvP:SetSize(64, 64)
         elseif (unit == 'pet') then
-            self.PvP:SetHeight(50)
-            self.PvP:SetWidth(50)
+            self.PvP:SetSize(50, 50)
             self.PvP:SetPoint('CENTER', self.Portrait, 'LEFT', 7, -7)
         elseif (unit == 'target' or unit == 'focus') then
-            self.PvP:SetHeight(64)
-            self.PvP:SetWidth(64)
+            self.PvP:SetSize(64, 64)
             self.PvP:SetPoint('TOPRIGHT', self.Texture, 3, -20)
         elseif (self.partyUnit) then
-            self.PvP:SetHeight(40)
-            self.PvP:SetWidth(40)
+            self.PvP:SetSize(40, 40)
             self.PvP:SetPoint('TOPLEFT', self.Texture, -9, -10)
         end
     end
@@ -671,24 +675,21 @@ local function CreateUnitLayout(self, unit)
         -- masterlooter icon
 
     self.MasterLooter = self.Health:CreateTexture('$parentMasterLooterIcon', 'OVERLAY', self)
-    self.MasterLooter:SetHeight(16)
-    self.MasterLooter:SetWidth(16)
-
+    self.MasterLooter:SetSize(16, 16)
+    
     if (unit == 'target' or unit == 'focus') then
         self.MasterLooter:SetPoint('TOPLEFT', self.Portrait, 3, 3)
     elseif (self.targetUnit) then
         self.MasterLooter:SetPoint('CENTER', self.Portrait, 'TOPLEFT', 3, -3)
     elseif (self.partyUnit) then  
-        self.MasterLooter:SetHeight(14)
-        self.MasterLooter:SetWidth(14)
+        self.MasterLooter:SetSize(14, 14)
         self.MasterLooter:SetPoint('TOPLEFT', self.Texture, 29, 0)
     end
 
         -- groupleader icon
 
     self.Leader = self.Health:CreateTexture('$parentLeaderIcon', 'OVERLAY', self)
-    self.Leader:SetHeight(16)
-    self.Leader:SetWidth(16)
+    self.Leader:SetSize(16, 16)
 
     if (unit == 'target' or unit == 'focus') then
         self.Leader:SetPoint('TOPRIGHT', self.Portrait, -3, 2)
@@ -713,7 +714,18 @@ local function CreateUnitLayout(self, unit)
         self.RaidIcon:SetHeight(20)
         self.RaidIcon:SetWidth(20)
     end
-
+    
+        -- phase text
+        
+    if (unit == 'target' or unit == 'focus' or self.partyUnit) then
+        self.PhaseText = self.Health:CreateFontString(nil, 'OVERLAY')
+        self.PhaseText:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontSmall)
+        self.PhaseText:SetShadowOffset(1, -1)
+        self.PhaseText:SetPoint('CENTER', self.Name, 0, 10)
+        self.PhaseText:SetTextColor(1, 0, 0)
+        self:Tag(self.PhaseText, '[phase]')
+    end
+    
         -- offline icons
 
     self.OfflineStatus = self.Health:CreateTexture(nil, 'OVERLAY')
@@ -948,7 +960,7 @@ local function CreateUnitLayout(self, unit)
 		self.Resting:SetPoint('CENTER', self.Level, -0.5, -0.5)
 		self.Resting:SetWidth(31)
 		self.Resting:SetHeight(33)
-
+        
             -- combaticon
 
         self.Combat = self.Health:CreateTexture(nil, 'OVERLAY')
@@ -990,7 +1002,7 @@ local function CreateUnitLayout(self, unit)
                 
             --[[
             local updateTimer = 0
-            self.Druid:SetScript("OnUpdate", function(_, elapsed)
+            self.Druid:SetScript('OnUpdate', function(_, elapsed)
                 updateTimer = updateTimer + elapsed
                 
                 if (updateTimer > TOOLTIP_UPDATE_TIME/2) then
@@ -1000,7 +1012,7 @@ local function CreateUnitLayout(self, unit)
             end)
             --]]
             
-                -- event "timer" for the druid mana, less cpu usage
+                -- event 'timer' for the druid mana, less cpu usage
                 
             self:RegisterEvent('UNIT_POWER', UpdateDruidPower)
             self:RegisterEvent('PLAYER_ENTERING_WORLD', UpdateDruidPower)
@@ -1239,7 +1251,7 @@ local function CreateUnitLayout(self, unit)
     end
 
     if (oUF_Neav.show.castbars) then
-        CreateCastbars(self, unit)
+        oUF_Neav.CreateCastbars(self, unit)
     end
 
     if (self.Auras) then

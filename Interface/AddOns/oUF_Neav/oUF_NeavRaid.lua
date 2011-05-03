@@ -121,8 +121,8 @@ do
 			{85767, 'BOTTOMLEFT', {0.7, 0.5, 1}, true, true, true}, -- Dark Intent
 		},
 		ALL = {
-			{23333, 'LEFT', {1, 0, 0}}, -- Warsong flag, Horde
-			{23335, 'LEFT', {0, 0, 1}}, -- Warsong flag, Alliance
+            {23333, 'LEFT', {1, 0, 0}}, -- Warsong flag, Horde
+            {23335, 'LEFT', {0, 0, 1}}, -- Warsong flag, Alliance 
 		},
 	}
 end

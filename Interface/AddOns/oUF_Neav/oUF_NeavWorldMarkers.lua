@@ -36,12 +36,8 @@ SlashCmdList['WORLDMARKERS'] = function()
 	local isLeader = IsRealPartyLeader() or IsRealRaidLeader() or IsRaidOfficer()
 	local isPvPZone = instanceType == 'arena' or instanceType == 'pvp' and instanceName == 'Wintergrasp' or instanceName == 'Tol Barad'
 
-	if (UnitInParty('player') and not isPvPZone and isLeader) then
-		if (button:IsVisible()) then
-			button:Hide()
-		else
-			button:Show()
-		end
+	if (UnitInParty('player') and (not isPvPZone) and isLeader) then
+        ToggleFrame(button)
 	else
 		if (button:IsVisible()) then
 			button:Hide()
@@ -63,8 +59,8 @@ SlashCmdList['ROLECHECK'] = function()
     InitiateRolePoll()
 end
 
-SLASH_ROLECHECK1 = '/rolecheck'
-SLASH_ROLECHECK2 = '/rcheck'
+ROLECHECK1 = '/rolecheck'
+ROLECHECK2 = '/rcheck'
 
     -- DoReadyCheck()
     
