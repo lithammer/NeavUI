@@ -1,5 +1,5 @@
     
-    -- a "new" mail notification    
+    -- a 'new' mail notification    
 
 MiniMapMailFrame.Text = MiniMapMailFrame:CreateFontString(nil, 'OVERLAY')
 MiniMapMailFrame.Text:SetParent(MiniMapMailFrame)
@@ -11,6 +11,9 @@ MiniMapMailFrame.Text:SetText('N')
 MiniMapMailFrame:SetSize(14, 14)
 MiniMapMailFrame:ClearAllPoints()
 MiniMapMailFrame:SetPoint('BOTTOMRIGHT', Minimap, -4, 5)
+
+MiniMapMailBorder:SetTexture(nil)
+MiniMapMailIcon:SetTexture(nil)
 
 hooksecurefunc(MiniMapMailFrame, 'Show', function()
     MiniMapMailBorder:SetTexture(nil)
@@ -96,30 +99,13 @@ Minimap:SetBorderPadding(1)
     -- enable mousewheel zooming
 
 Minimap:EnableMouseWheel(true)
-Minimap:SetScript("OnMouseWheel", function(self, delta)
+Minimap:SetScript('OnMouseWheel', function(self, delta)
 	if (delta > 0) then
 		_G.MinimapZoomIn:Click()
 	elseif delta < 0 then
 		_G.MinimapZoomOut:Click()
 	end
 end)
-
-    -- a "new" mail notification    
-    
-MiniMapMailBorder:SetTexture(nil)
-MiniMapMailIcon:SetTexture(nil)
-
-MiniMapMailFrame.Text = MiniMapMailFrame:CreateFontString(nil, 'OVERLAY')
-MiniMapMailFrame.Text:SetParent(MiniMapMailFrame)
-MiniMapMailFrame.Text:SetFont('Fonts\\ARIALN.ttf', 15, 'OUTLINE')
-MiniMapMailFrame.Text:SetPoint('BOTTOMRIGHT', MiniMapMailFrame)
-MiniMapMailFrame.Text:SetTextColor(1, 0, 1)
-MiniMapMailFrame.Text:SetText('N')
-
-MiniMapMailFrame:SetWidth((MiniMapMailFrame.Text:GetStringWidth()))
-MiniMapMailFrame:SetHeight(18)
-MiniMapMailFrame:ClearAllPoints()
-MiniMapMailFrame:SetPoint('BOTTOMRIGHT', Minimap, -4, 5)
 
     -- modify the minimap tracking
 
