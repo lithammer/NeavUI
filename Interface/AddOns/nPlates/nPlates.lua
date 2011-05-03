@@ -53,7 +53,8 @@ end
 
 local function IsTarget(self) 
 	local tname = UnitName('target')
-	if (tname == self.name:GetText()) then
+    
+	if (tname == self.oldname:GetText()) then
 		return true
 	else
 		return false
@@ -153,48 +154,47 @@ local function UpdatePlate(self)
 	
 	self.healthBar:ClearAllPoints()
 	self.healthBar:SetPoint('CENTER', self.healthBar:GetParent(), 0, 8)
-	self.healthBar:SetSize(130, 14)
-	
-	self.healthBar:SetBackdropColor(self.r * 0.3, self.g * 0.3, self.b * 0.3, 0.7)
+	self.healthBar:SetSize(115, 11)
+	self.healthBar:SetAlpha(1)
+    
+	self.healthBar:SetBackdropColor(self.r * 0.3, self.g * 0.3, self.b * 0.3, 0.75)
     
 	self.castBar:ClearAllPoints()
-	self.castBar:SetPoint('TOP', self.healthBar, 'BOTTOM', 0, -7)	
-	self.castBar:SetSize(130, 14)
+	self.castBar:SetPoint('TOP', self.healthBar, 'BOTTOM', 0, -8)	
+	self.castBar:SetSize(115, 11)
     
 	self.castBar.IconOverlay:SetVertexColor(self.r, self.g, self.b)
     
 	self.highlight:ClearAllPoints()
 	self.highlight:SetAllPoints(self.healthBar)
-    
-    self.level:ClearAllPoints()
-    self.level:SetPoint('TOPLEFT', self.healthBar, 1, 8)
         
-    self.name:ClearAllPoints()
-    self.name:SetPoint('LEFT', self.level, 'RIGHT', 1, 0)
-    
         -- shorter names
         
 	local oldName = self.oldname:GetText()
 	local newName = (len(oldName) > 20) and gsub(oldName, '%s?(.[\128-\191]*)%S+%s', '%1. ') or oldName
-    self.name:SetText(newName) 
+    --self.name:SetText(newName) 
+    
+    self.level:ClearAllPoints()
+    self.level:SetPoint('CENTER', self.healthBar, 'CENTER', 0, 10)
+    self.level:SetSize(134, 13)
     
 	local level, elite = tonumber(self.level:GetText()), self.elite:IsShown()
 	if (self.boss:IsShown()) then
-		self.level:SetText('?? ')
+		self.level:SetText('?? |cffffffff'..newName)
 		self.level:SetTextColor(1, 0, 0)
 		self.level:Show()
 	elseif (self.elite:IsVisible() and (not self.elite:GetTexture() == 'Interface\\Tooltips\\EliteNameplateIcon')) then
-		self.level:SetText('(r)'..level)
+		self.level:SetText('(r)'..level..' |cffffffff'..newName)
 	else
-		self.level:SetText((elite and '+' or '')..level)
+		self.level:SetText((elite and '+' or '')..level..' |cffffffff'..newName)
 	end	
 end
 
 local function FixCastbar(self)
 	self.castbarOverlay:Hide()	
-	self:SetHeight(14)
+	self:SetHeight(11)
 	self:ClearAllPoints()
-	self:SetPoint('TOP', self.healthBar, 'BOTTOM', 0, -7)	
+	self:SetPoint('TOP', self.healthBar, 'BOTTOM', 0, -8)	
 end
 
 local function ColorCastBar(self, shield)		
@@ -223,11 +223,10 @@ local function OnValueChanged(self, curValue)
 end
 
 local function OnShow(self)
-	FixCastbar(self)		
-    
 	self.channeling = UnitChannelInfo('target')
 	self.IconOverlay:Show()	
     
+    FixCastbar(self)	
 	ColorCastBar(self, self.shieldedRegion:IsShown())
 end
 
@@ -259,43 +258,50 @@ local function CreatePlate(frame)
 	bossIconRegion:SetTexture(nil)
 	
     if (not healthBar.hasBorder) then
-        healthBar:CreateBorder(9)
-        healthBar:SetBorderPadding(2)
+        healthBar:CreateBorder(8)
+        healthBar:SetBorderPadding(3)
+        
+        for i = 1, 8 do 
+            healthBar.beautyBorder[i]:SetDrawLayer('BORDER')
+        end
+    
         healthBar.hasBorder = true
     end
     
-    healthBar:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
+    healthBar:SetBackdrop({
+        bgFile = 'Interface\\Buttons\\WHITE8x8',
+        insets = { left = -2, right = -2, top = -2, bottom = -2 }
+    })
+
+    frame.oldname = nameTextRegion
+    nameTextRegion:Hide()
+    -- nameTextRegion:ClearAllPoints()
+    -- nameTextRegion:SetFont('Fonts\\ARIALN.ttf', 11, 'THINOUTLINE')
+    -- nameTextRegion:SetShadowOffset(0, 0)
+    -- nameTextRegion:SetPoint('CENTER', healthBar, 'CENTER', 0, 10)
     
     --[[
-    for i = 1, 8 do 
-        healthBar.Border[i]:SetDrawLayer('ARTWORK')
-    end
+	frame.name = frame:CreateFontString(nil, 'OVERLAY')
+	frame.name:SetParent(healthBar)
+	frame.name:SetFont('Fonts\\ARIALN.ttf', 11, 'THINOUTLINE')
+    frame.name:SetShadowOffset(0, 0)
+    frame.name:SetPoint('CENTER', healthBar, 'CENTER', 0, 10)
     --]]
     
-    frame.oldname = nameTextRegion
-	nameTextRegion:Hide()
-    
-	local newNameRegion = frame:CreateFontString(nil, 'OVERLAY')
-	newNameRegion:SetParent(healthBar)
-	newNameRegion:SetPoint('TOPLEFT', healthBar, 18, 8)
-	newNameRegion:SetFont('Fonts\\ARIALN.ttf', 11, 'THINOUTLINE')
-    newNameRegion:SetShadowOffset(0, 0)
-	frame.name = newNameRegion
-    
 	local hpRegion = frame:CreateFontString()
-	hpRegion:SetPoint('RIGHT', healthBar, -1, 0)
+	hpRegion:SetPoint('CENTER', healthBar, 0, 0)
     hpRegion:SetFont('Fonts\\ARIALN.ttf', 10, 'THINOUTLINE')
     hpRegion:SetShadowOffset(0, 0)
 	frame.hp = hpRegion
 	
 	levelTextRegion:SetFont('Fonts\\ARIALN.ttf', 11, 'THINOUTLINE')
-    levelTextRegion:SetPoint('TOPLEFT', healthBar, 0, 8)
+    levelTextRegion:SetDrawLayer('ARTWORK')
 	levelTextRegion:SetShadowOffset(0, 0)
     frame.level = levelTextRegion
     
     if (not castBar.hasBorder) then
-        castBar:CreateBorder(9)
-        castBar:SetBorderPadding(2)
+        castBar:CreateBorder(8)
+        castBar:SetBorderPadding(3)
         castBar.hasBorder = true
     end    
         
@@ -303,7 +309,10 @@ local function CreatePlate(frame)
 	castBar.healthBar = healthBar
 	castBar.shieldedRegion = shieldedRegion
     
-    castBar:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
+    castBar:SetBackdrop({
+        bgFile = 'Interface\\Buttons\\WHITE8x8',
+        insets = { left = -2, right = -2, top = -2, bottom = -2 }
+    })
     castBar:SetBackdropColor(0.3, 0.3, 0.3, 0.75)
     
 	castBar:HookScript('OnShow', OnShow)
@@ -314,7 +323,7 @@ local function CreatePlate(frame)
 	castBar:RegisterEvent('UNIT_SPELLCAST_NOT_INTERRUPTIBLE')
     
     castBar.time = castBar:CreateFontString(nil, 'OVERLAY')
-	castBar.time:SetPoint('RIGHT', castBar, 'RIGHT', -1, 0)
+	castBar.time:SetPoint('RIGHT', castBar, 'RIGHT', 4, 0)
 	castBar.time:SetFont('Fonts\\ARIALN.ttf', 19, 'THINOUTLINE')
 	castBar.time:SetTextColor(1, 1, 1)
     castBar.time:SetShadowOffset(0, 0)
@@ -346,8 +355,9 @@ local function CreatePlate(frame)
 	frame.highlight = highlightRegion
 
 	raidIconRegion:ClearAllPoints()
-	raidIconRegion:SetPoint('CENTER', healthBar, 0, 25)
-	raidIconRegion:SetSize(24, 24)
+    raidIconRegion:SetDrawLayer('OVERLAY')
+	raidIconRegion:SetPoint('CENTER', healthBar, 'TOP', 0, 12)
+	raidIconRegion:SetSize(16, 16)
 
 	frame.oldglow = glowRegion
 	frame.elite = stateIconRegion
@@ -396,16 +406,3 @@ f:SetScript('OnUpdate', function(self, elapsed)
 		lastupdate = 0
 	end
 end)
-
-
-
-
-
-
-
-
-
-
-
-
-
