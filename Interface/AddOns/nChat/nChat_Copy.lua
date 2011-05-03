@@ -69,7 +69,7 @@ local function copyChat(self, chatTab)
 end
 
 local info = {
-	text = 'Copy Chat',
+	text = '|cffff00ffCopyChat|r',
 	func = copyChat,
 	notCheckable = 1	
 }

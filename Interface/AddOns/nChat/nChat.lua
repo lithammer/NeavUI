@@ -1,20 +1,6 @@
 
-    -- ??? 
---[[
-TIMESTAMP_FORMAT_HHMMSS_24HR = '%H:%M:%S ';
-TIMESTAMP_FORMAT_HHMM_24HR = '%H:%M ';
-TIMESTAMP_FORMAT_HHMM = '%I:%M ';
-TIMESTAMP_FORMAT_HHMMSS = '%I:%M:%S ';
-TIMESTAMP_FORMAT_HHMMSS_24HR = '%H:%M:%S ';
-TIMESTAMP_FORMAT_HHMMSS_AMPM = '%I:%M:%S %p ';
-TIMESTAMP_FORMAT_HHMM_24HR = '%H:%M ';
-TIMESTAMP_FORMAT_HHMM_AMPM = '%I:%M %p ';
-]]
-
-    -- chatframe mouseover alpha
+    -- more choosable fontsizes
     
-DEFAULT_CHATFRAME_ALPHA = 0.25 
-
 CHAT_FONT_HEIGHTS = {
     [1] = 8,
     [2] = 9,
@@ -106,10 +92,34 @@ ChatFrame1EditBox:SetBackdrop({
 ChatFrame1EditBox:SetBackdropColor(0, 0, 0, 0.5)
     
 for k = 6, 11 do
-        select(k, ChatFrame1EditBox:GetRegions()):SetTexture(nil)
+   select(k, ChatFrame1EditBox:GetRegions()):SetTexture(nil)
 end
     
-CreateBorder(ChatFrame1EditBox, 11, 1, 1, 1, -2, -1, -2, -1, -2, -1, -2, -1)
+ChatFrame1EditBox:CreateBorder(11)
+ChatFrame1EditBox:SetBorderPadding(-2, -1, -2, -1, -2, -1, -2, -1)
+
+if (nChat.enableBorderColoring) then
+    ChatFrame1EditBox:SetBorderTexture('Interface\\AddOns\\!Beautycase\\media\\textureNormalWhite')
+    
+    hooksecurefunc('ChatEdit_UpdateHeader', function(editBox)
+        local type = editBox:GetAttribute('chatType')
+        if (not type) then
+            return
+        end
+        
+        
+        local info = ChatTypeInfo[type]
+        
+        --[[
+        local header = _G[editBox:GetName()..'Header']
+        if (not header) then
+            return
+        end
+        --]]
+        
+        ChatFrame1EditBox:SetBorderColor(info.r, info.g, info.b)
+    end)
+end
 
     -- hide the menu and friend button
     
@@ -130,6 +140,23 @@ hooksecurefunc('FCFTab_UpdateColors', function(self, selected)
 	end
 end)
 
+    -- tab text fadeout
+
+local origFCF_FadeOutChatFrame = _G.FCF_FadeOutChatFrame
+local function FCF_FadeOutChatFrameHook(chatFrame)
+	origFCF_FadeOutChatFrame(chatFrame)
+
+	local frameName = chatFrame:GetName()
+    local chatTab = _G[frameName..'Tab']
+    
+	if (frameName.isDocked) then
+        UIFrameFadeOut(chatTab, CHAT_FRAME_FADE_OUT_TIME, chatTab:GetAlpha(), CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA)
+    else
+        UIFrameFadeOut(chatTab, CHAT_FRAME_FADE_OUT_TIME, chatTab:GetAlpha(), CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA)
+    end
+end
+FCF_FadeOutChatFrame = FCF_FadeOutChatFrameHook
+
     -- improved mousewheel scrolling
     
 hooksecurefunc('FloatingChatFrame_OnMouseScroll', function(self, direction)
@@ -146,6 +173,17 @@ hooksecurefunc('FloatingChatFrame_OnMouseScroll', function(self, direction)
         else
             self:ScrollDown()
             self:ScrollDown()
+        end
+    end
+    
+    if (nChat.enableBottomButton) then
+        local buttonBottom = _G[self:GetName() .. 'ButtonFrameBottomButton']
+        if (self:AtBottom()) then
+            buttonBottom:SetAlpha(0)
+            buttonBottom:EnableMouse(false)
+        else
+            buttonBottom:SetAlpha(0.7)
+            buttonBottom:EnableMouse(true)
         end
     end
 end)
@@ -220,6 +258,7 @@ function SkinTab(self)
     end)
     
     local tab = _G[self..'Tab']
+
     tab:SetScript('OnEnter', function()
         tabText:SetTextColor(s1, s2, s3, tabText:GetAlpha())
     end)
@@ -228,7 +267,7 @@ function SkinTab(self)
         local r, g, b
         local hasNofication = tabGlow:IsShown()
         
-        if (_G[self] == SELECTED_CHAT_FRAME) then
+        if (_G[self] == SELECTED_CHAT_FRAME and chat.isDocked) then
             r, g, b = e1, e2, e3
         elseif (hasNofication) then
             r, g, b = s1, s2, s3
@@ -239,8 +278,31 @@ function SkinTab(self)
         tabText:SetTextColor(r, g, b)
     end)
     
+        -- solve the problem with false tab coloring
+        
+    hooksecurefunc(tab, 'Show', function()
+        if (not tab.wasShown) then
+            local r, g, b
+            local hasNofication = tabGlow:IsShown()
+            
+            tab:SetAlpha(CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA)
+            
+            if (_G[self] == SELECTED_CHAT_FRAME and chat.isDocked) then
+                r, g, b = e1, e2, e3
+            elseif (hasNofication) then
+                r, g, b = s1, s2, s3
+            else
+                r, g, b = n1, n2, n3
+            end
+
+            tabText:SetTextColor(r, g, b)
+            
+            tab.wasShown = true
+        end
+    end)
+    
     chat.hasSkinnedTabs = true
-end  
+end 
 
     -- modify the chat
 
@@ -249,6 +311,10 @@ local function ModChat(self)
 	if (not nChat.chatOutline) then
 		chat:SetShadowOffset(1, -1)
 	end
+    
+    if (nChat.disableFade) then
+        chat:SetFading(false)
+    end
     
 	local font, fontsize, fontflags = chat:GetFont()
 	chat:SetFont(font, fontsize, nChat.chatOutline and 'THINOUTLINE' or fontflags)
@@ -273,7 +339,16 @@ local function ModChat(self)
     local buttonBottom = _G[self..'ButtonFrameBottomButton']
     buttonBottom:SetAlpha(0)
     buttonBottom:EnableMouse(false)
-
+    
+    if (nChat.enableBottomButton) then
+        buttonBottom:ClearAllPoints()
+        buttonBottom:SetPoint('BOTTOMLEFT', chat, -1, -3)
+        buttonBottom:HookScript('OnClick', function(self)
+            self:SetAlpha(0)
+            self:EnableMouse(false)
+        end)
+    end
+    
         -- hide some pesky textures
 
     for _, texture in pairs({
@@ -367,6 +442,31 @@ for i = 2, NUM_CHAT_WINDOWS do
     chatMinimize:EnableMouse(0)
 end
 
+    -- chat menu, just a middle click on the chatframe 1 tab
+    
+hooksecurefunc('ChatFrameMenu_UpdateAnchorPoint', function()
+	if (FCF_GetButtonSide(DEFAULT_CHAT_FRAME) == 'right') then
+        ChatMenu:ClearAllPoints()
+        ChatMenu:SetPoint('BOTTOMRIGHT', ChatFrame1Tab, 'TOPLEFT')
+	else
+        ChatMenu:ClearAllPoints()
+        ChatMenu:SetPoint('BOTTOMLEFT', ChatFrame1Tab, 'TOPRIGHT')
+	end
+end)
+
+ChatFrame1Tab:RegisterForClicks('AnyUp')
+ChatFrame1Tab:HookScript('OnClick', function(self, button)
+    if (button == 'MiddleButton') then
+        if (ChatMenu:IsShown()) then
+            ChatMenu:Hide()
+        else
+            ChatMenu:Show()
+        end
+    else
+        ChatMenu:Hide()
+    end
+end)
+        
     -- modify the gm chatframe and sound notification on incoming message
     
 local f = CreateFrame('Frame')
@@ -393,3 +493,43 @@ f:SetScript('OnEvent', function(_, event)
 		PlaySoundFile('Sound\\Spells\\Simongame_visual_gametick.wav')
 	end
 end)
+
+local combatLog = {
+	text = '|cffffff00CombatLog|r',
+	func = function() 
+        if (not LoggingCombat()) then
+            LoggingCombat(flase) 
+            DEFAULT_CHAT_FRAME:AddMessage(COMBATLOGENABLED, 1, 1, 0)
+        else
+            LoggingCombat(flase)
+            DEFAULT_CHAT_FRAME:AddMessage(COMBATLOGDISABLED, 1, 1, 0)
+        end
+    end,
+	notCheckable = 1	
+}
+
+local chatLog = {
+	text = '|cff00aaffChatLog|r',
+	func = function() 
+        if (not LoggingChat()) then
+            LoggingChat(true) 
+            print(COMBATLOGENABLED)
+            DEFAULT_CHAT_FRAME:AddMessage(CHATLOGDISABLED, 1, 1, 0)
+        else
+            LoggingChat(flase)
+            DEFAULT_CHAT_FRAME:AddMessage(CHATLOGENABLED, 1, 1, 0)
+        end
+    end,
+	notCheckable = 1	
+}
+
+local origFCF_Tab_OnClick = _G.FCF_Tab_OnClick
+local function FCF_Tab_OnClickHook(chatTab, ...)
+	origFCF_Tab_OnClick(chatTab, ...)
+	combatLog.arg1 = chatTab
+	UIDropDownMenu_AddButton(combatLog)
+    
+    chatLog.arg1 = chatTab
+    UIDropDownMenu_AddButton(chatLog)
+end
+FCF_Tab_OnClick = FCF_Tab_OnClickHook
