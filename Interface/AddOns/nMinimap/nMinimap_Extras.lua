@@ -385,8 +385,6 @@ frameGuild:SetScript('OnMouseDown', function(self, button)
     end
 end)
 
-
-
 local function GetTableIndex(table, fieldIndex, value)
 	for k, v in ipairs(table) do
 		if v[fieldIndex] == value then return k end
