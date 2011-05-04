@@ -188,3 +188,45 @@ for i = 1, MIRRORTIMER_NUMTIMERS do
     
     CreateBorder(bar, 11, 1, 1, 1, 3)
 end
+
+	-- battleground timer
+
+local BattlegroundTimer = CreateFrame('Frame')
+BattlegroundTimer:RegisterEvent('START_TIMER')
+
+BattlegroundTimer:SetScript('OnEvent', function(self, event)
+	for _, b in pairs(TimerTracker.timerList) do
+		if not b['bar'].skinned then
+
+			local bar = b['bar']
+
+			bar:SetScale(1.132)
+			bar:SetHeight(18)
+			bar:SetWidth(220)
+
+			for i = 1, bar:GetNumRegions() do
+				local region = select(i, bar:GetRegions())
+
+				if (region:GetObjectType() == 'Texture') then
+					region:SetTexture(nil)
+				elseif (region:GetObjectType() == 'FontString') then
+					region:SetFont(CastingBarFrameText:GetFont(), 14)
+					region:ClearAllPoints()
+					region:SetPoint('CENTER', bar)
+				end
+			end
+
+			bar:SetStatusBarTexture(oUF_Neav.media.statusbar)
+
+			local backdrop = select(1, bar:GetRegions())
+			backdrop:SetTexture('Interface\\Buttons\\WHITE8x8')
+			backdrop:SetVertexColor(0, 0, 0, 0.5)
+			backdrop:SetAllPoints(bar)
+
+			CreateBorder(bar, 11, 1, 1, 1, 3)
+
+			b['bar'].skinned = true
+		end
+	end
+
+end)
