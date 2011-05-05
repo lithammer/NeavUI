@@ -5,8 +5,13 @@
     
     -- local stuff for faster usage
     
-local SetCVar = SetCVar
+local SetCVar = _G.SetCVar
+local ColorBorder = _G.ColorBorder
+local CreateBorder = _G.CreateBorder
+local SetBorderTexture = _G.SetBorderTexture
 
+    -- import globals for faster usage
+    
 local modf = math.modf
 local len = string.len
 local sub = string.sub
@@ -15,13 +20,15 @@ local gsub = string.gsub
 local floor = math.floor
 local upper = string.upper
 local lower = string.lower
+local format = string.format
 
 local type = type
-local format = format
 local select = select
 local unpack = unpack
 local tonumber = tonumber
 
+    -- import functions for faster usage
+    
 local UnitName = UnitName
 local UnitLevel = UnitLevel
 local UnitIsPVP = UnitIsPVP
@@ -31,12 +38,14 @@ local UnitChannelInfo = UnitChannelInfo
 
 local overlayRegion = overlayRegion
 
+    -- load texture paths locally
+    
 local whiteTexture = 'Interface\\AddOns\\!Beautycase\\media\\textureNormalWhite'
 local normalTexture = 'Interface\\AddOns\\!Beautycase\\media\\textureNormal'
 
-SetCVar('bloattest', 0)
-SetCVar('bloatnameplates', 0) 
-SetCVar('bloatthreat', 0)
+-- SetCVar('bloattest', 0)
+-- SetCVar('bloatnameplates', 0) 
+-- SetCVar('bloatthreat', 0)
 
 local function IsValidFrame(frame)
 	if (frame:GetName() and not find(frame:GetName(), '^NamePlate')) then
@@ -71,17 +80,17 @@ local function FormatValue(number)
 	end
 end
 
-local function showHealth(self)
-	local min, max = self.healthBar:GetMinMaxValues()
-	local currentValue = self.healthBar:GetValue()
+local function SetHealtText(self)
+	local min, max = self.HealthBar:GetMinMaxValues()
+	local currentValue = self.HealthBar:GetValue()
 	local perc = (currentValue/max)*100	
 
     if (perc >= 100) then
-        self.hp:SetFormattedText('%s', FormatValue(currentValue))		
+        self.HealtValue:SetFormattedText('%s', FormatValue(currentValue))		
     elseif (perc < 100) then
-        self.hp:SetFormattedText('%s - %.1f%%', FormatValue(currentValue), perc)
+        self.HealtValue:SetFormattedText('%s - %.1f%%', FormatValue(currentValue), perc)
     else
-        self.hp:SetText('')
+        self.HealtValue:SetText('')
     end
 end
 
@@ -90,92 +99,93 @@ local function UpdateTime(self, curValue)
 	local castname = UnitCastingInfo('target') or UnitChannelInfo('target')
     
 	if (self.channeling) then
-		self.time:SetFormattedText('%.1fs', curValue)
+		self.CastTime:SetFormattedText('%.1fs', curValue)
 	else
-		self.time:SetFormattedText('%.1fs', maxValue - curValue)
+		self.CastTime:SetFormattedText('%.1fs', maxValue - curValue)
 	end	
     
-	self.cname:SetText(castname)
+	self.CastName:SetText(castname)
 end
 
 local function ThreatUpdate(self, elapsed)
 	self.elapsed = self.elapsed + elapsed
 	if (self.elapsed >= 0.15) then
-        showHealth(self)
+        SetHealtText(self)
         
 		if (not self.oldglow:IsShown()) then
 			if (IsTarget(self)) then
-                self.healthBar:SetBorderTexture(whiteTexture)
-				self.healthBar:SetBorderColor(1, 1, 0)  		
+                self.HealthBar:SetBorderTexture(whiteTexture)
+				self.HealthBar:SetBorderColor(1, 1, 0)  		
 			else
-                self.healthBar:SetBorderTexture(normalTexture)
-				self.healthBar:SetBorderColor(1, 1, 1)  
+                self.HealthBar:SetBorderTexture(normalTexture)
+				self.HealthBar:SetBorderColor(1, 1, 1)  
 			end
 		else			
 			local r, g, b = self.oldglow:GetVertexColor()
-            self.healthBar:SetBorderTexture(whiteTexture)
-            self.healthBar:SetBorderColor(r, g, b)			
+            self.HealthBar:SetBorderTexture(whiteTexture)
+            self.HealthBar:SetBorderColor(r, g, b)			
 		end
         
 		self.elapsed = 0
 	end
 end
 
-local function UpdatePlate(self)
-	local r, g, b = self.healthBar:GetStatusBarColor()
-	local newr, newg, newb
+local function ColorHealthBar(self)
+    local r, g, b = self:GetStatusBarColor()
+    local newr, newg, newb
 
-	if (g + b == 0) then
-		-- Hostile unit
-		newr, newg, newb = 0.9, 0.2, 0
-	elseif (r + b == 0) then
-		-- Friendly unit
-		newr, newg, newb = 0.2, 1, 0
-	elseif (r + g == 0) then
-		-- Friendly player
-		newr, newg, newb = 0, 0.35, 1
-	elseif (2 - (r + g) < 0.05 and b == 0) then
-		-- Neutral unit
-		newr, newg, newb = 1, 1, 0
-	else
-		-- Hostile player - class colored.
-		newr, newg, newb = r, g, b
-	end
-    
-    self.healthBar:SetStatusBarColor(newr, newg, newb)
-    
-	self.r, self.g, self.b = newr, newg, newb
-	
-	if (self.castBar:IsShown()) then 
-        self.castBar:Hide() 
+    if (g + b == 0) then
+        -- Hostile unit
+        newr, newg, newb = 0.9, 0.2, 0
+    elseif (r + b == 0) then
+        -- Friendly unit
+        newr, newg, newb = 0.2, 1, 0
+    elseif (r + g == 0) then
+        -- Friendly player
+        newr, newg, newb = 0, 0.35, 1
+    elseif (2 - (r + g) < 0.05 and b == 0) then
+        -- Neutral unit
+        newr, newg, newb = 1, 1, 0
+    else
+        -- Hostile player - class colored.
+        newr, newg, newb = r, g, b
     end
-	
-	showHealth(self)
-	
-	self.healthBar:ClearAllPoints()
-	self.healthBar:SetPoint('CENTER', self.healthBar:GetParent(), 0, 8)
-	self.healthBar:SetSize(115, 11)
-	self.healthBar:SetAlpha(1)
+        
+    self:SetStatusBarColor(newr, newg, newb)
+    self:SetBackdropColor(newr * 0.2, newg * 0.2, newb * 0.2, 0.5)
+end
+
+local function UpdatePlate(self)
+    SetHealtText(self)
+    ColorHealthBar(self.HealthBar)
+
+	if (self.CastBar:IsShown()) then 
+        self.CastBar:Hide() 
+    end
     
-	self.healthBar:SetBackdropColor(self.r * 0.3, self.g * 0.3, self.b * 0.3, 0.75)
+    local r, g, b = self.HealthBar:GetStatusBarColor()
+	self.CastBar.IconOverlay:SetVertexColor(r, g, b)
+
+	self.HealthBar:ClearAllPoints()
+	self.HealthBar:SetPoint('CENTER', self.HealthBar:GetParent())
+	self.HealthBar:SetSize(115, 11)
+	self.HealthBar:SetAlpha(1)
     
-	self.castBar:ClearAllPoints()
-	self.castBar:SetPoint('TOP', self.healthBar, 'BOTTOM', 0, -8)	
-	self.castBar:SetSize(115, 11)
-    
-	self.castBar.IconOverlay:SetVertexColor(self.r, self.g, self.b)
+	self.CastBar:ClearAllPoints()
+	self.CastBar:SetPoint('TOP', self.HealthBar, 'BOTTOM', 0, -8)	
+	self.CastBar:SetSize(115, 11)
     
 	self.highlight:ClearAllPoints()
-	self.highlight:SetAllPoints(self.healthBar)
+	self.highlight:SetAllPoints(self.HealthBar)
         
         -- shorter names
         
 	local oldName = self.oldname:GetText()
 	local newName = (len(oldName) > 20) and gsub(oldName, '%s?(.[\128-\191]*)%S+%s', '%1. ') or oldName
-    --self.name:SetText(newName) 
+    -- self.name:SetText(newName) 
     
     self.level:ClearAllPoints()
-    self.level:SetPoint('CENTER', self.healthBar, 'CENTER', 0, 10)
+    self.level:SetPoint('CENTER', self.HealthBar, 'CENTER', 0, 10)
     self.level:SetSize(134, 13)
     
 	local level, elite = tonumber(self.level:GetText()), self.elite:IsShown()
@@ -194,18 +204,18 @@ local function FixCastbar(self)
 	self.castbarOverlay:Hide()	
 	self:SetHeight(11)
 	self:ClearAllPoints()
-	self:SetPoint('TOP', self.healthBar, 'BOTTOM', 0, -8)	
+	self:SetPoint('TOP', self.HealthBar, 'BOTTOM', 0, -8)	
 end
 
 local function ColorCastBar(self, shield)		
 	if (shield) then
         self:SetBorderTexture(whiteTexture)
         self:SetBorderColor(1, 0, 1)  	
-        self.time:SetTextColor(1, 0, 1)
+        self.CastTime:SetTextColor(1, 0, 1)
     else
         self:SetBorderTexture(normalTexture)
         self:SetBorderColor(1, 1, 1)  
-        self.time:SetTextColor(1, 1, 1)
+        self.CastTime:SetTextColor(1, 1, 1)
 	end
 end
 
@@ -244,125 +254,155 @@ local function CreatePlate(frame)
 	end
 
 	frame.nameplate = true
-	frame.healthBar, frame.castBar = frame:GetChildren()
+	frame.HealthBar, frame.CastBar = frame:GetChildren()
     
-	local healthBar, castBar = frame.healthBar, frame.castBar
-    local _, castbarOverlay, shieldedRegion, spellIconRegion = castBar:GetRegions()
-	local glowRegion, overlayRegion, highlightRegion, nameTextRegion, levelTextRegion, bossIconRegion, raidIconRegion, stateIconRegion = frame:GetRegions()
+	local HealthBar, CastBar = frame.HealthBar, frame.CastBar
+    local _, castbarOverlay, shieldedRegion, spellIconRegion = CastBar:GetRegions()
+	local glowRegion, overlayRegion, highlightRegion, nameTextRegion, levelTextRegion, bossIconRegion, raidIconRegion, eliteIconRegion = frame:GetRegions()
 	
+        -- fake hide all unwanted texture
+        
 	glowRegion:SetTexture(nil)
 	overlayRegion:SetTexture(nil)
 	shieldedRegion:SetTexture(nil)
 	castbarOverlay:SetTexture(nil)
-	stateIconRegion:SetTexture(nil)
+	eliteIconRegion:SetTexture(nil)
 	bossIconRegion:SetTexture(nil)
-	
-    if (not healthBar.hasBorder) then
-        healthBar:CreateBorder(8)
-        healthBar:SetBorderPadding(3)
+    
+        -- hide original name font string
+        
+	nameTextRegion:Hide()
+    
+        -- create the healtbar border and background
+    
+    if (not HealthBar.hasBorder) then
+        HealthBar:CreateBorder(8)
+        HealthBar:SetBorderPadding(3)
         
         for i = 1, 8 do 
-            healthBar.beautyBorder[i]:SetDrawLayer('BORDER')
+            HealthBar.beautyBorder[i]:SetDrawLayer('BORDER')
         end
     
-        healthBar.hasBorder = true
+        HealthBar.hasBorder = true
     end
     
-    healthBar:SetBackdrop({
+    frame.HealthBar:SetScript('OnValueChanged', ColorHealthBar)
+    HealthBar:SetBackdrop({
         bgFile = 'Interface\\Buttons\\WHITE8x8',
         insets = { left = -2, right = -2, top = -2, bottom = -2 }
     })
 
-    frame.oldname = nameTextRegion
-    nameTextRegion:Hide()
-    -- nameTextRegion:ClearAllPoints()
-    -- nameTextRegion:SetFont('Fonts\\ARIALN.ttf', 11, 'THINOUTLINE')
-    -- nameTextRegion:SetShadowOffset(0, 0)
-    -- nameTextRegion:SetPoint('CENTER', healthBar, 'CENTER', 0, 10)
-    
     --[[
 	frame.name = frame:CreateFontString(nil, 'OVERLAY')
-	frame.name:SetParent(healthBar)
+	frame.name:SetParent(HealthBar)
 	frame.name:SetFont('Fonts\\ARIALN.ttf', 11, 'THINOUTLINE')
     frame.name:SetShadowOffset(0, 0)
-    frame.name:SetPoint('CENTER', healthBar, 'CENTER', 0, 10)
+    frame.name:SetPoint('CENTER', HealthBar, 'CENTER', 0, 10)
     --]]
-    
-	local hpRegion = frame:CreateFontString()
-	hpRegion:SetPoint('CENTER', healthBar, 0, 0)
-    hpRegion:SetFont('Fonts\\ARIALN.ttf', 10, 'THINOUTLINE')
-    hpRegion:SetShadowOffset(0, 0)
-	frame.hp = hpRegion
-	
-	levelTextRegion:SetFont('Fonts\\ARIALN.ttf', 11, 'THINOUTLINE')
+        
+        -- create health value font string
+        
+	frame.HealtValue = frame:CreateFontString()
+	frame.HealtValue:SetPoint('CENTER', HealthBar, 0, 0)
+    frame.HealtValue:SetFont('Fonts\\ARIALN.ttf', 9.5)--, 'THINOUTLINE')
+    frame.HealtValue:SetShadowOffset(1, -1)
+        
+        -- the level text string, we abuse it as namestring too
+        
+	levelTextRegion:SetFont('Fonts\\ARIALN.ttf', 10)--, 'THINOUTLINE')
     levelTextRegion:SetDrawLayer('ARTWORK')
-	levelTextRegion:SetShadowOffset(0, 0)
+	levelTextRegion:SetShadowOffset(1, -1)
     frame.level = levelTextRegion
     
-    if (not castBar.hasBorder) then
-        castBar:CreateBorder(8)
-        castBar:SetBorderPadding(3)
-        castBar.hasBorder = true
+        -- create castbar borders
+        
+    if (not CastBar.hasBorder) then
+        CastBar:CreateBorder(8)
+        CastBar:SetBorderPadding(3)
+        
+        for i = 1, 8 do 
+            CastBar.beautyBorder[i]:SetDrawLayer('BORDER')
+        end
+    
+        CastBar.hasBorder = true
     end    
         
-	castBar.castbarOverlay = castbarOverlay
-	castBar.healthBar = healthBar
-	castBar.shieldedRegion = shieldedRegion
+	CastBar.castbarOverlay = castbarOverlay
+	CastBar.HealthBar = HealthBar
+	CastBar.shieldedRegion = shieldedRegion
     
-    castBar:SetBackdrop({
+        -- castbar
+        
+    CastBar:SetBackdrop({
         bgFile = 'Interface\\Buttons\\WHITE8x8',
         insets = { left = -2, right = -2, top = -2, bottom = -2 }
     })
-    castBar:SetBackdropColor(0.3, 0.3, 0.3, 0.75)
+    CastBar:SetBackdropColor(0.2, 0.2, 0.2, 0.5)
     
-	castBar:HookScript('OnShow', OnShow)
-	castBar:HookScript('OnSizeChanged', OnSizeChanged)
-	castBar:HookScript('OnValueChanged', OnValueChanged)
-	castBar:HookScript('OnEvent', OnEvent)
-	castBar:RegisterEvent('UNIT_SPELLCAST_INTERRUPTIBLE')
-	castBar:RegisterEvent('UNIT_SPELLCAST_NOT_INTERRUPTIBLE')
+	CastBar:HookScript('OnShow', OnShow)
+	CastBar:HookScript('OnSizeChanged', OnSizeChanged)
+	CastBar:HookScript('OnValueChanged', OnValueChanged)
+	CastBar:HookScript('OnEvent', OnEvent)
+	CastBar:RegisterEvent('UNIT_SPELLCAST_INTERRUPTIBLE')
+	CastBar:RegisterEvent('UNIT_SPELLCAST_NOT_INTERRUPTIBLE')
     
-    castBar.time = castBar:CreateFontString(nil, 'OVERLAY')
-	castBar.time:SetPoint('RIGHT', castBar, 'RIGHT', 4, 0)
-	castBar.time:SetFont('Fonts\\ARIALN.ttf', 19, 'THINOUTLINE')
-	castBar.time:SetTextColor(1, 1, 1)
-    castBar.time:SetShadowOffset(0, 0)
+        -- castbar time font string
+        
+    CastBar.CastTime = CastBar:CreateFontString(nil, 'OVERLAY')
+	CastBar.CastTime:SetPoint('RIGHT', CastBar, 'RIGHT', 5, 0)
+	CastBar.CastTime:SetFont('Fonts\\ARIALN.ttf', 21)   -- , 'THINOUTLINE')
+	CastBar.CastTime:SetTextColor(1, 1, 1)
+    CastBar.CastTime:SetShadowOffset(1, -1)
     
-        -- fontstring for castnames
+        -- castbar name font string
     
-	castBar.cname = castBar:CreateFontString(nil, 'OVERLAY')
-	castBar.cname:SetPoint('LEFT', castBar, 3, 0)
-    castBar.cname:SetPoint('RIGHT', castBar.time, 'LEFT', -6, 0)
-	castBar.cname:SetFont('Fonts\\ARIALN.ttf', 11, 'THINOUTLINE')
-	castBar.cname:SetTextColor(1, 1, 1)
-	castBar.cname:SetShadowOffset(0, 0)
-    castBar.cname:SetJustifyH('LEFT')
+	CastBar.CastName = CastBar:CreateFontString(nil, 'OVERLAY')
+	CastBar.CastName:SetPoint('LEFT', CastBar, 3, 0)
+    CastBar.CastName:SetPoint('RIGHT', CastBar.CastTime, 'LEFT', -6, 0)
+	CastBar.CastName:SetFont('Fonts\\ARIALN.ttf', 10)
+	CastBar.CastName:SetTextColor(1, 1, 1)
+	CastBar.CastName:SetShadowOffset(1, -1)
+    CastBar.CastName:SetJustifyH('LEFT')
 
-	castBar.spellicon = spellIconRegion
-    castBar.spellicon:SetParent(castBar)
-	castBar.spellicon:ClearAllPoints()
-	castBar.spellicon:SetPoint('BOTTOMLEFT', castBar, 'BOTTOMRIGHT', 7, 3)
-	castBar.spellicon:SetSize(24, 24)
-    castBar.spellicon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+        -- castbar spellicon
+        
+	CastBar.SpellIcon = spellIconRegion
+    CastBar.SpellIcon:SetParent(CastBar)
+	CastBar.SpellIcon:ClearAllPoints()
+	CastBar.SpellIcon:SetPoint('BOTTOMLEFT', CastBar, 'BOTTOMRIGHT', 7, 3)
+	CastBar.SpellIcon:SetSize(24, 24)
+    CastBar.SpellIcon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
     
-    castBar.IconOverlay = castBar:CreateTexture(nil, 'BACKGROUND')
-	castBar.IconOverlay:SetPoint('TOPLEFT', castBar.spellicon, -1.5, 1.5)
-	castBar.IconOverlay:SetPoint('BOTTOMRIGHT', castBar.spellicon, 1.5, -1.5)
-	castBar.IconOverlay:SetTexture('Interface\\Buttons\\WHITE8x8')
+    CastBar.IconOverlay = CastBar:CreateTexture(nil, 'OVERLAY')
+	CastBar.IconOverlay:SetPoint('TOPLEFT', CastBar.SpellIcon, -1, 1)
+	CastBar.IconOverlay:SetPoint('BOTTOMRIGHT', CastBar.SpellIcon, 1, -1)
+	CastBar.IconOverlay:SetTexture(whiteTexture)
     
+        -- mouseover highlight
+        
 	highlightRegion:SetTexture('Interface\\Buttons\\WHITE8x8')
 	highlightRegion:SetVertexColor(0.25, 0.25, 0.25, 0.8)
 	frame.highlight = highlightRegion
 
+        -- raidicons
+
 	raidIconRegion:ClearAllPoints()
     raidIconRegion:SetDrawLayer('OVERLAY')
-	raidIconRegion:SetPoint('CENTER', healthBar, 'TOP', 0, 12)
+	raidIconRegion:SetPoint('CENTER', HealthBar, 'TOP', 0, 12)
 	raidIconRegion:SetSize(16, 16)
-
+    
+        -- use these old frames for some functions
+        
+    frame.oldname = nameTextRegion
 	frame.oldglow = glowRegion
-	frame.elite = stateIconRegion
+    
+        -- elite and bossicon, dont need them but use it for other funtions
+        
+	frame.elite = eliteIconRegion
 	frame.boss = bossIconRegion
 		
+        -- nameplates like cookies
+        
 	frame:SetScript('OnShow', UpdatePlate)
 	frame:SetScript('OnHide', function(self)
         self.highlight:Hide()
@@ -378,6 +418,8 @@ local function CreatePlate(frame)
 	UpdatePlate(frame)
 end
 
+    -- scan the worldframe for nameplates
+    
 local i = 0
 local numKids = 0 
 local frame = frame 
