@@ -1,10 +1,3 @@
---[[
-
-    nBuff
-    Copyright (c) 2008-2010, Anton 'Neav' Ickert
-    All rights reserved.
-
---]]
 
 nBuff = {
     button = {
@@ -13,7 +6,7 @@ nBuff = {
         
         buffPerRow = 9,
         
-        buffBorderColor     = { 1, 1, 1 },
+        buffBorderColor     = {1, 1, 1},
         
         durationFontsize    = 16,
         durationFont        = 'Fonts\\ARIALN.ttf',

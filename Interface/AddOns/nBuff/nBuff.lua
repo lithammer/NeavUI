@@ -1,10 +1,12 @@
---[[
+    
+    -- import globals for faster usage
+    
+local _G = _G
+local unpack = unpack
 
-    nBuff
-    Copyright (c) 2008-2010, Anton 'Neav' Ickert
-    All rights reserved.
-
---]]
+    -- some global/local stuff
+    
+local BUFF_NEW_INDEX = 1
 
 DAY_ONELETTER_ABBR    = '|cffffffff%dd|r'
 HOUR_ONELETTER_ABBR   = '|cffffffff%dh|r'
@@ -18,9 +20,7 @@ TemporaryEnchantFrame.SetPoint = function() end
 TempEnchant2:ClearAllPoints()
 TempEnchant2:SetPoint('TOPRIGHT', TempEnchant1, 'TOPLEFT', -nBuff.padding.x, 0)
 
-ConsolidatedBuffs:SetHeight(20)
-ConsolidatedBuffs:SetWidth(20)
-
+ConsolidatedBuffs:SetSize(20, 20)
 ConsolidatedBuffs:ClearAllPoints()
 ConsolidatedBuffs:SetPoint('BOTTOM', TempEnchant1, 'TOP', 0, 5)
 ConsolidatedBuffs.SetPoint = function() end
@@ -35,10 +35,9 @@ ConsolidatedBuffsCount:SetShadowOffset(0, 0)
 ConsolidatedBuffsContainer:SetScale(0.57)
 ConsolidatedBuffsTooltip:SetScale(1.2)
 
-local BUFF_NEW_INDEX = 1
-
 local function BuffFrame_SetPoint(self)
     local hasMainHandEnchant, _, _, hasOffHandEnchant, _, _, hasThrownEnchant = GetWeaponEnchantInfo()
+    
     if (self and self:IsShown()) then
         self:ClearAllPoints()
         if (UnitHasVehicleUI('player')) then
@@ -95,15 +94,7 @@ hooksecurefunc('BuffFrame_UpdateAllBuffAnchors', function()
 			end
 		else
 			numBuffs = numBuffs + 1
-            
-			-- if (hasMainHandEnchant and hasOffHandEnchant and hasThrownEnchant) then
-                -- index = index + 3
-			-- elseif (hasMainHandEnchant and hasOffHandEnchant) or (hasMainHandEnchant and hasThrownEnchant) or (hasOffHandEnchant or hasThrownEnchant) then
-				-- index = index + 2
-            -- elseif (hasMainHandEnchant or hasOffHandEnchant or hasThrownEnchant) then            
-                -- index = index + 1
-            -- end
-            
+        
 			if (buff.parent ~= BuffFrame) then
 				buff:SetParent(BuffFrame)
                 buff.parent = BuffFrame
@@ -141,7 +132,7 @@ hooksecurefunc('DebuffButton_UpdateAnchors', function(self, index)
     else
         BUFF_NEW_ROW = -BUFF_NEW_SPACE
     end
-    
+
     local buff = _G[self..index]
     buff:ClearAllPoints()
     if (index == 1) then
