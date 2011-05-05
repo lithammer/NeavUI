@@ -1,13 +1,6 @@
     
     -- a 'new' mail notification    
 
-MiniMapMailFrame.Text = MiniMapMailFrame:CreateFontString(nil, 'OVERLAY')
-MiniMapMailFrame.Text:SetParent(MiniMapMailFrame)
-MiniMapMailFrame.Text:SetFont('Fonts\\ARIALN.ttf', 15, 'OUTLINE')
-MiniMapMailFrame.Text:SetPoint('BOTTOMRIGHT', MiniMapMailFrame)
-MiniMapMailFrame.Text:SetTextColor(1, 0, 1)
-MiniMapMailFrame.Text:SetText('N')
-
 MiniMapMailFrame:SetSize(14, 14)
 MiniMapMailFrame:ClearAllPoints()
 MiniMapMailFrame:SetPoint('BOTTOMRIGHT', Minimap, -4, 5)
@@ -19,6 +12,13 @@ hooksecurefunc(MiniMapMailFrame, 'Show', function()
     MiniMapMailBorder:SetTexture(nil)
     MiniMapMailIcon:SetTexture(nil)
 end)
+
+MiniMapMailFrame.Text = MiniMapMailFrame:CreateFontString(nil, 'OVERLAY')
+MiniMapMailFrame.Text:SetParent(MiniMapMailFrame)
+MiniMapMailFrame.Text:SetFont('Fonts\\ARIALN.ttf', 15, 'OUTLINE')
+MiniMapMailFrame.Text:SetPoint('BOTTOMRIGHT', MiniMapMailFrame)
+MiniMapMailFrame.Text:SetTextColor(1, 0, 1)
+MiniMapMailFrame.Text:SetText('N')
 
    -- modify the lfg frame
     
@@ -60,12 +60,16 @@ MiniMapBattlefieldFrame.Text:SetPoint('BOTTOMLEFT', MiniMapBattlefieldFrame)
 MiniMapBattlefieldFrame.Text:SetTextColor(0, 0.75, 1)
 MiniMapBattlefieldFrame.Text:SetText('P')
 
-    -- hide all unwanted stuff
+    -- hide all unwanted things
     
 MinimapZoomIn:Hide()
+MinimapZoomIn:UnregisterAllEvents()
+
 MinimapZoomOut:Hide()
+MinimapZoomOut:UnregisterAllEvents()
 
 MiniMapWorldMapButton:Hide()
+MiniMapWorldMapButton:UnregisterAllEvents()
 
 MinimapNorthTag:SetAlpha(0)
 
@@ -73,15 +77,18 @@ MinimapBorder:Hide()
 MinimapBorderTop:Hide()
 
 MinimapZoneText:Hide()
+
 MinimapZoneTextButton:Hide()
+MinimapZoneTextButton:UnregisterAllEvents()
 
     -- hide the durability frame (the armored man)
     
 DurabilityFrame:Hide()
+DurabilityFrame:UnregisterAllEvents()
 
-    -- make the minimap bigger
+    -- bigger minimap
     
-MinimapCluster:SetScale(1.18)
+MinimapCluster:SetScale(1.1)
 MinimapCluster:EnableMouse(false)
 
     -- new position
@@ -89,7 +96,7 @@ MinimapCluster:EnableMouse(false)
 Minimap:ClearAllPoints()
 Minimap:SetPoint('TOPRIGHT', UIParent, -26, -26)
 
-    -- make it square and add a border
+    -- square minimap and create a border
     
 Minimap:SetMaskTexture('Interface\\ChatFrame\\ChatFrameBackground')
 
@@ -121,9 +128,6 @@ end)
 
 MiniMapTracking:UnregisterAllEvents()
 MiniMapTracking:Hide()
--- MiniMapTracking:ClearAllPoints()
--- MiniMapTracking:SetPoint('CENTER', 9999, 9999)
--- MiniMapTracking.Show = function() end
 
     -- skin the ticket status frame
 
@@ -140,11 +144,6 @@ TicketStatusFrameButton:HookScript('OnShow', function(self)
             bottom = 3
         }
     })
-    
     self:SetBackdropColor(0, 0, 0, 0.5)
-    
-    -- if (not self.hasBorder) then
-        CreateBorder(self, 12, 1, 1, 1)
-        -- self.hasBorder = true
-    -- end
+    self:CreateBorder(12)
 end)

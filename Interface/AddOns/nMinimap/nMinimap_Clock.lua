@@ -1,4 +1,32 @@
 ﻿
+local select = select
+local modf = math.modf
+local sort = table.sort
+
+local gradientColor = {
+    0, 1, 0, 
+    1, 1, 0, 
+    1, 0, 0
+}
+
+    -- damn! blizz must create a global for this
+    
+local function GetCalendarName()
+    if (GetLocale() == 'enUS') then
+        return 'Calendar'
+    elseif (GetLocale() == 'frFR') then
+        return 'Calandre'
+    elseif (GetLocale() == 'esES') then
+        return 'Calendario'
+    elseif (GetLocale() == 'ruRU') then
+        return 'Календарь'
+    elseif (GetLocale() == 'deDE') then
+        return 'Kalender'
+    else
+        return 'Calendar'
+    end
+end
+
 local function FormatValue(i)
     if (i > 1024) then
         return format('%.2f |cffffffffMB|r', i/1024)
@@ -16,32 +44,18 @@ local function ColorGradient(perc, ...)
 	
 	local num = select('#', ...) / 3
 
-	local segment, relperc = math.modf(perc*(num-1))
+	local segment, relperc = modf(perc*(num-1))
 	local r1, g1, b1, r2, g2, b2 = select((segment*3)+1, ...)
 
 	return r1 + (r2-r1)*relperc, g1 + (g2-g1)*relperc, b1 + (b2-b1)*relperc
 end
 
-local function CreateDropDown()
-    local calendar
-
-    if (GetLocale() == 'enUS') then
-        calendar = 'Calendar'
-    elseif (GetLocale() == 'frFR') then
-        calendar = 'Calandre'
-    elseif (GetLocale() == 'esES') then
-        calendar = 'Calendario'
-    elseif (GetLocale() == 'ruRU') then
-        calendar = 'Календарь'
-    elseif (GetLocale() == 'deDE') then
-        calendar = 'Kalender'
-    else
-        calendar = 'Calendar'
-    end
+    -- function for creating the dropdown menu
     
+local function CreateDropDown()
     local button = {}
     
-    for i = 1, 11 do
+    for i = 1, 12 do
         button[i] = {}
         button[i].notCheckable = true
     end
@@ -74,7 +88,7 @@ local function CreateDropDown()
     
     UIDropDownMenu_AddButton(button[4])
 
-    button[5].text = calendar
+    button[5].text = GetCalendarName()
     button[5].func = function() 
         ToggleCalendar() 
     end
@@ -129,6 +143,13 @@ local function CreateDropDown()
     end
     
     UIDropDownMenu_AddButton(button[11])
+    
+    button[12].text = '|cff999999'..BATTLEFIELD_MINIMAP..'|r'
+    button[12].func = function() 
+        ToggleBattlefieldMinimap()
+    end
+    
+    UIDropDownMenu_AddButton(button[12])
 end 
 
 local classColor = RAID_CLASS_COLORS[select(2, UnitClass('player'))]
@@ -156,9 +177,7 @@ end)
 
 local entry
 local total
-local addons = {}
-local select = select
-local sort = table.sort
+local addonTable = {}
 
 local function AddonMem()
     total = 0
@@ -173,10 +192,10 @@ local function AddonMem()
                 memory = memory
             }
           
-            tinsert(addons, entry)
+            tinsert(addonTable, entry)
         
             if (IsShiftKeyDown()) then
-                sort(addons, function(a, b) 
+                sort(addonTable, function(a, b) 
                     return a.memory > b.memory 
                 end)
             end
@@ -188,13 +207,10 @@ local function ShowTip()
     GameTooltip:ClearLines()
     GameTooltip:SetOwner(TimeManagerClockButton, 'ANCHOR_BOTTOMLEFT')
     
-    local gradient = {0, 1, 0, 1, 1, 0, 1, 0, 0}
-    
     collectgarbage()
-    wipe(addons)
-
     UpdateAddOnMemoryUsage()
-
+    
+    wipe(addonTable)
     AddonMem()
 
     GameTooltip:AddLine(COMBAT_MISC_INFO)    
@@ -202,20 +218,20 @@ local function ShowTip()
     GameTooltip:AddLine(' ')
 
     local _, _, lagHome, lagWorld = GetNetStats();
-    local r, g, b = ColorGradient((select(3, GetNetStats()) / 100), unpack(gradient))
+    local r, g, b = ColorGradient((select(3, GetNetStats()) / 100), unpack(gradientColor))
     GameTooltip:AddLine('|cffffffffHome:|r '..format('%d ms', lagHome), r, g, b)
     GameTooltip:AddLine('|cffffffff'..CHANNEL_CATEGORY_WORLD..':|r '..format('%d ms', lagWorld), r, g, b)
     
     GameTooltip:AddLine(' ')
            
-    for _, table in pairs(addons) do
-        local r, g, b = ColorGradient((table.memory / 800), unpack(gradient))
+    for _, table in pairs(addonTable) do
+        local r, g, b = ColorGradient((table.memory / 800), unpack(gradientColor))
         GameTooltip:AddDoubleLine(table.name, FormatValue(table.memory), 1, 1, 1, r, g, b)
     end
 
     GameTooltip:AddLine(' ')
     
-    local r, g, b = ColorGradient((total / (1024*10)), unpack(gradient)) 
+    local r, g, b = ColorGradient((total / (1024*10)), unpack(gradientColor)) 
     GameTooltip:AddDoubleLine('Total', FormatValue(total), nil, nil, nil, r, g, b)
     
     GameTooltip:Show()
@@ -225,12 +241,12 @@ local f = CreateFrame('Frame')
 f:RegisterEvent('MODIFIER_STATE_CHANGED')
 f:SetScript('OnEvent', function()
     if (IsShiftKeyDown()) then
-        if (TimeManagerClockButton:IsMouseOver()) then
+        if (TimeManagerClockButton:IsMouseOver() and not DropDownList1:IsShown()) then
             GameTooltip:Hide()
             ShowTip()
         end
     else
-         if (TimeManagerClockButton:IsMouseOver()) then
+        if (TimeManagerClockButton:IsMouseOver() and not DropDownList1:IsShown()) then
             GameTooltip:Hide()
             ShowTip()
         end   
@@ -255,5 +271,5 @@ TimeManagerClockButton:SetScript('OnClick', function(self, button)
     GameTooltip:Hide()
 end)
 
-TimeManagerClockDropDown = CreateFrame('Frame', '$parentDropDown', nil, 'UIDropDownMenuTemplate')
+TimeManagerClockDropDown = CreateFrame('Frame', '$parentGameMenuDropDown', nil, 'UIDropDownMenuTemplate')
 UIDropDownMenu_Initialize(TimeManagerClockDropDown, CreateDropDown, 'MENU')

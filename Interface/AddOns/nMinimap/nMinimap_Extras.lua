@@ -1,12 +1,145 @@
 
 local select = select
+local tostring = tostring
+
+local ceil = math.ceil
+local sort = table.sort
 local format = string.format
 
 local _, class = UnitClass('player')
 
-local activezone = {r = 0.3, g = 1.0, b = 0}
-local inactivezone = {r = 0.75, g = 0.75, b = 0.75}
+local f = CreateFrame('Frame', nil, Minimap)
+f:SetFrameStrata('BACKGROUND')
+f:SetFrameLevel(Minimap:GetFrameLevel()-1)
+f:SetHeight(30)
+f:SetAlpha(0.4)
+f:CreateBorder(11)
+f:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
+f:SetBackdropColor(0, 0, 0, 0.6)
 
+    -- guild info frame
+    
+f.Guild = CreateFrame('Frame', nil, UIParent)
+f.Guild:EnableMouse(true)
+f.Guild:SetFrameLevel(3)
+f.Guild:SetParent(f)
+f.Guild:SetAlpha(0)
+
+f.Guild:RegisterEvent('MODIFIER_STATE_CHANGED')
+f.Guild:RegisterEvent('GUILD_ROSTER_SHOW')
+f.Guild:RegisterEvent('PLAYER_ENTERING_WORLD')
+f.Guild:RegisterEvent('GUILD_ROSTER_UPDATE')
+f.Guild:RegisterEvent('GUILD_XP_UPDATE')
+f.Guild:RegisterEvent('PLAYER_GUILD_UPDATE')
+f.Guild:RegisterEvent('GUILD_MOTD')
+
+f.Guild.Text = f.Guild:CreateFontString(nil, 'OVERLAY')
+f.Guild.Text:SetFont('Fonts\\ARIALN.ttf', 12)
+f.Guild.Text:SetShadowColor(0, 0, 0)
+f.Guild.Text:SetShadowOffset(1, -1)
+f.Guild:SetAllPoints(f.Guild.Text)
+f.Guild.Text:SetTextColor(RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b )
+
+    -- friend info frame
+    
+f.Friends = CreateFrame('Frame', nil, UIParent)
+f.Friends:EnableMouse(true)
+f.Friends:SetFrameStrata('BACKGROUND')
+f.Friends:SetFrameLevel(3)
+f.Friends:SetParent(f)
+f.Friends:SetAlpha(0)
+
+f.Friends:RegisterEvent('BN_FRIEND_ACCOUNT_ONLINE')
+f.Friends:RegisterEvent('BN_FRIEND_ACCOUNT_OFFLINE')
+f.Friends:RegisterEvent('BN_FRIEND_INFO_CHANGED')
+f.Friends:RegisterEvent('BN_FRIEND_TOON_ONLINE')
+f.Friends:RegisterEvent('BN_FRIEND_TOON_OFFLINE')
+f.Friends:RegisterEvent('BN_TOON_NAME_UPDATED')
+f.Friends:RegisterEvent('FRIENDLIST_UPDATE')
+f.Friends:RegisterEvent('PLAYER_ENTERING_WORLD')
+
+f.Friends.Text = f.Friends:CreateFontString(nil, 'OVERLAY')
+f.Friends.Text:SetFont('Fonts\\ARIALN.ttf', 12)
+
+if (nMinimap.positionDrawerBelow) then
+    f.Guild.Text:SetPoint('TOPLEFT', Minimap, 'BOTTOMLEFT', 18, -3)
+	f.Friends.Text:SetPoint('TOPRIGHT', Minimap, 'BOTTOMRIGHT', -18, -3)	
+else
+    f.Guild.Text:SetPoint('BOTTOMLEFT', Minimap, 'TOPLEFT', 18, 3)
+	f.Friends.Text:SetPoint('BOTTOMRIGHT', Minimap, 'TOPRIGHT', -18, 3)
+end
+
+f.Friends.Text:SetShadowColor(0, 0, 0)
+f.Friends.Text:SetShadowOffset(1, -1)
+f.Friends:SetAllPoints(f.Friends.Text)
+f.Friends.Text:SetTextColor(RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b )
+
+    -- fade fade functions
+    
+local function fadeOut()
+    UIFrameFadeOut(f.Guild, 0.05, f.Guild:GetAlpha(), 0)
+    UIFrameFadeOut(f.Friends, 0.05, f.Friends:GetAlpha(), 0)
+
+	if (nMinimap.positionDrawerBelow) then
+		f:SetPoint('TOPLEFT', Minimap, 'BOTTOMLEFT', 10, 23)
+		f:SetPoint('TOPRIGHT', Minimap, 'BOTTOMRIGHT', -10, 23)
+	else
+		f:SetPoint('BOTTOMLEFT', Minimap, 'TOPLEFT', 10, -23)
+		f:SetPoint('BOTTOMRIGHT', Minimap, 'TOPRIGHT', -10, -23)
+	end
+    
+    f:SetAlpha(0.5)
+    
+    GameTooltip:Hide() 
+end
+
+local function fadeIn()
+    UIFrameFadeIn(f.Guild, 0.135, f.Guild:GetAlpha(), 1)
+    UIFrameFadeIn(f.Friends, 0.135, f.Friends:GetAlpha(), 1)
+
+	if (nMinimap.positionDrawerBelow) then
+		f:SetPoint('TOPLEFT', Minimap, 'BOTTOMLEFT', 10, 10)
+		f:SetPoint('TOPRIGHT', Minimap, 'BOTTOMRIGHT', -10, 10)
+	else
+		f:SetPoint('BOTTOMLEFT', Minimap, 'TOPLEFT', 10, -10)
+		f:SetPoint('BOTTOMRIGHT', Minimap, 'TOPRIGHT', -10, -10)
+	end
+
+    f:SetAlpha(1)
+end
+
+f:SetScript('OnEnter', function()
+    fadeIn()
+end)
+
+f:SetScript('OnLeave', function()
+    fadeOut()
+end)
+
+f.Guild:SetScript('OnLeave', function() 
+    fadeOut()
+end)
+
+f.Friends:SetScript('OnLeave', function() 
+    fadeOut()
+end)
+
+if (nMinimap.showDrawerOnMinimapMouseOver) then
+	Minimap:HookScript('OnEnter', function()
+		fadeIn()
+	end)
+
+	Minimap:HookScript('OnLeave', function()
+		fadeOut()
+	end)
+end
+
+    -- make sure that the frame is faded out on login
+    
+fadeOut()
+
+    -- some local function
+    
 local function ShortValue(v)
 	if (v >= 1e6) then
 		return ('%.1fm'):format(v / 1e6):gsub('%.?0+([km])$', '%1')
@@ -24,140 +157,33 @@ local function RGBToHex(r, g, b)
 	return format('|cff%02x%02x%02x', r*255, g*255, b*255)
 end
 
-local classHex = RGBToHex(RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b)
-
-local f = CreateFrame('Frame', 'xFav', Minimap)
-f:SetFrameStrata('BACKGROUND')
-f:SetFrameLevel(Minimap:GetFrameLevel()-1)
-f:SetHeight(30)
-f:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
-f:SetBackdropColor(0, 0, 0, 0.6)
-f:SetAlpha(0.4)
-
-CreateBorder(f, 11, 1, 1, 1)
-
-local frameGuild = CreateFrame('Frame', 'xFavGuild', UIParent)
-frameGuild:EnableMouse(true)
-frameGuild:SetFrameLevel(3)
-frameGuild:SetParent(xFav)
-frameGuild:SetAlpha(0)
-
-frameGuild:RegisterEvent('MODIFIER_STATE_CHANGED')
-frameGuild:RegisterEvent('GUILD_ROSTER_SHOW')
-frameGuild:RegisterEvent('PLAYER_ENTERING_WORLD')
-frameGuild:RegisterEvent('GUILD_ROSTER_UPDATE')
-frameGuild:RegisterEvent('GUILD_XP_UPDATE')
-frameGuild:RegisterEvent('PLAYER_GUILD_UPDATE')
-frameGuild:RegisterEvent('GUILD_MOTD')
-
-frameGuild.Text = frameGuild:CreateFontString(nil, 'OVERLAY')
-frameGuild.Text:SetFont('Fonts\\ARIALN.ttf', 12)
-frameGuild.Text:SetShadowColor(0, 0, 0)
-frameGuild.Text:SetShadowOffset(1, -1)
-frameGuild:SetAllPoints(frameGuild.Text)
-frameGuild.Text:SetTextColor(RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b )
-
-local frameFriends = CreateFrame('Frame', 'xFavFriend', UIParent)
-frameFriends:EnableMouse(true)
-frameFriends:SetFrameStrata('BACKGROUND')
-frameFriends:SetFrameLevel(3)
-frameFriends:SetParent(f)
-frameFriends:SetAlpha(0)
-
-frameFriends:RegisterEvent('BN_FRIEND_ACCOUNT_ONLINE')
-frameFriends:RegisterEvent('BN_FRIEND_ACCOUNT_OFFLINE')
-frameFriends:RegisterEvent('BN_FRIEND_INFO_CHANGED')
-frameFriends:RegisterEvent('BN_FRIEND_TOON_ONLINE')
-frameFriends:RegisterEvent('BN_FRIEND_TOON_OFFLINE')
-frameFriends:RegisterEvent('BN_TOON_NAME_UPDATED')
-frameFriends:RegisterEvent('FRIENDLIST_UPDATE')
-frameFriends:RegisterEvent('PLAYER_ENTERING_WORLD')
-
-frameFriends.Text = frameFriends:CreateFontString(nil, 'OVERLAY')
-frameFriends.Text:SetFont('Fonts\\ARIALN.ttf', 12)
-
-if (nMinimap.positionDrawerBelow) then
-    frameGuild.Text:SetPoint('TOPLEFT', Minimap, 'BOTTOMLEFT', 18, -3)
-	frameFriends.Text:SetPoint('TOPRIGHT', Minimap, 'BOTTOMRIGHT', -18, -3)	
-else
-    frameGuild.Text:SetPoint('BOTTOMLEFT', Minimap, 'TOPLEFT', 18, 3)
-	frameFriends.Text:SetPoint('BOTTOMRIGHT', Minimap, 'TOPRIGHT', -18, 3)
-end
-
-frameFriends.Text:SetShadowColor(0, 0, 0)
-frameFriends.Text:SetShadowOffset(1, -1)
-frameFriends:SetAllPoints(frameFriends.Text)
-frameFriends.Text:SetTextColor(RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b )
-
-local function fadeOut()
-    UIFrameFadeOut(xFavGuild, 0.05, xFavGuild:GetAlpha(), 0)
-    UIFrameFadeOut(xFavFriend, 0.05, xFavFriend:GetAlpha(), 0)
-
-	if (nMinimap.positionDrawerBelow) then
-		f:SetPoint('TOPLEFT', Minimap, 'BOTTOMLEFT', 10, 23)
-		f:SetPoint('TOPRIGHT', Minimap, 'BOTTOMRIGHT', -10, 23)
-	else
-		f:SetPoint('BOTTOMLEFT', Minimap, 'TOPLEFT', 10, -23)
-		f:SetPoint('BOTTOMRIGHT', Minimap, 'TOPRIGHT', -10, -23)
-	end
-    
-    xFav:SetAlpha(0.5)
-    
-    GameTooltip:Hide() 
-end
-
-local function fadeIn()
-    UIFrameFadeIn(xFavGuild, 0.135, xFavGuild:GetAlpha(), 1)
-    UIFrameFadeIn(xFavFriend, 0.135, xFavFriend:GetAlpha(), 1)
-
-	if (nMinimap.positionDrawerBelow) then
-		f:SetPoint('TOPLEFT', Minimap, 'BOTTOMLEFT', 10, 10)
-		f:SetPoint('TOPRIGHT', Minimap, 'BOTTOMRIGHT', -10, 10)
-	else
-		f:SetPoint('BOTTOMLEFT', Minimap, 'TOPLEFT', 10, -10)
-		f:SetPoint('BOTTOMRIGHT', Minimap, 'TOPRIGHT', -10, -10)
-	end
-
-    xFav:SetAlpha(1)
-end
-
-xFav:SetScript('OnEnter', function(self)
-    fadeIn()
-end)
-
-xFav:SetScript('OnLeave', function(self)
-    fadeOut()
-end)
-
-frameGuild:SetScript('OnLeave', function(self) 
-    fadeOut()
-end)
-
-frameFriends:SetScript('OnLeave', function(self) 
-    fadeOut()
-end)
-
-if nMinimap.showDrawerOnMinimapMouseOver then
-	Minimap:SetScript('OnEnter', function(self)
-		fadeIn()
-	end)
-
-	Minimap:SetScript('OnLeave', function(self)
-		fadeOut()
-	end)
-end
-
-fadeOut()
-
-    ------------------------
     -- source TukUI - www.tukui.org
-    ------------------------
+    
+local totalGuildOnline = 0
+local totalFriendsOnline = 0
+local totalBattleNetOnline = 0
 
-local totalOnline = 0
-local guildTable, guildXP = {}, {}
+local guildXP = {}
+local guildTable = {}
+
+local BNTable = {}
+local friendTable  = {}
+
+local statusTable = { '[AFK]', '[DND]', '' }
+local groupedTable = { '|cffaaaaaa*|r', '' } 
+
+local activezone = {r = 0.3, g = 1.0, b = 0}
+local inactivezone = {r = 0.75, g = 0.75, b = 0.75}
+
+local function GetTableIndex(table, fieldIndex, value)
+	for k, v in ipairs(table) do
+		if v[fieldIndex] == value then return k end
+	end
+    
+	return -1
+end
 
 local menuFrame = CreateFrame('Frame', 'ContactDropDownMenu', UIParent, 'UIDropDownMenuTemplate')
-
 local menuList = {
 	{ 
         text = OPTIONS_MENU, 
@@ -177,20 +203,29 @@ local menuList = {
 }
 
 local function BuildGuildTable()
-	totalOnline = 0
+	totalGuildOnline = 0
 	wipe(guildTable)
     
-	local name, rank, level, zone, note, officernote, connected, status, class
-    
 	for i = 1, GetNumGuildMembers() do
-		name, rank, _, level, _, zone, note, officernote, connected, status, class = GetGuildRosterInfo(i)
-		guildTable[i] = { name, rank, level, zone, note, officernote, connected, status, class }
+		local name, rank, _, level, _, zone, note, officernote, connected, status, class = GetGuildRosterInfo(i)
+		guildTable[i] = { 
+            name, 
+            rank, 
+            level, 
+            zone, 
+            note, 
+            officernote, 
+            connected, 
+            status, 
+            class 
+        }
+        
 		if (connected) then 
-            totalOnline = totalOnline + 1 
+            totalGuildOnline = totalGuildOnline + 1 
         end
 	end
     
-	table.sort(guildTable, function(a, b)
+	sort(guildTable, function(a, b)
 		if (a and b) then
 			return a[1] < b[1]
 		end
@@ -201,8 +236,8 @@ end
 local function UpdateGuildXP()
 	local currentXP, remainingXP, dailyXP, maxDailyXP = UnitGetGuildXP('player')
 	local nextLevelXP = currentXP + remainingXP
-	local percentTotal = tostring(math.ceil((currentXP / nextLevelXP) * 100))
-	local percentDaily = tostring(math.ceil((dailyXP / maxDailyXP) * 100))
+	local percentTotal = tostring(ceil((currentXP / nextLevelXP) * 100))
+	local percentDaily = tostring(ceil((dailyXP / maxDailyXP) * 100))
 	
 	guildXP[0] = { currentXP, nextLevelXP, percentTotal }
 	guildXP[1] = { dailyXP, maxDailyXP, percentDaily }
@@ -219,7 +254,7 @@ local function GuildTip(self)
     
     local col = RGBToHex(1, 0, 1)
 	local zonec, classc, levelc
-	local online = totalOnline
+	local online = totalGuildOnline
 
 	GameTooltip:AddLine(GetGuildInfo('player')..' - '..LEVEL..' '..GetGuildLevel())
 
@@ -244,7 +279,7 @@ local function GuildTip(self)
 		curr = curr - min
 		min = 0
         GameTooltip:AddLine(COMBAT_FACTION_CHANGE)
-		GameTooltip:AddLine(format('|cFFFFFFFF%s/%s (%s%%)', ShortValue(curr), ShortValue(max), math.ceil((curr / max) * 100)))
+		GameTooltip:AddLine(format('|cFFFFFFFF%s/%s (%s%%)', ShortValue(curr), ShortValue(max), ceil((curr / max) * 100)))
 	end
     
     GameTooltip:AddLine(' ')
@@ -260,7 +295,7 @@ local function GuildTip(self)
 				if (online > 1) then 
                     GameTooltip:AddLine(format('+ %d More...', online - modules.Guild.maxguild), nil, nil, nil) 
                 end
-                
+    
 				break
 			end
 
@@ -297,25 +332,29 @@ local function GuildTip(self)
 	GameTooltip:Show()
 end
 
-frameGuild:SetScript('OnEvent', function(self, event, ...)	
+f.Guild:SetScript('OnEnter', function(self)
+    GuildTip(self)
+end)
+
+f.Guild:SetScript('OnEvent', function(self, event, ...)	
 	if (IsInGuild()) then
 		BuildGuildTable()
         UpdateGuildXP() 
         
-        frameGuild.Text:SetFormattedText(format('%s |cffffffff%d|r', GUILD, (totalOnline == 1 and 0) or totalOnline))
+        f.Guild.Text:SetFormattedText(format('%s |cffffffff%d|r', GUILD, (totalGuildOnline == 1 and 0) or totalGuildOnline))
 	else
-		frameGuild.Text:SetText('No guild')
-		frameGuild:SetScript('OnMouseDown', nil)
+		f.Guild.Text:SetText('No guild')
+		f.Guild:SetScript('OnMouseDown', nil)
 	end
     
     if (event == 'MODIFIER_STATE_CHANGED') then
         if (IsShiftKeyDown()) then
-            if (self:IsMouseOver()) then
+            if (self:IsMouseOver() and not DropDownList1:IsShown()) then
                 GameTooltip:Hide()
                 GuildTip(self)
             end
         else
-             if (self:IsMouseOver()) then
+             if (self:IsMouseOver() and not DropDownList1:IsShown()) then
                 GameTooltip:Hide()
                 GuildTip(self)
             end   
@@ -323,11 +362,7 @@ frameGuild:SetScript('OnEvent', function(self, event, ...)
     end
 end)
 
-frameGuild:SetScript('OnEnter', function(self)
-    GuildTip(self)
-end)
-
-frameGuild:SetScript('OnMouseDown', function(self, button)
+f.Guild:SetScript('OnMouseDown', function(self, button)
     if (button == 'LeftButton') then      
         if (not GuildFrame and IsInGuild()) then 
             LoadAddOn('Blizzard_GuildUI') 
@@ -385,33 +420,35 @@ frameGuild:SetScript('OnMouseDown', function(self, button)
     end
 end)
 
-local function GetTableIndex(table, fieldIndex, value)
-	for k, v in ipairs(table) do
-		if v[fieldIndex] == value then return k end
-	end
-	return -1
-end
-
-local wowString = 'WoW'
-
-local statusTable = { '[AFK]', '[DND]', '' }
-local groupedTable = { '|cffaaaaaa*|r', '' } 
-
-local friendTable, BNTable = {}, {}
-local totalOnline, BNTotalOnline = 0, 0
-
 local function BuildFriendTable(total)
-	totalOnline = 0
+	totalFriendsOnline = 0
 	wipe(friendTable)
-	local name, level, class, area, connected, status, note
+
 	for i = 1, total do
-		name, level, class, area, connected, status, note = GetFriendInfo(i)
-		for k,v in pairs(LOCALIZED_CLASS_NAMES_MALE) do if class == v then class = k end end
+		local name, level, class, area, connected, status, note = GetFriendInfo(i)
+        
+		for k,v in pairs(LOCALIZED_CLASS_NAMES_MALE) do 
+            if (class == v) then 
+                class = k 
+            end 
+        end
 		
-		friendTable[i] = { name, level, class, area, connected, status, note }
-		if connected then totalOnline = totalOnline + 1 end
+		friendTable[i] = { 
+            name, 
+            level, 
+            class, 
+            area, 
+            connected, 
+            status, 
+            note 
+        }
+        
+		if (connected) then 
+            totalFriendsOnline = totalFriendsOnline + 1 
+        end
 	end
-	table.sort(friendTable, function(a, b)
+    
+	sort(friendTable, function(a, b)
 		if a[1] and b[1] then
 			return a[1] < b[1]
 		end
@@ -419,11 +456,10 @@ local function BuildFriendTable(total)
 end
 
 local function UpdateFriendTable(total)
-	totalOnline = 0
-	local name, level, class, area, connected, status, note
-    
+	totalFriendsOnline = 0
+
 	for i = 1, #friendTable do
-		name, level, class, area, connected, status, note = GetFriendInfo(i)
+		local name, level, class, area, connected, status, note = GetFriendInfo(i)
         
 		for k,v in pairs(LOCALIZED_CLASS_NAMES_MALE) do 
             if class == v then 
@@ -440,19 +476,19 @@ local function UpdateFriendTable(total)
 
 		friendTable[index][5] = connected
 
-		if connected then
+		if (connected) then
 			friendTable[index][2] = level
 			friendTable[index][3] = class
 			friendTable[index][4] = area
 			friendTable[index][6] = status
 			friendTable[index][7] = note
-			totalOnline = totalOnline + 1
+			totalFriendsOnline = totalFriendsOnline + 1
 		end
 	end
 end
 
 local function BuildBNTable(total)
-	BNTotalOnline = 0
+	totalBattleNetOnline = 0
 	wipe(BNTable)
 
 	for i = 1, total do
@@ -468,11 +504,11 @@ local function BuildBNTable(total)
 		BNTable[i] = { presenceID, givenName, surname, toonName, toonID, client, isOnline, isAFK, isDND, noteText, realmName, faction, race, class, zoneName, level }
 		
         if (isOnline) then 
-            BNTotalOnline = BNTotalOnline + 1 
+            totalBattleNetOnline = totalBattleNetOnline + 1 
         end
 	end
     
-	table.sort(BNTable, function(a, b)
+	sort(BNTable, function(a, b)
 		if (a[2] and b[2]) then
 			if a[2] == b[2] then return a[3] < b[3] end
 			return a[2] < b[2]
@@ -481,14 +517,14 @@ local function BuildBNTable(total)
 end
 
 local function UpdateBNTable(total)
-	BNTotalOnline = 0
+	totalBattleNetOnline = 0
     
 	for i = 1, #BNTable do
 		local presenceID, givenName, surname, toonName, toonID, client, isOnline, _, isAFK, isDND, _, noteText = BNGetFriendInfo(i)
 		local _, _, _, realmName, faction, race, class, _, zoneName, level = BNGetToonInfo(presenceID)
         
 		for k,v in pairs(LOCALIZED_CLASS_NAMES_MALE) do 
-            if class == v then 
+            if (class == v) then 
                 class = k 
             end 
         end
@@ -518,12 +554,12 @@ local function UpdateBNTable(total)
 			BNTable[index][15] = zoneName
 			BNTable[index][16] = level
 			
-			BNTotalOnline = BNTotalOnline + 1
+			totalBattleNetOnline = totalBattleNetOnline + 1
 		end
 	end
 end
 
-frameFriends:SetScript('OnMouseDown', function(self, button) 
+f.Friends:SetScript('OnMouseDown', function(self, button) 
     if (button == 'LeftButton') then 
         ToggleFriendsFrame(1) 
     else
@@ -536,14 +572,14 @@ frameFriends:SetScript('OnMouseDown', function(self, button)
         menuList[2].menuList = {}
         menuList[3].menuList = {}
         
-        if (totalOnline > 0) then
+        if (totalFriendsOnline > 0) then
             for i = 1, #friendTable do
                 if (friendTable[i][5]) then
                     menuCountInvites = menuCountInvites + 1
                     menuCountWhispers = menuCountWhispers + 1
 
                     classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[friendTable[i][3]], GetQuestDifficultyColor(friendTable[i][2])
-                    if classc == nil then 
+                    if (classc == nil) then 
                         classc = GetQuestDifficultyColor(friendTable[i][2]) 
                     end
 
@@ -570,7 +606,7 @@ frameFriends:SetScript('OnMouseDown', function(self, button)
             end
         end
         
-        if (BNTotalOnline > 0) then
+        if (totalBattleNetOnline > 0) then
             local realID, playerFaction, grouped
             for i = 1, #BNTable do
                 if (BNTable[i][7]) then
@@ -592,7 +628,7 @@ frameFriends:SetScript('OnMouseDown', function(self, button)
                         playerFaction = 1 
                     end
                     
-                    if (BNTable[i][6] == wowString and BNTable[i][11] == GetRealmName() and playerFaction == BNTable[i][12]) then
+                    if (BNTable[i][6] == 'WoW' and BNTable[i][11] == GetRealmName() and playerFaction == BNTable[i][12]) then
                         classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[BNTable[i][14]], GetQuestDifficultyColor(BNTable[i][16])
                         
                         if (classc == nil) then 
@@ -624,7 +660,7 @@ frameFriends:SetScript('OnMouseDown', function(self, button)
     end 
 end)
 
-frameFriends:SetScript('OnEvent', function(self, event)
+f.Friends:SetScript('OnEvent', function(self, event)
 	if (event == 'BN_FRIEND_INFO_CHANGED' or 'BN_FRIEND_ACCOUNT_ONLINE' or 'BN_FRIEND_ACCOUNT_OFFLINE' or 'BN_TOON_NAME_UPDATED' or 'BN_FRIEND_TOON_ONLINE' or 'BN_FRIEND_TOON_OFFLINE' or 'PLAYER_ENTERING_WORLD') then
 		local BNTotal = BNGetNumFriends()
         
@@ -645,22 +681,22 @@ frameFriends:SetScript('OnEvent', function(self, event)
 		end
 	end
     
-    frameFriends.Text:SetFormattedText(format('%s |cffffffff%d|r', 'Friends', totalOnline + BNTotalOnline))
+    f.Friends.Text:SetFormattedText(format('%s |cffffffff%d|r', 'Friends', totalFriendsOnline + totalBattleNetOnline))
 end)
 
-frameFriends:SetScript('OnEnter', function(self)
+f.Friends:SetScript('OnEnter', function(self)
     fadeIn()
     
-	local totalonline = totalOnline + BNTotalOnline
+	local totalFriendsOnline = totalFriendsOnline + totalBattleNetOnline
 	local totalfriends = #friendTable + #BNTable
 	local zonec, classc, levelc, realmc, grouped
     
-	if (totalonline > 0) then
+	if (totalFriendsOnline > 0) then
 		GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMLEFT')
 		GameTooltip:ClearLines()
-		GameTooltip:AddLine(format('Online: %s/%s', totalonline, totalfriends))
+		GameTooltip:AddLine(format('Online: %s/%s', totalFriendsOnline, totalfriends))
         
-		if (totalOnline > 0) then
+		if (totalFriendsOnline > 0) then
 			GameTooltip:AddLine(' ')
 			GameTooltip:AddLine('World of Warcraft')
             
@@ -689,14 +725,14 @@ frameFriends:SetScript('OnEnter', function(self)
 			end
 		end     
         
-		if (BNTotalOnline > 0) then
+		if (totalBattleNetOnline > 0) then
 			GameTooltip:AddLine(' ')
 			GameTooltip:AddLine('Battle.NET')
 
 			local status = 0
 			for i = 1, #BNTable do
 				if (BNTable[i][7]) then
-					if BNTable[i][6] == wowString then
+					if (BNTable[i][6] == 'WoW') then
 						if (BNTable[i][8] == true) then 
                             status = 1 
                         elseif (BNTable[i][9] == true) then 
