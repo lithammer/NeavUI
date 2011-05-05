@@ -14,7 +14,7 @@ frame:SetBackdrop({
 	insets = {left = 3, right = 3, top = 3, bottom = 3
 }})
 
-CreateBorder(frame, 12, 1, 1, 1)
+frame:CreateBorder(12)
 
 editBox = CreateFrame('EditBox', '$parentTextBox', frame)
 editBox:SetMultiLine(true)

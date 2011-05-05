@@ -3,8 +3,8 @@ if (not nChat.enableURLCopy) then
     return
 end
 
-local gsub = _G.string.gsub
-local find = _G.string.find
+local gsub = string.gsub
+local find = string.find
 
 local urlStyle = '|cffff00ff|Hurl:%1|h%1|h|r'
 local urlPatterns = {

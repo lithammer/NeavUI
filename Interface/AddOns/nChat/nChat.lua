@@ -1,3 +1,11 @@
+   
+    -- import globals for faster usage
+   
+local _G = _G
+local type = type
+local select = select
+local unpack = unpack
+local gsub = string.gsub
 
     -- more choosable fontsizes
     
@@ -430,8 +438,6 @@ end
     -- new position for the minimize button
     
 for i = 2, NUM_CHAT_WINDOWS do
-    -- local chat = _G['ChatFrame'..i]
-
     local chatMinimize = _G['ChatFrame'..i..'ButtonFrameMinimizeButton']
     chatMinimize:SetAlpha(0)
     chatMinimize:EnableMouse(0)
@@ -462,7 +468,7 @@ ChatFrame1Tab:HookScript('OnClick', function(self, button)
     end
 end)
         
-    -- modify the gm chatframe and sound notification on incoming message
+    -- modify the gm chatframe and sound notification on incoming whisper
     
 local f = CreateFrame('Frame')
 f:RegisterEvent('ADDON_LOADED')

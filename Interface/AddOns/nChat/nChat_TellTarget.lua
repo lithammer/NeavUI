@@ -1,3 +1,6 @@
+
+local _G = _G
+
 for i = 1, NUM_CHAT_WINDOWS do
 	local editBox = _G['ChatFrame'..i..'EditBox']
 	
