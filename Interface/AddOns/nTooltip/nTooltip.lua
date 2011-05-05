@@ -1,5 +1,19 @@
 
+    -- import globals for faster usage
+    
+local _G = _G
 local select = select
+
+    -- import functions for faster usage
+    
+local UnitName = UnitName
+local UnitLevel = UnitLevel
+local UnitExists = UnitExists
+local UnitIsDead = UnitIsDead
+local UnitIsGhost = UnitIsGhost
+local UnitFactionGroup = UnitFactionGroup
+local UnitCreatureType = UnitCreatureType
+local GetQuestDifficultyColor = GetQuestDifficultyColor
 
     -- font settings
     
@@ -19,6 +33,7 @@ local normalTexture = 'Interface\\AddOns\\!Beautycase\\media\\textureNormal'
     
 local function ApplyTooltipStyle(self)
     local bgsize, bsize
+    
     if (self == ConsolidatedBuffsTooltip) then
         bgsize = 1
         bsize = 8
@@ -37,11 +52,11 @@ local function ApplyTooltipStyle(self)
         }
     })
     
-    self:HookScript('OnShow', function(tip)
-        tip:SetBackdropColor(0, 0, 0, 0.70)
+    self:HookScript('OnShow', function(self)
+        self:SetBackdropColor(0, 0, 0, 0.70)
     end)
     
-    CreateBorder(self, bsize)
+    self:CreateBorder(bsize)
 end
 
 hooksecurefunc('GameTooltip_ShowCompareItem', function(self)  
