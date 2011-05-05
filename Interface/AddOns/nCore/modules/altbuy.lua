@@ -1,8 +1,9 @@
 
-local savedMerchantItemButton_OnModifiedClick = MerchantItemButton_OnModifiedClick
-
-function MerchantItemButton_OnModifiedClick(self, ...)
-	if (IsAltKeyDown()) then
+local origMerchantItemButton_OnModifiedClick = _G.MerchantItemButton_OnModifiedClick
+local function MerchantItemButton_OnModifiedClickHook(self, ...)
+	origMerchantItemButton_OnModifiedClick(self, ...)
+    
+    if (IsAltKeyDown()) then
 		local maxStack = select(8, GetItemInfo(GetMerchantItemLink(self:GetID())))
 		local _, _, _, quantity = GetMerchantItemInfo(self:GetID())
         
@@ -10,6 +11,5 @@ function MerchantItemButton_OnModifiedClick(self, ...)
 			BuyMerchantItem(self:GetID(), floor(maxStack / quantity))
 		end
 	end
-    
-	savedMerchantItemButton_OnModifiedClick(self, ...)
 end
+MerchantItemButton_OnModifiedClick = MerchantItemButton_OnModifiedClickHook

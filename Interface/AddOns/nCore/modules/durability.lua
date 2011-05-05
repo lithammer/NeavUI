@@ -1,72 +1,9 @@
 
-local gradient = {1, 0, 0, 1, 1, 0, 0, 1, 0}
-
-local left = CharacterModelFrameRotateLeftButton 
-left:ClearAllPoints() 
-left:SetPoint('BOTTOMLEFT', CharacterModelFrame, 7, 0) 
-    
-local right = CharacterModelFrameRotateRightButton 
-right:ClearAllPoints() 
-right:SetPoint('BOTTOMRIGHT', CharacterModelFrame, -7, 0)
-
-local charString = CharacterLevelText 
-charString:SetFont('Fonts\\ARIALN.ttf', 14)
-
-CharacterHeadSlot:SetScript('OnClick', function() 
-    if (IsControlKeyDown()) then
-        ShowHelm(not ShowingHelm()) 
-    end
-end)
-
-CharacterBackSlot:SetScript('OnClick', function() 
-    if (IsControlKeyDown()) then
-        ShowCloak(not ShowingCloak()) 
-    end
-end)
-
-local _, class = UnitClass('player')
-
-    -- CharacterModelFrame - PaperDollFrame
-
-local f = CreateFrame('Frame')
-f:SetSize(150, 32)
-f:SetFrameStrata('DIALOG')
-f:EnableMouse(false)
-f:SetScale(0.94)
-f:SetPoint('TOP', PaperDollFrame, 'BOTTOM', 170, 0)
-f:SetParent(PaperDollSidebarTab1)
-f:RegisterEvent('PLAYER_ENTERING_WORLD')
-f:RegisterEvent('UPDATE_INVENTORY_DURABILITY')
-f:RegisterEvent('MERCHANT_SHOW')
-
-f.Tab = {}
-
-for i = 1, 3 do
-    f.Tab[i] = f:CreateTexture(nil, 'BACKGROUND', self)
-    f.Tab[i]:SetTexture('Interface\\PaperDollInfoFrame\\UI-Character-InActiveTab')
-end
-
-f.Tab[1]:SetSize(21, 32)     
-f.Tab[1]:SetTexCoord(0, 0.15625, 0, 1)
-f.Tab[1]:SetPoint('BOTTOMLEFT', f)
-
-f.Tab[2]:SetSize(88, 32)     
-f.Tab[2]:SetTexCoord(0.15625, 0.84375, 0, 1)
-f.Tab[2]:SetPoint('LEFT', f.Tab[1], 'RIGHT')
-f.Tab[2]:SetPoint('RIGHT', f.Tab[3], 'LEFT')
-
-f.Tab[3]:SetSize(21, 32)     
-f.Tab[3]:SetTexCoord(0.84375, 1, 0, 1)
-f.Tab[3]:SetPoint('BOTTOMRIGHT', f)
-
-f.Text = f:CreateFontString(nil, 'OVERLAY')
-f.Text:SetFont('Fonts\\ARIALN.ttf', 13)
-f.Text:SetPoint('CENTER', f, 0, 3)
-f.Text:SetShadowColor(0, 0, 0, 0)
-f.Text:SetShadowOffset(-1, -1)
-f.Text:SetParent(f)
-f.Text:SetTextColor(RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b)
-f.Text:SetJustifyH('RIGHT')
+local gradientColor = {
+    1, 0, 0, 
+    1, 1, 0, 
+    0, 1, 0
+}
 
 local slotInfo = {
 	[1] = {1, 'Head', 1000},
@@ -81,6 +18,103 @@ local slotInfo = {
 	[10] = {17, 'SecondaryHand', 1000},
 	[11] = {18, 'Ranged', 1000}
 }
+
+    -- move some buttons
+    
+local leftRotate = CharacterModelFrameRotateLeftButton 
+leftRotate:ClearAllPoints() 
+leftRotate:SetPoint('BOTTOMLEFT', CharacterModelFrame, 7, 0) 
+    
+local rightRotate = CharacterModelFrameRotateRightButton 
+rightRotate:ClearAllPoints() 
+rightRotate:SetPoint('BOTTOMRIGHT', CharacterModelFrame, -7, 0)
+
+    -- bigger text
+
+local charString = CharacterLevelText 
+charString:SetFont('Fonts\\ARIALN.ttf', 14)
+
+    -- create all frames and font strings
+    
+local f = CreateFrame('Frame')
+f:SetSize(150, 32)
+f:SetFrameStrata('DIALOG')
+f:EnableMouse(false)
+f:SetScale(0.94)
+f:SetPoint('TOP', PaperDollFrame, 'BOTTOM', 170, 0)
+f:SetParent(PaperDollSidebarTab1)
+f:RegisterEvent('PLAYER_ENTERING_WORLD')
+f:RegisterEvent('UPDATE_INVENTORY_DURABILITY')
+f:RegisterEvent('MERCHANT_SHOW')
+
+    -- create the tab-like textures
+        
+f.TabLeft = f:CreateTexture(nil, 'BACKGROUND', self)
+f.TabLeft:SetTexture('Interface\\PaperDollInfoFrame\\UI-Character-InActiveTab')
+f.TabLeft:SetSize(21, 32)     
+f.TabLeft:SetTexCoord(0, 0.15625, 0, 1)
+f.TabLeft:SetPoint('BOTTOMLEFT', f)
+
+f.TabRight = f:CreateTexture(nil, 'BACKGROUND', self)
+f.TabRight:SetTexture('Interface\\PaperDollInfoFrame\\UI-Character-InActiveTab')
+f.TabRight:SetSize(21, 32)     
+f.TabRight:SetTexCoord(0.84375, 1, 0, 1)
+f.TabRight:SetPoint('BOTTOMRIGHT', f)
+
+f.TabMiddle = f:CreateTexture(nil, 'BACKGROUND', self)
+f.TabMiddle:SetTexture('Interface\\PaperDollInfoFrame\\UI-Character-InActiveTab')
+f.TabMiddle:SetSize(88, 32)     
+f.TabMiddle:SetTexCoord(0.15625, 0.84375, 0, 1)
+f.TabMiddle:SetPoint('LEFT', f.TabLeft, 'RIGHT')
+f.TabMiddle:SetPoint('RIGHT', f.TabRight, 'LEFT')
+    
+        -- create the durability font string
+
+f.Text = f:CreateFontString(nil, 'OVERLAY')
+f.Text:SetFont('Fonts\\ARIALN.ttf', 13)
+f.Text:SetPoint('CENTER', f, 0, 3)
+f.Text:SetShadowColor(0, 0, 0, 0)
+f.Text:SetShadowOffset(-1, -1)
+f.Text:SetParent(f)
+f.Text:SetJustifyH('CENTER')
+
+    -- create the head toggle button
+    
+f.Head = CreateFrame('Button', nil, CharacterHeadSlot)
+f.Head:SetFrameStrata('HIGH')
+f.Head:SetToplevel(true)
+f.Head:SetSize(22, 22)
+f.Head:SetPoint('CENTER', CharacterHeadSlot, 'TOPRIGHT', -2, -2)
+f.Head:SetScript('OnClick', function() 
+    ShowHelm(not ShowingHelm()) 
+end)
+
+f.Head:SetNormalTexture('Interface\\Minimap\\partyraidblips')
+f.Head:GetNormalTexture():SetTexCoord(0.5 ,0.375 ,0.5 ,0.25)
+f.Head:GetNormalTexture():SetVertexColor(1, 0, 1)
+
+f.Head:SetPushedTexture('Interface\\Minimap\\partyraidblips')
+f.Head:GetPushedTexture():SetTexCoord(0.5 ,0.375 ,0.5 ,0.25)
+f.Head:GetPushedTexture():SetVertexColor(0, 0.5, 1)
+
+    -- create the cloak toggle button
+    
+f.Cloak = CreateFrame('Button', nil, CharacterBackSlot)
+f.Cloak:SetFrameStrata('HIGH')
+f.Cloak:SetToplevel(true)
+f.Cloak:SetSize(22, 22)
+f.Cloak:SetPoint('CENTER', CharacterBackSlot, 'TOPRIGHT', -2, -2)
+f.Cloak:SetScript('OnClick', function() 
+    ShowCloak(not ShowingCloak()) 
+end)
+
+f.Cloak:SetNormalTexture('Interface\\MINIMAP\\partyraidblips')
+f.Cloak:GetNormalTexture():SetTexCoord(0.5 ,0.375 ,0.5 ,0.25)
+f.Cloak:GetNormalTexture():SetVertexColor(1, 0, 1)
+
+f.Cloak:SetPushedTexture('Interface\\MINIMAP\\partyraidblips')
+f.Cloak:GetPushedTexture():SetTexCoord(0.5 ,0.375 ,0.5 ,0.25)
+f.Cloak:GetPushedTexture():SetVertexColor(0, 0.75, 1)
 
 local function ColorGradient(perc, ...)
 	if (perc >= 1) then
@@ -121,7 +155,7 @@ local function GetEquipDurability()
         f.Text:SetText('100% |cffffffff'..DURABILITY..'|r')
     end
     
-    local r, g, b = ColorGradient((floor(slotInfo[1][3]*100)/100), unpack(gradient))    
+    local r, g, b = ColorGradient((floor(slotInfo[1][3]*100)/100), unpack(gradientColor))    
     f.Text:SetTextColor(r, g, b)
     f:SetWidth(f.Text:GetWidth() + 44)
     
@@ -143,7 +177,7 @@ f:SetScript('OnEvent', function(event)
 
             if (itemSlot.Text) then
                 local avg = curr/max
-                local r, g, b = ColorGradient(avg, unpack(gradient))
+                local r, g, b = ColorGradient(avg, unpack(gradientColor))
         
                 itemSlot.Text:SetTextColor(r, g, b)
                 itemSlot.Text:SetText(string.format('%d%%', avg * 100))

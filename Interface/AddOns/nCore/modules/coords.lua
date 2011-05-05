@@ -3,30 +3,28 @@ local f = CreateFrame('Frame', nil, WorldMapFrame)
    
     -- cursor coordinates
     
-f.cursor = f:CreateFontString(nil, 'ARTWORK')
-f.cursor:SetFontObject('GameFontNormal')
-f.cursor:SetJustifyH('LEFT')
+f.Cursor = f:CreateFontString(nil, 'ARTWORK')
+f.Cursor:SetFontObject('GameFontNormal')
+f.Cursor:SetJustifyH('LEFT')
 
     -- player coordinates
     
-f.player = f:CreateFontString(nil, 'ARTWORK')
-f.player:SetFontObject('GameFontNormal')
-f.player:SetJustifyH('LEFT')
+f.Player = f:CreateFontString(nil, 'ARTWORK')
+f.Player:SetFontObject('GameFontNormal')
+f.Player:SetJustifyH('LEFT')
 
 hooksecurefunc('WorldMapQuestShowObjectives_AdjustPosition', function()
-	f.player:ClearAllPoints()
-	f.cursor:ClearAllPoints()
+	f.Player:ClearAllPoints()
+	f.Cursor:ClearAllPoints()
 	
 	if (WORLDMAP_SETTINGS.size == WORLDMAP_WINDOWED_SIZE) then
-		f.player:SetPoint('BOTTOMLEFT', WorldMapDetailFrame, 5, -20)
-		f.cursor:SetPoint('BOTTOMLEFT', WorldMapDetailFrame, 130, -20)
+		f.Player:SetPoint('BOTTOMLEFT', WorldMapDetailFrame, 5, -20)
+		f.Cursor:SetPoint('BOTTOMLEFT', WorldMapDetailFrame, 130, -20)
 	else
-		f.player:SetPoint('BOTTOMRIGHT', WorldMapPositioningGuide, 'BOTTOM', -5, 10)
-		f.cursor:SetPoint('BOTTOMLEFT', WorldMapPositioningGuide, 'BOTTOM', 5, 10)
+		f.Player:SetPoint('BOTTOMRIGHT', WorldMapPositioningGuide, 'BOTTOM', -5, 10)
+		f.Cursor:SetPoint('BOTTOMLEFT', WorldMapPositioningGuide, 'BOTTOM', 5, 10)
 	end
 end)
-
-WorldMapQuestShowObjectives_AdjustPosition()
 
 f:SetScript('OnUpdate', function(self, elapsed)
 	local width = WorldMapDetailFrame:GetWidth() 
@@ -39,14 +37,16 @@ f:SetScript('OnUpdate', function(self, elapsed)
 	my = ((my + height / 2) - (cy / WorldMapDetailFrame:GetEffectiveScale())) / height
 
 	if (mx >= 0 and my >= 0 and mx <= 1 and my <= 1) then
-		f.cursor:SetText(MOUSE_LABEL..format(': %.1f x %.1f', mx * 100, my * 100))
+		f.Cursor:SetText(MOUSE_LABEL..format(': %.1f x %.1f', mx * 100, my * 100))
 	else
-		f.cursor:SetText('')
+		f.Cursor:SetText('')
 	end
 	
 	if (px ~= 0 and py ~= 0) then
-		f.player:SetText(PLAYER..format(': %.1f x %.1f', px * 100, py * 100))
+		f.Player:SetText(PLAYER..format(': %.1f x %.1f', px * 100, py * 100))
 	else
-		f.player:SetText('')
+		f.Player:SetText('')
 	end
 end)
+
+WorldMapQuestShowObjectives_AdjustPosition()
