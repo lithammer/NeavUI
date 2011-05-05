@@ -11,9 +11,9 @@
 #### Raid frames:
 
 - Now using the built-in heal prediction from oUF (kind of like healcomm).
-- Healing indicators for all classes (I hope), as well as soulstone, focus magic and dark intent.
-- Healing indicators now have a "cooldown spiral" for duration.
-- Mouse-over indicator (darkening the color when hovering over a frame).
+- Healing indicators for all classes, as well as soulstone, focus magic and dark intent.
+- Healing indicators have a "cooldown spiral" for duration.
+- Mouse-over highlight (darkening the color when hovering over a frame).
 - Disabled smooth updates for healing classes (can be enabled via `oUF_NeavConfig.lua`).
 - Mana bars (enabled in `oUF_NeavConfig.lua`)
 
@@ -32,29 +32,25 @@
 
 ## Known issues
 
-- The quest area overlay on the world map gets blocked from showing if you open the map while in combat.
+- Sometimes, the quest area overlay on the world map gets blocked from showing if you open the map while in combat.
 - !Colorz cause an ui-block-error (not lua error!), because we change the value of a global table, ignore this or delete `PowerBarColor['MANA'] = {r = 0/255, g = 0.55, b = 1}` in the `!Colorz.lua` file.
 
 ## Next Steps
 
-- Test nPlates in raid/instance situations and code optimizing.
-- `nPlates` find better coloring or a other threat indicator.
-- Unhappy with the raidframe situation.
-- Make the oUF_Neav layout more usefull with tags for class specific buffs.
-- Create arena frames.
+- Continue work on nPlates
+- Recode the HP & MANA bar part of oUF_NeavRaid
+- oUF_Neav cleanup, updates & optimizing
+- Create oUF_Neav arena frames (boss-frames-like, oUF_Trinkets support etc)
+
+## Plans For The Future 
+
+- nMainbar: Create the possibility for a moveable/mouseover micromenu&bagslots
 - nCore module for open all mails (and ignore mails with COD).
 - Make nPower compact, add config file and put it on WoWI.
-
-## Ideas
-
-- oUF_Neav - raid frames, get rid of the unit_aura event and use a OnUpdate event instead for better cpu usage?
-
-## Installation
 
 ## Bugs?
 
 ## Credits
+
 - ballagarba for updated this UI.
 - Neav for creating this UI.
-
-## Screenshots
