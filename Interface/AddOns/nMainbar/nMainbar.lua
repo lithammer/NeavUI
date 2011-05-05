@@ -1,4 +1,8 @@
 
+local _G = _G
+local pairs = pairs
+local unpack = unpack
+
 local path = 'Interface\\AddOns\\nMainbar\\media\\'
 
 hooksecurefunc('PetActionBar_Update', function()
@@ -209,7 +213,15 @@ end)
 -- its easier and do use less cpu cycles than a hooksecuredfunc (!)
 -- --------------------------------------------------------------------
 
-function ActionButton_OnUpdate(self, elapsed)
+local origActionButton_OnUpdate = _G.ActionButton_OnUpdate
+local function ActionButton_OnUpdateHook(self, elapsed)
+	origActionButton_OnUpdate(self, elapsed)
+
+
+
+
+
+-- function ActionButton_OnUpdate(self, elapsed)
 	if (ActionButton_IsFlashing(self)) then
 		local flashtime = self.flashtime
 		flashtime = flashtime - elapsed
@@ -287,3 +299,4 @@ function ActionButton_OnUpdate(self, elapsed)
 		self.rangeTimer = rangeTimer
 	end
 end
+ActionButton_OnUpdate = ActionButton_OnUpdateHook

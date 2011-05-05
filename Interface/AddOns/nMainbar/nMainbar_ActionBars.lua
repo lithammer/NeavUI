@@ -11,6 +11,7 @@ local function GetNumShapeSlots()
 end
     
     -- if you move the bar you get some problems, so what can we make? We move the buttons!
+    
 do
     MultiBarRightButton1:ClearAllPoints()
     MultiBarRightButton1:SetPoint('TOPRIGHT', UIParent, 'RIGHT', -6, (MultiBarRight:GetHeight() / 2))
@@ -18,7 +19,8 @@ do
     MultiBarLeftButton1:ClearAllPoints() 
     MultiBarLeftButton1:SetPoint('TOPRIGHT', MultiBarRightButton1, 'TOPLEFT', -6, 0)
 	
-	-- to prevent scaling and visibility issues with the mouseover options
+        -- to prevent scaling and visibility issues with the mouseover options
+    
 	MultiBarLeft:SetParent(UIParent)
 end
 
