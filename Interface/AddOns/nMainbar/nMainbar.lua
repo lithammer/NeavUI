@@ -208,20 +208,11 @@ hooksecurefunc('ActionButton_UpdateHotkeys', function(self)
     end
 end)
 
--- --------------------------------------------------------------------
--- create a new original function, 
--- its easier and do use less cpu cycles than a hooksecuredfunc (!)
--- --------------------------------------------------------------------
 
 local origActionButton_OnUpdate = _G.ActionButton_OnUpdate
-local function ActionButton_OnUpdateHook(self, elapsed)
+local function ActionButton_OnUpdateHook(self, elapsed) -- function ActionButton_OnUpdate(self, elapsed)
 	origActionButton_OnUpdate(self, elapsed)
-
-
-
-
-
--- function ActionButton_OnUpdate(self, elapsed)
+    
 	if (ActionButton_IsFlashing(self)) then
 		local flashtime = self.flashtime
 		flashtime = flashtime - elapsed
