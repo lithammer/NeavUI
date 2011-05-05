@@ -107,7 +107,6 @@ local function CreateDropDown(self)
 	-- ToggleDropDownMenu(1, nil, dropdown, self, self:GetWidth()*0.75, -5)
 end
 
-
 local function PlayerToVehicleTexture(self, event, unit)
     self.Glow:Hide()
     self.Level:Hide()
@@ -191,7 +190,7 @@ local function VehicleToPlayerTexture(self, event, unit)
     self.MasterLooter:SetPoint('TOPRIGHT', self.Portrait, -3, 3)
     self.PvP:SetPoint('TOPLEFT', self.Texture, 18, -20)
     self.RaidIcon:SetPoint('CENTER', self.Portrait, 'TOP', 0, -1)
-    self.Group[3]:SetPoint('BOTTOMLEFT', self, 'TOP', -40, 0)
+    self.Group[3]:SetPoint('BOTTOM', self.Background, 'TOP', -40, 0)
 end
 
     -- vehicle check
@@ -579,8 +578,8 @@ local function CreateUnitLayout(self, unit)
         -- background
 
     self.Background = self.Power:CreateTexture(nil, 'BACKGROUND')
-    self.Background:SetTexture(oUF_Neav.media.statusbar)
-    self.Background:SetVertexColor(0, 0, 0, 0.55)
+    self.Background:SetTexture(0, 0, 0, 0.55) -- oUF_Neav.media.statusbar
+    -- self.Background:SetVertexColor(0, 0, 0, 0.55)
     self.Background:SetPoint('TOPRIGHT', self.Health)
     self.Background:SetPoint('BOTTOMLEFT', self.Power)
 
@@ -629,7 +628,7 @@ local function CreateUnitLayout(self, unit)
         self.Level = self.Health:CreateFontString(nil, 'ARTWORK')
         self.Level:SetFont('Interface\\AddOns\\oUF_Neav\\media\\fontNumber.ttf', 17, 'OUTLINE')
         self.Level:SetShadowOffset(0, 0)
-        self.Level:SetPoint('CENTER', self.Texture, (unit == 'player' and -63) or 63.5, -15)
+        self.Level:SetPoint('CENTER', self.Texture, (unit == 'player' and -63) or 63.5, -16)
         self:Tag(self.Level, '[level]')
     end
 
@@ -716,7 +715,8 @@ local function CreateUnitLayout(self, unit)
     end
     
         -- phase text
-        
+    
+    --[[
     if (unit == 'target' or unit == 'focus' or self.partyUnit) then
         self.PhaseText = self.Health:CreateFontString(nil, 'OVERLAY')
         self.PhaseText:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontSmall)
@@ -725,6 +725,7 @@ local function CreateUnitLayout(self, unit)
         self.PhaseText:SetTextColor(1, 0, 0)
         self:Tag(self.PhaseText, '[phase]')
     end
+    --]]
     
         -- offline icons
 
@@ -838,7 +839,7 @@ local function CreateUnitLayout(self, unit)
             RuneFrame:SetParent(self)
         end
 
-            -- raidgroup
+            -- raidgroup indicator
 
         self.Group = {}
 
@@ -846,17 +847,15 @@ local function CreateUnitLayout(self, unit)
             self.Group[i] = self:CreateTexture(nil, 'BACKGROUND')
             self.Group[i]:SetTexture('Interface\\CharacterFrame\\UI-CharacterFrame-GroupIndicator')
             self.Group[i]:SetAlpha(0.5)
-            self.Group[i]:SetHeight(18)
-            self.Group[i]:SetWidth(24)
+            self.Group[i]:SetSize(24, 18)
             self.Group[i]:SetTexCoord((i == 1 and 0.53125) or (i == 2 and 0.1875) or 0, (i == 1 and 0.71875) or (i == 2 and 0.53125) or 0.1875, 0, 1)
         end
 
         self.Group[1]:SetPoint('LEFT', self.Group[2], 'RIGHT')
         self.Group[2]:SetPoint('LEFT', self.Group[3], 'RIGHT')
-        self.Group[3]:SetPoint('BOTTOMLEFT', self, 'TOP', -40, 0)
 
         self.Group[4] = self.Health:CreateFontString(nil, 'ARTWORK')
-        self.Group[4]:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontSmall)
+        self.Group[4]:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontSmall - 2)
         self.Group[4]:SetShadowOffset(1, -1)
         self.Group[4]:SetPoint('CENTER', self.Group[2], 0, -1)
 

@@ -60,13 +60,15 @@ oUF.Tags['name'] = function(unit)
     return format('|cff%02x%02x%02x%s|r', r*255, g*255, b*255, unitName)
 end
 
-oUF.TagEvents['phase'] = 'UNIT_PHASE'
+-- oUF.TagEvents['phase'] = 'UNIT_PHASE'
 oUF.Tags['phase'] = function(unit)
+    --[[
 	if (not UnitInPhase(unit)) then
         return 'OTHER PHASE'
     else
         return ''
 	end
+    --]]
 end
 
 oUF.TagEvents['name:Raid'] = 'UNIT_NAME_UPDATE'

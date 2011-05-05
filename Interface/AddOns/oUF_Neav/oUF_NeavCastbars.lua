@@ -1,7 +1,7 @@
 
 local interruptTexture = 'Interface\\AddOns\\!Beautycase\\media\\textureNormalWhite'
 local normalTexture = 'Interface\\AddOns\\!Beautycase\\media\\textureNormal'
-        
+
     -- create the castbars
     
 function oUF_Neav.CreateCastbars(self, unit)
@@ -64,7 +64,8 @@ function oUF_Neav.CreateCastbars(self, unit)
             end
         end
         
-        CreateBorder(self.Castbar, 11, 1, 1, 1, 3)
+        self.Castbar:CreateBorder(11)
+        self.Castbar:SetBorderPadding(3)
         
         self.Castbar.Time = self:CreateFontString(nil, 'ARTWORK')
         self.Castbar.Time:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontBig)
@@ -83,11 +84,9 @@ function oUF_Neav.CreateCastbars(self, unit)
         self.Castbar.Text:SetJustifyH('LEFT')
         self.Castbar.Text:SetParent(self.Castbar)  
         
-        -- ----------------------------------------------------------------
-        -- A new/better interrupt indicator (than the old one)
-        -- ----------------------------------------------------------------
+            -- a new/better interrupt indicator (than the old one)
     
-        self.Castbar.PostCastStart = function(Castbar, unit, spell, spellrank)
+        self.Castbar.PostCastStart = function(Castbar, unit)
             if (unit == 'player') then
                 if (Castbar.Latency) then
                     local down, up, lagHome, lagWorld = GetNetStats();
@@ -116,7 +115,7 @@ function oUF_Neav.CreateCastbars(self, unit)
             end
         end    
 
-        self.Castbar.PostChannelStart = function(Castbar, unit, spell, spellrank)
+        self.Castbar.PostChannelStart = function(Castbar, unit)
             if (unit == 'player') then
                 if (Castbar.Latency) then
                     local down, up, lagHome, lagWorld = GetNetStats();
@@ -155,7 +154,7 @@ function oUF_Neav.CreateCastbars(self, unit)
     end
 end
 
-    -- mirrortimers
+    -- mirror timers
 
 for i = 1, MIRRORTIMER_NUMTIMERS do
     local bar = _G['MirrorTimer' .. i]
@@ -163,6 +162,8 @@ for i = 1, MIRRORTIMER_NUMTIMERS do
     bar:SetScale(1.132)
     bar:SetHeight(18)
     bar:SetWidth(220)
+    bar:CreateBorder(11)
+    bar:SetBorderPadding(3)
     
     if (i > 1) then
         local p1, p2, p3, p4, p5 = bar:GetPoint()
@@ -182,51 +183,46 @@ for i = 1, MIRRORTIMER_NUMTIMERS do
     border:Hide()
     
     local text = _G['MirrorTimer' .. i .. 'Text']
-    text:SetFont(CastingBarFrameText:GetFont(), 14)
+    text:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontBig)
     text:ClearAllPoints()
     text:SetPoint('CENTER', bar)
-    
-    CreateBorder(bar, 11, 1, 1, 1, 3)
 end
+
 
 	-- battleground timer
 
-local BattlegroundTimer = CreateFrame('Frame')
-BattlegroundTimer:RegisterEvent('START_TIMER')
-
-BattlegroundTimer:SetScript('OnEvent', function(self, event)
+local f = CreateFrame('Frame')
+f:RegisterEvent('START_TIMER')
+f:SetScript('OnEvent', function(self, event)
 	for _, b in pairs(TimerTracker.timerList) do
-		if not b['bar'].skinned then
-
+		if (not b['bar'].beautyBorder) then
 			local bar = b['bar']
-
 			bar:SetScale(1.132)
 			bar:SetHeight(18)
 			bar:SetWidth(220)
-
-			for i = 1, bar:GetNumRegions() do
-				local region = select(i, bar:GetRegions())
-
-				if (region:GetObjectType() == 'Texture') then
-					region:SetTexture(nil)
-				elseif (region:GetObjectType() == 'FontString') then
-					region:SetFont(CastingBarFrameText:GetFont(), 14)
-					region:ClearAllPoints()
-					region:SetPoint('CENTER', bar)
-				end
-			end
-
-			bar:SetStatusBarTexture(oUF_Neav.media.statusbar)
-
+            
+            for i = 1, select('#', bar:GetRegions()) do
+                local region = select(i, bar:GetRegions())
+                
+                if (region and region:GetObjectType() == 'Texture') then
+                    region:SetTexture(nil)
+                end
+                
+                if (region and region:GetObjectType() == 'FontString') then
+                    region:ClearAllPoints()
+                    region:SetPoint('CENTER', bar)
+                    region:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontBig)
+                end
+            end
+            
+            bar:CreateBorder(11)
+            bar:SetBorderPadding(3)
+            bar:SetStatusBarTexture(oUF_Neav.media.statusbar)
+            
 			local backdrop = select(1, bar:GetRegions())
 			backdrop:SetTexture('Interface\\Buttons\\WHITE8x8')
 			backdrop:SetVertexColor(0, 0, 0, 0.5)
 			backdrop:SetAllPoints(bar)
-
-			CreateBorder(bar, 11, 1, 1, 1, 3)
-
-			b['bar'].skinned = true
 		end
 	end
-
 end)
