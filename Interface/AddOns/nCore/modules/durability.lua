@@ -74,7 +74,7 @@ f.Text = f:CreateFontString(nil, 'OVERLAY')
 f.Text:SetFont('Fonts\\ARIALN.ttf', 13)
 f.Text:SetPoint('CENTER', f, 0, 3)
 f.Text:SetShadowColor(0, 0, 0, 0)
-f.Text:SetShadowOffset(-1, -1)
+f.Text:SetShadowOffset(1, -1)
 f.Text:SetParent(f)
 f.Text:SetJustifyH('CENTER')
 
