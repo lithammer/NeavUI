@@ -181,6 +181,11 @@ local addonTable = {}
 
 local function AddonMem()
     total = 0
+    
+    collectgarbage()
+    UpdateAddOnMemoryUsage()
+    
+    wipe(addonTable)
 
     for i = 1, GetNumAddOns() do
         if (IsAddOnLoaded(i)) then
@@ -189,7 +194,7 @@ local function AddonMem()
             
             entry = {
                 name = select(2, GetAddOnInfo(i)), 
-                memory = memory
+                memory = GetAddOnMemoryUsage(i)
             }
           
             tinsert(addonTable, entry)
@@ -207,10 +212,6 @@ local function ShowTip()
     GameTooltip:ClearLines()
     GameTooltip:SetOwner(TimeManagerClockButton, 'ANCHOR_BOTTOMLEFT')
     
-    collectgarbage()
-    UpdateAddOnMemoryUsage()
-    
-    wipe(addonTable)
     AddonMem()
 
     GameTooltip:AddLine(COMBAT_MISC_INFO)    

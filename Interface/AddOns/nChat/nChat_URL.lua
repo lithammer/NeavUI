@@ -3,6 +3,7 @@ if (not nChat.enableURLCopy) then
     return
 end
 
+local _G = _G
 local gsub = string.gsub
 local find = string.find
 

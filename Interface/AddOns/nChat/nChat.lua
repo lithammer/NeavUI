@@ -213,6 +213,7 @@ function SkinTab(self)
     tabRight:SetTexture(nil)
     
     local tabText = _G[self..'TabText']
+    
     if (nChat.tab.fontOutline) then
         tabText:SetFont('Fonts\\ARIALN.ttf', nChat.tab.fontSize, 'THINOUTLINE')
         tabText:SetShadowOffset(0, 0)
@@ -220,6 +221,7 @@ function SkinTab(self)
         tabText:SetFont('Fonts\\ARIALN.ttf', nChat.tab.fontSize)
         tabText:SetShadowOffset(1, -1)
     end
+    
     tabText:SetJustifyH('CENTER')
     tabText:SetWidth(60)
     

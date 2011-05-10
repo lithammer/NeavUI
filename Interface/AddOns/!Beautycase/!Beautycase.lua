@@ -63,7 +63,7 @@
     myFrame:CreateBorder(borderSize)
     myFrame:SetBorderSize(borderSize)
     
-    myFrame:SetBorderPadding(number or uL1, uL2, uR1, uR2, bL1, bL2, bR1, bR2)
+    myFrame:SetBorderPadding(number or [uL1, uL2, uR1, uR2, bL1, bL2, bR1, bR2])
     
     myFrame:SetBorderTexture(texture)
     myFrame:SetBorderShadowTexture(texture)

@@ -1,11 +1,6 @@
-    
-    -- import globals for faster usage
-    
-local _G = _G
-local unpack = unpack
 
-    -- some global/local stuff
-    
+local _G = _G
+
 local BUFF_NEW_INDEX = 1
 
 DAY_ONELETTER_ABBR    = '|cffffffff%dd|r'
