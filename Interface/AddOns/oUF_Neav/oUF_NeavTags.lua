@@ -152,7 +152,7 @@ oUF.Tags['name:Raid'] = function(unit)
     return utf8sub(name, 4)
 end
 
-oUF.TagEvents['health:Raid'] = 'UNIT_MAXHEALTH UNIT_HEALTH UNIT_HEALTH_FREQUENT'
+oUF.TagEvents['health:Raid'] = 'UNIT_MAXHEALTH UNIT_HEALTH_FREQUENT'
 oUF.Tags['health:Raid'] = function(unit)
     local max = UnitHealthMax(unit)
     local min = UnitHealth(unit)
