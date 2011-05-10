@@ -23,6 +23,7 @@
         Role Icon (DD, Tank or Healer)
         Castbars for Player, Target, Focus and Pet
         Raidicons
+        Class coloring
 
 --]]
 
@@ -47,6 +48,8 @@ for _, button in pairs({
     _G['InterfaceOptions'..button]:EnableMouse(false)
 end
 
+    -- remove the set/clear focus of the default unitdrop down, because only the blizz ui can use this function
+    
 do 
     for k, v in pairs(UnitPopupMenus) do
         for x, i in pairs(UnitPopupMenus[k]) do
@@ -69,22 +72,24 @@ local function FormatValue(self)
     end
 end
 
-local dropdown = CreateFrame('Frame', 'MyAddOnUnitDropDownMenu', UIParent, 'UIDropDownMenuTemplate')
+    -- create the drop downmenu of our unitframes
+    
+local dropdown = CreateFrame('Frame', 'CustomUnitDropDownMenu', UIParent, 'UIDropDownMenuTemplate')
 
 UIDropDownMenu_Initialize(dropdown, function(self)
 	local unit = self:GetParent().unit
 	if not unit then return end
 
 	local menu, name, id
-	if UnitIsUnit(unit, 'player') then
+	if (UnitIsUnit(unit, 'player')) then
 		menu = 'SELF'
-	elseif UnitIsUnit(unit, 'vehicle') then
+	elseif (UnitIsUnit(unit, 'vehicle')) then
 		menu = 'VEHICLE'
-	elseif UnitIsUnit(unit, 'pet') then
+	elseif (UnitIsUnit(unit, 'pet')) then
 		menu = 'PET'
-	elseif UnitIsPlayer(unit) then
+	elseif (UnitIsPlayer(unit)) then
 		id = UnitInRaid(unit)
-		if id then
+		if (id) then
 			menu = 'RAID_PLAYER'
 			name = GetRaidRosterInfo(id)
 		elseif UnitInParty(unit) then
@@ -96,7 +101,7 @@ UIDropDownMenu_Initialize(dropdown, function(self)
 		menu = 'TARGET'
 		name = RAID_TARGET_ICON
 	end
-	if menu then
+	if (menu) then
 		UnitPopup_ShowMenu(self, menu, unit, name, id)
 	end
 end, 'MENU')
@@ -110,14 +115,8 @@ end
 local function PlayerToVehicleTexture(self, event, unit)
     self.Glow:Hide()
     self.Level:Hide()
+    
     self.LFDRole:SetAlpha(0)
-
-    if (self.Status) then
-        UIFrameFlashStop(self.Status)
-        
-        self.Status:SetAlpha(0)
-        self.Status:Hide()
-    end
     
     self.Texture:SetHeight(121)
     self.Texture:SetWidth(240)
@@ -138,8 +137,8 @@ local function PlayerToVehicleTexture(self, event, unit)
         self.Texture:SetTexture('Interface\\Vehicles\\UI-Vehicle-Frame')
 	end
 
-    self.Background:SetPoint('TOPRIGHT', self.Health)
-    self.Background:SetPoint('BOTTOMLEFT', self.Power)
+    self.BarBackground:SetPoint('TOPRIGHT', self.Health)
+    self.BarBackground:SetPoint('BOTTOMLEFT', self.Power)
 
     self.Name:SetWidth(100)
     self.Name:SetPoint('CENTER', self.Texture, 30, 23)
@@ -149,17 +148,14 @@ local function PlayerToVehicleTexture(self, event, unit)
     self.MasterLooter:SetPoint('TOPLEFT', self.Texture, 74, -14)
     self.PvP:SetPoint('TOPLEFT', self.Texture, 3, -28)
     self.RaidIcon:SetPoint('CENTER', self.Portrait, 'TOP', 0, -5)
-    self.Group[3]:SetPoint('BOTTOMLEFT', self, 'TOP', -40, 9)
+    
+    self.TabMiddle:SetPoint('BOTTOM', self.Name, 'TOP', 0, 10)
 end
 
 local function VehicleToPlayerTexture(self, event, unit)
     self.Level:Show()
     self.Glow:Show()
-    
-    if (self.Status) then
-        self.Status:Show()
-    end
-    
+
     self.LFDRole:SetAlpha(1)
 
     self.Texture:SetHeight(100)
@@ -177,10 +173,10 @@ local function VehicleToPlayerTexture(self, event, unit)
 
     self.Health:SetHeight(12)
     self.Health:SetWidth(119)
-    self.Health:SetPoint('TOPLEFT', self.Texture, 108, -41)
+    self.Health:SetPoint('TOPLEFT', self.Texture, 106, -41)
 
-    self.Background:SetPoint('TOPRIGHT', self.Health, 0, 19)
-    self.Background:SetPoint('BOTTOMLEFT', self.Power)
+    self.BarBackground:SetPoint('TOPRIGHT', self.Health, 0, 19)
+    self.BarBackground:SetPoint('BOTTOMLEFT', self.Power)
 
     self.Name:SetWidth(110)
     self.Name:SetPoint('CENTER', self.Texture, 50, 19)
@@ -190,7 +186,39 @@ local function VehicleToPlayerTexture(self, event, unit)
     self.MasterLooter:SetPoint('TOPRIGHT', self.Portrait, -3, 3)
     self.PvP:SetPoint('TOPLEFT', self.Texture, 18, -20)
     self.RaidIcon:SetPoint('CENTER', self.Portrait, 'TOP', 0, -1)
-    self.Group[3]:SetPoint('BOTTOM', self.Background, 'TOP', -40, 0)
+    
+    self.TabMiddle:SetPoint('BOTTOM', self.BarBackground, 'TOP', -1, 0)
+end
+
+local function UpdateFlashStatus(self)
+    local statusName = _G[self:GetName()..'StatusFlashTexture']
+
+    if (UnitHasVehicleUI('player') or UnitIsDeadOrGhost('player')) then
+        UIFrameFlashStop(statusName)
+        self.StatusFlash:SetAlpha(0)
+        return
+    end
+            
+    if (UnitAffectingCombat('player')) then
+        self.StatusFlash:SetVertexColor(1, 0.1, 0.1, 1)
+                
+        if (not UIFrameIsFlashing(statusName)) then
+            UIFrameFlash(statusName, 0.5, 0.5, 10^10, false, 0.1, 0.1)
+        end
+        return
+    elseif (IsResting() and not UnitAffectingCombat('player')) then
+        self.StatusFlash:SetVertexColor(1, 0.88, 0.25, 1)
+                
+        if (not UIFrameIsFlashing(statusName)) then
+            UIFrameFlash(statusName, 0.5, 0.5, 10^10, false, 0.1, 0.1)
+        end
+        return
+    else
+        UIFrameFlashStop(statusName)
+        self.StatusFlash:SetAlpha(0)
+        return
+    end
+
 end
 
     -- vehicle check
@@ -201,38 +229,75 @@ local function CheckVehicleStatus(self, event, unit)
     else
         VehicleToPlayerTexture(self, event, unit)
     end
+    
+    if (oUF_Neav.units.player.showStatusFlash) then
+        UpdateFlashStatus(self)
+    end
 end
 
-    -- group indicator abouve the playerframe
+    -- group indicator above the playerframe
     
 local function UpdatePartyStatus(self)
     for i = 1, MAX_RAID_MEMBERS do
         if (GetNumRaidMembers() > 0) then
             local unitName, _, groupNumber = GetRaidRosterInfo(i)
             if (unitName == UnitName('player')) then
-                self.Group[4]:SetText(GROUP..' '..groupNumber)
-                self.Group[2]:SetWidth(self.Group[4]:GetWidth())
-                for i = 1, 4 do
-                    self.Group[i]:SetAlpha(0.5)
-                end
+                self.TabText:SetText(GROUP..' '..groupNumber)
+                self.TabMiddle:SetWidth(self.TabText:GetWidth())
+                
+                self.TabMiddle:SetAlpha(0.5)
+                self.TabLeft:SetAlpha(0.5)
+                self.TabRight:SetAlpha(0.5)
+                self.TabText:SetAlpha(0.5)
             end
         else
-            for i = 1, 4 do
-                self.Group[i]:SetAlpha(0)
-            end
+            self.TabMiddle:SetAlpha(0)
+            self.TabLeft:SetAlpha(0)
+            self.TabRight:SetAlpha(0)
+            self.TabText:SetAlpha(0)
         end
     end
 end
 
+    -- function for create a tab-like texture
+    
+local function CreateUnitTabTexture(self)
+    self.TabMiddle = self:CreateTexture(nil, 'BACKGROUND')
+    self.TabMiddle:SetTexture('Interface\\CharacterFrame\\UI-CharacterFrame-GroupIndicator')
+    self.TabMiddle:SetAlpha(0.5)
+    self.TabMiddle:SetSize(24, 18)
+    self.TabMiddle:SetTexCoord(0.1875, 0.53125, 0, 1)
+        
+    self.TabLeft = self:CreateTexture(nil, 'BACKGROUND')
+    self.TabLeft:SetTexture('Interface\\CharacterFrame\\UI-CharacterFrame-GroupIndicator')
+    self.TabLeft:SetPoint('LEFT', self.TabMiddle, 'RIGHT')
+    self.TabLeft:SetAlpha(0.5)
+    self.TabLeft:SetSize(24, 18)
+    self.TabLeft:SetTexCoord(0.53125, 0.71875, 0, 1)
+                
+    self.TabRight = self:CreateTexture(nil, 'BACKGROUND')
+    self.TabRight:SetTexture('Interface\\CharacterFrame\\UI-CharacterFrame-GroupIndicator')
+    self.TabRight:SetPoint('RIGHT', self.TabMiddle, 'LEFT')
+    self.TabRight:SetAlpha(0.5)
+    self.TabRight:SetSize(24, 18)
+    self.TabRight:SetTexCoord(0, 0.1875, 0, 1)
+
+    self.TabText = self.Health:CreateFontString(nil, 'ARTWORK')
+    self.TabText:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontSmall - 2)
+    self.TabText:SetShadowOffset(1, -1)
+    self.TabText:SetPoint('CENTER', self.TabMiddle, 0, -1)
+    self.TabText:SetAlpha(0.5)
+end
+
     -- generic frame update
     
-local function UpdateFrame(self, event, unit)
+local function UpdateFrame(self, _, unit)
 	if (self.unit ~= unit) then 
         return
     end
 
-    if (self.Name.Bg) then
-        self.Name.Bg:SetVertexColor(UnitSelectionColor(unit))
+    if (self.NameBackground) then
+        self.NameBackground:SetVertexColor(UnitSelectionColor(unit))
     end
 
     if (self.OfflineStatus) then
@@ -259,6 +324,8 @@ local function UpdateFrame(self, event, unit)
     end
 end
 
+    -- druid power bar function 
+    
 local function UpdateDruidPower(self, event, unit)
     if (unit and unit ~= self.unit) then
         return 
@@ -271,40 +338,28 @@ local function UpdateDruidPower(self, event, unit)
 
         if (index == 1 or index == 3) then
             if (unitPower) then
-                self.Druid.Power:SetStatusBarColor(unitPower.r, unitPower.g, unitPower.b)
+                self.Druid:SetStatusBarColor(unitPower.r, unitPower.g, unitPower.b)
             end
 
-            self.Druid.Power:SetAlpha(1)
-            self.Druid.Power.Value:SetAlpha(1)
+            self.Druid:SetAlpha(1)
+            self.Druid.Value:SetAlpha(1)
             self.Druid.Texture:SetAlpha(1)
 
             local min, max = UnitPower('player', 0), UnitPowerMax('player', 0)
-
-            self.Druid.Power:SetMinMaxValues(0, max)
-            self.Druid.Power:SetValue(min)
+            self.Druid:SetMinMaxValues(0, max)
+            self.Druid:SetValue(min)
 
             if (min == max) then
-                self.Druid.Power.Value:SetText(FormatValue(min))
+                self.Druid.Value:SetText(FormatValue(min))
             else
-                self.Druid.Power.Value:SetText(FormatValue(min)..'/'..FormatValue(max))
+                self.Druid.Value:SetText(FormatValue(min)..'/'..FormatValue(max))
             end
         else
-            self.Druid.Power:SetAlpha(0)
-            self.Druid.Power.Value:SetAlpha(0)
+            self.Druid:SetAlpha(0)
+            self.Druid.Value:SetAlpha(0)
             self.Druid.Texture:SetAlpha(0)
         end
     end
-end
-
-local function UpdateCombo(self, event, unit)
-	local cp
-	if (UnitHasVehicleUI('player')) then
-		cp = GetComboPoints('vehicle', 'target')
-	else
-		cp = GetComboPoints('player', 'target')
-	end
-    
-    self.ComboPoints:SetText(cp == 0 and '' or cp)
 end
 
 local function UpdateThreat(self, event, unit)
@@ -321,8 +376,7 @@ local function UpdateThreat(self, event, unit)
         end
 
         if (threat and threat > 0) then
-            local r, g, b
-            r, g, b = GetThreatStatusColor(threat)
+            local r, g, b = GetThreatStatusColor(threat)
             self.Glow:SetVertexColor(r, g, b, 1)
         else
             self.Glow:SetVertexColor(0, 0, 0, 0)
@@ -348,12 +402,12 @@ local function UpdateAuraIcons(auras, button)
     button.count:ClearAllPoints()
     button.count:SetPoint('BOTTOMRIGHT', 1, 1)
 
-    if (not button.background) then
-        button.background = button:CreateTexture(nil, 'BACKGROUND')
-        button.background:SetPoint('TOPLEFT', button.icon, 'TOPLEFT', -4, 4)
-        button.background:SetPoint('BOTTOMRIGHT', button.icon, 'BOTTOMRIGHT', 4, -4)
-        button.background:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\borderBackground')
-        button.background:SetVertexColor(0, 0, 0, 1)
+    if (not button.Shadow) then
+        button.Shadow = button:CreateTexture(nil, 'BACKGROUND')
+        button.Shadow:SetPoint('TOPLEFT', button.icon, 'TOPLEFT', -4, 4)
+        button.Shadow:SetPoint('BOTTOMRIGHT', button.icon, 'BOTTOMRIGHT', 4, -4)
+        button.Shadow:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\borderBackground')
+        button.Shadow:SetVertexColor(0, 0, 0, 1)
     end
 
 	button.overlay.Hide = function(self)
@@ -390,15 +444,15 @@ local function UpdateHealth(Health, unit, min, max)
     end
 
     if (not UnitIsConnected(unit)) then
-        self.Portrait:SetVertexColor(0.5, 0.5, 0.5, 0.85)
+        self.Portrait:SetVertexColor(0.5, 0.5, 0.5, 0.7)
     elseif (UnitIsDead(unit)) then
-        self.Portrait:SetVertexColor(0.35, 0.35, 0.35, 0.85)
+        self.Portrait:SetVertexColor(0.35, 0.35, 0.35, 0.7)
     elseif (UnitIsGhost(unit)) then
-        self.Portrait:SetVertexColor(0.3, 0.3, 0.9, 0.85)
+        self.Portrait:SetVertexColor(0.3, 0.3, 0.9, 0.7)
     elseif (min/max * 100 < 25) then
         if (UnitIsPlayer(unit)) then
             if (unit ~= 'player') then
-                self.Portrait:SetVertexColor(1, 0, 0, 0.9)
+                self.Portrait:SetVertexColor(1, 0, 0, 0.7)
             end
         end
     else
@@ -476,26 +530,22 @@ local function CreateUnitLayout(self, unit)
     self.Texture = self.Health:CreateTexture('$parentTextureFrame', 'ARTWORK')
 
     if (self.targetUnit) then
-        self.Texture:SetHeight(45)
-        self.Texture:SetWidth(93)
+        self.Texture:SetSize(93, 45)
         self.Texture:SetPoint('CENTER', self, 0, 0)
         self.Texture:SetTexture('Interface\\TargetingFrame\\UI-TargetofTargetFrame')
         self.Texture:SetTexCoord(0.015625, 0.7265625, 0, 0.703125)
     elseif (unit == 'pet') then
-        self.Texture:SetHeight(64)
-        self.Texture:SetWidth(128)
+        self.Texture:SetSize(128, 64)
         self.Texture:SetPoint('TOPLEFT', self, 0, -2)
         self.Texture:SetTexture('Interface\\TargetingFrame\\UI-SmallTargetingFrame')
         self.Texture.SetTexture = function() end
     elseif (unit == 'target' or unit == 'focus') then
-        self.Texture:SetHeight(100)
-        self.Texture:SetWidth(232)
+        self.Texture:SetSize(230, 100)
         self.Texture:SetPoint('CENTER', self, 20, -7)
         self.Texture:SetTexture('Interface\\TargetingFrame\\UI-TargetingFrame')
         self.Texture:SetTexCoord(0.09375, 1, 0, 0.78125)
     elseif (self.partyUnit) then
-        self.Texture:SetHeight(64)
-        self.Texture:SetWidth(128)
+        self.Texture:SetSize(128, 64)
         self.Texture:SetPoint('TOPLEFT', self, 0, -2)
         self.Texture:SetTexture('Interface\\TargetingFrame\\UI-PartyFrame')
     end
@@ -506,34 +556,27 @@ local function CreateUnitLayout(self, unit)
 	self.Health:SetStatusBarTexture(oUF_Neav.media.statusbar, 'BORDER')
 
     if (unit == 'player') then
-        self.Health:SetHeight(12)
-        self.Health:SetWidth(119)
+        self.Health:SetSize(119, 12)
     elseif (unit == 'pet') then
-        self.Health:SetHeight(8)
-        self.Health:SetWidth(69)
+        self.Health:SetSize(69, 8)
         self.Health:SetPoint('TOPLEFT', self.Texture, 46, -22)
     elseif (unit == 'target' or unit == 'focus') then
-        self.Health:SetHeight(12)
-        self.Health:SetWidth(119)
-        self.Health:SetPoint('TOPRIGHT', self.Texture, -107, -41)
+        self.Health:SetSize(119, 12)
+        self.Health:SetPoint('TOPRIGHT', self.Texture, -105, -41)
     elseif (self.targetUnit) then
-        self.Health:SetHeight(7)
-        self.Health:SetWidth(47)
+        self.Health:SetSize(47, 7)
         self.Health:SetPoint('CENTER', self, 22, 4)
     elseif (self.partyUnit) then   
         self.Health:SetPoint('TOPLEFT', self.Texture, 47, -12)
-        self.Health:SetHeight(7)
-        self.Health:SetWidth(70) 
+        self.Health:SetSize(70, 7) 
     elseif (unit == 'partypet1' or unit == 'partypet2' or unit == 'partypet3' or unit == 'partypet4') then
-        self.Health:SetHeight(8)
-        self.Health:SetWidth(69)
+        self.Health:SetSize(69, 8)
         self.Health:SetPoint('TOPLEFT', self.f, 46, -22)
     end
-
+    
+    self.Health.PostUpdate = UpdateHealth
     self.Health.frequentUpdates = true
     self.Health.Smooth = true
-
-    self.Health.PostUpdate = UpdateHealth
 
         -- health text
 
@@ -556,11 +599,11 @@ local function CreateUnitLayout(self, unit)
     self.Power:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', 0, -1)
     self.Power:SetPoint('TOPRIGHT', self.Health, 'BOTTOMRIGHT', 0, -1)
     self.Power:SetHeight((self.Health:GetHeight() - 1))
+    
+    self.Power.PostUpdate = UpdatePower
     self.Power.frequentUpdates = true
     self.Power.Smooth = true
     
-    self.Power.PostUpdate = UpdatePower
-
         -- power text
 
     self.Power.Value = self.Health:CreateFontString(nil, 'ARTWORK')
@@ -575,13 +618,12 @@ local function CreateUnitLayout(self, unit)
         self.Power.Value:SetPoint('CENTER', self.Power, 0, 1)
     end
 
-        -- background
+        -- health- and powerbar background
 
-    self.Background = self.Power:CreateTexture(nil, 'BACKGROUND')
-    self.Background:SetTexture(0, 0, 0, 0.55) -- oUF_Neav.media.statusbar
-    -- self.Background:SetVertexColor(0, 0, 0, 0.55)
-    self.Background:SetPoint('TOPRIGHT', self.Health)
-    self.Background:SetPoint('BOTTOMLEFT', self.Power)
+    self.BarBackground = self.Power:CreateTexture(nil, 'BACKGROUND')
+    self.BarBackground:SetPoint('TOPRIGHT', self.Health)
+    self.BarBackground:SetPoint('BOTTOMLEFT', self.Power)
+    self.BarBackground:SetTexture(0, 0, 0, 0.55)
 
         -- name
 
@@ -610,17 +652,6 @@ local function CreateUnitLayout(self, unit)
 
     self:Tag(self.Name, '[name]')
     self.UNIT_NAME_UPDATE = UpdateFrame
-
-        -- colored name background
-
-    if (unit == 'target' or unit == 'focus') then
-        self.Name.Bg = self.Health:CreateTexture('$parentNameBackground', 'BACKGROUND')
-        self.Name.Bg:SetHeight(18)
-        self.Name.Bg:SetTexCoord(0.2, 0.8, 0.3, 0.85)
-        self.Name.Bg:SetPoint('BOTTOMRIGHT', self.Health, 'TOPRIGHT')
-        self.Name.Bg:SetPoint('BOTTOMLEFT', self.Health, 'TOPLEFT') 
-        self.Name.Bg:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\nameBackground')
-    end
 
         -- level
 
@@ -651,7 +682,7 @@ local function CreateUnitLayout(self, unit)
         self.Portrait:SetSize(37, 37)
         self.Portrait:SetPoint('TOPLEFT', self.Texture, 7, -6)
     end
-
+    
         -- pvp icons
 
     if (oUF_Neav.show.pvpicons) then
@@ -695,8 +726,7 @@ local function CreateUnitLayout(self, unit)
     elseif (self.targetUnit) then
         self.Leader:SetPoint('TOPLEFT', self.Portrait, -3, 4)
     elseif (self.partyUnit) then
-        self.Leader:SetHeight(14)
-        self.Leader:SetWidth(14)
+        self.Leader:SetSize(14, 14)
         self.Leader:SetPoint('CENTER', self.Portrait, 'TOPLEFT', 1, -1)
     end
 
@@ -707,14 +737,12 @@ local function CreateUnitLayout(self, unit)
     self.RaidIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
 
     if (self.mainUnit) then
-        self.RaidIcon:SetHeight(26)
-        self.RaidIcon:SetWidth(26)
+        self.RaidIcon:SetSize(26, 26)
     else
-        self.RaidIcon:SetHeight(20)
-        self.RaidIcon:SetWidth(20)
+        self.RaidIcon:SetSize(20, 20)
     end
     
-        -- phase text
+        -- phase text, not ready yet
     
     --[[
     if (unit == 'target' or unit == 'focus' or self.partyUnit) then
@@ -744,32 +772,28 @@ local function CreateUnitLayout(self, unit)
         self.ReadyCheck.fadeTime = 1
     end
 
-        -- glow textures
+        -- threat textures - dont like the oUF threat function, create my own!
 
-    self.Glow = self:CreateTexture('$parentGlow', 'BACKGROUND')
+    self.Glow = self:CreateTexture('$parentGlowTexture', 'BACKGROUND')
     self.Glow:SetAlpha(0)
 
     if (unit == 'player') then
-        self.Glow:SetHeight(92)
-        self.Glow:SetWidth(242)
+        self.Glow:SetSize(242, 92)
         self.Glow:SetPoint('TOPLEFT', self.Texture, 13, 0)
         self.Glow:SetTexture('Interface\\TargetingFrame\\UI-TargetingFrame-Flash')
         self.Glow:SetTexCoord(0.945, 0, 0, 0.182)
     elseif (unit == 'pet') then
-        self.Glow:SetHeight(64)
-        self.Glow:SetWidth(128)
+        self.Glow:SetSize(128, 64)
         self.Glow:SetPoint('TOPLEFT', self.Texture, -4, 12)
         self.Glow:SetTexture('Interface\\TargetingFrame\\UI-PartyFrame-Flash')
         self.Glow:SetTexCoord(0, 1, 1, 0)
     elseif (unit == 'target' or unit == 'focus') then
-        self.Glow:SetHeight(92)
-        self.Glow:SetWidth(241)
-        self.Glow:SetPoint('TOPRIGHT', self.Texture, -14, 0)
+        self.Glow:SetSize(239, 94)
+        self.Glow:SetPoint('TOPRIGHT', self.Texture, -14, 1)
         self.Glow:SetTexture('Interface\\TargetingFrame\\UI-TargetingFrame-Flash')
         self.Glow:SetTexCoord(0, 0.945, 0, 0.182)
     elseif (self.partyUnit) then
-        self.Glow:SetHeight(63)
-        self.Glow:SetWidth(128)
+        self.Glow:SetSize(128, 63)
         self.Glow:SetPoint('TOPLEFT', self.Texture, -3, 4)
         self.Glow:SetTexture('Interface\\TargetingFrame\\UI-PartyFrame-Flash')
     end
@@ -782,10 +806,9 @@ local function CreateUnitLayout(self, unit)
         -- lfg role icon
 
     if (self.partyUnit or unit == 'player') then
-        self.LFDRole = self.Health:CreateTexture('$parentGlow', 'OVERLAY')
-        self.LFDRole:SetHeight(20)
-        self.LFDRole:SetWidth(20)
-
+        self.LFDRole = self.Health:CreateTexture('$parentRoleIcon', 'OVERLAY')
+        self.LFDRole:SetSize(20, 20)
+        
         if (unit == 'player') then
             self.LFDRole:SetPoint('BOTTOMRIGHT', self.Portrait, -2, -3)
         else
@@ -819,16 +842,69 @@ local function CreateUnitLayout(self, unit)
 			PaladinPowerBar:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 25, 2)
 			PaladinPowerBar:Show()
 		end
-
-			-- druid eclipse bar
             
 		if (select(2, UnitClass('player')) == 'DRUID') then
+        
+                -- druid eclipse bar
+            
 			EclipseBarFrame:SetParent(oUF_Neav_Player)
 			EclipseBarFrame:SetScale(oUF_Neav.units.player.scale * 0.82)
 			EclipseBar_OnLoad(EclipseBarFrame)
 			EclipseBarFrame:ClearAllPoints()
 			EclipseBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, 4)
 			EclipseBarFrame:Show()
+            
+                -- druid powerbar
+    
+            self.Druid = CreateFrame('StatusBar', nil, self)
+            self.Druid:SetPoint('TOP', self.Power, 'BOTTOM')
+            self.Druid:SetStatusBarTexture(oUF_Neav.media.statusbar)
+            self.Druid:SetFrameLevel(self:GetFrameLevel() - 1)
+            self.Druid:SetSize(100, 10)
+            self.Druid:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
+            self.Druid:SetBackdropColor(0, 0, 0, 0.5)
+
+            self.Druid.Value = self.Health:CreateFontString(nil, 'ARTWORK')
+            self.Druid.Value:SetFont('Fonts\\ARIALN.ttf', oUF_Neav.font.fontSmall, nil)
+            self.Druid.Value:SetShadowOffset(1, -1)
+            self.Druid.Value:SetPoint('CENTER', self.Druid, 0, 0.5)
+            
+            self.Druid.Texture = self:CreateTexture(nil, 'BACKGROUND')
+            self.Druid.Texture:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\druidmanaTexture')
+            self.Druid.Texture:SetSize(104, 28)
+            self.Druid.Texture:SetPoint('TOP', self.Power, 'BOTTOM', -1, 8)
+            
+                -- on update timer for the druid mana
+                
+            if (oUF_Neav.units.player.druidManaFrequentUpdates) then
+                self.updateTimer = 0
+                self:HookScript('OnUpdate', function(self, elapsed)
+                    self.updateTimer = self.updateTimer + elapsed
+                    
+                    if (self.updateTimer > TOOLTIP_UPDATE_TIME/2) then
+                        UpdateDruidPower(self, event, unit)
+                        self.updateTimer = 0
+                    end
+                end)
+            else
+                    -- events for the druid mana
+            
+                self:RegisterEvent('PLAYER_ENTERING_WORLD', UpdateDruidPower)
+                self:RegisterEvent('UNIT_POWER', UpdateDruidPower)
+                self:RegisterEvent('UNIT_DISPLAYPOWER', UpdateDruidPower)
+            end
+            
+            if (oUF_Neav.units.player.mouseoverText) then
+                self.Druid.Value:Hide()
+
+                self:HookScript('OnEnter', function(self)
+                    self.Druid.Value:Show()
+                end)
+
+                self:HookScript('OnLeave', function(self)
+                    self.Druid.Value:Hide()
+                end)
+            end
 		end
 		
             -- deathknight runebar
@@ -841,83 +917,33 @@ local function CreateUnitLayout(self, unit)
 
             -- raidgroup indicator
 
-        self.Group = {}
-
-        for i = 1, 3 do
-            self.Group[i] = self:CreateTexture(nil, 'BACKGROUND')
-            self.Group[i]:SetTexture('Interface\\CharacterFrame\\UI-CharacterFrame-GroupIndicator')
-            self.Group[i]:SetAlpha(0.5)
-            self.Group[i]:SetSize(24, 18)
-            self.Group[i]:SetTexCoord((i == 1 and 0.53125) or (i == 2 and 0.1875) or 0, (i == 1 and 0.71875) or (i == 2 and 0.53125) or 0.1875, 0, 1)
-        end
-
-        self.Group[1]:SetPoint('LEFT', self.Group[2], 'RIGHT')
-        self.Group[2]:SetPoint('LEFT', self.Group[3], 'RIGHT')
-
-        self.Group[4] = self.Health:CreateFontString(nil, 'ARTWORK')
-        self.Group[4]:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontSmall - 2)
-        self.Group[4]:SetShadowOffset(1, -1)
-        self.Group[4]:SetPoint('CENTER', self.Group[2], 0, -1)
-
+        CreateUnitTabTexture(self)
+        
         table.insert(self.__elements, UpdatePartyStatus)
         self:RegisterEvent('RAID_ROSTER_UPDATE', UpdatePartyStatus)
         self:RegisterEvent('PARTY_MEMBER_CHANGED', UpdatePartyStatus)
 
-            -- statusflashing, removed until I found a better solution
-            
-        --[[
-        self.Status = self.Health:CreateTexture('$parentStatusTexture', 'OVERLAY', self)
-        self.Status:SetHeight(66)
-        self.Status:SetWidth(191)
-        self.Status:SetBlendMode('ADD')
-        self.Status:SetTexture('Interface\\CharacterFrame\\UI-Player-Status')
-        self.Status:SetTexCoord(0, 0.74609375, 0, 0.53125)
-        self.Status:SetPoint('TOPLEFT', self.Texture, 35, -8)
-        self.Status:SetAlpha(0)
-
-        self.EventFrame = CreateFrame('Frame')
-        self.EventFrame:RegisterEvent('PLAYER_DEAD')
-        self.EventFrame:RegisterEvent('PLAYER_UNGHOST')
-        self.EventFrame:RegisterEvent('PLAYER_ALIVE')
-        self.EventFrame:RegisterEvent('PLAYER_UPDATE_RESTING')
-        self.EventFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
-        self.EventFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
-        self.EventFrame:RegisterEvent('PLAYER_REGEN_DISABLED')
-        self.EventFrame:SetScript('OnEvent', function(_, event, unit)
-            if (event == 'PLAYER_ENTERING_WORLD') then
-                CheckVehicleStatus(self, event, unit)
-                UpdatePartyStatus(self, event)
-            end
-
-            self.Status:Hide()
-
-            if (UnitHasVehicleUI('player')) then
-                UIFrameFlashStop(self.Status)
-                self.Status:Hide()
-            elseif (UnitAffectingCombat('player') and InCombatLockdown()) then
-                self.Status:SetVertexColor(1, 0.1, 0.1, 1)
-                UIFrameFlash(self.Status, 0.5, 0.5, 10^10, false, 0.1, 0.1)
-                self.Status:Show();
-            elseif (IsResting()) then
-                self.Status:SetVertexColor(1, 0.88, 0.25, 1)
-                UIFrameFlash(self.Status, 0.5, 0.5, 10^10, false, 0.1, 0.1)
-                self.Status:Show();
-            elseif (UnitIsDeadOrGhost('player')) then
-                UIFrameFlashStop(self.Status)
-                self.Status:Hide();
-            else
-                UIFrameFlashStop(self.Status)
-                self.Status:Hide();
-            end
-        end)
-        --]]
+            -- resting/combat status flashing
         
-        table.insert(self.__elements, CheckVehicleStatus)
-        self:RegisterEvent('UNIT_ENTERED_VEHICLE', CheckVehicleStatus)
-        self:RegisterEvent('UNIT_ENTERING_VEHICLE', CheckVehicleStatus)
-        self:RegisterEvent('UNIT_EXITING_VEHICLE', CheckVehicleStatus)
-        self:RegisterEvent('UNIT_EXITED_VEHICLE', CheckVehicleStatus)
-
+        if (oUF_Neav.units.player.showStatusFlash) then
+            self.StatusFlash = self.Health:CreateTexture('$parentStatusFlashTexture', 'OVERLAY', self)
+            self.StatusFlash:SetTexture('Interface\\CharacterFrame\\UI-Player-Status')
+            self.StatusFlash:SetTexCoord(0, 0.74609375, 0, 0.53125)
+            self.StatusFlash:SetBlendMode('ADD')
+            self.StatusFlash:SetSize(191, 66)
+            self.StatusFlash:SetPoint('TOPLEFT', self.Texture, 35, -8)
+            self.StatusFlash:SetAlpha(0)
+            
+            table.insert(self.__elements, UpdateFlashStatus)
+            self:RegisterEvent('PLAYER_DEAD', UpdateFlashStatus)
+            self:RegisterEvent('PLAYER_UNGHOST', UpdateFlashStatus)
+            self:RegisterEvent('PLAYER_ALIVE', UpdateFlashStatus)
+            self:RegisterEvent('PLAYER_UPDATE_RESTING', UpdateFlashStatus)
+            self:RegisterEvent('PLAYER_ENTERING_WORLD', UpdateFlashStatus)
+            self:RegisterEvent('PLAYER_REGEN_ENABLED', UpdateFlashStatus)
+            self:RegisterEvent('PLAYER_REGEN_DISABLED', UpdateFlashStatus)
+        end
+        
             -- pvptimer
 
         if (oUF_Neav.show.pvpicons) then
@@ -925,116 +951,52 @@ local function CreateUnitLayout(self, unit)
             self.PvPTimer:SetFont('Fonts\\ARIALN.ttf', oUF_Neav.font.fontSmall, oUF_Neav.font.fontSmallOutline and 'OUTLINE' or nil)
             self.PvPTimer:SetShadowOffset(1, -1)
             self.PvPTimer:SetPoint('BOTTOM', self.PvP, 'TOP', -12, 0)
-
-            self.LastUpdate = 0
+            
+            self.updateTimer = 0
             self:HookScript('OnUpdate', function(self, elapsed)
-                local time = nil
-                if (IsPVPTimerRunning()) then
-                    time = GetPVPTimer()
-                end
-
-                if (time) then
-                    time = time - elapsed * 1000
-                    local timeLeft = time
-                    if (timeLeft < 0) then
-                        self.PvPTimer:SetText('')
+                self.updateTimer = self.updateTimer + elapsed
+                    
+                if (self.updateTimer > TOOLTIP_UPDATE_TIME/2) then
+                    if (IsPVPTimerRunning()) then
+                        local sec = math.floor(GetPVPTimer()/1000) 
+                        self.PvPTimer:SetText(math.floor(sec/60)..'m')
+                    else
+                        self.PvPTimer:SetText(nil)
                     end
-                    self.PvPTimer:SetFormattedText(SecondsToTimeAbbrev(floor(timeLeft/1000)))
-                else
-                    self.PvPTimer:SetText('')
+                    
+                    self.updateTimer = 0
                 end
             end)
         end
 
             -- combat text
-
-        self.CombatFeedbackText = self.Health:CreateFontString(nil, 'ARTWORK')
-        self.CombatFeedbackText:SetFont(oUF_Neav.media.font, 23, 'OUTLINE')
-        self.CombatFeedbackText:SetShadowOffset(0, 0)
-        self.CombatFeedbackText:SetPoint('CENTER', self.Portrait)
-
-           -- restingicon
+        
+        if (oUF_Neav.units.player.showCombatFeedback) then
+            self.CombatFeedbackText = self.Health:CreateFontString(nil, 'ARTWORK')
+            self.CombatFeedbackText:SetFont(oUF_Neav.media.font, 23, 'OUTLINE')
+            self.CombatFeedbackText:SetShadowOffset(0, 0)
+            self.CombatFeedbackText:SetPoint('CENTER', self.Portrait)
+        end
+        
+           -- resting icon
 
 		self.Resting = self.Health:CreateTexture(nil, 'OVERLAY')
-		self.Resting:SetPoint('CENTER', self.Level, -0.5, -0.5)
-		self.Resting:SetWidth(31)
-		self.Resting:SetHeight(33)
+		self.Resting:SetPoint('CENTER', self.Level, -0.5, 0)
+		self.Resting:SetSize(31, 34)
         
-            -- combaticon
+            -- combat icon
 
         self.Combat = self.Health:CreateTexture(nil, 'OVERLAY')
-		self.Combat:SetPoint('CENTER', self.Level, 1, -1)
-		self.Combat:SetWidth(31)
-		self.Combat:SetHeight(33)
-
-            -- druidmana
-
-        if (select(2, UnitClass('player')) == 'DRUID') then
-            self.Druid = CreateFrame('Frame')
-            self.Druid:SetParent(self) 
-            self.Druid:SetFrameStrata('LOW')
-
-            self.Druid.Texture = self.Druid:CreateTexture(nil, 'BACKGROUND')
-            self.Druid.Texture:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\druidmanaTexture')
-            self.Druid.Texture:SetHeight(28)
-            self.Druid.Texture:SetWidth(104)
-            self.Druid.Texture:SetPoint('TOP', self.Power, 'BOTTOM', -1, 8)
-
-            self.Druid.Power = CreateFrame('StatusBar', nil, self)
-            self.Druid.Power:SetPoint('TOP', self.Power, 'BOTTOM')
-            self.Druid.Power:SetStatusBarTexture(oUF_Neav.media.statusbar)
-            self.Druid.Power:SetFrameStrata('LOW')
-            self.Druid.Power:SetFrameLevel(self.Druid:GetFrameLevel() - 1)
-            self.Druid.Power:SetHeight(10)
-            self.Druid.Power:SetWidth(100)
-            self.Druid.Power:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
-            self.Druid.Power:SetBackdropColor(0, 0, 0, 0.5)
-
-            self.Druid.Power.Value = self.Health:CreateFontString(nil, 'ARTWORK')
-            self.Druid.Power.Value:SetFont('Fonts\\ARIALN.ttf', oUF_Neav.font.fontSmall, nil)
-            self.Druid.Power.Value:SetShadowOffset(1, -1)
-            self.Druid.Power.Value:SetPoint('CENTER', self.Druid.Power, 0, 0.5)
-
-            table.insert(self.__elements, UpdateDruidPower)
+		self.Combat:SetPoint('CENTER', self.Level, 1, 0)
+		self.Combat:SetSize(31, 33)
+        
+            -- player frame vehicle/normal update
             
-                -- on_update timer for the druid mana
-                
-            --[[
-            local updateTimer = 0
-            self.Druid:SetScript('OnUpdate', function(_, elapsed)
-                updateTimer = updateTimer + elapsed
-                
-                if (updateTimer > TOOLTIP_UPDATE_TIME/2) then
-                    UpdateDruidPower(self, event, unit)
-                    updateTimer = 0
-                end
-            end)
-            --]]
-            
-                -- event 'timer' for the druid mana, less cpu usage
-                
-            self:RegisterEvent('UNIT_POWER', UpdateDruidPower)
-            self:RegisterEvent('PLAYER_ENTERING_WORLD', UpdateDruidPower)
-            self:RegisterEvent('UNIT_DISPLAYPOWER', UpdateDruidPower)
-            
-            -- self:RegisterEvent('UNIT_RAGE', UpdateDruidPower)
-            -- self:RegisterEvent('UNIT_ENERGY', UpdateDruidPower)
-            -- self:RegisterEvent('UPDATE_SHAPESHIFT_FORM', UpdateDruidPower)
-            -- self:RegisterEvent('UNIT_MAXPOWER', UpdateDruidPower)
-            
-            if (oUF_Neav.units.player.mouseoverText) then
-                self.Druid.Power.Value:Hide()
-
-                self:HookScript('OnEnter', function(self)
-                    self.Druid.Power.Value:Show()
-                end)
-
-                self:HookScript('OnLeave', function(self)
-                    self.Druid.Power.Value:Hide()
-                end)
-            end
-            
-        end
+        table.insert(self.__elements, CheckVehicleStatus)
+        self:RegisterEvent('UNIT_ENTERED_VEHICLE', CheckVehicleStatus)
+        self:RegisterEvent('UNIT_ENTERING_VEHICLE', CheckVehicleStatus)
+        self:RegisterEvent('UNIT_EXITING_VEHICLE', CheckVehicleStatus)
+        self:RegisterEvent('UNIT_EXITED_VEHICLE', CheckVehicleStatus)
     end
 
         -- petframe
@@ -1055,7 +1017,29 @@ local function CreateUnitLayout(self, unit)
     end
 
         -- target + focusframe
+    
+    if (unit == 'target' or unit == 'focus') then
+        self:SetSize(175, 42)
 
+            -- colored name background
+        
+        self.NameBackground = self.Health:CreateTexture('$parentNameBackground', 'BACKGROUND')
+        self.NameBackground:SetHeight(18)
+        self.NameBackground:SetTexCoord(0.2, 0.8, 0.3, 0.85)
+        self.NameBackground:SetPoint('BOTTOMRIGHT', self.Health, 'TOPRIGHT')
+        self.NameBackground:SetPoint('BOTTOMLEFT', self.Health, 'TOPLEFT') 
+        self.NameBackground:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\nameBackground')
+
+            -- combat feedback text
+            
+        if (oUF_Neav.units.target.showCombatFeedback or oUF_Neav.units.focus.showCombatFeedback) then
+            self.CombatFeedbackText = self.Health:CreateFontString(nil, 'ARTWORK')
+            self.CombatFeedbackText:SetFont(oUF_Neav.media.font, 23, 'OUTLINE')
+            self.CombatFeedbackText:SetShadowOffset(0, 0)
+            self.CombatFeedbackText:SetPoint('CENTER', self.Portrait)
+        end
+    end
+    
     if (unit == 'target') then
         self.Auras = CreateFrame('Frame', nil, self)
         self.Auras.gap = true
@@ -1066,12 +1050,12 @@ local function CreateUnitLayout(self, unit)
         self.Auras.initialAnchor = 'TOPLEFT'
         self.Auras['growth-x'] = 'RIGHT'
         self.Auras['growth-y'] = 'DOWN'
-        self.Auras.numBuffs = 40
-        self.Auras.numDebuffs = 18
+        self.Auras.numBuffs = oUF_Neav.units.target.numBuffs
+        self.Auras.numDebuffs = oUF_Neav.units.target.numDebuffs
         self.Auras.spacing = 4.5
         
 		if (oUF_Neav.units.target.colorPlayerDebuffsOnly) then
-			self.Auras.PostUpdateIcon = function(self, unit, icon, index, offset)
+			self.Auras.PostUpdateIcon = function(self, unit, icon)
 				if (unit ~= 'target') then 
                     return 
                 end
@@ -1086,60 +1070,15 @@ local function CreateUnitLayout(self, unit)
 				end
 			end
 		end
-
-    elseif (unit == 'focus') then
-        self.Debuffs = CreateFrame('Frame', nil, self)
-        self.Debuffs.size = oUF_Neav.units.focus.auraSize + 7
-        self.Debuffs:SetHeight(self.Debuffs.size * 3)
-        self.Debuffs:SetWidth(self.Debuffs.size * 3)
-        self.Debuffs:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', -3.5, -5)
-        self.Debuffs.initialAnchor = 'TOPLEFT'
-        self.Debuffs['growth-x'] = 'RIGHT'
-        self.Debuffs['growth-y'] = 'DOWN'
-        self.Debuffs.num = 6
-        self.Debuffs.spacing = 4
-
-        self.Header = {}
-
-        for i = 1, 3 do
-            self.Header[i] = self.Health:CreateTexture(nil, 'BACKGROUND', self)
-            self.Header[i]:SetTexture('Interface\\CharacterFrame\\UI-CharacterFrame-GroupIndicator')
-            self.Header[i]:SetHeight(18)
-            self.Header[i]:SetWidth((i == 2 and 32) or 24)
-            self.Header[i]:SetAlpha(0.5)
-            self.Header[i]:SetTexCoord((i == 1 and 0.53125) or (i == 2 and 0.1875) or 0, (i == 1 and 0.71875) or (i == 2 and 0.53125) or 0.1875, 0, 1)
-            self.Header[i]:SetPoint((i == 1 and 'BOTTOMRIGHT') or 'RIGHT', (i == 1 and self) or (i == 2 and self.Header[1]) or (i == 3 and self.Header[2]), (i == 1 and 'TOP') or 'LEFT', (i == 1 and 40) or 0, 0)
-        end
-
-        self.Header[4] = self.Health:CreateFontString(nil, 'ARTWORK')
-        self.Header[4]:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontSmall)
-        self.Header[4]:SetShadowOffset(1, -1)
-        self.Header[4]:SetPoint('CENTER', self.Header[2], 0, -1)
-        self.Header[4]:SetText('Focus')
-        self.Header[4]:SetAlpha(0.7)
-    end
-
-    if (unit == 'target' or unit == 'focus') then
-		self:SetSize(175, 42)
-
-        self.CombatFeedbackText = self.Health:CreateFontString(nil, 'ARTWORK')
-        self.CombatFeedbackText:SetFont(oUF_Neav.media.font, 23, 'OUTLINE')
-        self.CombatFeedbackText:SetShadowOffset(0, 0)
-        self.CombatFeedbackText:SetPoint('CENTER', self.Portrait)
-    end
-
-    if (unit == 'target' or unit == 'focus') then
+        
         if (oUF_Neav.units.target.showComboPoints) then
             if (oUF_Neav.units.target.showComboPointsAsNumber) then
                 self.ComboPoints = self.Health:CreateFontString(nil, 'ARTWORK')
-                self.ComboPoints:SetFont(DAMAGE_TEXT_FONT, 22, 'OUTLINE')
+                self.ComboPoints:SetFont(DAMAGE_TEXT_FONT, 26, 'OUTLINE')
                 self.ComboPoints:SetShadowOffset(0, 0)
                 self.ComboPoints:SetPoint('LEFT', self.Portrait, 'RIGHT', 8, 4)
                 self.ComboPoints:SetTextColor(unpack(oUF_Neav.units.target.numComboPointsColor))
-                
-                table.insert(self.__elements, UpdateCombo)
-                self:RegisterEvent('UNIT_COMBO_POINTS', UpdateCombo)
-                self:RegisterEvent('PLAYER_TARGET_CHANGED', UpdateCombo)
+                self:Tag(self.ComboPoints, '[combopoints]')
             else
                 self.CPoints = {}
 
@@ -1152,21 +1091,36 @@ local function CreateUnitLayout(self, unit)
                 end
 
                 self.CPoints[1]:SetPoint('TOPRIGHT', self.Texture, -44, -8)
-
                 self.CPoints[2]:SetPoint('TOP', self.CPoints[1], 'BOTTOM', 8, 9)
-
                 self.CPoints[3]:SetPoint('TOP', self.CPoints[2], 'BOTTOM', 5, 7)
                 self.CPoints[3]:SetTextColor(1, 1, 0)
-
                 self.CPoints[4]:SetPoint('TOP', self.CPoints[3], 'BOTTOM', 1, 6)
                 self.CPoints[4]:SetTextColor(1, 0.5, 0)
-
                 self.CPoints[5]:SetPoint('TOP', self.CPoints[4], 'BOTTOM', -2, 6)
                 self.CPoints[5]:SetTextColor(1, 0, 0)
             end
         end
     end
+    
+    if (unit == 'focus') then
+        self.Debuffs = CreateFrame('Frame', nil, self)
+        self.Debuffs.size = oUF_Neav.units.focus.auraSize + 7
+        self.Debuffs:SetHeight(self.Debuffs.size * 3)
+        self.Debuffs:SetWidth(self.Debuffs.size * 3)
+        self.Debuffs:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', -3.5, -5)
+        self.Debuffs.initialAnchor = 'TOPLEFT'
+        self.Debuffs['growth-x'] = 'RIGHT'
+        self.Debuffs['growth-y'] = 'DOWN'
+        self.Debuffs.num = oUF_Neav.units.focus.numDebuffs
+        self.Debuffs.spacing = 4
+        
+        CreateUnitTabTexture(self)
 
+        self.TabText:SetText(FOCUS)
+        self.TabMiddle:SetPoint('BOTTOM', self.NameBackground, 'TOP', 0, 1)
+        self.TabMiddle:SetWidth(self.TabMiddle:GetWidth() + 8)
+    end
+    
     if (self.targetUnit) then
 		self:SetSize(85, 20)
 
@@ -1197,7 +1151,8 @@ local function CreateUnitLayout(self, unit)
         self.Debuffs['growth-x'] = 'RIGHT'
         self.Debuffs.num = 3
     end
-
+    
+    --[[
     if (unit == 'partypet1' or unit == 'partypet2' or unit == 'partypet3' or unit == 'partypet4') then
 		self:SetSize(128, 53)
 
@@ -1213,7 +1168,8 @@ local function CreateUnitLayout(self, unit)
 
         self.Portrait:SetPoint('TOPLEFT', self.f, 7, -6)
     end
-    
+    --]]
+        
         -- mouseover text
 
     if (unit == 'player' and oUF_Neav.units.player.mouseoverText or unit == 'pet' and oUF_Neav.units.pet.mouseoverText or unit == 'target' and oUF_Neav.units.target.mouseoverText or unit == 'focus' and oUF_Neav.units.focus.mouseoverText or self.partyUnit and oUF_Neav.units.party.mouseoverText) then
@@ -1249,10 +1205,6 @@ local function CreateUnitLayout(self, unit)
         }
     end
 
-    if (oUF_Neav.show.castbars) then
-        oUF_Neav.CreateCastbars(self, unit)
-    end
-
     if (self.Auras) then
         self.Auras.PostCreateIcon = UpdateAuraIcons
         self.Auras.showDebuffType = true
@@ -1262,7 +1214,11 @@ local function CreateUnitLayout(self, unit)
         self.Debuffs.PostCreateIcon = UpdateAuraIcons
         self.Debuffs.showDebuffType = true
     end
-
+    
+    if (oUF_Neav.show.castbars) then
+        oUF_Neav.CreateCastbars(self, unit)
+    end
+    
 	return self
 end
 

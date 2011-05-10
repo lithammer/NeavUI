@@ -13,7 +13,7 @@
 		oUF_Smooth
 
 	Features:
-		Aggro highlighting
+		Threat highlighting
         DebuffIcons
         Leader-, MasterLooter- and Raidicons
         Raidicons
@@ -25,11 +25,11 @@
         
 --]]
 
-if IsAddOnLoaded('Aptechka') or IsAddOnLoaded('Grid') then
+if (IsAddOnLoaded('Aptechka') or IsAddOnLoaded('Grid') or not oUF_Neav.units.raid.show) then
 	return
 end
 
-    -- Kill the Blizzard party/raid frames
+    -- kill the Blizzard party/raid frames
     
 for _, frame in pairs({
 	CompactPartyFrame,
@@ -37,8 +37,6 @@ for _, frame in pairs({
 	CompactRaidFrameContainer,
 }) do
 	frame:UnregisterAllEvents()
-	-- frame.Show = function() end
-	--  frame:Hide()
     
     hooksecurefunc(frame, 'Show', function(self)
         self:Hide()
@@ -47,24 +45,9 @@ end
 
 for _, button in pairs({
 	'OptionsButton',
-
-    --'FilterRoleTank',
-    --'FilterRoleHealer',
-    --'FilterRoleDamager',
-	
-	--'FilterGroup1',
-	--'FilterGroup2',
-	--'FilterGroup3',
-	--'FilterGroup4',
-	--'FilterGroup5',
-	--'FilterGroup6',
-	--'FilterGroup7',
-	--'FilterGroup8',
-	
 	'LockedModeToggle',
 	'HiddenModeToggle',
 }) do
-    --_G['CompactRaidFrameManagerDisplayFrame'..button]:SetAlpha(0.35)
     _G['CompactRaidFrameManagerDisplayFrame'..button]:Hide()
     _G['CompactRaidFrameManagerDisplayFrame'..button]:Disable()
     _G['CompactRaidFrameManagerDisplayFrame'..button]:EnableMouse(false)
@@ -77,11 +60,6 @@ for _, button in pairs({
     _G['InterfaceOptions'..button]:SetAlpha(0.35)
     _G['InterfaceOptions'..button]:Disable()
     _G['InterfaceOptions'..button]:EnableMouse(false)
-end
-
-local function GetSpellName(spellID)
-    local name = GetSpellInfo(spellID)
-    return name
 end
 
 local playerClass = select(2, UnitClass('player'))
@@ -125,6 +103,11 @@ do
             {23335, 'LEFT', {0, 0, 1}}, -- Warsong flag, Alliance 
 		},
 	}
+end
+
+local function GetSpellName(spellID)
+    local name = GetSpellInfo(spellID)
+    return name
 end
 
 local function auraIcon(self, icon)
@@ -180,7 +163,7 @@ local function CreateIndicators(self, unit)
 				BOTTOM = {0, iconPad},
 			}
             
-			icon:SetPoint(spell[2], self, unpack(iconOffsets[spell[2]]))
+			icon:SetPoint(spell[2], self.Health, unpack(iconOffsets[spell[2]]))
 
                 -- Exception to place PW:S above Weakened Soul
                 
@@ -319,7 +302,6 @@ local debuffList = setmetatable({
 
 	-- Throne of the Four Winds
 
-
 },{ __index = function() 
     return 0 
 end})
@@ -364,20 +346,19 @@ local function UpdateAura(self, event, unit)
 		if (dispellClass[dis] or cur) then
             self.Icon:Show()
             self.Icon.Icon:SetTexture(tex)
-
+            self.Icon.Count:SetText(co > 0 and co or '')
+            
             local col = DebuffTypeColor[dis]
             self.Icon.Border:SetVertexColor(col.r, col.g, col.b)
 
-            self.Icon.Count:SetText(co > 0 and co or '')
-
-            self.Health.Value:Hide()
+            -- self.Health.Value:Hide()
             self.Name:Hide()
 
             self.Dispell = true
 		elseif (self.Dispell) then
             self.Icon:Hide()
 
-            self.Health.Value:Show()
+            -- self.Health.Value:Show()
             self.Name:Show()
 
             self.Dispell = false
@@ -385,7 +366,7 @@ local function UpdateAura(self, event, unit)
 	else
         self.Icon:Hide()
 
-        self.Health.Value:Show()
+       --  self.Health.Value:Show()
         self.Name:Show()
 	end
 end
@@ -401,23 +382,28 @@ local function UpdateThreat(self, _, unit)
         return
     end
 
-    -- if (self.Aggro) then
-        local threat = UnitThreatSituation(self.unit)
-        if (threat == 3) then
-            -- self.Aggro:SetText('|cFFFF0000AGGRO')
-            self.Health:SetBackdropColor(0.9, 0, 0)
-        else
-            -- self.Aggro:SetText('')
-            self.Health:SetBackdropColor(0, 0, 0)
+    local threatStatus = UnitThreatSituation(self.unit)
+    if (threatStatus == 3) then
+
+        self.Background:SetVertexColor(0.75, 0, 0)
+
+        if (self.ThreatText) then
+            self.ThreatText:SetText('|cFFFF0000THREAT')
         end
-    -- end
+    else
+        self.Background:SetVertexColor(0, 0, 0)
+
+        if (self.ThreatText) then
+            self.ThreatText:SetText('')
+        end
+    end
 end
 
-local function UpdateHealth(Health, unit, min, max)
+local function UpdateHealth(Health, unit)
 	if (Health:GetParent().unit ~= unit) then
         return
     end
-
+    
     if (UnitIsDead(unit) or UnitIsGhost(unit) or not UnitIsConnected(unit)) then
         Health:SetStatusBarColor(0.5, 0.5, 0.5)
     else
@@ -437,30 +423,53 @@ local function UpdateTargetBorder(self)
 	end
 end
 
+local function UpdateHealPredictionSize(self)
+    if (self.HealPrediction) then
+        self.HealPrediction.myBar:SetWidth(self.Health:GetWidth())
+        self.HealPrediction.myBar:SetHeight(self.Health:GetHeight())
+        
+        self.HealPrediction.otherBar:SetWidth(self.Health:GetWidth())
+        self.HealPrediction.otherBar:SetHeight(self.Health:GetHeight())
+    end
+end
+
 local function UpdatePower(self, _, unit)
 	if (self.unit ~= unit) then
         return 
     end
-
-    local powerType, powerToken, altR, altG, altB = UnitPowerType(unit)
+    
+    local powerType, powerToken = UnitPowerType(unit)
     local unitPower = PowerBarColor[powerToken]
-
+    
+    self.Health:ClearAllPoints()
+    
 	if (powerToken == 'MANA') then
         if (unitPower) then
-            self.Power.Background:SetVertexColor(unitPower.r*0.25, unitPower.g*0.25, unitPower.b*0.25)
-            self.Power:SetBackdropColor(unitPower.r*0.25, unitPower.g*0.25, unitPower.b*0.25)
+            self.Power:SetStatusBarColor(unitPower.r, unitPower.g, unitPower.b)
+            self.Power.Background:SetVertexColor(unitPower.r*0.3, unitPower.g*0.3, unitPower.b*0.3)
+        end
+        
+        if (oUF_Neav.units.raid.manabar.horizontalOrientation) then
+            self.Health:SetPoint('BOTTOMLEFT', self, 0, 3)
+            self.Health:SetPoint('TOPRIGHT', self)
+        else
+            self.Health:SetPoint('BOTTOMLEFT', self)
+            self.Health:SetPoint('TOPRIGHT', self, -3.5, 0)
         end
         
         self.Power:Show()
 	else
+        self.Health:SetAllPoints(self)
 		self.Power:Hide()
 	end
+    
+    UpdateHealPredictionSize(self)
 end
 
 local function CreateRaidLayout(self, unit)
     self:SetScript('OnEnter', function(self)
 		UnitFrame_OnEnter(self)
-    	self.Health.Mouseover:SetAlpha(0.15)
+    	self.Health.Mouseover:SetAlpha(0.175)
 	end)
     
     self:SetScript('OnLeave', function(self)
@@ -475,39 +484,24 @@ local function CreateRaidLayout(self, unit)
     self.Health:SetFrameStrata('LOW')
     self.Health:SetAllPoints(self)
     self.Health:SetFrameLevel(1)
-    
-	if (oUF_Neav.units.raid.horizontalHealthBars) then
-		self.Health:SetOrientation('HORIZONTAL')
-	else
-		self.Health:SetOrientation('VERTICAL')
-	end
-    
-    self.Health:SetBackdrop{
-        bgFile = 'Interface\\Buttons\\WHITE8x8', 
-        insets = {
-            left = -1.5, 
-            right = -1.5, 
-            top = -1.5, 
-            bottom = -1.5
-        },
-    }
-    self.Health:SetBackdropColor(0, 0, 0)
-	self.Health.colorClass = true
-	
+    self.Health:SetOrientation(oUF_Neav.units.raid.horizontalHealthBars and 'HORIZONTAL' or 'VERTICAL')
+
+    self.Health.PostUpdate = UpdateHealth
 	self.Health.frequentUpdates = true
+    self.Health.colorClass = true
 
 	if (not isHealer or oUF_Neav.units.raid.smoothUpdatesForAllClasses) then
 		self.Health.Smooth = true
 	end
-	
-	self.Health.PostUpdate = UpdateHealth
 
         -- health background
 
     self.Health.Background = self.Health:CreateTexture(nil, 'BORDER')
     self.Health.Background:SetAllPoints(self.Health)
     self.Health.Background:SetTexture(oUF_Neav.media.statusbar)
-
+    
+        -- mouseover darklight
+        
     self.Health.Mouseover = self.Health:CreateTexture(nil, 'OVERLAY')
     self.Health.Mouseover:SetAllPoints(self.Health)
     self.Health.Mouseover:SetTexture(oUF_Neav.media.statusbar)
@@ -517,41 +511,46 @@ local function CreateRaidLayout(self, unit)
         -- health text
 
     self.Health.Value = self.Health:CreateFontString(nil, 'OVERLAY')
-    self.Health.Value:SetPoint('BOTTOM', 0, 9.5)
-    self.Health.Value:SetFont(oUF_Neav.media.font, 12)
+    self.Health.Value:SetPoint('TOP', self.Health, 'CENTER', 0, 2)
+    self.Health.Value:SetFont(oUF_Neav.media.font, 11)
     self.Health.Value:SetShadowOffset(1, -1)
     self:Tag(self.Health.Value, '[health:Raid]')
-	
-		-- power bar
 
-	if oUF_Neav.units.raid.manabar then
+        -- name text
+
+    self.Name = self.Health:CreateFontString(nil, 'OVERLAY')
+    self.Name:SetPoint('BOTTOM', self.Health, 'CENTER', 0, 3)
+    self.Name:SetFont(oUF_Neav.media.fontThick, 12)
+    self.Name:SetShadowOffset(1, -1)
+    self.Name:SetTextColor(1, 1, 1)
+    self:Tag(self.Name, '[name:Raid]')
+
+        -- power bar
+                
+	if (oUF_Neav.units.raid.manabar.show) then
 		self.Power = CreateFrame('StatusBar', nil, self)
-		self.Power:SetStatusBarTexture(oUF_Neav.media.statusbar, 'ARTWORK')
+		self.Power:SetStatusBarTexture(oUF_Neav.media.statusbar, 'OVERLAY')
 		self.Power:SetFrameStrata('MEDIUM')
-		
-        if (oUF_Neav.units.raid.horizontalHealthBars) then
-            self.Power:SetPoint('BOTTOM', self, 0, 0)
-            self.Power:SetWidth(self:GetWidth())
-            self.Power:SetHeight(2.5)
-            self.Power:SetOrientation('HORIZONTAL')
-        else
-            self.Power:SetPoint('RIGHT', self, 0, 0)
-            self.Power:SetWidth(2.5)
-            self.Power:SetHeight(self:GetHeight())
-            self.Power:SetOrientation('VERTICAL')
-        end
-            
 		self.Power:SetFrameLevel(1)
-		self.Power:SetBackdrop{
-			bgFile = 'Interface\\Buttons\\WHITE8x8',
-		}
+        
+        if (oUF_Neav.units.raid.manabar.horizontalOrientation) then
+            self.Power:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', 0, -1)
+            self.Power:SetPoint('TOPRIGHT', self.Health, 'BOTTOMRIGHT', 0, -1)
+            self.Power:SetOrientation('HORIZONTAL')
+            self.Power:SetHeight(2.5)
+        else
+            self.Power:SetPoint('TOPLEFT', self.Health, 'TOPRIGHT', 1, 0)
+            self.Power:SetPoint('BOTTOMLEFT', self.Health, 'BOTTOMRIGHT', 1, 0)
+            self.Power:SetOrientation('VERTICAL')
+            self.Power:SetWidth(2.5)
+        end
+        
 		self.Power.colorPower = true
 		self.Power.Smooth = true
-
-		self.Power.Background = self.Power:CreateTexture(nil, 'BACKGROUND')
+    
+		self.Power.Background = self.Power:CreateTexture(nil, 'ARTWORK')
 		self.Power.Background:SetAllPoints(self.Power)
-		self.Power.Background:SetTexture(oUF_Neav.media.statusbar)
-        self.Power.Background:SetVertexColor(0, 0, 1)
+		self.Power.Background:SetTexture(1, 1, 1)
         
 		UpdatePower(self, _, unit) -- Force an update on init
 		
@@ -559,21 +558,10 @@ local function CreateRaidLayout(self, unit)
 		self:RegisterEvent('UNIT_DISPLAYPOWER', UpdatePower)
 	end
 
-        -- name text
-
-    self.Name = self.Health:CreateFontString(nil, 'OVERLAY')
-    self.Name:SetPoint('TOP', 0, -5)
-    self.Name:SetFont(oUF_Neav.media.fontThick, 12)
-    self.Name:SetShadowOffset(1, -1)
-    self.Name:SetTextColor(1, 1, 1)
-    self:Tag(self.Name, '[name:Raid]')
-
         -- heal prediction, new healcomm
 	
 	local myBar = CreateFrame('StatusBar', nil, self.Health)
 	myBar:SetStatusBarTexture(oUF_Neav.media.statusbar)
-	myBar:SetWidth(oUF_Neav.units.raid.width)
-	myBar:SetHeight(oUF_Neav.units.raid.height)
 	myBar:SetStatusBarColor(0, 1, 0.5, 0.25)
 	if (oUF_Neav.units.raid.horizontalHealthBars) then
 		myBar:SetOrientation('HORIZONTAL')
@@ -585,8 +573,6 @@ local function CreateRaidLayout(self, unit)
     
 	local otherBar = CreateFrame('StatusBar', nil, self.Health)
 	otherBar:SetStatusBarTexture(oUF_Neav.media.statusbar)
-	otherBar:SetWidth(oUF_Neav.units.raid.width)
-	otherBar:SetHeight(oUF_Neav.units.raid.height)
 	otherBar:SetStatusBarColor(0, 1, 0, 0.25)
 	if (oUF_Neav.units.raid.horizontalHealthBars) then
 		otherBar:SetOrientation('HORIZONTAL')
@@ -602,49 +588,53 @@ local function CreateRaidLayout(self, unit)
 		maxOverflow = 1,
 	}
     
-        -- aggro text
+    UpdateHealPredictionSize(self)
     
-    --[[
-    self.Aggro = self.Health:CreateFontString(nil, 'OVERLAY')
-    self.Aggro:SetPoint('CENTER', self, 'TOP')
-    self.Aggro:SetFont(oUF_Neav.media.font, 9, 'THINOUTLINE')
-    self.Aggro:SetShadowColor(0, 0, 0, 0)
-    self.Aggro:SetTextColor(1, 1, 1)
-    --]]
+        -- threat text
+    
+    if (oUF_Neav.units.raid.showThreatText) then
+        self.ThreatText = self.Health:CreateFontString(nil, 'OVERLAY')
+        self.ThreatText:SetPoint('CENTER', self, 'TOP')
+        self.ThreatText:SetFont(oUF_Neav.media.font, 10, 'THINOUTLINE')
+        self.ThreatText:SetShadowColor(0, 0, 0, 0)
+        self.ThreatText:SetTextColor(1, 1, 1)
+    end
     
     table.insert(self.__elements, UpdateThreat)
 	self:RegisterEvent('PLAYER_TARGET_CHANGED', UpdateThreat)
     self:RegisterEvent('UNIT_THREAT_LIST_UPDATE', UpdateThreat)
     self:RegisterEvent('UNIT_THREAT_SITUATION_UPDATE', UpdateThreat)
-
+    
+        -- background texture
+        
+    self.Background = self.Health:CreateTexture(nil, 'BACKGROUND')
+    self.Background:SetPoint('TOPRIGHT', self, 1.5, 1.5)
+    self.Background:SetPoint('BOTTOMLEFT', self, -1.5, -1.5)
+    self.Background:SetTexture('Interface\\Buttons\\WHITE8x8', 'LOW')
 
         -- masterlooter icons
 
     self.MasterLooter = self.Health:CreateTexture('$parentMasterLooterIcon', 'OVERLAY', self)
-    self.MasterLooter:SetHeight(11)
-    self.MasterLooter:SetWidth(11)
+    self.MasterLooter:SetSize(11, 11)
     self.MasterLooter:SetPoint('RIGHT', self.Health, 'TOPRIGHT', -1, 1)
 
         -- leader icons
 
     self.Leader = self.Health:CreateTexture('$parentLeaderIcon', 'OVERLAY', self)
-    self.Leader:SetHeight(12)
-    self.Leader:SetWidth(12)
+    self.Leader:SetSize(12, 12)
     self.Leader:SetPoint('LEFT', self.Health, 'TOPLEFT', 1, 0)
 
         -- raid icons
 
     self.RaidIcon = self.Health:CreateTexture(nil, 'OVERLAY')
-    self.RaidIcon:SetHeight(18)
-    self.RaidIcon:SetWidth(18)
+    self.RaidIcon:SetSize(18, 18)
     self.RaidIcon:SetPoint('CENTER', self, 'TOP')
-    self.RaidIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
 
         -- readycheck icons
 
     self.ReadyCheck = self.Health:CreateTexture(nil, 'OVERLAY')
-    self.ReadyCheck:SetPoint('TOPRIGHT', self.Health, -7, -7)
-    self.ReadyCheck:SetPoint('BOTTOMLEFT', self.Health, 7, 7)
+    self.ReadyCheck:SetPoint('CENTER', self.Health)
+    self.ReadyCheck:SetSize(20, 20)
     self.ReadyCheck.delayTime = 4
 	self.ReadyCheck.fadeTime = 1
 
@@ -680,7 +670,22 @@ local function CreateRaidLayout(self, unit)
         -- create indicators
         
 	CreateIndicators(self, unit)
+    
+        -- role indicator
 
+    -- self.LFDRole = self.Health:CreateTexture('$parentRoleIcon', 'OVERLAY')
+    -- self.LFDRole:SetSize(12, 12)
+    -- self.LFDRole:SetPoint('TOPLEFT', self.Health, -5, -5)
+   
+    if (oUF_Neav.units.raid.showRolePrefix) then
+        self.LFDRoleText = self.Health:CreateFontString(nil, 'ARTWORK')
+        self.LFDRoleText:SetPoint('TOPLEFT', self.Health, 0, 4)
+        self.LFDRoleText:SetFont(oUF_Neav.media.font, 15)
+        self.LFDRoleText:SetShadowOffset(0.5, -0.5)
+        self.LFDRoleText:SetTextColor(1, 0, 1)
+        self:Tag(self.LFDRoleText, '[role:Raid]')
+    end
+    
         -- playertarget border
 
     if (oUF_Neav.units.raid.showTargetBorder) then

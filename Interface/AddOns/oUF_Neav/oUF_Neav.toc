@@ -16,5 +16,6 @@ oUF_NeavCastbars.lua
 oUF_Neav.lua
 oUF_NeavRaid.lua
 oUF_NeavBoss.lua
+oUF_NeavArena.lua
 
 oUF_NeavWorldMarkers.lua

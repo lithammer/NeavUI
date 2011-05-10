@@ -4,12 +4,12 @@
         Boss
         
 	Supported Plugins:
-		oUF_Smooth
+        oUF_Smooth
 
 	Features:
         Castbars
-        Bufficons (for boss abilities)
-        Raidicons
+        Buff icons (for boss abilities)
+        Raid icons
 
 --]]
 
@@ -66,8 +66,8 @@ local function UpdateHealth(Health, unit, min, max)
 
     Health:SetStatusBarColor(0, 1, 0)
 
-    if (self.Name.Bg) then
-        self.Name.Bg:SetVertexColor(UnitSelectionColor(unit))
+    if (self.Name.Background) then
+        self.Name.Background:SetVertexColor(UnitSelectionColor(unit))
     end
 end
 
@@ -205,12 +205,12 @@ local function CreateBossLayout(self, unit)
 
         -- colored name background
 
-    self.Name.Bg = self.Health:CreateTexture('$parentNameBackground', 'BACKGROUND')
-    self.Name.Bg:SetHeight(18)
-    self.Name.Bg:SetTexCoord(0.2, 0.8, 0.3, 0.85)
-    self.Name.Bg:SetPoint('BOTTOMRIGHT', self.Health, 'TOPRIGHT')
-    self.Name.Bg:SetPoint('BOTTOMLEFT', self.Health, 'TOPLEFT') 
-    self.Name.Bg:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\nameBackground')
+    self.Name.Background = self.Health:CreateTexture('$parentNameBackground', 'BACKGROUND')
+    self.Name.Background:SetHeight(18)
+    self.Name.Background:SetTexCoord(0.2, 0.8, 0.3, 0.85)
+    self.Name.Background:SetPoint('BOTTOMRIGHT', self.Health, 'TOPRIGHT')
+    self.Name.Background:SetPoint('BOTTOMLEFT', self.Health, 'TOPLEFT') 
+    self.Name.Background:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\nameBackground')
 
         -- level
 
@@ -256,26 +256,26 @@ local function CreateBossLayout(self, unit)
     self.Buffs.PostCreateIcon = UpdateAuraIcons
 
     self:SetSize(132, 46)
-    self:SetScale(oUF_Neav.units.bossframes.scale)
+    self:SetScale(oUF_Neav.units.boss.scale)
     
-    if (oUF_Neav.units.bossframes.showCastbar) then
+    if (oUF_Neav.units.boss.showCastbar) then
         self.Castbar = CreateFrame('StatusBar', self:GetName()..'Castbar', self)
         self.Castbar:SetStatusBarTexture(oUF_Neav.media.statusbar)
         self.Castbar:SetParent(self)
-        -- self.Castbar:SetScale(oUF_Neav.units.bossframes.scale)
+        -- self.Castbar:SetScale(oUF_Neav.units.boss.scale)
         self.Castbar:SetHeight(18)
         self.Castbar:SetWidth(150)
-        self.Castbar:SetStatusBarColor(unpack(oUF_Neav.castbar.bossframes.color))
+        self.Castbar:SetStatusBarColor(unpack(oUF_Neav.castbar.boss.color))
         self.Castbar:SetPoint('BOTTOM', self, 'TOP', 10, 13)
 
-        self.Castbar.Bg = self.Castbar:CreateTexture(nil, 'BACKGROUND')
-        self.Castbar.Bg:SetTexture('Interface\\Buttons\\WHITE8x8')
-        self.Castbar.Bg:SetAllPoints(self.Castbar)
-        self.Castbar.Bg:SetVertexColor(oUF_Neav.castbar.bossframes.color[1]*0.3, oUF_Neav.castbar.bossframes.color[2]*0.3, oUF_Neav.castbar.bossframes.color[3]*0.3, 0.8)
+        self.Castbar.Background = self.Castbar:CreateTexture(nil, 'BACKGROUND')
+        self.Castbar.Background:SetTexture('Interface\\Buttons\\WHITE8x8')
+        self.Castbar.Background:SetAllPoints(self.Castbar)
+        self.Castbar.Background:SetVertexColor(oUF_Neav.castbar.boss.color[1]*0.3, oUF_Neav.castbar.boss.color[2]*0.3, oUF_Neav.castbar.boss.color[3]*0.3, 0.8)
             
         CreateBorder(self.Castbar, 11, 1, 1, 1, 3)  
 
-        self.Castbar.Time = self:CreateFontString(nil, 'ARTWORK')
+        self.Castbar.Time = self:CreateFontString(nil, 'OVERLAY')
         self.Castbar.Time:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontBig - 2)
         self.Castbar.Time:SetShadowOffset(1, -1)
         self.Castbar.Time:SetPoint('RIGHT', self.Castbar, 'RIGHT', -7, 0)  
@@ -283,11 +283,11 @@ local function CreateBossLayout(self, unit)
         self.Castbar.Time:SetJustifyH('RIGHT')
         self.Castbar.Time:SetParent(self.Castbar)
             
-        self.Castbar.Text = self:CreateFontString(nil, 'ARTWORK')
+        self.Castbar.Text = self:CreateFontString(nil, 'OVERLAY')
         self.Castbar.Text:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontBig - 2)
         self.Castbar.Text:SetShadowOffset(1, -1)
         self.Castbar.Text:SetPoint('LEFT', self.Castbar, 4, 0)
-        self.Castbar.Text:SetPoint('RIGHT', self.Castbar.Time, 'LEFT', -5, 0)
+        self.Castbar.Text:SetPoint('RIGHT', self.Castbar.Time, 'LEFT', -4, 0)
         self.Castbar.Text:SetHeight(10)
         self.Castbar.Text:SetJustifyH('LEFT')
         self.Castbar.Text:SetParent(self.Castbar)  
@@ -339,9 +339,9 @@ oUF:Factory(function(self)
         boss[i] = self:Spawn('boss'..i, 'oUF_Neav_BossFrame'..i)
 
         if (i == 1) then
-            boss[i]:SetPoint(unpack(oUF_Neav.units.bossframes.position))
+            boss[i]:SetPoint(unpack(oUF_Neav.units.boss.position))
         else
-            boss[i]:SetPoint('TOPLEFT', boss[i-1], 'BOTTOMLEFT', 0, (oUF_Neav.units.bossframes.showCastbar and -80) or -50)
+            boss[i]:SetPoint('TOPLEFT', boss[i-1], 'BOTTOMLEFT', 0, (oUF_Neav.units.boss.showCastbar and -80) or -50)
         end
     end
 end)
