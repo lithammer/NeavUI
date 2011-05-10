@@ -27,6 +27,86 @@
 
 --]]
 
+    -- fork off the original UIFrameFade function, and fit it to our needs
+
+local flashObjects = {}
+    
+local f = CreateFrame('Frame')
+
+local function IsFlashing(frame)
+    for index, value in pairs(flashObjects) do
+        if (value == frame) then
+            return 1
+        end
+    end
+    
+    return nil
+end
+
+local function Flash_OnUpdate(self, elapsed)
+    local frame
+    local index = #flashObjects
+        
+    while flashObjects[index] do
+        frame = flashObjects[index]
+        frame.flashTimer = frame.flashTimer + elapsed
+
+        local flashTime = frame.flashTimer
+        local alpha
+
+        flashTime = flashTime%(frame.fadeInTime + frame.fadeOutTime + (frame.flashInHoldTime or 0) + (frame.flashOutHoldTime or 0))
+        
+        if (flashTime < frame.fadeInTime) then
+            alpha = flashTime/frame.fadeInTime;
+        elseif (flashTime < frame.fadeInTime + (frame.flashInHoldTime or 0)) then
+            alpha = 1
+        elseif (flashTime < frame.fadeInTime + (frame.flashInHoldTime or 0)+frame.fadeOutTime) then
+            alpha = 1 - ((flashTime - frame.fadeInTime - (frame.flashInHoldTime or 0))/frame.fadeOutTime);
+        else
+            alpha = 0
+        end
+            
+        frame:SetAlpha(alpha)
+        frame:Show()
+
+        index = index - 1
+    end
+        
+    if (#flashObjects == 0) then
+        self:SetScript('OnUpdate', nil)
+    end
+end
+
+
+local function StopFlash(frame)
+    tDeleteItem(flashObjects, frame)
+    frame.flashTimer = nil
+end
+        
+local function StartFlash(frame, fadeInTime, fadeOutTime, flashInHoldTime, flashOutHoldTime)
+    if (frame) then
+        local index = 1
+
+        while flashObjects[index] do
+            if (flashObjects[index] == frame) then
+                return
+            end
+            
+            index = index + 1
+        end
+
+        frame.flashTimer = 0 
+        frame.fadeInTime = fadeInTime
+        frame.fadeOutTime = fadeOutTime
+        frame.flashInHoldTime = flashInHoldTime
+        frame.flashOutHoldTime = flashOutHoldTime
+            
+        tinsert(flashObjects, frame)
+            
+        f:SetScript('OnUpdate', Flash_OnUpdate)
+    end
+end
+
     -- remove all blizz stuff that doesnt work while other unitframes are active
     
 for _, button in pairs({
@@ -194,7 +274,7 @@ local function UpdateFlashStatus(self)
     local statusName = _G[self:GetName()..'StatusFlashTexture']
 
     if (UnitHasVehicleUI('player') or UnitIsDeadOrGhost('player')) then
-        UIFrameFlashStop(statusName)
+        StopFlash(statusName)
         self.StatusFlash:SetAlpha(0)
         return
     end
@@ -202,21 +282,18 @@ local function UpdateFlashStatus(self)
     if (UnitAffectingCombat('player')) then
         self.StatusFlash:SetVertexColor(1, 0.1, 0.1, 1)
                 
-        if (not UIFrameIsFlashing(statusName)) then
-            UIFrameFlash(statusName, 0.5, 0.5, 10^10, false, 0.1, 0.1)
+        if (not IsFlashing(statusName)) then
+            StartFlash(statusName, 0.75, 0.75, 0.1, 0.1)
         end
-        return
     elseif (IsResting() and not UnitAffectingCombat('player')) then
         self.StatusFlash:SetVertexColor(1, 0.88, 0.25, 1)
                 
-        if (not UIFrameIsFlashing(statusName)) then
-            UIFrameFlash(statusName, 0.5, 0.5, 10^10, false, 0.1, 0.1)
+        if (not IsFlashing(statusName)) then
+            StartFlash(statusName, 0.75, 0.75, 0.1, 0.1)
         end
-        return
     else
-        UIFrameFlashStop(statusName)
+        StopFlash(statusName)
         self.StatusFlash:SetAlpha(0)
-        return
     end
 
 end
@@ -948,9 +1025,9 @@ local function CreateUnitLayout(self, unit)
 
         if (oUF_Neav.show.pvpicons) then
             self.PvPTimer = self.Health:CreateFontString('$parentPVPTimer', 'OVERLAY')
-            self.PvPTimer:SetFont('Fonts\\ARIALN.ttf', oUF_Neav.font.fontSmall, oUF_Neav.font.fontSmallOutline and 'OUTLINE' or nil)
+            self.PvPTimer:SetFont('Fonts\\ARIALN.ttf', oUF_Neav.font.fontSmall - 2, oUF_Neav.font.fontSmallOutline and 'OUTLINE' or nil)
             self.PvPTimer:SetShadowOffset(1, -1)
-            self.PvPTimer:SetPoint('BOTTOM', self.PvP, 'TOP', -12, 0)
+            self.PvPTimer:SetPoint('BOTTOM', self.PvP, 'TOP', -12, -1)
             
             self.updateTimer = 0
             self:HookScript('OnUpdate', function(self, elapsed)

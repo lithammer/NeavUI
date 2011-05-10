@@ -31,7 +31,7 @@ oUF_Neav = {
             showPowerPercent = false,
             druidManaFrequentUpdates = false,
             
-            showStatusFlash = false, -- cause an error during a warsong gulch bg :-/
+            showStatusFlash = true,
             showCombatFeedback = true,
             
             position = {'TOPLEFT', UIParent, 34, -30},
