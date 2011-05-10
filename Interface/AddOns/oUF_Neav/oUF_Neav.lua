@@ -1248,7 +1248,7 @@ oUF:Factory(function(self)
     focustarget:SetPoint('TOPLEFT', oUF_Neav_Focus, 'BOTTOMRIGHT', -78, -15)
     focustarget:SetScale(oUF_Neav.units.focustarget.scale)
 
-	if (oUF_Neav.show.party) then
+	if (oUF_Neav.units.party.show) then
 		local party = oUF:SpawnHeader('oUF_Neav_Party', nil, (oUF_Neav.units.party.hideInRaid and 'party') or 'party,raid',
 			'oUF-initialConfigFunction', [[
 				self:SetWidth(105)

@@ -3,7 +3,6 @@ oUF_Neav = {
     show = {
         castbars = true,
         pvpicons = true,
-        party = true,
     },
 
     media = {
@@ -102,6 +101,7 @@ oUF_Neav = {
         },
         
         party = {
+            show = true,
             mouseoverText = true,
             
             scale = 1.11,
