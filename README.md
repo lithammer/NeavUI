@@ -35,11 +35,10 @@
 - Sometimes, the quest area overlay on the world map gets blocked from showing if you open the map while in combat.
 - !Colorz cause an ui-block-error (not lua error!), because we change the value of a global table, ignore this or delete `PowerBarColor['MANA'] = {r = 0/255, g = 0.55, b = 1}` in the `!Colorz.lua` file.
 
-## Next Steps until a Update (Mai 11)
+## Next Steps until a Update (Mai 14)
 
-- Recode the HP & MANA bar part of oUF_NeavRaid
-- oUF_Neav cleanup, updates & optimizing
-- Create oUF_Neav arena frames (boss-frames-like, oUF_Trinkets support etc)
+- oUF_Neav: create working party pets
+- oUF_Neav: get rid of the flash issue
 
 ## Plans For The Future 
 
