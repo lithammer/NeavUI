@@ -2,6 +2,24 @@
 local interruptTexture = 'Interface\\AddOns\\!Beautycase\\media\\textureNormalWhite'
 local normalTexture = 'Interface\\AddOns\\!Beautycase\\media\\textureNormal'
 
+local function UpdateCastbarColor(self, unit, config)
+    if (unit == 'target' or unit == 'focus') then
+        if (self.interrupt) then
+            -- Castbar:SetStatusBarColor(unpack(config.interruptColor))
+            -- Castbar.Bg:SetVertexColor(config.interruptColor[1]*0.3, config.interruptColor[2]*0.3, config.interruptColor[3]*0.3, 0.8)
+            self:SetBorderTexture(interruptTexture)
+            self:SetBorderColor(unpack(config.interruptColor))
+            self:SetBorderShadowColor(unpack(config.interruptColor))
+        else
+            -- Castbar:SetStatusBarColor(unpack(config.color))
+            -- Castbar.Bg:SetVertexColor(config.color[1]*0.3, config.color[2]*0.3, config.color[3]*0.3, 0.8)
+            self:SetBorderTexture(normalTexture)
+            self:SetBorderColor(1, 1, 1)
+            self:SetBorderShadowColor(0, 0, 0)
+        end
+    end
+end
+
     -- create the castbars
     
 function oUF_Neav.CreateCastbars(self, unit)
@@ -98,21 +116,7 @@ function oUF_Neav.CreateCastbars(self, unit)
                 end
             end
             
-            if (unit == 'target' or unit == 'focus') then
-                if (Castbar.interrupt) then
-                    -- Castbar:SetStatusBarColor(unpack(config.interruptColor))
-                    -- Castbar.Bg:SetVertexColor(config.interruptColor[1]*0.3, config.interruptColor[2]*0.3, config.interruptColor[3]*0.3, 0.8)
-                    self.Castbar:SetBorderTexture(interruptTexture)
-                    self.Castbar:SetBorderColor(unpack(config.interruptColor))
-                    self.Castbar:SetBorderShadowColor(unpack(config.interruptColor))
-                else
-                    -- Castbar:SetStatusBarColor(unpack(config.color))
-                    -- Castbar.Bg:SetVertexColor(config.color[1]*0.3, config.color[2]*0.3, config.color[3]*0.3, 0.8)
-                    self.Castbar:SetBorderTexture(normalTexture)
-                    self.Castbar:SetBorderColor(1, 1, 1)
-                    self.Castbar:SetBorderShadowColor(0, 0, 0)
-                end
-            end
+            UpdateCastbarColor(Castbar, unit, config)
         end    
 
         self.Castbar.PostChannelStart = function(Castbar, unit)
@@ -127,21 +131,7 @@ function oUF_Neav.CreateCastbars(self, unit)
                 end
             end
     
-            if (unit == 'target' or unit == 'focus') then
-                if (Castbar.interrupt) then
-                    -- Castbar:SetStatusBarColor(unpack(config.interruptColor))
-                    -- Castbar.Bg:SetVertexColor(config.interruptColor[1]*0.3, config.interruptColor[2]*0.3, config.interruptColor[3]*0.3, 0.8)
-                    self.Castbar:SetBorderTexture(interruptTexture)
-                    self.Castbar:SetBorderColor(unpack(config.interruptColor))
-                    self.Castbar:SetBorderShadowColor(unpack(config.interruptColor))
-                else
-                    -- Castbar:SetStatusBarColor(unpack(config.color))
-                    -- Castbar.Bg:SetVertexColor(config.color[1]*0.3, config.color[2]*0.3, config.color[3]*0.3, 0.8)
-                    self.Castbar:SetBorderTexture(normalTexture)
-                    self.Castbar:SetBorderColor(1, 1, 1)
-                    self.Castbar:SetBorderShadowColor(0, 0, 0)
-                end
-            end
+            UpdateCastbarColor(Castbar, unit, config)
         end    
         
         self.Castbar.CustomDelayText = function(self, duration)

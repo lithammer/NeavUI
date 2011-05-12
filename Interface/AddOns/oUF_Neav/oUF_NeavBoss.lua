@@ -30,14 +30,13 @@ local function FormatValue(self)
     end
 end
 
---[[
 local function UpdateThreat(self, event, unit)
 	if (self.unit ~= unit) then 
         return 
     end
 
     if (self.Glow) then
-        local threat = UnitThreatSituation(self.unit)
+        local threat = UnitThreatSituation('player', unit)
 
         if (threat and threat > 0) then
             local r, g, b
@@ -48,7 +47,7 @@ local function UpdateThreat(self, event, unit)
         end
 	end
 end
---]]
+
 
 local function UpdateHealth(Health, unit, min, max)
     local self = Health:GetParent()
@@ -227,20 +226,19 @@ local function CreateBossLayout(self, unit)
     self.RaidIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
     self.RaidIcon:SetSize(26, 26)
 
-        -- glow textures
-    --[[
+        -- threat glow textures
+    
     self.Glow = self:CreateTexture('$parentGlow', 'OVERLAY')
     self.Glow:SetAlpha(0)
     self.Glow:SetSize(241, 100)
     self.Glow:SetPoint('TOPRIGHT', self.Texture, -11, 3)
-	self.Glow:SetTexture('Interface\\TargetingFrame\\UI-UnitFrame-Boss-Flash');
-	self.Glow:SetTexCoord(0.0, 0.945, 0.0, 0.73125);
+	self.Glow:SetTexture('Interface\\TargetingFrame\\UI-UnitFrame-Boss-Flash')
+	self.Glow:SetTexCoord(0.0, 0.945, 0.0, 0.73125)
 
     table.insert(self.__elements, UpdateThreat)
 	self:RegisterEvent('PLAYER_TARGET_CHANGED', UpdateThreat)
     self:RegisterEvent('UNIT_THREAT_LIST_UPDATE', UpdateThreat)
     self:RegisterEvent('UNIT_THREAT_SITUATION_UPDATE', UpdateThreat)
-    --]]
     
     self.Buffs = CreateFrame('Frame', nil, self)
     self.Buffs.size = oUF_Neav.units.target.auraSize

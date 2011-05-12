@@ -305,10 +305,7 @@ local function CreateArenaLayout(self, unit)
         self.Name:SetPoint('TOPLEFT', self.Power, 'BOTTOMLEFT', 2, -4)
         self.Name:SetJustifyH('LEFT')
         self.Name:SetSize(100, 10)
-        self.Name:SetText('Mookoo')
-        self.Name.SetText = function() end
-        self.Name:Show()
-        self.Name.Hide = function() end
+
         self.Health:SetSize(70, 5)
         self.Health:ClearAllPoints()
         self.Health:SetPoint('CENTER', self.Texture, 15, 8)

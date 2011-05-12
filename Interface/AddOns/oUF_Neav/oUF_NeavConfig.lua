@@ -60,7 +60,7 @@ oUF_Neav = {
             numDebuffs = 20,
             
             showComboPoints = true,
-            showComboPointsAsNumber = true,
+            showComboPointsAsNumber = false,
             numComboPointsColor = {0.9, 0, 0},      -- textcolor of the combopoints if showComboPointsAsNumber is true
             
             showHealthPercent = true,
@@ -107,13 +107,13 @@ oUF_Neav = {
             scale = 1.11,
             auraSize = 22,  
             
-            hideInRaid = true,
+            hideInRaid = false,
             
             position = {'TOPLEFT', UIParent, 25, -200},
         },
 
         raid = {
-            show = true,    
+            show = false,    
             showSolo = true,
         
             width = 42,

@@ -67,7 +67,6 @@ local function Flash_OnUpdate(self, elapsed)
         end
             
         frame:SetAlpha(alpha)
-        frame:Show()
 
         index = index - 1
     end
@@ -81,6 +80,8 @@ end
 local function StopFlash(frame)
     tDeleteItem(flashObjects, frame)
     frame.flashTimer = nil
+    
+    frame:SetAlpha(0)
 end
         
 local function StartFlash(frame, fadeInTime, fadeOutTime, flashInHoldTime, flashOutHoldTime)
@@ -275,7 +276,6 @@ local function UpdateFlashStatus(self)
 
     if (UnitHasVehicleUI('player') or UnitIsDeadOrGhost('player')) then
         StopFlash(statusName)
-        self.StatusFlash:SetAlpha(0)
         return
     end
             
@@ -293,7 +293,6 @@ local function UpdateFlashStatus(self)
         end
     else
         StopFlash(statusName)
-        self.StatusFlash:SetAlpha(0)
     end
 
 end
@@ -646,9 +645,6 @@ local function CreateUnitLayout(self, unit)
     elseif (self.partyUnit) then   
         self.Health:SetPoint('TOPLEFT', self.Texture, 47, -12)
         self.Health:SetSize(70, 7) 
-    elseif (unit == 'partypet1' or unit == 'partypet2' or unit == 'partypet3' or unit == 'partypet4') then
-        self.Health:SetSize(69, 8)
-        self.Health:SetPoint('TOPLEFT', self.f, 46, -22)
     end
     
     self.Health.PostUpdate = UpdateHealth
@@ -1228,25 +1224,7 @@ local function CreateUnitLayout(self, unit)
         self.Debuffs['growth-x'] = 'RIGHT'
         self.Debuffs.num = 3
     end
-    
-    --[[
-    if (unit == 'partypet1' or unit == 'partypet2' or unit == 'partypet3' or unit == 'partypet4') then
-		self:SetSize(128, 53)
 
-        self.Texture:SetTexture('Interface\\TargetingFrame\\UI-SmallTargetingFrame')
-        self.Texture:SetPoint('TOPLEFT', self.f, 0, -2)
-        self.Texture:SetHeight(64)
-        self.Texture:SetWidth(128)
-
-        self.Name:SetPoint('BOTTOMLEFT', self.Health, 'TOPLEFT', 0, 5)
-        self.Name:SetJustifyH('LEFT')
-        self.Name:SetWidth(100)
-        self.Name:SetHeight(10)
-
-        self.Portrait:SetPoint('TOPLEFT', self.f, 7, -6)
-    end
-    --]]
-        
         -- mouseover text
 
     if (unit == 'player' and oUF_Neav.units.player.mouseoverText or unit == 'pet' and oUF_Neav.units.pet.mouseoverText or unit == 'target' and oUF_Neav.units.target.mouseoverText or unit == 'focus' and oUF_Neav.units.focus.mouseoverText or self.partyUnit and oUF_Neav.units.party.mouseoverText) then
@@ -1336,19 +1314,5 @@ oUF:Factory(function(self)
 		)
         party:SetPoint(unpack(oUF_Neav.units.party.position))
         party:SetScale(oUF_Neav.units.party.scale)
-        
-        --[[
-        local partypet1 = oUF:Spawn('partypet1', 'oUF_Neav_PartyPet1')   
-        partypet1:SetPoint(unpack(oUF_Neav.units.party.position))
-
-        local partypet2 = oUF:Spawn('partypet2', 'oUF_Neav_PartyPet2')   
-        partypet2:SetPoint(unpack(oUF_Neav.units.party.position))
-
-        local partypet3 = oUF:Spawn('partypet3', 'oUF_Neav_PartyPet3')   
-        partypet3:SetPoint(unpack(oUF_Neav.units.party.position))
-
-        local partypet4 = oUF:Spawn('partypet4', 'oUF_Neav_PartyPet4')   
-        partypet4:SetPoint(unpack(oUF_Neav.units.party.position))   
-        --]]
     end
 end)
