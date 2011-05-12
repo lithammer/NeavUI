@@ -113,7 +113,7 @@ oUF_Neav = {
         },
 
         raid = {
-            show = false,    
+            show = true,    
             showSolo = true,
         
             width = 42,
