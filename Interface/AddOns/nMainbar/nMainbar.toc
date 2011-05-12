@@ -1,0 +1,9 @@
+## Interface: 40100
+## Title: |cffCC3333 n|rMainBar
+## Notes: Yet another BlizzBar mod
+
+nMainbar_Config.lua
+
+nMainbar_ButtonSkins.lua
+nMainbar_ActionBars.lua
+nMainbar_ShortBar.lua
