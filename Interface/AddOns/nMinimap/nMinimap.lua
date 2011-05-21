@@ -147,3 +147,41 @@ TicketStatusFrameButton:HookScript('OnShow', function(self)
     self:SetBackdropColor(0, 0, 0, 0.5)
     self:CreateBorder(12)
 end)
+
+    -- mouseover zone text
+    
+local MainZone = Minimap:CreateFontString(nil, 'OVERLAY')
+MainZone:SetParent(Minimap)
+MainZone:SetFont('Fonts\\ARIALN.ttf', 15, 'THINOUTLINE')
+MainZone:SetPoint('TOP', Minimap, 0, -22)
+MainZone:SetTextColor(1, 1, 1)
+MainZone:SetAlpha(0)
+MainZone:SetSize(130, 15)
+
+local SubZone = Minimap:CreateFontString(nil, 'OVERLAY')
+SubZone:SetParent(Minimap)
+SubZone:SetFont('Fonts\\ARIALN.ttf', 12, 'THINOUTLINE')
+SubZone:SetPoint('TOP', MainZone, 'BOTTOM', 0, 2)
+SubZone:SetTextColor(1, 1, 1)
+SubZone:SetAlpha(0)
+SubZone:SetSize(130, 12)
+
+Minimap:HookScript('OnEnter', function()
+
+        -- disable the mouseover if the shift key is pressed, in cases we want to make a ping and the text is annoying
+        
+    if (nMinimap.showMouseoverZoneText and SubZone and not IsShiftKeyDown()) then
+        SubZone:SetText(GetSubZoneText())
+        UIFrameFadeIn(SubZone, 0.235, SubZone:GetAlpha(), nMinimap.alphaMouseoverZoneText)
+
+        MainZone:SetText(GetRealZoneText())
+        UIFrameFadeIn(MainZone, 0.235, MainZone:GetAlpha(), nMinimap.alphaMouseoverZoneText)
+   end
+end)
+
+Minimap:HookScript('OnLeave', function()
+    if (nMinimap.showMouseoverZoneText and SubZone) then
+        UIFrameFadeOut(SubZone, 0.235, SubZone:GetAlpha(), 0)
+        UIFrameFadeOut(MainZone, 0.235, MainZone:GetAlpha(), 0)
+    end
+end)

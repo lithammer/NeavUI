@@ -5,4 +5,7 @@ nMinimap = {
     
         -- shows the guild/friends drawer on mouse-over on the minimap
 	showDrawerOnMinimapMouseOver = false, 
+    
+    showMouseoverZoneText = true,
+    alphaMouseoverZoneText = 0.68,
 }
