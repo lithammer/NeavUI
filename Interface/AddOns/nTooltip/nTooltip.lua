@@ -524,7 +524,7 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
                     
                 HealthBarColor(unit)
                 
-                if (nTooltip.healthbar.showHealthValue) then
+                if (not GameTooltipStatusBar.hasHealthText and nTooltip.healthbar.showHealthValue) then
                     if (not self.text) then
                         self.text = self:CreateFontString(nil, 'MEDIUM')
                         
