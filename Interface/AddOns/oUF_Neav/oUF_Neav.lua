@@ -250,6 +250,8 @@ local function VehicleToPlayerTexture(self, event, unit)
 		self.Texture:SetTexture('Interface\\TargetingFrame\\UI-TargetingFrame-Rare')
 	elseif (oUF_Neav.units.player.style == 'ELITE') then
 		self.Texture:SetTexture('Interface\\TargetingFrame\\UI-TargetingFrame-Elite')
+    elseif (oUF_Neav.units.player.style == 'CUSTOM') then
+        self.Texture:SetTexture(oUF_Neav.units.player.customTexture)
     end
 
     self.Health:SetHeight(12)
@@ -375,7 +377,19 @@ local function UpdateFrame(self, _, unit)
     if (self.NameBackground) then
         self.NameBackground:SetVertexColor(UnitSelectionColor(unit))
     end
-
+    
+    if (oUF_Neav.show.classPortraits) then
+        if (self.Portrait) then
+            if (UnitIsPlayer(unit)) then
+                local _, class = UnitClass(unit)
+                self.Portrait:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles")
+                self.Portrait:SetTexCoord(unpack(CLASS_ICON_TCOORDS[class]))
+            else
+                self.Portrait:SetTexCoord(0, 1, 0, 1)
+            end
+        end
+    end
+    
     if (self.OfflineStatus) then
         if (UnitIsConnected(unit)) then
             self.OfflineStatus:Hide()
@@ -749,13 +763,13 @@ local function CreateUnitLayout(self, unit)
         self.Portrait:SetSize(64, 64)
         self.Portrait:SetPoint('TOPRIGHT', self.Texture, -42, -12)
     elseif (self.targetUnit) then
-        self.Portrait:SetSize(37, 37)
+        self.Portrait:SetSize(40, 40)
         self.Portrait:SetPoint('LEFT', self, 'CENTER', -43, 0)
     elseif (self.partyUnit) then
         self.Portrait:SetSize(37, 37)
         self.Portrait:SetPoint('TOPLEFT', self.Texture, 7, -6)
     end
-    
+
         -- pvp icons
 
     if (oUF_Neav.show.pvpicons) then
@@ -878,12 +892,14 @@ local function CreateUnitLayout(self, unit)
 
         -- lfg role icon
 
-    if (self.partyUnit or unit == 'player') then
+    if (self.partyUnit or unit == 'player' or unit == 'target') then
         self.LFDRole = self.Health:CreateTexture('$parentRoleIcon', 'OVERLAY')
         self.LFDRole:SetSize(20, 20)
         
         if (unit == 'player') then
             self.LFDRole:SetPoint('BOTTOMRIGHT', self.Portrait, -2, -3)
+        elseif (unit == 'target') then
+            self.LFDRole:SetPoint('TOPLEFT', self.Portrait, -10, -2)
         else
             self.LFDRole:SetPoint('BOTTOMLEFT', self.Portrait, -5, -5)
         end
@@ -1094,6 +1110,7 @@ local function CreateUnitLayout(self, unit)
     if (unit == 'target' or unit == 'focus') then
         self:SetSize(175, 42)
 
+        
             -- colored name background
         
         self.NameBackground = self.Health:CreateTexture('$parentNameBackground', 'BACKGROUND')
@@ -1111,6 +1128,12 @@ local function CreateUnitLayout(self, unit)
             self.CombatFeedbackText:SetShadowOffset(0, 0)
             self.CombatFeedbackText:SetPoint('CENTER', self.Portrait)
         end
+        
+            -- questmob icon
+            
+        self.QuestIcon = self.Health:CreateTexture('$parentQuestMobIcon', 'OVERLAY')
+        self.QuestIcon:SetSize(32, 32)
+        self.QuestIcon:SetPoint('CENTER', self.Health, 'TOPRIGHT', 1, 10)
     end
     
     if (unit == 'target') then
@@ -1273,7 +1296,7 @@ local function CreateUnitLayout(self, unit)
     if (oUF_Neav.show.castbars) then
         oUF_Neav.CreateCastbars(self, unit)
     end
-    
+
 	return self
 end
 

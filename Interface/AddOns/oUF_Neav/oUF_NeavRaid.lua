@@ -386,13 +386,17 @@ local function UpdateThreat(self, _, unit)
     if (threatStatus == 3) then
 
         self.Background:SetVertexColor(0.75, 0, 0)
-
+        -- self.Name:SetTextColor(1, 0, 0)
+        -- self.Shadow:SetVertexColor(1, 0, 0, 1)
+        
         if (self.ThreatText) then
             self.ThreatText:SetText('|cFFFF0000THREAT')
         end
     else
         self.Background:SetVertexColor(0, 0, 0)
-
+        -- self.Name:SetTextColor(1, 1, 1)
+        -- self.Shadow:SetVertexColor(0, 0, 0, 0)
+        
         if (self.ThreatText) then
             self.ThreatText:SetText('')
         end
@@ -413,6 +417,14 @@ local function UpdateHealth(Health, unit)
             Health.Background:SetVertexColor(color.r*0.25, color.g*0.25, color.b*0.25)
         end
     end
+end
+
+local function UpdateRessurectStatus(self)
+	if (UnitHasIncomingResurrection(self.unit)) then
+		self.RessurectText:Show()
+	else
+		self.RessurectText:Hide()
+	end
 end
 
 local function UpdateTargetBorder(self)
@@ -611,6 +623,7 @@ local function CreateRaidLayout(self, unit)
     self.Background:SetPoint('TOPRIGHT', self, 1.5, 1.5)
     self.Background:SetPoint('BOTTOMLEFT', self, -1.5, -1.5)
     self.Background:SetTexture('Interface\\Buttons\\WHITE8x8', 'LOW')
+    self.Background:SetVertexColor(0, 0, 0)
 
         -- masterlooter icons
 
@@ -664,6 +677,7 @@ local function CreateRaidLayout(self, unit)
 	self.Icon.Border:SetVertexColor(1, 1, 1)
             
     table.insert(self.__elements, UpdateAura)
+    self:RegisterEvent('PLAYER_ENTERING_WORLD', UpdateAura)
     self:RegisterEvent('UNIT_AURA', UpdateAura)
     self:RegisterEvent('UNIT_DEAD', UpdateAura)
 
@@ -686,12 +700,25 @@ local function CreateRaidLayout(self, unit)
         self:Tag(self.LFDRoleText, '[role:Raid]')
     end
     
+        -- ressurection text
+    --[[
+    if (oUF_Neav.units.raid.showRessurectText) then
+        self.RessurectText = self.Health:CreateFontString(nil, 'OVERLAY')
+        self.RessurectText:SetPoint('CENTER', self, 'TOP')
+        self.RessurectText:SetFont(oUF_Neav.media.font, 10, 'THINOUTLINE')
+        self.RessurectText:SetShadowColor(0, 0, 0, 0)
+        self.RessurectText:SetTextColor(0.1, 1, 0.1)
+        
+        self:RegisterEvent('PLAYER_TARGET_CHANGED', UpdateRessurectStatus)
+    end
+    --]]
+    
         -- playertarget border
 
     if (oUF_Neav.units.raid.showTargetBorder) then
-        self.TargetBorder = self.Health:CreateTexture(nil, 'BORDER', self)
-        self.TargetBorder:SetPoint('TOPRIGHT', self, 7, 7)
-        self.TargetBorder:SetPoint('BOTTOMLEFT', self, -7, -7)
+        self.TargetBorder = self.Health:CreateTexture(nil, 'BACKGROUND', self)
+        self.TargetBorder:SetPoint('TOPRIGHT', self, 3, 3)
+        self.TargetBorder:SetPoint('BOTTOMLEFT', self, -3, -3)
         self.TargetBorder:SetTexture('Interface\\Addons\\oUF_Neav\\media\\borderTarget')
         self.TargetBorder:SetVertexColor(unpack(oUF_Neav.units.raid.targetBorderColor))
         self.TargetBorder:Hide()
@@ -725,11 +752,11 @@ oUF:Factory(function(self)
 				self:SetWidth(%d)
 				self:SetHeight(%d)
 			]]):format(oUF_Neav.units.raid.width, oUF_Neav.units.raid.height),
+            'showRaid', true,
             'showParty', true,
             'showPlayer', true,
             'showSolo', (oUF_Neav.units.raid.showSolo and true) or false,
-            'showRaid', true,
-            'columnSpacing', 7,
+            'columnSpacing', oUF_Neav.units.raid.frameSpacing,
             'unitsPerColumn', 1,
             'maxColumns', 5,
             'columnAnchorPoint', 'TOP',
@@ -738,9 +765,13 @@ oUF:Factory(function(self)
         )
 
         if (i == 1) then
-            raid[i]:SetPoint(unpack(oUF_Neav.units.raid.position))
+            raid[i]:SetPoint(unpack(oUF_Neav.units.raid.layout.position))
         else
-            raid[i]:SetPoint('TOPLEFT', raid[i-1], 'TOPRIGHT', 7, 0)
+            if (oUF_Neav.units.raid.layout.orientationHorizontal == 'RIGHT') then
+                raid[i]:SetPoint('TOPLEFT', raid[i-1], 'TOPRIGHT', oUF_Neav.units.raid.frameSpacing, 0)
+            elseif (oUF_Neav.units.raid.layout.orientationHorizontal == 'LEFT') then
+                raid[i]:SetPoint('TOPRIGHT', raid[i-1], 'TOPLEFT', -oUF_Neav.units.raid.frameSpacing, 0)
+            end
         end
 
 		raid[i]:SetScale(oUF_Neav.units.raid.scale)

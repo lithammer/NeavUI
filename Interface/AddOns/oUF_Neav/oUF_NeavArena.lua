@@ -220,7 +220,7 @@ local function CreateArenaLayout(self, unit)
 
         self.Debuffs.PostCreateIcon = UpdateAuraIcons
     
-        if (oUF_Neav.units.arena.showCastbar) then
+        if (oUF_Neav.castbar.arena.icon.size) then
             self.Castbar = CreateFrame('StatusBar', self:GetName()..'Castbar', self)
             self.Castbar:SetStatusBarTexture(oUF_Neav.media.statusbar)
             self.Castbar:SetParent(self)
@@ -234,13 +234,13 @@ local function CreateArenaLayout(self, unit)
             self.Castbar.Background:SetAllPoints(self.Castbar)
             self.Castbar.Background:SetVertexColor(oUF_Neav.castbar.arena.color[1]*0.3, oUF_Neav.castbar.arena.color[2]*0.3, oUF_Neav.castbar.arena.color[3]*0.3, 0.8)
                 
-            CreateBorder(self.Castbar, 11, 1, 1, 1, 3)  
+            self.Castbar:CreateBorder(11)
+            self.Castbar:SetBorderPadding(3)
             
             self.Castbar.Icon = self.Castbar:CreateTexture(nil, 'BACKGROUND')
-            self.Castbar.Icon:SetSize(oUF_Neav.castbar.arena.iconSize, oUF_Neav.castbar.arena.iconSize)
+            self.Castbar.Icon:SetSize(oUF_Neav.castbar.arena.icon.size, oUF_Neav.castbar.arena.icon.size)
             self.Castbar.Icon:SetPoint('TOPRIGHT', self.Castbar, 'TOPLEFT', -10, 0.45)
             self.Castbar.Icon:SetTexture(1, 1, 1)
-            self.Castbar.Icon:Show()
             
             self.Castbar.Icon.Overlay = self.Castbar:CreateTexture(nil, 'ARTWORK')
             self.Castbar.Icon.Overlay:SetPoint('TOPRIGHT', self.Castbar.Icon, 3, 3)
@@ -254,22 +254,20 @@ local function CreateArenaLayout(self, unit)
             self.Castbar.Icon.Shadow:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\borderBackground')
             self.Castbar.Icon.Shadow:SetVertexColor(0, 0, 0, 1)
 
-            self.Castbar.Time = self:CreateFontString(nil, 'OVERLAY')
+            self.Castbar.Time = self.Castbar:CreateFontString(nil, 'OVERLAY')
             self.Castbar.Time:SetFont(oUF_Neav.media.font, 21)
             self.Castbar.Time:SetShadowOffset(1, -1)
             self.Castbar.Time:SetPoint('RIGHT', self.Castbar, -2, 0)  
             self.Castbar.Time:SetHeight(10)
             self.Castbar.Time:SetJustifyH('RIGHT')
-            self.Castbar.Time:SetParent(self.Castbar)
                 
-            self.Castbar.Text = self:CreateFontString(nil, 'OVERLAY')
+            self.Castbar.Text = self.Castbar:CreateFontString(nil, 'OVERLAY')
             self.Castbar.Text:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontBig - 2)
             self.Castbar.Text:SetShadowOffset(1, -1)
             self.Castbar.Text:SetPoint('LEFT', self.Castbar, 4, 0)
             self.Castbar.Text:SetPoint('RIGHT', self.Castbar.Time, 'LEFT', -4, 0)
             self.Castbar.Text:SetHeight(10)
             self.Castbar.Text:SetJustifyH('LEFT')
-            self.Castbar.Text:SetParent(self.Castbar) 
 
             self.Castbar.CustomDelayText = function(self, duration)
                 self.Time:SetFormattedText('[|cffff0000-%.1f|r] %.1f/%.1f', self.delay, duration, self.max)
@@ -330,7 +328,7 @@ oUF:Factory(function(self)
         if (i == 1) then
             arena[i]:SetPoint(unpack(oUF_Neav.units.arena.position))
         else
-            arena[i]:SetPoint('TOPLEFT', arena[i-1], 'BOTTOMLEFT', 0, (oUF_Neav.units.arena.showCastbar and -80) or -50)
+            arena[i]:SetPoint('TOPLEFT', arena[i-1], 'BOTTOMLEFT', 0, (oUF_Neav.castbar.arena.icon.size and -80) or -50)
         end
     
         arenaTarget[i] = self:Spawn('arena'..i..'target', 'oUF_Neav_ArenaFrame'..i..'Target')

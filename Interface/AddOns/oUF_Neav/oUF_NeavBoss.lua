@@ -256,7 +256,7 @@ local function CreateBossLayout(self, unit)
     self:SetSize(132, 46)
     self:SetScale(oUF_Neav.units.boss.scale)
     
-    if (oUF_Neav.units.boss.showCastbar) then
+    if (oUF_Neav.castbar.boss.show) then
         self.Castbar = CreateFrame('StatusBar', self:GetName()..'Castbar', self)
         self.Castbar:SetStatusBarTexture(oUF_Neav.media.statusbar)
         self.Castbar:SetParent(self)
@@ -271,7 +271,8 @@ local function CreateBossLayout(self, unit)
         self.Castbar.Background:SetAllPoints(self.Castbar)
         self.Castbar.Background:SetVertexColor(oUF_Neav.castbar.boss.color[1]*0.3, oUF_Neav.castbar.boss.color[2]*0.3, oUF_Neav.castbar.boss.color[3]*0.3, 0.8)
             
-        CreateBorder(self.Castbar, 11, 1, 1, 1, 3)  
+        self.Castbar:CreateBorder(11)
+        self.Castbar:SetBorderPadding(3)
 
         self.Castbar.Time = self:CreateFontString(nil, 'OVERLAY')
         self.Castbar.Time:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontBig - 2)
@@ -290,6 +291,7 @@ local function CreateBossLayout(self, unit)
         self.Castbar.Text:SetJustifyH('LEFT')
         self.Castbar.Text:SetParent(self.Castbar)  
         
+        -- oUF_Neav.castbar.boss.icon.size
         --[[
         self.Castbar.PostCastStart = function(Castbar, unit, spell, spellrank)
             if (Castbar.interrupt) then
@@ -339,41 +341,7 @@ oUF:Factory(function(self)
         if (i == 1) then
             boss[i]:SetPoint(unpack(oUF_Neav.units.boss.position))
         else
-            boss[i]:SetPoint('TOPLEFT', boss[i-1], 'BOTTOMLEFT', 0, (oUF_Neav.units.boss.showCastbar and -80) or -50)
+            boss[i]:SetPoint('TOPLEFT', boss[i-1], 'BOTTOMLEFT', 0, (oUF_Neav.castbar.boss.show and -80) or -50)
         end
     end
 end)
-
---[[
-    -- Just for testing the layout
-
-function ma1()
-    oUF_Neav_BossFrame1:Show() 
-    oUF_Neav_BossFrame1.Hide = function() end
-
-    
-    oUF_Neav_BossFrame2:Show() 
-    oUF_Neav_BossFrame2.Hide = function() end
-
-    oUF_Neav_BossFrame3:Show() 
-    oUF_Neav_BossFrame3.Hide = function() end
-    
-    oUF_Neav_BossFrame4:Show() 
-    oUF_Neav_BossFrame4.Hide = function() end
-end
-
-function ma1_1()
-    oUF_Neav_BossFrame1Castbar:Show() 
-    oUF_Neav_BossFrame1Castbar.Hide = function() end
-
-    oUF_Neav_BossFrame2Castbar:Show() 
-    oUF_Neav_BossFrame2Castbar.Hide = function() end
-    
-    oUF_Neav_BossFrame3Castbar:Show() 
-    oUF_Neav_BossFrame3Castbar.Hide = function() end
-    
-    oUF_Neav_BossFrame4Castbar:Show() 
-    oUF_Neav_BossFrame4Castbar.Hide = function() end
-end
-    
---]]
