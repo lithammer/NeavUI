@@ -6,17 +6,17 @@ local gradientColor = {
 }
 
 local slotInfo = {
-	[1] = {1, 'Head', 1000},
-	[2] = {3, 'Shoulder', 1000},
-	[3] = {5, 'Chest', 1000},
-	[4] = {6, 'Waist', 1000},
-	[5] = {9, 'Wrist', 1000},
-	[6] = {10, 'Hands', 1000},
-	[7] = {7, 'Legs', 1000},
-	[8] = {8, 'Feet', 1000},
-	[9] = {16, 'MainHand', 1000},
-	[10] = {17, 'SecondaryHand', 1000},
-	[11] = {18, 'Ranged', 1000}
+	[1] = {1, 'Head'},
+	[2] = {3, 'Shoulder'},
+	[3] = {5, 'Chest'},
+	[4] = {6, 'Waist'},
+	[5] = {9, 'Wrist'},
+	[6] = {10, 'Hands'},
+	[7] = {7, 'Legs'},
+	[8] = {8, 'Feet'},
+	[9] = {16, 'MainHand'},
+	[10] = {17, 'SecondaryHand'},
+	[11] = {18, 'Ranged'}
 }
 
     -- move some buttons
@@ -132,42 +132,16 @@ local function ColorGradient(perc, ...)
 	return r1 + (r2-r1)*relperc, g1 + (g2-g1)*relperc, b1 + (b2-b1)*relperc
 end
 
-local Total = 0
-
-local function GetEquipDurability()
-	for i = 1, #slotInfo do
-		if (GetInventoryItemLink('player', slotInfo[i][1]) ~= nil) then
-			local current, max = GetInventoryItemDurability(slotInfo[i][1])
-			if (current) then 
-				slotInfo[i][3] = current/max
-				Total = Total + 1
-			end
-		end
-	end
-    
-    table.sort(slotInfo, function(a, b) 
-        return a[3] < b[3] 
-    end)
-    
-    if (Total > 0) then
-        f.Text:SetText(floor(slotInfo[1][3]*100)..'% |cffffffff'..DURABILITY..'|r')
-    else
-        f.Text:SetText('100% |cffffffff'..DURABILITY..'|r')
-    end
-    
-    local r, g, b = ColorGradient((floor(slotInfo[1][3]*100)/100), unpack(gradientColor))    
-    f.Text:SetTextColor(r, g, b)
-    f:SetWidth(f.Text:GetWidth() + 44)
-    
-	Total = 0
-end
-
 f:SetScript('OnEvent', function(event)
+    local total = 0
+    local overAll = 0
+        
     for i = 1, #slotInfo do
         local id = GetInventorySlotInfo(slotInfo[i][2] .. 'Slot') 
         local curr, max = GetInventoryItemDurability(slotInfo[i][1])
         local itemSlot = _G['Character'..slotInfo[i][2]..'Slot']
         
+
 		if (curr and max and max ~= 0) then
             if (not itemSlot.Text) then
                 itemSlot.Text = itemSlot:CreateFontString(nil, 'OVERLAY')
@@ -181,6 +155,9 @@ f:SetScript('OnEvent', function(event)
         
                 itemSlot.Text:SetTextColor(r, g, b)
                 itemSlot.Text:SetText(string.format('%d%%', avg * 100))
+                
+                overAll = overAll + avg
+                total = total + 1
             end
 		else
             if (itemSlot.Text) then
@@ -188,7 +165,9 @@ f:SetScript('OnEvent', function(event)
             end
 		end
         
-        GetEquipDurability()
-
+        local r, g, b = ColorGradient((overAll/total)*100, unpack(gradientColor)) 
+        f.Text:SetTextColor(r, g, b)
+        f.Text:SetText(string.format('%d%%', (overAll/total)*100)..' |cffffffff'..DURABILITY..'|r')
+        f:SetWidth(f.Text:GetWidth() + 44)
     end
 end)
