@@ -78,13 +78,13 @@ nMainbar = {
     },
     
     multiBarLeft = {
-        mouseover           = false,
+        mouseover           = true,
         alpha               = 1,
         orderHorizontal     = false,
     },
     
     multiBarRight = {
-        mouseover           = false,
+        mouseover           = true,
         alpha               = 1,
         orderHorizontal     = false,
     },

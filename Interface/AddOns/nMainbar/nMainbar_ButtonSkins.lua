@@ -211,7 +211,7 @@ end)
 
 local origActionButton_OnUpdate = _G.ActionButton_OnUpdate
 local function ActionButton_OnUpdateHook(self, elapsed) -- function ActionButton_OnUpdate(self, elapsed)
-	origActionButton_OnUpdate(self, elapsed)
+	-- origActionButton_OnUpdate(self, elapsed)
     
 	if (ActionButton_IsFlashing(self)) then
 		local flashtime = self.flashtime
