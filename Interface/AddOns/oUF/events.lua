@@ -74,7 +74,7 @@ function frame_metatable.__index:UnregisterEvent(event, func)
 				break
 			end
 		end
-	elseif(curev == func) then
+	else
 		self[event] = nil
 		UnregisterEvent(self, event)
 	end
