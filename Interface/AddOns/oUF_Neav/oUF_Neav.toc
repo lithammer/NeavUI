@@ -19,4 +19,3 @@ oUF_NeavBoss.lua
 oUF_NeavArena.lua
 
 oUF_NeavWorldMarkers.lua
-##oUF_NeavCustom.lua
