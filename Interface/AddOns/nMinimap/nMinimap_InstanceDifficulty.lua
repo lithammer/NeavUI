@@ -120,10 +120,10 @@ end)
 
 Minimap:HookScript('OnEnter', function()
     f.Text:SetText(GetDifficultyText())
-    UIFrameFadeIn(f, 0.235, f:GetAlpha(), 1)
+    securecall('UIFrameFadeIn', f, 0.235, f:GetAlpha(), 1)
 end)
 
 Minimap:HookScript('OnLeave', function()
-    UIFrameFadeOut(f, 0.235, f:GetAlpha(), 0)
+    securecall('UIFrameFadeOut', f, 0.235, f:GetAlpha(), 0)
     f.Text:SetText(GetDifficultyText())
 end)
