@@ -39,10 +39,11 @@ for _, frame in pairs({
 	frame:UnregisterAllEvents()
     
     hooksecurefunc(frame, 'Show', function(self)
+        -- DisableAddOn('Blizzard_CompactRaidFrames')
         self:Hide()
     end)
 end
-
+--[[
 for _, button in pairs({
 	'OptionsButton',
 	'LockedModeToggle',
@@ -61,6 +62,7 @@ for _, button in pairs({
     _G['InterfaceOptions'..button]:Disable()
     _G['InterfaceOptions'..button]:EnableMouse(false)
 end
+]]
 
 local playerClass = select(2, UnitClass('player'))
 local isHealer = (playerClass == 'DRUID' or playerClass == 'PALADIN' or playerClass == 'PRIEST' or playerClass == 'SHAMAN')

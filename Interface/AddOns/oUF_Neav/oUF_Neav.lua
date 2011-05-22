@@ -13,7 +13,9 @@
 		oUF_CombatFeedback
 		oUF_Smooth
         oUF_SpellRange
-
+        oUF_Swing
+        oUF_Vengeance
+        
 	Features:
 		Aggro highlighting
         PvP Timer on the Playerframe
@@ -27,7 +29,7 @@
 
 --]]
 
-    -- fork off the original UIFrameFade function, and fit it to our needs
+    -- fork off the original UIFrameFlash function, and fit it to our needs
 
 local flashObjects = {}
     
@@ -382,7 +384,7 @@ local function UpdateFrame(self, _, unit)
         if (self.Portrait) then
             if (UnitIsPlayer(unit)) then
                 local _, class = UnitClass(unit)
-                self.Portrait:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles")
+                self.Portrait:SetTexture('Interface\\TargetingFrame\\UI-Classes-Circles')
                 self.Portrait:SetTexCoord(unpack(CLASS_ICON_TCOORDS[class]))
             else
                 self.Portrait:SetTexCoord(0, 1, 0, 1)
@@ -488,7 +490,7 @@ local function UpdateAuraIcons(auras, button)
     button.cd:SetPoint('TOPRIGHT', button.icon, 'TOPRIGHT', -1, -1)
     button.cd:SetPoint('BOTTOMLEFT', button.icon, 'BOTTOMLEFT', 1, 1)
 
-    button.count:SetFont('Fonts\\ARIALN.ttf', 13, 'OUTLINE')
+    button.count:SetFont(oUF_Neav.media.font, 13, 'OUTLINE')
     button.count:ClearAllPoints()
     button.count:SetPoint('BOTTOMRIGHT', 1, 1)
 
@@ -610,7 +612,13 @@ local function CreateUnitLayout(self, unit)
     end
 
     self:SetFrameStrata((self.targetUnit) and 'MEDIUM' or 'LOW')
-
+    
+        -- create the castbars
+        
+    if (oUF_Neav.show.castbars) then
+        oUF_Neav.CreateCastbars(self, unit)
+    end
+    
         -- healthbar
 
     self.Health = CreateFrame('StatusBar', nil, self)
@@ -668,7 +676,7 @@ local function CreateUnitLayout(self, unit)
         -- health text
 
     self.Health.Value = self.Health:CreateFontString(nil, 'ARTWORK')
-	self.Health.Value:SetFont('Fonts\\ARIALN.ttf', oUF_Neav.font.fontSmall, nil)
+	self.Health.Value:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontSmall, nil)
     self.Health.Value:SetShadowOffset(1, -1)
 
     if (self.targetUnit) then
@@ -694,7 +702,7 @@ local function CreateUnitLayout(self, unit)
         -- power text
 
     self.Power.Value = self.Health:CreateFontString(nil, 'ARTWORK')
-	self.Power.Value:SetFont('Fonts\\ARIALN.ttf', oUF_Neav.font.fontSmall, nil)
+	self.Power.Value:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontSmall, nil)
     self.Power.Value:SetShadowOffset(1, -1)
 
     if (self.mainUnit) then
@@ -909,7 +917,7 @@ local function CreateUnitLayout(self, unit)
 
     if (unit == 'player') then
 		self:SetSize(175, 42)
-
+            
 			-- warlock soulshard bar
             
 		if (select(2, UnitClass('player')) == 'WARLOCK') then
@@ -954,7 +962,7 @@ local function CreateUnitLayout(self, unit)
             self.Druid:SetBackdropColor(0, 0, 0, 0.5)
 
             self.Druid.Value = self.Health:CreateFontString(nil, 'ARTWORK')
-            self.Druid.Value:SetFont('Fonts\\ARIALN.ttf', oUF_Neav.font.fontSmall, nil)
+            self.Druid.Value:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontSmall, nil)
             self.Druid.Value:SetShadowOffset(1, -1)
             self.Druid.Value:SetPoint('CENTER', self.Druid, 0, 0.5)
             
@@ -1037,7 +1045,7 @@ local function CreateUnitLayout(self, unit)
 
         if (oUF_Neav.show.pvpicons) then
             self.PvPTimer = self.Health:CreateFontString('$parentPVPTimer', 'OVERLAY')
-            self.PvPTimer:SetFont('Fonts\\ARIALN.ttf', oUF_Neav.font.fontSmall - 2, oUF_Neav.font.fontSmallOutline and 'OUTLINE' or nil)
+            self.PvPTimer:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontSmall - 2, oUF_Neav.font.fontSmallOutline and 'OUTLINE' or nil)
             self.PvPTimer:SetShadowOffset(1, -1)
             self.PvPTimer:SetPoint('BOTTOM', self.PvP, 'TOP', -12, -1)
             
@@ -1057,7 +1065,62 @@ local function CreateUnitLayout(self, unit)
                 end
             end)
         end
+    
+            -- oUF_Swing support 
+            
+        if (oUF_Neav.units.player.showSwingTimer) then
+            self.Swing = CreateFrame('Frame', nil, self)
+            self.Swing:SetFrameStrata('LOW')
+            -- self.Swing:SetSize(200, 7)
+            self.Swing:SetHeight(7)
+            self.Swing:SetPoint('TOPLEFT', self.Castbar, 'BOTTOMLEFT', 0, -10)
+            self.Swing:SetPoint('TOPRIGHT', self.Castbar, 'BOTTOMRIGHT', 0, -10)
+            self.Swing:Hide()
+                
+            self.Swing.texture = oUF_Neav.media.statusbar
+            self.Swing.color = {0, 0.8, 1, 1}
+                
+            self.Swing.textureBG = oUF_Neav.media.statusbar
+            self.Swing.colorBG = {0, 0, 0, 0.55}
+         
+            self.Swing:CreateBorder(11)
+            self.Swing:SetBorderPadding(3)
+                
+            self.Swing.f = CreateFrame('Frame', nil, self)
+            self.Swing.f:SetParent(self.Swing)
+            self.Swing.f:SetFrameStrata('HIGH')       
+                
+            self.Swing.Text = self.Swing.f:CreateFontString(nil, 'OVERLAY')
+            self.Swing.Text:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontSmall - 2)
+            self.Swing.Text:SetPoint('CENTER', self.Swing)
 
+            self.Swing.disableMelee = false
+            self.Swing.disableRanged = false
+            self.Swing.hideOoc = true
+        end
+        
+            -- oUF_Vengeance support 
+         
+        if (oUF_Neav.units.player.showVengeance) then
+            self.Vengeance = CreateFrame("StatusBar", nil, self)
+            self.Vengeance:SetHeight(7)
+            self.Vengeance:SetPoint('TOPLEFT', self.Castbar, 'BOTTOMLEFT', 0, -10)
+            self.Vengeance:SetPoint('TOPRIGHT', self.Castbar, 'BOTTOMRIGHT', 0, -10)
+            self.Vengeance:SetStatusBarTexture(oUF_Neav.media.statusbar)
+            self.Vengeance:SetStatusBarColor(1, 0, 0)
+            
+            self.Vengeance:CreateBorder(11)
+            self.Vengeance:SetBorderPadding(3)
+            
+            self.Vengeance.Background = self.Vengeance:CreateTexture(nil, 'BACKGROUND')
+            self.Vengeance.Background:SetAllPoints(self.Vengeance)
+            self.Vengeance.Background:SetTexture(0, 0, 0, 0.55)
+        
+            self.Vengeance.Text = self.Vengeance:CreateFontString(nil, 'OVERLAY')
+            self.Vengeance.Text:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontSmall - 2)
+            self.Vengeance.Text:SetPoint('CENTER', self.Vengeance)
+        end
+        
             -- combat text
         
         if (oUF_Neav.units.player.showCombatFeedback) then
@@ -1292,11 +1355,7 @@ local function CreateUnitLayout(self, unit)
         self.Debuffs.PostCreateIcon = UpdateAuraIcons
         self.Debuffs.showDebuffType = true
     end
-    
-    if (oUF_Neav.show.castbars) then
-        oUF_Neav.CreateCastbars(self, unit)
-    end
-
+        
 	return self
 end
 

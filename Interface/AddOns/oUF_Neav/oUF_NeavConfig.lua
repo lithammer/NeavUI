@@ -31,8 +31,11 @@ oUF_Neav = {
             
             showHealthPercent = false,
             showPowerPercent = false,
+            
             druidManaFrequentUpdates = false,
             
+            showVengeance = false, -- attention: vengeance and swingtimer will overlap eachother, 
+            showSwingTimer = false, -- change the pos in the oUF_Neav file if you want both
             showStatusFlash = true,
             showCombatFeedback = true,
             
