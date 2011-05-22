@@ -33,10 +33,15 @@ local normalTexture = 'Interface\\AddOns\\!Beautycase\\media\\textureNormal'
     
 local function ApplyTooltipStyle(self)
     local bgsize, bsize
-    
+
     if (self == ConsolidatedBuffsTooltip) then
         bgsize = 1
         bsize = 8
+    elseif (self == FriendsTooltip) then
+        FriendsTooltip:SetScale(1.1)
+        
+        bgsize = 1
+        bsize = 9
     else
         bgsize = 3
         bsize = 12
@@ -103,6 +108,8 @@ for _, tooltip in pairs({
     EmoteMenu,
     LanguageMenu,
     VoiceMacroMenu,
+    
+    FriendsTooltip,
 }) do
     ApplyTooltipStyle(tooltip)
 end
@@ -367,7 +374,7 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             -- mouse over target with raidicon support
             
         if (nTooltip.showMouseoverTarget) then
-            local unitTargetName = UnitName(unit .. 'target');
+            local unitTargetName = UnitName(unit .. 'target')
             local unitTargetClassColor = RAID_CLASS_COLORS[select(2, UnitClass(unit .. 'target'))] or { r = 1, g = 0, b = 1 }
             local unitTargetReactionColor = { 
                 r = select(1, UnitSelectionColor(unit .. 'target')), 
@@ -473,7 +480,7 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             if (unit and CanInspect(unit)) then
                 if (not ((InspectFrame and InspectFrame:IsShown()) or (Examiner and Examiner:IsShown()))) then
                     NotifyInspect(unit)
-                    GameTooltip:AddLine('Item Level: ' .. GetItemLVL(unit));
+                    GameTooltip:AddLine('Item Level: ' .. GetItemLVL(unit))
                     ClearInspectPlayer(unit)
                 end
             end
