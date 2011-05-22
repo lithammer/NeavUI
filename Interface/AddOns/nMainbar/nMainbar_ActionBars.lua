@@ -196,11 +196,11 @@ if (nMainbar.repBar.mouseover) then
     ReputationWatchStatusBarText:SetAlpha(0)
 
     ReputationWatchBar:HookScript('OnEnter', function()
-        UIFrameFadeIn(ReputationWatchStatusBarText, 0.2, ReputationWatchStatusBarText:GetAlpha(), 1)
+        securecall('UIFrameFadeIn', ReputationWatchStatusBarText, 0.2, ReputationWatchStatusBarText:GetAlpha(), 1)
     end)
 
     ReputationWatchBar:HookScript('OnLeave', function()
-        UIFrameFadeOut(ReputationWatchStatusBarText, 0.2, ReputationWatchStatusBarText:GetAlpha(), 0) 
+        securecall('UIFrameFadeOut', ReputationWatchStatusBarText, 0.2, ReputationWatchStatusBarText:GetAlpha(), 0) 
     end)
 else
     ReputationWatchStatusBarText:Show()
@@ -221,12 +221,12 @@ end
 
 MainMenuExpBar:HookScript('OnEnter', function()
     if (nMainbar.expBar.mouseover) then
-        UIFrameFadeIn(MainMenuBarExpText, 0.2, MainMenuBarExpText:GetAlpha(), 1)
+        securecall('UIFrameFadeIn', MainMenuBarExpText, 0.2, MainMenuBarExpText:GetAlpha(), 1)
     end
 end)
 
 MainMenuExpBar:HookScript('OnLeave', function()
     if (nMainbar.expBar.mouseover) then
-        UIFrameFadeOut(MainMenuBarExpText, 0.2, MainMenuBarExpText:GetAlpha(), 0) 
+        securecall('UIFrameFadeOut', MainMenuBarExpText, 0.2, MainMenuBarExpText:GetAlpha(), 0) 
     end
 end)

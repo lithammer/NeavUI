@@ -172,16 +172,16 @@ Minimap:HookScript('OnEnter', function()
         
     if (nMinimap.showMouseoverZoneText and SubZone and not IsShiftKeyDown()) then
         SubZone:SetText(GetSubZoneText())
-        UIFrameFadeIn(SubZone, 0.235, SubZone:GetAlpha(), nMinimap.alphaMouseoverZoneText)
+        securecall('UIFrameFadeIn', SubZone, 0.235, SubZone:GetAlpha(), nMinimap.alphaMouseoverZoneText)
 
         MainZone:SetText(GetRealZoneText())
-        UIFrameFadeIn(MainZone, 0.235, MainZone:GetAlpha(), nMinimap.alphaMouseoverZoneText)
+        securecall('UIFrameFadeIn', MainZone, 0.235, MainZone:GetAlpha(), nMinimap.alphaMouseoverZoneText)
    end
 end)
 
 Minimap:HookScript('OnLeave', function()
     if (nMinimap.showMouseoverZoneText and SubZone) then
-        UIFrameFadeOut(SubZone, 0.235, SubZone:GetAlpha(), 0)
-        UIFrameFadeOut(MainZone, 0.235, MainZone:GetAlpha(), 0)
+        securecall('UIFrameFadeOut', SubZone, 0.235, SubZone:GetAlpha(), 0)
+        securecall('UIFrameFadeOut', MainZone, 0.235, MainZone:GetAlpha(), 0)
     end
 end)

@@ -286,6 +286,14 @@ local function CreateArenaLayout(self, unit)
         self.Trinket.trinketUseAnnounce = true
         self.Trinket.trinketUpAnnounce = true
         
+            -- oUF_Talents support
+        --[[    
+        self.Talents = self.Health:CreateFontString(nil, 'OVERLAY')
+        self.Talents:SetFont(oUF_Neav.media.font, 16)
+        self.Talents:SetTextColor(1, 0, 0)
+        self.Talents:SetPoint('BOTTOM', self.Health, 'TOP', 0, 12)
+        --]]
+        
         self:SetSize(132, 46)
     end
     

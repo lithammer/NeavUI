@@ -12,7 +12,7 @@ local f = CreateFrame('Frame', nil, Minimap)
 f:SetFrameStrata('BACKGROUND')
 f:SetFrameLevel(Minimap:GetFrameLevel()-1)
 f:SetHeight(30)
-f:SetAlpha(0.4)
+f:SetAlpha(nMinimap.drawerNoMouseoverAlpha)
 f:CreateBorder(11)
 f:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
 f:SetBackdropColor(0, 0, 0, 0.6)
@@ -77,8 +77,8 @@ f.Friends.Text:SetTextColor(RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class]
     -- fade fade functions
     
 local function fadeOut()
-    UIFrameFadeOut(f.Guild, 0.05, f.Guild:GetAlpha(), 0)
-    UIFrameFadeOut(f.Friends, 0.05, f.Friends:GetAlpha(), 0)
+    securecall('UIFrameFadeOut', f.Guild, 0.1, f.Guild:GetAlpha(), 0)
+    securecall('UIFrameFadeOut', f.Friends, 0.1, f.Friends:GetAlpha(), 0)
 
 	if (nMinimap.positionDrawerBelow) then
 		f:SetPoint('TOPLEFT', Minimap, 'BOTTOMLEFT', 10, 23)
@@ -88,14 +88,14 @@ local function fadeOut()
 		f:SetPoint('BOTTOMRIGHT', Minimap, 'TOPRIGHT', -10, -23)
 	end
     
-    f:SetAlpha(0.5)
+    f:SetAlpha(nMinimap.drawerNoMouseoverAlpha)
     
     GameTooltip:Hide() 
 end
 
 local function fadeIn()
-    UIFrameFadeIn(f.Guild, 0.135, f.Guild:GetAlpha(), 1)
-    UIFrameFadeIn(f.Friends, 0.135, f.Friends:GetAlpha(), 1)
+    securecall('UIFrameFadeIn', f.Guild, 0.135, f.Guild:GetAlpha(), nMinimap.drawerMouseoverAlpha)
+    securecall('UIFrameFadeIn', f.Friends, 0.135, f.Friends:GetAlpha(), nMinimap.drawerMouseoverAlpha)
 
 	if (nMinimap.positionDrawerBelow) then
 		f:SetPoint('TOPLEFT', Minimap, 'BOTTOMLEFT', 10, 10)
@@ -105,7 +105,7 @@ local function fadeIn()
 		f:SetPoint('BOTTOMRIGHT', Minimap, 'TOPRIGHT', -10, -10)
 	end
 
-    f:SetAlpha(1)
+    f:SetAlpha(nMinimap.drawerMouseoverAlpha)
 end
 
 f:SetScript('OnEnter', function()
