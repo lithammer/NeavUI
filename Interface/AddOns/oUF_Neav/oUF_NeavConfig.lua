@@ -205,6 +205,8 @@ oUF_Neav = {
             },
             
             position = {'BOTTOM', UIParent, 'BOTTOM', 0, 390},
+			
+			hideFireboltAndWaterbolt = true, -- hides the castbar for firebolt and waterbolt
         },
         
         target = {

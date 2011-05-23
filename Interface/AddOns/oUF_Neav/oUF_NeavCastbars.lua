@@ -104,7 +104,7 @@ function oUF_Neav.CreateCastbars(self, unit)
         self.Castbar.Text:SetHeight(10)
         self.Castbar.Text:SetJustifyH('LEFT')
         
-        if (config.icon.show) then
+        if (unit == 'player' and config.icon.show) then
             self.Castbar.Icon = self.Castbar:CreateTexture(nil, 'ARTWORK')
             self.Castbar.Icon:SetSize(config.height + 2, config.height + 2)
             self.Castbar.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
@@ -142,6 +142,19 @@ function oUF_Neav.CreateCastbars(self, unit)
             if (unit == 'target' or unit == 'focus') then
                 UpdateCastbarColor(Castbar, unit, config)
             end
+
+			-- Don't show firebolt and waterbolt
+			-- gets really spammy
+			if (unit == 'pet') then
+				for _, spellId in pairs({3110, 31707}) do
+					if UnitCastingInfo('pet') == GetSpellInfo(spellId) then
+						Castbar:SetAlpha(0)
+						break
+					else
+						Castbar:SetAlpha(1)
+					end
+				end
+			end
         end    
 
         self.Castbar.PostChannelStart = function(Castbar, unit)
@@ -159,6 +172,10 @@ function oUF_Neav.CreateCastbars(self, unit)
             if (unit == 'target' or unit == 'focus') then
                 UpdateCastbarColor(Castbar, unit, config)
             end
+			
+			if (Castbar:GetAlpha() == 0) then
+				Castbar:SetAlpha(1)
+			end
         end    
         
         self.Castbar.CustomDelayText = function(self, duration)
