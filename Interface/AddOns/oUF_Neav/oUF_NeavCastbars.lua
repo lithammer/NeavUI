@@ -173,6 +173,8 @@ function oUF_Neav.CreateCastbars(self, unit)
                 UpdateCastbarColor(Castbar, unit, config)
             end
 			
+			-- Fix edge case if the last spell cast by the pet was hidden
+			-- and the next spell is channeled
 			if (Castbar:GetAlpha() == 0) then
 				Castbar:SetAlpha(1)
 			end
