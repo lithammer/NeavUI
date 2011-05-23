@@ -48,11 +48,11 @@ if (nPower.energy.showComboPoints) then
         f.ComboPoints[i]:SetAlpha(0)
     end
 
-    f.ComboPoints[1]:SetPoint('CENTER', -52, 0)
-    f.ComboPoints[2]:SetPoint('CENTER', -26, 0)
-    f.ComboPoints[3]:SetPoint('CENTER', 0, 0)
-    f.ComboPoints[4]:SetPoint('CENTER', 26, 0)
-    f.ComboPoints[5]:SetPoint('CENTER', 52, 0)
+    f.ComboPoints[1]:SetPoint('CENTER', -52, 8)
+    f.ComboPoints[2]:SetPoint('CENTER', -26, 8)
+    f.ComboPoints[3]:SetPoint('CENTER', 0, 8)
+    f.ComboPoints[4]:SetPoint('CENTER', 26, 8)
+    f.ComboPoints[5]:SetPoint('CENTER', 52, 8)
 end
 
 if (playerClass == 'DEATHKNIGHT' and nRune.rune.showRuneCooldown) then
