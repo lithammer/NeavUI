@@ -104,7 +104,7 @@ function oUF_Neav.CreateCastbars(self, unit)
         self.Castbar.Text:SetHeight(10)
         self.Castbar.Text:SetJustifyH('LEFT')
         
-        if (unit == 'player' and config.icon.show) then
+        if (config.icon.show) then
             self.Castbar.Icon = self.Castbar:CreateTexture(nil, 'ARTWORK')
             self.Castbar.Icon:SetSize(config.height + 2, config.height + 2)
             self.Castbar.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
