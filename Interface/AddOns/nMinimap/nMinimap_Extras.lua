@@ -244,14 +244,14 @@ local function UpdateGuildXP()
 end
 
 local function GuildTip(self)
+    fadeIn()
+    
 	if (not IsInGuild()) then
         return 
     end
     
     GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMLEFT')
-    
-    fadeIn()
-    
+
     local col = RGBToHex(1, 0, 1)
 	local zonec, classc, levelc
 	local online = totalGuildOnline
@@ -332,7 +332,7 @@ local function GuildTip(self)
 	GameTooltip:Show()
 end
 
-f.Guild:SetScript('OnEnter', function(self)
+f.Guild:HookScript('OnEnter', function(self)
     GuildTip(self)
 end)
 
@@ -684,12 +684,13 @@ f.Friends:SetScript('OnEvent', function(self, event)
     f.Friends.Text:SetFormattedText(format('%s |cffffffff%d|r', 'Friends', totalFriendsOnline + totalBattleNetOnline))
 end)
 
-f.Friends:SetScript('OnEnter', function(self)
+f.Friends:HookScript('OnEnter', function(self)
     fadeIn()
     
 	local totalFriendsOnline = totalFriendsOnline + totalBattleNetOnline
 	local totalfriends = #friendTable + #BNTable
 	local zonec, classc, levelc, realmc, grouped
+
     
 	if (totalFriendsOnline > 0) then
 		GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMLEFT')
