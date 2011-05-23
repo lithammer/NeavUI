@@ -62,9 +62,9 @@ Rage:SetScript('OnEvent', function(self, event, arg1)
     if (event == 'PLAYER_LOGIN') then
         Rage:SetAlpha(0.35)
     elseif (event == 'PLAYER_REGEN_ENABLED') then
-        UIFrameFadeOut(Rage, 0.35, Rage:GetAlpha(), 0.35)
+        securecall('UIFrameFadeOut', Rage, 0.35, Rage:GetAlpha(), 0.35)
     elseif (event == 'PLAYER_REGEN_DISABLED') then
-        UIFrameFadeIn(Rage, 0.35, Rage:GetAlpha(), 1)
+        securecall('UIFrameFadeIn', Rage, 0.35, Rage:GetAlpha(), 1)
     end
 end)
 
@@ -84,11 +84,11 @@ Rage:SetScript('OnUpdate', function(self, elapsed)
         Rage.Power.Above:SetPoint('LEFT', Rage.Power, 'LEFT', newPosition, 8)
         
         if (playerClass == 'WARRIOR' and UnitPower('player', RAGE) >= 1) then
-			UIFrameFadeIn(Rage.Power, 0.35, Rage.Power:GetAlpha(), 0.8)
+			securecall('UIFrameFadeIn', Rage.Power, 0.35, Rage.Power:GetAlpha(), 0.8)
 		elseif (playerClass == 'DRUID' and GetShapeshiftFormID() == BEAR_FORM and UnitPower('player', RAGE) >= 1) then
-			UIFrameFadeIn(Rage.Power, 0.35, Rage.Power:GetAlpha(), 0.8)
+			securecall('UIFrameFadeIn', Rage.Power, 0.35, Rage.Power:GetAlpha(), 0.8)
         else
-			UIFrameFadeOut(Rage.Power, 0.35, Rage.Power:GetAlpha(), 0)
+			securecall('UIFrameFadeOut', Rage.Power, 0.35, Rage.Power:GetAlpha(), 0)
         end
         
 		updateTimer   = 0

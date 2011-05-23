@@ -113,9 +113,9 @@ Energy:SetScript('OnEvent', function(self, event, arg1)
     if (event == 'PLAYER_LOGIN') then
         Energy:SetAlpha(0.35)
     elseif (event == 'PLAYER_REGEN_ENABLED') then
-        UIFrameFadeOut(Energy, 0.35, Energy:GetAlpha(), 0)
+        securecall('UIFrameFadeOut', Energy, 0.35, Energy:GetAlpha(), 0)
     elseif (event == 'PLAYER_REGEN_DISABLED') then
-        UIFrameFadeIn(Energy, 0.35, Energy:GetAlpha(), 1)
+        securecall('UIFrameFadeIn', Energy, 0.35, Energy:GetAlpha(), 1)
     end
 end)
 
@@ -136,14 +136,14 @@ Energy:SetScript('OnUpdate', function(self, elapsed)
 		
         if (playerClass == 'ROGUE' or playerClass == 'DRUID' and GetShapeshiftFormID() == CAT_FORM) then
 			if (UnitPower('player', ENERGY) < UnitPowerMax('player', ENERGY) and not InCombatLockdown()) then
-				UIFrameFadeIn(Energy.Power, 0.35, Energy.Power:GetAlpha(), 0.35)
+				securecall('UIFrameFadeIn', Energy.Power, 0.35, Energy.Power:GetAlpha(), 0.35)
 			elseif (InCombatLockdown()) then
-				UIFrameFadeIn(Energy.Power, 0.35, Energy.Power:GetAlpha(), 1.0)
+				securecall('UIFrameFadeIn', Energy.Power, 0.35, Energy.Power:GetAlpha(), 1.0)
 			else
-				UIFrameFadeOut(Energy.Power, 0.35, Energy.Power:GetAlpha(), 0)
+				securecall('UIFrameFadeOut', Energy.Power, 0.35, Energy.Power:GetAlpha(), 0)
 			end
 		else
-			UIFrameFadeOut(Energy.Power, 0.35, Energy.Power:GetAlpha(), 0)
+			securecall('UIFrameFadeOut', Energy.Power, 0.35, Energy.Power:GetAlpha(), 0)
 		end
         
 		updateTimer = 0

@@ -120,9 +120,9 @@ Rune:SetScript('OnEvent', function(self, event, arg1)
     if (event == 'PLAYER_LOGIN') then
         Rune:SetAlpha(0.35)
     elseif (event == 'PLAYER_REGEN_ENABLED') then
-        UIFrameFadeOut(Rune, 0.35, Rune:GetAlpha(), 0.35)
+        securecall('UIFrameFadeOut', Rune, 0.35, Rune:GetAlpha(), 0.35)
     elseif (event == 'PLAYER_REGEN_DISABLED') then
-        UIFrameFadeIn(Rune, 0.35, Rune:GetAlpha(), 1)
+        securecall('UIFrameFadeIn', Rune, 0.35, Rune:GetAlpha(), 1)
     end
 end)
 
@@ -146,9 +146,9 @@ Rune:SetScript('OnUpdate', function(self, elapsed)
         Rune.Power.Above:SetPoint('LEFT', Rune.Power, 'LEFT', newPosition, 8)
         
         if (UnitPower('player', RUNICPOWER) >= 1) then
-           UIFrameFadeIn(Rune.Power, 0.35, Rune.Power:GetAlpha(), 0.8)
+           securecall('UIFrameFadeIn', Rune.Power, 0.35, Rune.Power:GetAlpha(), 0.8)
         else
-           UIFrameFadeOut(Rune.Power, 0.35, Rune.Power:GetAlpha(), 0)
+           securecall('UIFrameFadeOut', Rune.Power, 0.35, Rune.Power:GetAlpha(), 0)
         end
         
 		updateTimer   = 0

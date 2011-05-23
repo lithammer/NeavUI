@@ -62,9 +62,9 @@ Focus:SetScript('OnEvent', function(self, event, arg1)
     if (event == 'PLAYER_LOGIN') then
         Focus:SetAlpha(0.35)
     elseif (event == 'PLAYER_REGEN_ENABLED') then
-        UIFrameFadeOut(Focus, 0.35, Focus:GetAlpha(), 0.35)
+        securecall('UIFrameFadeOut', Focus, 0.35, Focus:GetAlpha(), 0.35)
     elseif (event == 'PLAYER_REGEN_DISABLED') then
-        UIFrameFadeIn(Focus, 0.35, Focus:GetAlpha(), 1)
+        securecall('UIFrameFadeIn', Focus, 0.35, Focus:GetAlpha(), 1)
     end
 end)
 
@@ -84,11 +84,11 @@ Focus:SetScript('OnUpdate', function(self, elapsed)
         Focus.Power.Above:SetPoint('LEFT', Focus.Power, 'LEFT', newPosition, 8)
         
         if (UnitPower('player', FOCUS) < UnitPowerMax('player', FOCUS) and not InCombatLockdown()) then
-			UIFrameFadeIn(Focus.Power, 0.35, Focus.Power:GetAlpha(), 0.35)
+			securecall('UIFrameFadeIn', Focus.Power, 0.35, Focus.Power:GetAlpha(), 0.35)
 		elseif (InCombatLockdown()) then
-			UIFrameFadeIn(Focus.Power, 0.35, Focus.Power:GetAlpha(), 0.8)
+			securecall('UIFrameFadeIn', Focus.Power, 0.35, Focus.Power:GetAlpha(), 0.8)
         else
-			UIFrameFadeOut(Focus.Power, 0.35, Focus.Power:GetAlpha(), 0)
+			securecall('UIFrameFadeOut', Focus.Power, 0.35, Focus.Power:GetAlpha(), 0)
         end
         
 		updateTimer   = 0
