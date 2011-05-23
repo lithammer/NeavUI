@@ -1,8 +1,0 @@
-## Interface: 40100
-## Title: |cffCC3333 n|rPower
-
-Config.lua
-Energy.lua
-Focus.lua
-Rage.lua
-Runes.lua
