@@ -133,6 +133,14 @@ f.Power.Above:SetHeight(14)
 f.Power.Above:SetWidth(14)
 f.Power.Above:SetTexture('Interface\\AddOns\\nPower\\media\\textureArrowAbove')
 
+local function ShortValue(self)
+    if (self >= 10000) then
+		return ('%.1fk'):format(self / 1e3)
+    else
+        return self
+    end
+end
+
 local function SetComboColor(i)
     local comboPoints = GetComboPoints('player', 'target') or 0
 
@@ -208,7 +216,7 @@ end
 local function UpdateBarValue()
     f.Power:SetMinMaxValues(0, UnitPowerMax('player', f))
     f.Power:SetValue(UnitPower('player'))
-    f.Power.Value:SetText(UnitPower('player') > 0 and UnitPower('player') or '')
+	f.Power.Value:SetText(UnitPower('player') > 0 and (nPower.shortValue and ShortValue(UnitPower('player')) or UnitPower('player')) or '')
 end
 
 local function UpdateBarColor()

@@ -1,6 +1,6 @@
 
 nPower = {
-    position = {'CENTER', UIParent, 0, -23},
+    position = {'CENTER', UIParent, 0, -223},
     sizeWidth = 200,
         
     activeAlpha = 1,
@@ -11,6 +11,7 @@ nPower = {
     valueFontSize = 20,
     valueFontOutline = true,
     valueFontAdjustmentX = 0,
+	shortValue = true,
 
     mana = {
         show = true,
