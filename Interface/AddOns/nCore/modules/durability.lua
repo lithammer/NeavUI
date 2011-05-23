@@ -165,7 +165,7 @@ f:SetScript('OnEvent', function(event)
             end
 		end
         
-        local r, g, b = ColorGradient((overAll/total)*100, unpack(gradientColor)) 
+        local r, g, b = ColorGradient(overAll/total, unpack(gradientColor)) 
         f.Text:SetTextColor(r, g, b)
         f.Text:SetText(string.format('%d%%', (overAll/total)*100)..' |cffffffff'..DURABILITY..'|r')
         f:SetWidth(f.Text:GetWidth() + 44)
