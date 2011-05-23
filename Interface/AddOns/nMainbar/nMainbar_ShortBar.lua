@@ -3,7 +3,15 @@ if (not nMainbar.MainMenuBar.shortBar and not nMainbar.MainMenuBar.moveableExtra
     return
 end
 
-function ShapeshiftBar_Update() 
+function ShapeshiftBar_Update()
+	local numForms = GetNumShapeshiftForms()
+
+	if (numForms > 0) then
+		ShapeshiftBarFrame:Show()
+	else
+		ShapeshiftBarFrame:Hide()
+	end
+
     ShapeshiftBar_UpdateState()
 end
 
