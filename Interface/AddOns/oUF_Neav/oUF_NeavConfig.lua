@@ -206,7 +206,7 @@ oUF_Neav = {
             
             position = {'BOTTOM', UIParent, 'BOTTOM', 0, 390},
 			
-			ignoreSpells = true, -- hides castbar for spells listed in "hideList"
+			ignoreSpells = true, -- hides castbar for spells listed in "ignoreList"
 			ignoreList = {
 				3110,	-- firebolt (imp)
 				31707,	-- waterbolt (water elemental)
