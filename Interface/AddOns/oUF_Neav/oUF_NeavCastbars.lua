@@ -142,14 +142,19 @@ function oUF_Neav.CreateCastbars(self, unit)
                 UpdateCastbarColor(Castbar, unit, config)
             end
 
-                -- hide some special spells like waterbold or firtebold (pets) because it gets really spammy
+                -- hide some special spells like waterbold or firebold (pets) because it gets really spammy
                 
-			if (unit == 'pet' and oUF_Neav.castbar.pet.ignoreSpells) then
-				for _, spellId in pairs(oUF_Neav.castbar.pet.ignoreList) do
-                    if (UnitCastingInfo('pet') == GetSpellInfo(spellId)) then
-                        Castbar:Hide()
+            if (oUF_Neav.castbar.pet.ignoreSpells) then   
+                if (unit == 'pet') then
+                    Castbar:SetAlpha(1)
+                    
+                    for _, spellID in pairs(oUF_Neav.castbar.pet.ignoreList) do
+                        if (UnitCastingInfo('pet') == GetSpellInfo(spellID)) then
+                            Castbar:SetAlpha(0)
+                            
+                        end
                     end
-				end
+                end
 			end
         end    
 
@@ -167,6 +172,12 @@ function oUF_Neav.CreateCastbars(self, unit)
     
             if (unit == 'target' or unit == 'focus') then
                 UpdateCastbarColor(Castbar, unit, config)
+            end
+            
+            if (oUF_Neav.castbar.pet.ignoreSpells) then
+                if (unit == 'pet' and Castbar:GetAlpha() == 0) then              
+                    Castbar:SetAlpha(1)
+                end
             end
         end    
         
