@@ -164,8 +164,16 @@ f:SetScript('OnEvent', function(event)
                 itemSlot.Text:SetText('')
             end
 		end
+
+        local r, g, b
+        if (overAll/total and overAll/total < 1) then
+            r, g, b = ColorGradient(overAll/total, unpack(gradientColor))
+        elseif (overAll/total <= 0) then
+            r, g, b = 1, 0, 0
+        else
+            r, g, b = 0, 1, 0
+        end
         
-        local r, g, b = ColorGradient(overAll/total, unpack(gradientColor)) 
         f.Text:SetTextColor(r, g, b)
         f.Text:SetText(string.format('%d%%', (overAll/total)*100)..' |cffffffff'..DURABILITY..'|r')
         f:SetWidth(f.Text:GetWidth() + 44)
