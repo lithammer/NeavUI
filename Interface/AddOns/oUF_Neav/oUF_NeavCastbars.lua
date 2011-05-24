@@ -145,8 +145,8 @@ function oUF_Neav.CreateCastbars(self, unit)
 
 			-- Don't show firebolt and waterbolt
 			-- gets really spammy
-			if (unit == 'pet') then
-				for _, spellId in pairs({3110, 31707}) do
+			if (unit == 'pet' and oUF_Neav.castbar.pet.hideSpells) then
+				for _, spellId in pairs(oUF_Neav.castbar.pet.hideList) do
 					if UnitCastingInfo('pet') == GetSpellInfo(spellId) then
 						Castbar:SetAlpha(0)
 						break
@@ -175,7 +175,7 @@ function oUF_Neav.CreateCastbars(self, unit)
 			
 			-- Fix edge case if the last spell cast by the pet was hidden
 			-- and the next spell is channeled
-			if (Castbar:GetAlpha() == 0) then
+			if (oUF_Neav.castbar.pet.hideSpells and Castbar:GetAlpha() == 0) then
 				Castbar:SetAlpha(1)
 			end
         end    

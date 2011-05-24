@@ -206,7 +206,11 @@ oUF_Neav = {
             
             position = {'BOTTOM', UIParent, 'BOTTOM', 0, 390},
 			
-			hideFireboltAndWaterbolt = true, -- hides the castbar for firebolt and waterbolt
+			hideSpells = true, -- hides castbar for spells listed in "hideList"
+			hideList = {
+				3110,	-- firebolt
+				31707,	-- waterbolt
+			},
         },
         
         target = {
