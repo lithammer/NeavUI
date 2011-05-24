@@ -4,6 +4,8 @@ local oUF = ns.oUF
 local VISIBLE = 1
 local HIDDEN = 0
 
+local floor = math.floor
+
 local UpdateTooltip = function(self)
 	GameTooltip:SetUnitAura(self.parent.__owner.unit, self:GetID(), self.filter)
 end
@@ -69,7 +71,7 @@ end
 local customFilter = function(icons, unit, icon, name, rank, texture, count, dtype, duration, timeLeft, caster)
 	local isPlayer
 
-	if(caster == 'player' or caster == 'vehicle') then
+	if (caster == 'player' or caster == 'vehicle') then
 		isPlayer = true
 	end
 
@@ -90,13 +92,13 @@ local updateIcon = function(unit, icons, index, offset, filter, isDebuff, visibl
 		end
 
 		local show = (icons.CustomFilter or customFilter) (icons, unit, icon, name, rank, texture, count, dtype, duration, timeLeft, caster, isStealable, shouldConsolidate, spellID, canApplyAura, isBossDebuff)
-		if(show) then
+		if (show) then
 			-- We might want to consider delaying the creation of an actual cooldown
 			-- object to this point, but I think that will just make things needlessly
 			-- complicated.
 			local cd = icon.cd
-			if(cd and not icons.disableCooldown) then
-				if(duration and duration > 0) then
+			if (cd and not icons.disableCooldown) then
+				if (duration and duration > 0) then
 					cd:SetCooldown(timeLeft - duration, duration)
 					cd:Show()
 				else
@@ -104,7 +106,7 @@ local updateIcon = function(unit, icons, index, offset, filter, isDebuff, visibl
 				end
 			end
 
-			if((isDebuff and icons.showDebuffType) or (not isDebuff and icons.showBuffType) or icons.showType) then
+			if ((isDebuff and icons.showDebuffType) or (not isDebuff and icons.showBuffType) or icons.showType) then
 				local color = DebuffTypeColor[dtype] or DebuffTypeColor.none
 
 				icon.overlay:SetVertexColor(color.r, color.g, color.b)
@@ -114,7 +116,7 @@ local updateIcon = function(unit, icons, index, offset, filter, isDebuff, visibl
 			end
 
 			-- XXX: Avoid popping errors on layouts without icon.stealable.
-			if(icon.stealable) then
+			if (icon.stealable) then
 				local stealable = not isDebuff and isStealable
 				if(stealable and icons.showStealableBuffs and not UnitIsUnit('player', unit)) then
 					icon.stealable:Show()
@@ -128,14 +130,16 @@ local updateIcon = function(unit, icons, index, offset, filter, isDebuff, visibl
 
 			icon.filter = filter
 			icon.debuff = isDebuff
-
+            
+            icons.unit = unit
+    
 			icon:SetID(index)
 			icon:Show()
 
-			if(icons.PostUpdateIcon) then
+			if (icons.PostUpdateIcon) then
 				icons:PostUpdateIcon(unit, icon, index, offset)
 			end
-
+        
 			return VISIBLE
 		else
 			return HIDDEN
@@ -143,52 +147,69 @@ local updateIcon = function(unit, icons, index, offset, filter, isDebuff, visibl
 	end
 end
 
-local SetPosition = function(icons, x)
-	if(icons and x > 0) then
-		local col = 0
-		local row = 0
-		local gap = icons.gap
-		local sizex = (icons.size or 16) + (icons['spacing-x'] or icons.spacing or 0)
-		local sizey = (icons.size or 16) + (icons['spacing-y'] or icons.spacing or 0)
-		local anchor = icons.initialAnchor or "BOTTOMLEFT"
-		local growthx = (icons["growth-x"] == "LEFT" and -1) or 1
-		local growthy = (icons["growth-y"] == "DOWN" and -1) or 1
-		local cols = math.floor(icons:GetWidth() / sizex + .5)
-		local rows = math.floor(icons:GetHeight() / sizey + .5)
+SetPosition = function(icons, x)
+    if (icons and x > 0) then
+        local cols 
+        local col = 0
+        local row = 0
+        local gap = icons.gap
+        local sizex = (icons.size or 16) + (icons['spacing-x'] or icons.spacing or 0)
+        local sizey = (icons.size or 16) + (icons['spacing-y'] or icons.spacing or 0)
+        local anchor = icons.initialAnchor or "BOTTOMLEFT"
+        local growthx = (icons["growth-x"] == "LEFT" and -1) or 1
+        local growthy = (icons["growth-y"] == "DOWN" and -1) or 1
+        -- local cols = cols = floor(icons:GetWidth() / sizex + .5)
+        local rows = floor(icons:GetHeight() / sizey + .5)
 
-		for i = 1, #icons do
-			local button = icons[i]
-			if(button and button:IsShown()) then
-				if(gap and button.debuff) then
-					if(col > 0) then
-						col = col + 1
-					end
+        for i = 1, #icons do
+            local button = icons[i]
+            
+            if (button and button:IsShown()) then
+                if (icons.unit == 'target') then
+                    if (oUF_Neav_TargetTarget and oUF_Neav_TargetTarget:IsShown()) then
+                        if (i > 9) then
+                            cols = floor(icons:GetWidth() / sizex + .5) + 2
+                        else
+                            cols = floor(icons:GetWidth() / sizex + .5)
+                        end
+                    else
+                        cols = floor(icons:GetWidth() / sizex + .5) + 1
+                    end
+                else
+                    cols = floor(icons:GetWidth() / sizex + .5)    
+                end
 
-					gap = false
-				end
+                if (gap and button.debuff) then
+                    if (col > 0) then
+                        col = col + 1
+                    end
+            
+                    gap = false
+                end
 
-				if(col >= cols) then
-					col = 0
-					row = row + 1
-				end
-				button:ClearAllPoints()
-				button:SetPoint(anchor, icons, anchor, col * sizex * growthx, row * sizey * growthy)
+                if (col >= cols) then
+                    col = 0
+                    row = row + 1
+                end
 
-				col = col + 1
-			elseif(not button) then
-				break
-			end
-		end
-	end
+                button:ClearAllPoints()
+                button:SetPoint(anchor, icons, anchor, col * sizex * growthx, row * sizey * growthy)
+                        
+                col = col + 1
+            elseif (not button) then
+                break
+            end
+        end
+    end
 end
 
 local filterIcons = function(unit, icons, filter, limit, isDebuff, offset, dontHide)
 	if(not offset) then offset = 0 end
 	local index = 1
 	local visible = 0
-	while(visible < limit) do
+	while (visible < limit) do
 		local result = updateIcon(unit, icons, index, offset, filter, isDebuff, visible)
-		if(not result) then
+		if (not result) then
 			break
 		elseif(result == VISIBLE) then
 			visible = visible + 1
@@ -196,7 +217,9 @@ local filterIcons = function(unit, icons, filter, limit, isDebuff, offset, dontH
 
 		index = index + 1
 	end
+    
 
+    
 	if(not dontHide) then
 		for i = visible + offset + 1, #icons do
 			icons[i]:Hide()
@@ -210,8 +233,10 @@ local Update = function(self, event, unit)
 	if(self.unit ~= unit) then return end
 
 	local auras = self.Auras
-	if(auras) then
-		if(auras.PreUpdate) then auras:PreUpdate(unit) end
+	if (auras) then
+		if (auras.PreUpdate) then 
+            auras:PreUpdate(unit) 
+        end
 
 		local numBuffs = auras.numBuffs or 32
 		local numDebuffs = auras.numDebuffs or 40
@@ -223,10 +248,29 @@ local Update = function(self, event, unit)
 		auras.visibleDebuffs = filterIcons(unit, auras, auras.debuffFilter or auras.filter or 'HARMFUL', numDebuffs, true, visibleBuffs)
 		auras.visibleAuras = auras.visibleBuffs + auras.visibleDebuffs
 
-		if(auras.PreSetPosition) then auras:PreSetPosition(max) end
-		(auras.SetPosition or SetPosition) (auras, max)
+		if (auras.PreSetPosition) then 
+            auras:PreSetPosition(max) 
+        end
+        
+        (auras.SetPosition or SetPosition) (auras, max)
+        
+        if (unit == 'target') then
+            local f = CreateFrame('Frame')
+            
+            local updateTimer = 0
+            f:SetScript('OnUpdate', function(self, elapsed)
+                updateTimer = updateTimer + elapsed
+                if (updateTimer > 0.35) then
+                    (auras.SetPosition or SetPosition) (auras, max)
 
-		if(auras.PostUpdate) then auras:PostUpdate(unit) end
+                    updateTimer = 0
+                end
+            end)
+        end
+
+		if (auras.PostUpdate) then 
+            auras:PostUpdate(unit) 
+        end
 	end
 
 	local buffs = self.Buffs
