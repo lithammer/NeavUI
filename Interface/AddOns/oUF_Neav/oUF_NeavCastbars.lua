@@ -1,5 +1,4 @@
 
-local oUF_Neav = oUF_Neav
 local interruptTexture = 'Interface\\AddOns\\!Beautycase\\media\\textureNormalWhite'
 local normalTexture = 'Interface\\AddOns\\!Beautycase\\media\\textureNormal'
 
@@ -143,14 +142,13 @@ function oUF_Neav.CreateCastbars(self, unit)
                 UpdateCastbarColor(Castbar, unit, config)
             end
 
-			-- Don't show firebolt and waterbolt
-			-- gets really spammy
+                -- some specials spells like waterbold or firtebold (pets) because it gets really spammy
+                
 			if (unit == 'pet' and oUF_Neav.castbar.pet.ignoreSpells) then
-				for _, spellId in pairs(oUF_Neav.castbar.pet.blacklist) do
-					if UnitCastingInfo('pet') == GetSpellInfo(spellId) then
-						Castbar:Hide()
-						break
-					end
+				for _, spellId in pairs(oUF_Neav.castbar.pet.ignoreList) do
+					if (UnitCastingInfo('pet') == GetSpellInfo(spellId)) then
+                        Castbar:Hide()
+                    end
 				end
 			end
         end    
@@ -215,7 +213,6 @@ for i = 1, MIRRORTIMER_NUMTIMERS do
     text:ClearAllPoints()
     text:SetPoint('CENTER', bar)
 end
-
 
 	-- battleground timer
 

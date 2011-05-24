@@ -136,7 +136,7 @@ oUF_Neav = {
             
             showThreatText = false,
             showRolePrefix = false,
-            showRessurectText = true,
+            showRessurectText = true, -- 4.2 only
             
             showTargetBorder = true,
             targetBorderColor = {1, 1, 1},
@@ -206,10 +206,10 @@ oUF_Neav = {
             
             position = {'BOTTOM', UIParent, 'BOTTOM', 0, 390},
 			
-			ignoreSpells = true, -- hides castbar for spells listed in "blacklist"
-			blacklist = {
-				3110,	-- firebolt
-				31707,	-- waterbolt
+			ignoreSpells = true, -- hides castbar for spells listed in "hideList"
+			ignoreList = {
+				3110,	-- firebolt (water elemental)
+				31707,	-- waterbolt (imp)
 			},
         },
         
