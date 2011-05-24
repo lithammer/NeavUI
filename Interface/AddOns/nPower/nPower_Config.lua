@@ -7,6 +7,8 @@ nPower = {
     inactiveAlpha = 0.3,
     emptyAlpha = 0,
     
+    valueAbbrev = true,
+        
     valueFont = 'Fonts\\ARIALN.ttf',
     valueFontSize = 20,
     valueFontOutline = true,

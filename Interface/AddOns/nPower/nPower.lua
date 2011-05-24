@@ -88,10 +88,10 @@ if (playerClass == 'DEATHKNIGHT' and nPower.rune.showRuneCooldown) then
 end
 
 f.Power = CreateFrame('StatusBar', nil, UIParent)
+f.Power:SetScale(UIParent:GetScale())
 f.Power:SetSize(nPower.sizeWidth, 3)
 f.Power:SetPoint('CENTER', f, 0, -23)
 f.Power:SetStatusBarTexture('Interface\\AddOns\\nPower\\media\\statusbarTexture')
-
 f.Power:SetAlpha(0)
 
 f.Power.Value = f.Power:CreateFontString(nil, 'ARTWORK')
@@ -147,11 +147,7 @@ end
 local function SetComboAlpha(i)
     local comboPoints = GetComboPoints('player', 'target') or 0
 
-    if (UnitIsDeadOrGhost('target') or comboPoints == 0) then
-        return 0
-    elseif (i > comboPoints) then
-        return 0
-    elseif (i == comboPoints) then
+    if (i == comboPoints) then
         return 1
     else
         return 0
@@ -181,7 +177,7 @@ end
 local function UpdateBarVisibility()
     local _, powerType = UnitPowerType('player')
     
-    if ((not nPower.energy.show and powerType == 'ENERGY') or (not nPower.focus.show and powerType == 'FOCUS') or (not nPower.rage.show and powerType == 'RAGE') or (not nPower.mana.show and powerType == 'MANA') or (not nPower.rune.show and powerType == 'RUNEPOWER') or UnitIsDeadOrGhost('player')) then
+    if ((not nPower.energy.show and powerType == 'ENERGY') or (not nPower.focus.show and powerType == 'FOCUS') or (not nPower.rage.show and powerType == 'RAGE') or (not nPower.mana.show and powerType == 'MANA') or (not nPower.rune.show and powerType == 'RUNEPOWER') or UnitIsDeadOrGhost('player') or UnitHasVehicleUI('player')) then
         f.Power:SetAlpha(0)
     elseif (InCombatLockdown()) then
         securecall('UIFrameFadeIn', f.Power, 0.3, f.Power:GetAlpha(), nPower.activeAlpha)
@@ -206,10 +202,24 @@ local function UpdateArrow()
     f.Power.Above:SetPoint('LEFT', f.Power, 'LEFT', newPosition, 8)
 end
 
+local function FormatValue(self)
+    if (self >= 10000) then
+		return ('%.1fk'):format(self / 1e3)
+    else
+        return self
+    end
+end
+
 local function UpdateBarValue()
     f.Power:SetMinMaxValues(0, UnitPowerMax('player', f))
     f.Power:SetValue(UnitPower('player'))
-    f.Power.Value:SetText(UnitPower('player') > 0 and UnitPower('player') or '')
+    
+    local curValue = UnitPower('player')
+    if (nPower.valueAbbrev) then
+        f.Power.Value:SetText(UnitPower('player') > 0 and FormatValue(curValue) or '')
+    else
+        f.Power.Value:SetText(UnitPower('player') > 0 and curValue or '')
+    end
 end
 
 local function UpdateBarColor()
@@ -240,9 +250,7 @@ f:SetScript('OnEvent', function(self, event, arg1)
     end
     
     if (event == 'RUNE_TYPE_UPDATE') then
-        if (playerClass == 'DEATHKNIGHT') then
-            f.Rune[arg1].type = GetRuneType(arg1)
-        end
+        f.Rune[arg1].type = GetRuneType(arg1)
     end
     
     --[[
@@ -274,6 +282,16 @@ f:SetScript('OnUpdate', function(self, elapsed)
     if (updateTimer > 0.1) then
         if (f.Rune) then
             for i = 1, 6 do
+                if (UnitHasVehicleUI('player')) then
+                    if (f.Rune[i]:IsShown()) then
+                        f.Rune[i]:Hide()
+                    end
+                else
+                    if (not f.Rune[i]:IsShown()) then
+                        f.Rune[i]:Show()
+                    end
+                end
+                
                 f.Rune[i]:SetText(CalcRuneCooldown(i))
                 f.Rune[i]:SetTextColor(SetRuneColor(i))
             end
