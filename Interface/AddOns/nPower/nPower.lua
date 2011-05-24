@@ -241,7 +241,7 @@ f:SetScript('OnEvent', function(self, event, arg1)
     
     if (event == 'RUNE_TYPE_UPDATE') then
         if (playerClass == 'DEATHKNIGHT') then
-            Rune.Rune[arg1].type = GetRuneType(arg1)
+            f.Rune[arg1].type = GetRuneType(arg1)
         end
     end
     
