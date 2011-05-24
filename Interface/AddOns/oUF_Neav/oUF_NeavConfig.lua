@@ -208,8 +208,8 @@ oUF_Neav = {
 			
 			ignoreSpells = true, -- hides castbar for spells listed in "hideList"
 			ignoreList = {
-				3110,	-- firebolt (water elemental)
-				31707,	-- waterbolt (imp)
+				3110,	-- firebolt (imp)
+				31707,	-- waterbolt (water elemental)
 			},
         },
         
