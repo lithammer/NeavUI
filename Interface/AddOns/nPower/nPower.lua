@@ -2,13 +2,14 @@
 local ComboColor = nPower.energy.comboColor
 local playerClass = select(2, UnitClass('player'))
 
-local RuneColor = {}
-RuneColor[1] = {r = 0.7, g = 0.1, b = 0.1}
-RuneColor[2] = {r = 0.7, g = 0.1, b = 0.1}
-RuneColor[3] = {r = 0.4, g = 0.8, b = 0.2}
-RuneColor[4] = {r = 0.4, g = 0.8, b = 0.2}
-RuneColor[5] = {r = 0.0, g = 0.6, b = 0.8}
-RuneColor[6] = {r = 0.0, g = 0.6, b = 0.8}
+local RuneColor = {
+    [1] = {r = 0.7, g = 0.1, b = 0.1},
+    [2] = {r = 0.7, g = 0.1, b = 0.1},
+    [3] = {r = 0.4, g = 0.8, b = 0.2},
+    [4] = {r = 0.4, g = 0.8, b = 0.2},
+    [5] = {r = 0.0, g = 0.6, b = 0.8},
+    [6] = {r = 0.0, g = 0.6, b = 0.8},
+}
 
 local f = CreateFrame('Frame', nil, UIParent)
 f:SetScale(1.4)
@@ -48,14 +49,14 @@ if (nPower.energy.showComboPoints) then
         f.ComboPoints[i]:SetAlpha(0)
     end
 
-    f.ComboPoints[1]:SetPoint('CENTER', -52, 8)
-    f.ComboPoints[2]:SetPoint('CENTER', -26, 8)
-    f.ComboPoints[3]:SetPoint('CENTER', 0, 8)
-    f.ComboPoints[4]:SetPoint('CENTER', 26, 8)
-    f.ComboPoints[5]:SetPoint('CENTER', 52, 8)
+    f.ComboPoints[1]:SetPoint('CENTER', -52, 0)
+    f.ComboPoints[2]:SetPoint('CENTER', -26, 0)
+    f.ComboPoints[3]:SetPoint('CENTER', 0, 0)
+    f.ComboPoints[4]:SetPoint('CENTER', 26, 0)
+    f.ComboPoints[5]:SetPoint('CENTER', 52, 0)
 end
 
-if (playerClass == 'DEATHKNIGHT' and nRune.rune.showRuneCooldown) then
+if (playerClass == 'DEATHKNIGHT' and nPower.rune.showRuneCooldown) then
     for i = 1, 6 do 
         RuneFrame:UnregisterAllEvents()
         _G['RuneButtonIndividual'..i]:Hide()
@@ -88,7 +89,7 @@ end
 
 f.Power = CreateFrame('StatusBar', nil, UIParent)
 f.Power:SetSize(nPower.sizeWidth, 3)
-f.Power:SetPoint('CENTER', f, 0, -10)
+f.Power:SetPoint('CENTER', f, 0, -23)
 f.Power:SetStatusBarTexture('Interface\\AddOns\\nPower\\media\\statusbarTexture')
 
 f.Power:SetAlpha(0)
@@ -133,14 +134,6 @@ f.Power.Above:SetHeight(14)
 f.Power.Above:SetWidth(14)
 f.Power.Above:SetTexture('Interface\\AddOns\\nPower\\media\\textureArrowAbove')
 
-local function ShortValue(self)
-    if (self >= 10000) then
-		return ('%.1fk'):format(self / 1e3)
-    else
-        return self
-    end
-end
-
 local function SetComboColor(i)
     local comboPoints = GetComboPoints('player', 'target') or 0
 
@@ -157,15 +150,15 @@ local function SetComboAlpha(i)
     if (UnitIsDeadOrGhost('target') or comboPoints == 0) then
         return 0
     elseif (i > comboPoints) then
-        return 0.1
-    elseif (InCombatLockdown()) then
+        return 0
+    elseif (i == comboPoints) then
         return 1
     else
-        return 0.5
+        return 0
     end
 end
 
-local function GetRuneCooldown(self)
+local function CalcRuneCooldown(self)
     local start, duration, runeReady = GetRuneCooldown(self)
     local time = floor(GetTime() - start)
     local cooldown = ceil(duration - time)
@@ -216,7 +209,7 @@ end
 local function UpdateBarValue()
     f.Power:SetMinMaxValues(0, UnitPowerMax('player', f))
     f.Power:SetValue(UnitPower('player'))
-	f.Power.Value:SetText(UnitPower('player') > 0 and (nPower.shortValue and ShortValue(UnitPower('player')) or UnitPower('player')) or '')
+    f.Power.Value:SetText(UnitPower('player') > 0 and UnitPower('player') or '')
 end
 
 local function UpdateBarColor()
@@ -252,13 +245,19 @@ f:SetScript('OnEvent', function(self, event, arg1)
         end
     end
     
-    -- UpdateBar()
-    -- UpdateBarVisibility()
+    --[[
+    UpdateBar()
+    UpdateBarVisibility()
+    --]]
     
-    -- if (event == 'PLAYER_ENTERING_WORLD') then
-    --     UpdateBar()
-    -- end
-    
+    if (event == 'PLAYER_ENTERING_WORLD') then
+        if (InCombatLockdown()) then
+            securecall('UIFrameFadeIn', f, 0.35, f:GetAlpha(), 1)
+        else
+            securecall('UIFrameFadeOut', f, 0.35, f:GetAlpha(), nPower.inactiveAlpha)
+        end
+    end
+
     if (event == 'PLAYER_REGEN_DISABLED') then
         securecall('UIFrameFadeIn', f, 0.35, f:GetAlpha(), 1)
     end
@@ -273,12 +272,10 @@ f:SetScript('OnUpdate', function(self, elapsed)
     updateTimer = updateTimer + elapsed
         
     if (updateTimer > 0.1) then
-        if (playerClass == 'DEATHKNIGHT' and nRune.rune.showRuneCooldown) then
-            if (f.Rune) then
-                for i = 1, 6 do
-                    f.Rune[i]:SetText(GetRuneCooldown(i))
-                    f.Rune[i]:SetTextColor(SetRuneColor(i))
-                end
+        if (f.Rune) then
+            for i = 1, 6 do
+                f.Rune[i]:SetText(CalcRuneCooldown(i))
+                f.Rune[i]:SetTextColor(SetRuneColor(i))
             end
         end
         
