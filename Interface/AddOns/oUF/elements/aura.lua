@@ -259,7 +259,7 @@ local Update = function(self, event, unit)
 	end
 
 	local buffs = self.Buffs
-	if^(buffs) then
+	if (buffs) then
 		if(buffs.PreUpdate) then buffs:PreUpdate(unit) end
 
 		local numBuffs = buffs.num or 32
