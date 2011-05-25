@@ -29,6 +29,8 @@
 
 --]]
 
+local floor = math.floor
+
     -- fork off the original UIFrameFlash function, and fit it to our needs
 
 local flashObjects = {}
@@ -77,7 +79,6 @@ local function Flash_OnUpdate(self, elapsed)
         self:SetScript('OnUpdate', nil)
     end
 end
-
 
 local function StopFlash(frame)
     tDeleteItem(flashObjects, frame)
@@ -196,7 +197,7 @@ local function CreateDropDown(self)
 end
 
 local function PlayerToVehicleTexture(self, event, unit)
-    self.Glow:Hide()
+    self.ThreatGlow:Hide()
     self.Level:Hide()
     
     self.LFDRole:SetAlpha(0)
@@ -237,7 +238,7 @@ end
 
 local function VehicleToPlayerTexture(self, event, unit)
     self.Level:Show()
-    self.Glow:Show()
+    self.ThreatGlow:Show()
 
     self.LFDRole:SetAlpha(1)
 
@@ -276,29 +277,26 @@ local function VehicleToPlayerTexture(self, event, unit)
 end
 
 local function UpdateFlashStatus(self)
-    local statusName = _G[self:GetName()..'StatusFlashTexture']
-
     if (UnitHasVehicleUI('player') or UnitIsDeadOrGhost('player')) then
-        StopFlash(statusName)
+        StopFlash(self.StatusFlash)
         return
     end
             
     if (UnitAffectingCombat('player')) then
         self.StatusFlash:SetVertexColor(1, 0.1, 0.1, 1)
                 
-        if (not IsFlashing(statusName)) then
-            StartFlash(statusName, 0.75, 0.75, 0.1, 0.1)
+        if (not IsFlashing(self.StatusFlash)) then
+            StartFlash(self.StatusFlash, 0.75, 0.75, 0.1, 0.1)
         end
     elseif (IsResting() and not UnitAffectingCombat('player')) then
         self.StatusFlash:SetVertexColor(1, 0.88, 0.25, 1)
                 
-        if (not IsFlashing(statusName)) then
-            StartFlash(statusName, 0.75, 0.75, 0.1, 0.1)
+        if (not IsFlashing(self.StatusFlash)) then
+            StartFlash(self.StatusFlash, 0.75, 0.75, 0.1, 0.1)
         end
     else
-        StopFlash(statusName)
+        StopFlash(self.StatusFlash)
     end
-
 end
 
     -- vehicle check
@@ -310,7 +308,7 @@ local function CheckVehicleStatus(self, event, unit)
         VehicleToPlayerTexture(self, event, unit)
     end
     
-    if (oUF_Neav.units.player.showStatusFlash) then
+    if (self.StatusFlash) then
         UpdateFlashStatus(self)
     end
 end
@@ -459,7 +457,7 @@ local function UpdateThreat(self, event, unit)
         return 
     end
 
-    if (self.Glow) then
+    if (self.ThreatGlow) then
         local threat
         if (unit == 'target') then
             threat = UnitThreatSituation('player', 'target')
@@ -469,9 +467,9 @@ local function UpdateThreat(self, event, unit)
 
         if (threat and threat > 0) then
             local r, g, b = GetThreatStatusColor(threat)
-            self.Glow:SetVertexColor(r, g, b, 1)
+            self.ThreatGlow:SetVertexColor(r, g, b, 1)
         else
-            self.Glow:SetVertexColor(0, 0, 0, 0)
+            self.ThreatGlow:SetVertexColor(0, 0, 0, 0)
         end
 	end
 end
@@ -869,28 +867,28 @@ local function CreateUnitLayout(self, unit)
 
         -- threat textures - dont like the oUF threat function, create my own!
 
-    self.Glow = self:CreateTexture('$parentGlowTexture', 'BACKGROUND')
-    self.Glow:SetAlpha(0)
+    self.ThreatGlow = self:CreateTexture('$parentThreatGlowTexture', 'BACKGROUND')
+    self.ThreatGlow:SetAlpha(0)
 
     if (unit == 'player') then
-        self.Glow:SetSize(242, 92)
-        self.Glow:SetPoint('TOPLEFT', self.Texture, 13, 0)
-        self.Glow:SetTexture('Interface\\TargetingFrame\\UI-TargetingFrame-Flash')
-        self.Glow:SetTexCoord(0.945, 0, 0, 0.182)
+        self.ThreatGlow:SetSize(242, 92)
+        self.ThreatGlow:SetPoint('TOPLEFT', self.Texture, 13, 0)
+        self.ThreatGlow:SetTexture('Interface\\TargetingFrame\\UI-TargetingFrame-Flash')
+        self.ThreatGlow:SetTexCoord(0.945, 0, 0 , 0.182)
     elseif (unit == 'pet') then
-        self.Glow:SetSize(128, 64)
-        self.Glow:SetPoint('TOPLEFT', self.Texture, -4, 12)
-        self.Glow:SetTexture('Interface\\TargetingFrame\\UI-PartyFrame-Flash')
-        self.Glow:SetTexCoord(0, 1, 1, 0)
+        self.ThreatGlow:SetSize(128, 64)
+        self.ThreatGlow:SetPoint('TOPLEFT', self.Texture, -4, 12)
+        self.ThreatGlow:SetTexture('Interface\\TargetingFrame\\UI-PartyFrame-Flash')
+        self.ThreatGlow:SetTexCoord(0, 1, 1, 0)
     elseif (unit == 'target' or unit == 'focus') then
-        self.Glow:SetSize(239, 94)
-        self.Glow:SetPoint('TOPRIGHT', self.Texture, -14, 1)
-        self.Glow:SetTexture('Interface\\TargetingFrame\\UI-TargetingFrame-Flash')
-        self.Glow:SetTexCoord(0, 0.945, 0, 0.182)
+        self.ThreatGlow:SetSize(239, 94)
+        self.ThreatGlow:SetPoint('TOPRIGHT', self.Texture, -14, 1)
+        self.ThreatGlow:SetTexture('Interface\\TargetingFrame\\UI-TargetingFrame-Flash')
+        self.ThreatGlow:SetTexCoord(0, 0.945, 0, 0.182)
     elseif (self.partyUnit) then
-        self.Glow:SetSize(128, 63)
-        self.Glow:SetPoint('TOPLEFT', self.Texture, -3, 4)
-        self.Glow:SetTexture('Interface\\TargetingFrame\\UI-PartyFrame-Flash')
+        self.ThreatGlow:SetSize(128, 63)
+        self.ThreatGlow:SetPoint('TOPLEFT', self.Texture, -3, 4)
+        self.ThreatGlow:SetTexture('Interface\\TargetingFrame\\UI-PartyFrame-Flash')
     end
 
     table.insert(self.__elements, UpdateThreat)
@@ -1021,7 +1019,7 @@ local function CreateUnitLayout(self, unit)
         self:RegisterEvent('PARTY_MEMBER_CHANGED', UpdatePartyStatus)
 
             -- resting/combat status flashing
-        
+
         if (oUF_Neav.units.player.showStatusFlash) then
             self.StatusFlash = self.Health:CreateTexture('$parentStatusFlashTexture', 'OVERLAY', self)
             self.StatusFlash:SetTexture('Interface\\CharacterFrame\\UI-Player-Status')
@@ -1040,7 +1038,7 @@ local function CreateUnitLayout(self, unit)
             self:RegisterEvent('PLAYER_REGEN_ENABLED', UpdateFlashStatus)
             self:RegisterEvent('PLAYER_REGEN_DISABLED', UpdateFlashStatus)
         end
-        
+
             -- pvptimer
 
         if (oUF_Neav.show.pvpicons) then
@@ -1055,8 +1053,8 @@ local function CreateUnitLayout(self, unit)
                     
                 if (self.updateTimer > TOOLTIP_UPDATE_TIME/2) then
                     if (IsPVPTimerRunning()) then
-                        local sec = math.floor(GetPVPTimer()/1000) 
-                        self.PvPTimer:SetText(math.floor(sec/60)..'m')
+                        local sec = floor(GetPVPTimer()/1000) 
+                        self.PvPTimer:SetText(floor(sec/60)..'m')
                     else
                         self.PvPTimer:SetText(nil)
                     end
@@ -1172,7 +1170,6 @@ local function CreateUnitLayout(self, unit)
     
     if (unit == 'target' or unit == 'focus') then
         self:SetSize(175, 42)
-
         
             -- colored name background
         
@@ -1212,6 +1209,7 @@ local function CreateUnitLayout(self, unit)
         self.Auras.numBuffs = oUF_Neav.units.target.numBuffs
         self.Auras.numDebuffs = oUF_Neav.units.target.numDebuffs
         self.Auras.spacing = 4.5
+        self.Auras.customBreak = true
         
 		if (oUF_Neav.units.target.colorPlayerDebuffsOnly) then
 			self.Auras.PostUpdateIcon = function(self, unit, icon)
