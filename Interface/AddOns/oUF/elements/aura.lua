@@ -130,8 +130,6 @@ local updateIcon = function(unit, icons, index, offset, filter, isDebuff, visibl
 
 			icon.filter = filter
 			icon.debuff = isDebuff
-            
-            icons.unit = unit
     
 			icon:SetID(index)
 			icon:Show()
@@ -165,8 +163,11 @@ SetPosition = function(icons, x)
             local button = icons[i]
             
             if (button and button:IsShown()) then
-                if (icons.unit == 'target') then
-                    if (oUF_Neav_TargetTarget and oUF_Neav_TargetTarget:IsShown()) then
+            
+                    -- my modification
+                    
+                if (icons.customBreak) then
+                    if (UnitExists('targettarget')) then
                         if (i > 9) then
                             cols = floor(icons:GetWidth() / sizex + .5) + 2
                         else
@@ -217,9 +218,7 @@ local filterIcons = function(unit, icons, filter, limit, isDebuff, offset, dontH
 
 		index = index + 1
 	end
-    
 
-    
 	if(not dontHide) then
 		for i = visible + offset + 1, #icons do
 			icons[i]:Hide()
@@ -253,20 +252,6 @@ local Update = function(self, event, unit)
         end
         
         (auras.SetPosition or SetPosition) (auras, max)
-        
-        if (unit == 'target') then
-            local f = CreateFrame('Frame')
-            
-            local updateTimer = 0
-            f:SetScript('OnUpdate', function(self, elapsed)
-                updateTimer = updateTimer + elapsed
-                if (updateTimer > 0.35) then
-                    (auras.SetPosition or SetPosition) (auras, max)
-
-                    updateTimer = 0
-                end
-            end)
-        end
 
 		if (auras.PostUpdate) then 
             auras:PostUpdate(unit) 
@@ -274,7 +259,7 @@ local Update = function(self, event, unit)
 	end
 
 	local buffs = self.Buffs
-	if(buffs) then
+	if^(buffs) then
 		if(buffs.PreUpdate) then buffs:PreUpdate(unit) end
 
 		local numBuffs = buffs.num or 32
@@ -287,8 +272,8 @@ local Update = function(self, event, unit)
 	end
 
 	local debuffs = self.Debuffs
-	if(debuffs) then
-		if(debuffs.PreUpdate) then debuffs:PreUpdate(unit) end
+	if (debuffs) then
+		if (debuffs.PreUpdate) then debuffs:PreUpdate(unit) end
 
 		local numDebuffs = debuffs.num or 40
 		debuffs.visibleDebuffs = filterIcons(unit, debuffs, debuffs.filter or 'HARMFUL', numDebuffs, true)
@@ -305,17 +290,21 @@ local ForceUpdate = function(element)
 end
 
 local Enable = function(self)
-	if(self.Buffs or self.Debuffs or self.Auras) then
-		self:RegisterEvent("UNIT_AURA", Update)
+	if (self.Buffs or self.Debuffs or self.Auras) then
+        self:RegisterEvent("UNIT_AURA", Update)
+        
+        if (self.Auras and self.Auras.customBreak) then
+            self:RegisterEvent('UNIT_TARGET', Update)
+        end
 
 		local buffs = self.Buffs
-		if(buffs) then
+		if (buffs) then
 			buffs.__owner = self
 			buffs.ForceUpdate = ForceUpdate
 		end
 
 		local debuffs = self.Debuffs
-		if(debuffs) then
+		if (debuffs) then
 			debuffs.__owner = self
 			debuffs.ForceUpdate = ForceUpdate
 		end
@@ -331,7 +320,7 @@ local Enable = function(self)
 end
 
 local Disable = function(self)
-	if(self.Buffs or self.Debuffs or self.Auras) then
+	if (self.Buffs or self.Debuffs or self.Auras) then
 		self:UnregisterEvent("UNIT_AURA", Update)
 	end
 end
