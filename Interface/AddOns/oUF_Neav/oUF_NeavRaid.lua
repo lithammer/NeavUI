@@ -221,9 +221,8 @@ local dispellFilter = {
         ['Disease'] = true,
     },
     ['SHAMAN'] = {
-        ['Poison'] = true,
-        ['Disease'] = true,
         ['Curse'] = true,
+        ['Magic'] = true,
     },
     ['PALADIN'] = {
         ['Poison'] = true,
