@@ -72,6 +72,19 @@ for i = 2, 3 do
     end
 end
 
+    -- reduce the size of some main menu bar objects
+    
+for _, object in pairs({
+    _G['MainMenuBar'],
+    _G['MainMenuExpBar'],
+    _G['MainMenuBarMaxLevelBar'],
+    
+    _G['ReputationWatchBar'],
+    _G['ReputationWatchStatusBar'],
+}) do
+    object:SetWidth(512)
+end
+
 	-- remove divider
 
 for i = 1, 19, 2 do
@@ -86,19 +99,15 @@ for i = 1, 19, 2 do
     end
 end
 
-securecall('MainMenuExpBar_SetWidth', 512)
+	-- re-position the dividers
 
-    -- reduce the size of some main menu bar objects
-    
-for _, object in pairs({
-    _G['MainMenuBar'],
-    _G['MainMenuExpBar'],
-    _G['MainMenuBarMaxLevelBar'],
-    
-    _G['ReputationWatchBar'],
-    _G['ReputationWatchStatusBar'],
-}) do
-    object:SetWidth(512)
+local divWidth = MainMenuExpBar:GetWidth() / 10
+local xpos = divWidth - 4.5
+for i = 2, 19, 2 do
+	local texture = _G['MainMenuXPBarDiv'..i]
+	local xalign = floor(xpos)
+	texture:SetPoint('LEFT', xalign, 1)
+	xpos = xpos + divWidth
 end
 
 	-- fix the exp bar size when exiting vehicle
