@@ -83,38 +83,52 @@ f.Text:SetJustifyH('CENTER')
 f.Head = CreateFrame('Button', nil, CharacterHeadSlot)
 f.Head:SetFrameStrata('HIGH')
 f.Head:SetToplevel(true)
-f.Head:SetSize(22, 22)
-f.Head:SetPoint('CENTER', CharacterHeadSlot, 'TOPRIGHT', -2, -2)
+f.Head:SetSize(16, 32)
+f.Head:SetPoint('LEFT', CharacterHeadSlot, 'CENTER', 9, 0)
+
 f.Head:SetScript('OnClick', function() 
     ShowHelm(not ShowingHelm()) 
 end)
 
-f.Head:SetNormalTexture('Interface\\Minimap\\partyraidblips')
-f.Head:GetNormalTexture():SetTexCoord(0.5 ,0.375 ,0.5 ,0.25)
-f.Head:GetNormalTexture():SetVertexColor(1, 0, 1)
+f.Head:SetScript('OnEnter', function(self) 
+    GameTooltip:SetOwner(self, 'ANCHOR_TOPLEFT', 13, -10)
+    GameTooltip:AddLine(SHOW_HELM)
+    GameTooltip:Show()
+end)
 
-f.Head:SetPushedTexture('Interface\\Minimap\\partyraidblips')
-f.Head:GetPushedTexture():SetTexCoord(0.5 ,0.375 ,0.5 ,0.25)
-f.Head:GetPushedTexture():SetVertexColor(0, 0.5, 1)
+f.Head:SetScript('OnLeave', function() 
+    GameTooltip:Hide()
+end)
+
+f.Head:SetNormalTexture('Interface\\AddOns\\nCore\\media\\textureNormal')
+f.Head:SetHighlightTexture('Interface\\AddOns\\nCore\\media\\textureHighlight')
+f.Head:SetPushedTexture('Interface\\AddOns\\nCore\\media\\texturePushed')
 
     -- create the cloak toggle button
     
 f.Cloak = CreateFrame('Button', nil, CharacterBackSlot)
 f.Cloak:SetFrameStrata('HIGH')
 f.Cloak:SetToplevel(true)
-f.Cloak:SetSize(22, 22)
-f.Cloak:SetPoint('CENTER', CharacterBackSlot, 'TOPRIGHT', -2, -2)
+f.Cloak:SetSize(16, 32)
+f.Cloak:SetPoint('LEFT', CharacterBackSlot, 'CENTER', 9, 0)
+
 f.Cloak:SetScript('OnClick', function() 
     ShowCloak(not ShowingCloak()) 
 end)
 
-f.Cloak:SetNormalTexture('Interface\\MINIMAP\\partyraidblips')
-f.Cloak:GetNormalTexture():SetTexCoord(0.5 ,0.375 ,0.5 ,0.25)
-f.Cloak:GetNormalTexture():SetVertexColor(1, 0, 1)
+f.Cloak:SetScript('OnEnter', function(self) 
+    GameTooltip:SetOwner(self, 'ANCHOR_TOPLEFT', 13, -10)
+    GameTooltip:AddLine(SHOW_CLOAK)
+    GameTooltip:Show()
+end)
 
-f.Cloak:SetPushedTexture('Interface\\MINIMAP\\partyraidblips')
-f.Cloak:GetPushedTexture():SetTexCoord(0.5 ,0.375 ,0.5 ,0.25)
-f.Cloak:GetPushedTexture():SetVertexColor(0, 0.75, 1)
+f.Cloak:SetScript('OnLeave', function() 
+    GameTooltip:Hide()
+end)
+
+f.Cloak:SetNormalTexture('Interface\\AddOns\\nCore\\media\\textureNormal')
+f.Cloak:SetHighlightTexture('Interface\\AddOns\\nCore\\media\\textureHighlight')
+f.Cloak:SetPushedTexture('Interface\\AddOns\\nCore\\media\\texturePushed')
 
 local function ColorGradient(perc, ...)
 	if (perc >= 1) then

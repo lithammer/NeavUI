@@ -5,7 +5,7 @@ watchFrame:ClearAllPoints()
 watchFrame.ClearAllPoints = function() end
 watchFrame:SetPoint('TOPRIGHT', UIParent, -100, -250)
 watchFrame:SetClampedToScreen(true)
-watchFrame:SetMovable(1)
+watchFrame:SetMovable(true)
 watchFrame:SetUserPlaced(true)
 watchFrame.SetPoint = function() end
 watchFrame:SetScale(1.01)

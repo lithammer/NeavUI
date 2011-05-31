@@ -27,9 +27,7 @@ end
 SLASH_RELOADUI1 = '/rl'
 
 --[[
-function AuraTest()
     function UnitAura() 
         return 'TestAura', nil, 'Interface\\Icons\\Spell_Nature_RavenForm', 9, nil, 120, 120, 1, 0 
     end
-end
 --]]
