@@ -15,7 +15,7 @@ local tonumber = tonumber
     -- import functions for faster usage
     
 local UnitName = UnitName
-local UnitIsEnemy = UnitIsEnemy
+-- local UnitIsEnemy = UnitIsEnemy
 local UnitCastingInfo = UnitCastingInfo
 local UnitChannelInfo = UnitChannelInfo
 
@@ -25,9 +25,9 @@ local whiteTexture = 'Interface\\AddOns\\!Beautycase\\media\\textureNormalWhite'
 local normalTexture = 'Interface\\AddOns\\!Beautycase\\media\\textureNormal'
 
 local function IsTarget(self) 
-	local tname = UnitName('target')
+	local targetName = UnitName('target')
     
-	if (tname == self.oldName:GetText() and self:GetAlpha() >= 0.99) then
+	if (targetName == self.oldName:GetText() and self:GetAlpha() >= 0.99) then
 		return true
 	else
 		return false
@@ -74,7 +74,7 @@ end
 
 local function UpdateTime(self, curValue)
 	local minValue, maxValue = self:GetMinMaxValues()
-	local castname = UnitCastingInfo('target') or UnitChannelInfo('target')
+	local castName = UnitCastingInfo('target') or UnitChannelInfo('target')
     
 	if (self.channeling) then
 		self.CastTime:SetFormattedText('%.1fs', curValue)
@@ -82,7 +82,7 @@ local function UpdateTime(self, curValue)
 		self.CastTime:SetFormattedText('%.1fs', maxValue - curValue)
 	end	
     
-	self.Name:SetText(castname)
+	self.Name:SetText(castName)
 end
 
 local function ThreatUpdate(self, elapsed)
@@ -118,6 +118,14 @@ local function UpdatePlate(self)
     UpdateHealtText(self)
     ColorHealthBar(self)
     
+    --[[
+    self.EliteIcon:SetSize(25, 24)
+    self.EliteIcon:SetTexture('Interface\\AddOns\\nPlates\\media\\eliteIcon')
+    self.EliteIcon:ClearAllPoints()
+    self.EliteIcon:SetPoint('LEFT', self.Health, -14.5, 2)
+    self.EliteIcon:SetVertexColor(0.8, 0.8, 0.8)
+    --]]
+    
     self.Highlight:ClearAllPoints()
 	self.Highlight:SetAllPoints(self.Health)	   
     
@@ -138,7 +146,7 @@ local function UpdatePlate(self)
     self.Level:SetSize(134, 13)
     
     if (self.Level) then
-        local level, elite = self.Level:GetText(), self.RaidIcon:IsShown()
+        local level, elite = self.Level:GetText(), self.EliteIcon:IsShown()
         
         if (self.BossIcon:IsShown()) then
             self.Level:SetFont('Fonts\\ARIALN.ttf', 12)
@@ -151,9 +159,9 @@ local function UpdatePlate(self)
             self.Level:SetTextColor(1, 0, 0)
             self.Level:Show()
         elseif (self.EliteIcon:IsVisible() and (not self.EliteIcon:GetTexture() == 'Interface\\Tooltips\\EliteNameplateIcon')) then
-            self.Level:SetText('(r)'..level..' |cffffffff'..newName)
+            self.Level:SetText('|cffffff00(r)|r'..level..' |cffffffff'..newName)
         else
-            self.Level:SetText((elite and '+' or '')..level..' |cffffffff'..newName)
+            self.Level:SetText((elite and '|cffffff00+|r' or '')..level..' |cffffffff'..newName)
         end	
     end
 end
@@ -203,7 +211,7 @@ local function SkinPlate(self)
 	self.Overlay:SetTexCoord(0, 0, 0, 0)
     self.BossIcon:SetTexCoord(0, 0, 0, 0)
     self.EliteIcon:SetTexCoord(0, 0, 0, 0)
-    
+
 	self.Castbar.Shield:SetTexCoord(0, 0, 0, 0)
 	self.Castbar.Overlay:SetTexCoord(0, 0, 0, 0)
 	
