@@ -33,19 +33,24 @@ end
 local function UpdateHealth(Health, unit, min, max)
     local self = Health:GetParent()
 
-    if (UnitIsDead(unit)) then
-        Health.Value:SetText('Dead')
-        Health:SetStatusBarColor(0.5, 0.5, 0.5)
-    else
-        if (min == max) then
-            Health.Value:SetText(FormatValue(min))
+    if (Health.Value) then
+        if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
+            Health.Value:SetText((UnitIsDead(unit) and 'Dead') or (UnitIsGhost(unit) and 'Ghost') or (not UnitIsConnected(unit) and PLAYER_OFFLINE))
         else
-            Health.Value:SetText(FormatValue(min)..' - '..format('%d%%', min/max * 100))
+            if (min == max) then
+                Health.Value:SetText(FormatValue(min))
+            else
+                Health.Value:SetText(FormatValue(min)..' - '..format('%d%%', min/max * 100))
+            end
         end
     end
-
-    Health:SetStatusBarColor(0, 1, 0)
-
+    
+    if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
+        Health:SetStatusBarColor(0.5, 0.5, 0.5)
+    else
+        Health:SetStatusBarColor(0, 1, 0)
+    end
+    
     if (self.Name.Background) then
         self.Name.Background:SetVertexColor(UnitSelectionColor(unit))
     end
@@ -56,14 +61,19 @@ local function UpdatePower(Power, unit, min, max)
 
 	local _, powerType, altR, altG, altB = UnitPowerType(unit)
 	local unitPower = PowerBarColor[powerType]
-
-    if (UnitIsDead(unit)) then
+    
+    if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
         Power:SetValue(0)
-        Power.Value:SetText('')
-    elseif (min == 0) then
-        Power.Value:SetText('')   
-    else
-        Power.Value:SetText(FormatValue(min))
+    end
+    
+    if (Health.Value) then
+        if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
+            Power.Value:SetText('')
+        elseif (min == 0) then
+            Power.Value:SetText('')   
+        else
+            Power.Value:SetText(FormatValue(min))
+        end
     end
     
     if (unitPower) then
@@ -141,7 +151,6 @@ local function CreateArenaLayout(self, unit)
     self.Health.Smooth = true
 
     self.Health.PostUpdate = UpdateHealth
-
 
         -- powerbar
 

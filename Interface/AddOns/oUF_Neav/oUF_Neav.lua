@@ -132,6 +132,15 @@ for _, button in pairs({
     _G['InterfaceOptions'..button]:EnableMouse(false)
 end
 
+local texPath = 'Interface\\TargetingFrame\\UI-TargetingFrame'
+local texTable = {
+    ['elite'] = texPath..'-Elite',
+    ['rareelite'] = texPath..'-Rare-Elite',
+    ['rare'] = texPath..'-Rare',
+    ['worldboss'] = texPath..'-Elite',
+    ['normal'] = texPath,
+}
+
     -- remove the set/clear focus of the default unitdrop down, because only the blizz ui can use this function
     
 do 
@@ -162,7 +171,9 @@ local dropdown = CreateFrame('Frame', 'CustomUnitDropDownMenu', UIParent, 'UIDro
 
 UIDropDownMenu_Initialize(dropdown, function(self)
 	local unit = self:GetParent().unit
-	if not unit then return end
+	if (not unit) then 
+        return 
+    end
 
 	local menu, name, id
 	if (UnitIsUnit(unit, 'player')) then
@@ -173,6 +184,7 @@ UIDropDownMenu_Initialize(dropdown, function(self)
 		menu = 'PET'
 	elseif (UnitIsPlayer(unit)) then
 		id = UnitInRaid(unit)
+        
 		if (id) then
 			menu = 'RAID_PLAYER'
 			name = GetRaidRosterInfo(id)
@@ -185,6 +197,7 @@ UIDropDownMenu_Initialize(dropdown, function(self)
 		menu = 'TARGET'
 		name = RAID_TARGET_ICON
 	end
+    
 	if (menu) then
 		UnitPopup_ShowMenu(self, menu, unit, name, id)
 	end
@@ -193,7 +206,7 @@ end, 'MENU')
 local function CreateDropDown(self)
 	dropdown:SetParent(self)
     ToggleDropDownMenu(1, nil, dropdown, 'cursor', 15, -15)
-	-- ToggleDropDownMenu(1, nil, dropdown, self, self:GetWidth()*0.75, -5)
+	-- ToggleDropDownMenu(1, nil, dropdown, self, self:GetWidth() * 0.75, -5)
 end
 
 local function PlayerToVehicleTexture(self, event, unit)
@@ -313,28 +326,11 @@ local function CheckVehicleStatus(self, event, unit)
     end
 end
 
-    -- group indicator above the playerframe
-    
-local function UpdatePartyStatus(self)
-    for i = 1, MAX_RAID_MEMBERS do
-        if (GetNumRaidMembers() > 0) then
-            local unitName, _, groupNumber = GetRaidRosterInfo(i)
-            if (unitName == UnitName('player')) then
-                self.TabText:SetText(GROUP..' '..groupNumber)
-                self.TabMiddle:SetWidth(self.TabText:GetWidth())
-                
-                self.TabMiddle:SetAlpha(0.5)
-                self.TabLeft:SetAlpha(0.5)
-                self.TabRight:SetAlpha(0.5)
-                self.TabText:SetAlpha(0.5)
-            end
-        else
-            self.TabMiddle:SetAlpha(0)
-            self.TabLeft:SetAlpha(0)
-            self.TabRight:SetAlpha(0)
-            self.TabText:SetAlpha(0)
-        end
-    end
+local function SetTabAlpha(self, alpha)
+    self.TabMiddle:SetAlpha(alpha)
+    self.TabLeft:SetAlpha(alpha)
+    self.TabRight:SetAlpha(alpha)
+    self.TabText:SetAlpha(alpha)
 end
 
     -- function for create a tab-like texture
@@ -367,6 +363,24 @@ local function CreateUnitTabTexture(self)
     self.TabText:SetAlpha(0.5)
 end
 
+    -- group indicator above the playerframe
+
+local function UpdatePartyStatus(self)
+    for i = 1, MAX_RAID_MEMBERS do
+        if (GetNumRaidMembers() > 0) then
+            local unitName, _, groupNumber = GetRaidRosterInfo(i)
+            if (unitName == UnitName('player')) then
+                self.TabText:SetText(GROUP..' '..groupNumber)
+                self.TabMiddle:SetWidth(self.TabText:GetWidth())
+                
+                SetTabAlpha(self, 0.5)
+            end
+        else
+            SetTabAlpha(self, 0)
+        end
+    end
+end
+
     -- generic frame update
     
 local function UpdateFrame(self, _, unit)
@@ -381,9 +395,9 @@ local function UpdateFrame(self, _, unit)
     if (oUF_Neav.show.classPortraits) then
         if (self.Portrait) then
             if (UnitIsPlayer(unit)) then
-                local _, class = UnitClass(unit)
+                local _, unitClass = UnitClass(unit)
                 self.Portrait:SetTexture('Interface\\TargetingFrame\\UI-Classes-Circles')
-                self.Portrait:SetTexCoord(unpack(CLASS_ICON_TCOORDS[class]))
+                self.Portrait:SetTexCoord(unpack(CLASS_ICON_TCOORDS[unitClass]))
             else
                 self.Portrait:SetTexCoord(0, 1, 0, 1)
             end
@@ -398,29 +412,14 @@ local function UpdateFrame(self, _, unit)
         end
     end
 
-    local texturePath = 'Interface\\TargetingFrame\\UI-TargetingFrame'
     if (unit == 'target' or unit == 'focus') then
-        if (UnitClassification(unit) == 'elite') then
-            self.Texture:SetTexture(texturePath..'-Elite')
-        elseif (UnitClassification(unit) == 'rareelite') then
-            self.Texture:SetTexture(texturePath..'-Rare-Elite')
-        elseif (UnitClassification(unit) == 'rare') then
-            self.Texture:SetTexture(texturePath..'-Rare')
-        elseif (UnitClassification(unit) == 'worldboss') then
-            self.Texture:SetTexture(texturePath..'-Elite')
-        else
-            self.Texture:SetTexture(texturePath)
-        end
+        self.Texture:SetTexture(texTable[UnitClassification(unit)] or texTable['normal'])
     end
 end
 
     -- druid power bar function 
     
 local function UpdateDruidPower(self, event, unit)
-    if (unit and unit ~= self.unit) then
-        return 
-    end
-    
     if (self.Druid) then
         local unitPower = PowerBarColor['MANA']
         local mana = UnitPowerType('player', SPELL_POWER_MANA)
@@ -475,13 +474,30 @@ local function UpdateThreat(self, event, unit)
 end
 
 local function UpdateAuraIcons(auras, button)
-    button.icon:SetTexCoord(0.03, 0.97, 0.03, 0.97)
-
+    local s1, s2 = button:GetSize()
+    
+    button:HookScript('OnEnter', function(self)
+        button.icon:SetSize(s1 + 12, s2 + 12)
+        button:SetFrameLevel(2)
+    end)
+    
+    button:HookScript('OnLeave', function(self)
+        button.icon:SetSize(s1, s2)
+        button:SetFrameLevel(1)
+    end)
+    
+    button:SetFrameLevel(1)
+    
+    button.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+    button.icon:ClearAllPoints()
+    button.icon:SetPoint('CENTER', button)
+    button.icon:SetSize(s1, s2)
+    
 	button.overlay:SetTexture(oUF_Neav.media.border)
 	button.overlay:SetTexCoord(0, 1, 0, 1)
     button.overlay:ClearAllPoints()
-    button.overlay:SetPoint('TOPRIGHT', button, 1.35, 1.35)
-    button.overlay:SetPoint('BOTTOMLEFT', button, -1.35, -1.35)
+    button.overlay:SetPoint('TOPRIGHT', button.icon, 1.35, 1.35)
+    button.overlay:SetPoint('BOTTOMLEFT', button.icon, -1.35, -1.35)
 
     button.cd:SetReverse()
     button.cd:ClearAllPoints()
@@ -509,7 +525,7 @@ local function UpdateHealth(Health, unit, min, max)
     local self = Health:GetParent()
 
     if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
-        Health.Value:SetText((UnitIsDead(unit) and 'Dead') or (UnitIsGhost(unit) and 'Ghost') or (not UnitIsConnected(unit) and 'Offline'))
+        Health.Value:SetText((UnitIsDead(unit) and 'Dead') or (UnitIsGhost(unit) and 'Ghost') or (not UnitIsConnected(unit) and PLAYER_OFFLINE))
         Health:SetStatusBarColor(0.5, 0.5, 0.5)
     else
         if (self.targetUnit) then
@@ -554,27 +570,32 @@ end
 
 local function UpdatePower(Power, unit, min, max)
     local self = Power:GetParent()
-
+    
+    local powerString
 	local _, powerType, altR, altG, altB = UnitPowerType(unit)
 	local unitPower = PowerBarColor[powerType]
-
+    local altPower = UnitPower(unit, ALTERNATE_POWER_INDEX)
+    
     if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
         Power:SetValue(0)
-        Power.Value:SetText('')
+        powerString = ''
     elseif (min == 0) then
-        Power.Value:SetText('')   
+        powerString = ''
     elseif (not UnitHasMana(unit)) then
-        Power.Value:SetText(min)
+        powerString = min
     elseif (min == max) then
-        Power.Value:SetText(FormatValue(min))
+        powerString = FormatValue(min)
     else
-        Power.Value:SetText(FormatValue(min)..'/'..FormatValue(max))
+        powerString = FormatValue(min)..'/'..FormatValue(max)
     end
 
     if (unit == 'player' and oUF_Neav.units.player.showPowerPercent or unit == 'target' and oUF_Neav.units.target.showPowerPercent or unit == 'focus' and oUF_Neav.units.focus.showPowerPercent or unit == 'pet' and oUF_Neav.units.pet.showPowerPercent) then
-        Power.Value:SetText((min/max * 100 < 100 and format('%d%%', min/max * 100)) or '')
+        powerString = (min/max * 100 < 100 and format('%d%%', min/max * 100)) or ''
     end
-
+    
+    -- Power.Value:SetText(powerString..(altPower > 0 and (' ['..altPower..']') or ''))
+    Power.Value:SetText(powerString)
+    
 	if (unitPower) then
         Power:SetStatusBarColor(unitPower.r, unitPower.g, unitPower.b)
 	else
@@ -1272,7 +1293,7 @@ local function CreateUnitLayout(self, unit)
         self.Debuffs.spacing = 4
         
         CreateUnitTabTexture(self)
-
+        
         self.TabText:SetText(FOCUS)
         self.TabMiddle:SetPoint('BOTTOM', self.NameBackground, 'TOP', 0, 1)
         self.TabMiddle:SetWidth(self.TabMiddle:GetWidth() + 8)
@@ -1357,6 +1378,16 @@ local function CreateUnitLayout(self, unit)
 	return self
 end
 
+local focusAnchor = CreateFrame('Frame', 'oUF_Neav_Focus_Anchor', UIParent)
+
+if (oUF_Neav.units.focus.makeMoveable) then
+    focusAnchor:SetSize(1, 1)
+    focusAnchor:SetPoint(unpack(oUF_Neav.units.focus.position))
+    focusAnchor:SetMovable(true)
+    focusAnchor:SetClampedToScreen(true)
+    focusAnchor:SetUserPlaced(true)
+end
+
 oUF:RegisterStyle('oUF_Neav', CreateUnitLayout)
 oUF:Factory(function(self)
     local player = self:Spawn('player', 'oUF_Neav_Player')
@@ -1364,7 +1395,7 @@ oUF:Factory(function(self)
     player:SetScale(oUF_Neav.units.player.scale)
 
     local pet = self:Spawn('pet', 'oUF_Neav_Pet')
-    pet:SetPoint('TOPLEFT', oUF_Neav_Player, 'BOTTOMLEFT', unpack(oUF_Neav.units.pet.position))
+    pet:SetPoint('TOPLEFT', player, 'BOTTOMLEFT', unpack(oUF_Neav.units.pet.position))
     pet:SetScale(oUF_Neav.units.pet.scale)
 
     local target = self:Spawn('target', 'oUF_Neav_Target')
@@ -1372,15 +1403,31 @@ oUF:Factory(function(self)
     target:SetScale(oUF_Neav.units.target.scale)
 
     local targettarget = self:Spawn('targettarget', 'oUF_Neav_TargetTarget')
-    targettarget:SetPoint('TOPLEFT', oUF_Neav_Target, 'BOTTOMRIGHT', -78, -15)
+    targettarget:SetPoint('TOPLEFT', target, 'BOTTOMRIGHT', -78, -15)
     targettarget:SetScale(oUF_Neav.units.targettarget.scale)
 
     local focus = self:Spawn('focus', 'oUF_Neav_Focus')
-    focus:SetPoint('LEFT', UIParent, 45, -50.35)
     focus:SetScale(oUF_Neav.units.focus.scale)
 
+    if (oUF_Neav.units.focus.makeMoveable) then
+        focus:SetPoint('CENTER', focusAnchor, 3, 0)
+        focus:SetClampedToScreen(true)
+        focus:RegisterForDrag('LeftButton')
+        focus:SetScript('OnDragStart', function() 
+            if (IsShiftKeyDown() and IsAltKeyDown()) then
+                focusAnchor:StartMoving()
+            end
+        end)
+
+        focus:SetScript('OnDragStop', function() 
+            focusAnchor:StopMovingOrSizing()
+        end)
+    else
+        focus:SetPoint(unpack(oUF_Neav.units.focus.position))
+    end
+    
     local focustarget = self:Spawn('focustarget', 'oUF_Neav_FocusTarget')
-    focustarget:SetPoint('TOPLEFT', oUF_Neav_Focus, 'BOTTOMRIGHT', -78, -15)
+    focustarget:SetPoint('TOPLEFT', focus, 'BOTTOMRIGHT', -78, -15)
     focustarget:SetScale(oUF_Neav.units.focustarget.scale)
 
 	if (oUF_Neav.units.party.show) then

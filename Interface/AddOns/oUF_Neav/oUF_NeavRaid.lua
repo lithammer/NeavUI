@@ -2,8 +2,6 @@
 
     !Disable raidframes if Grid or Aptechka are anabled
     
-	return
-
 	Supported Units:
         Party
         Raid
@@ -25,6 +23,9 @@
         
 --]]
 
+local _, ns = ...
+local oUF = ns.oUF or oUF
+
 if (IsAddOnLoaded('Aptechka') or IsAddOnLoaded('Grid') or not oUF_Neav.units.raid.show) then
 	return
 end
@@ -39,11 +40,10 @@ for _, frame in pairs({
 	frame:UnregisterAllEvents()
     
     hooksecurefunc(frame, 'Show', function(self)
-        -- DisableAddOn('Blizzard_CompactRaidFrames')
         self:Hide()
     end)
 end
---[[
+
 for _, button in pairs({
 	'OptionsButton',
 	'LockedModeToggle',
@@ -62,7 +62,7 @@ for _, button in pairs({
     _G['InterfaceOptions'..button]:Disable()
     _G['InterfaceOptions'..button]:EnableMouse(false)
 end
-]]
+
 
 local playerClass = select(2, UnitClass('player'))
 local isHealer = (playerClass == 'DRUID' or playerClass == 'PALADIN' or playerClass == 'PRIEST' or playerClass == 'SHAMAN')
@@ -105,11 +105,6 @@ do
             {23335, 'LEFT', {0, 0, 1}}, -- Warsong flag, Alliance 
 		},
 	}
-end
-
-local function GetSpellName(spellID)
-    local name = GetSpellInfo(spellID)
-    return name
 end
 
 local function auraIcon(self, icon)
@@ -207,176 +202,38 @@ local function CreateIndicators(self, unit)
 	end
 end
 
-local dispellPriority = {
-    ['None'] = 0,
-    ['Magic'] = 1,
-    ['Curse'] = 3,
-    ['Disease'] = 2,
-    ['Poison'] = 4,
-}
-
-local dispellFilter = {
-    ['PRIEST'] = {
-        ['Magic'] = true,
-        ['Disease'] = true,
-    },
-    ['SHAMAN'] = {
-        ['Curse'] = true,
-        ['Magic'] = true,
-    },
-    ['PALADIN'] = {
-        ['Poison'] = true,
-		['Magic'] = true,
-        ['Disease'] = true,
-    },
-    ['MAGE'] = {
-        ['Curse'] = true,
-    },
-    ['DRUID'] = {
-        ['Curse'] = true,
-        ['Poison'] = true,
-		['Magic'] = true,
-    },
-    ['DEATHKNIGHT'] = {},
-    ['HUNTER'] = {},
-    ['ROGUE'] = {},
-    ['WARLOCK'] = {},
-    ['WARRIOR'] = {},
-}
-
-local dispellClass = {}
-if (dispellFilter[playerClass]) then
-    for k, v in pairs(dispellFilter[playerClass]) do
-        dispellClass[k] = v
-    end
-    dispellFilter = nil
-end
-
-local debuffList = setmetatable({
-	-- PvP
-    [GetSpellName(5782)] = 3, -- Fear
-    [GetSpellName(30108)] = 2, -- Unstable Affliction
-	
-	-- PvE
-    
-	-- Naxxramas
-	[GetSpellName(27808)] = 9, -- Frost Blast, Kel'Thuzad
-	
-	-- Ulduar
-	[GetSpellName(62717)] = 9, -- Slag Pot, Ignis
-    
-	-- ToC
-    [GetSpellName(66869)] = 8, -- Burning Bile
-    [GetSpellName(66823)] = 10, -- Paralizing Toxin
-	[GetSpellName(67049)] = 9, -- Incinerate Flesh
-    
-	-- ICC
-    [GetSpellName(69057)] = 9, -- Bone Spike Graveyard
-    [GetSpellName(72448)] = 9, -- Rune of Blood
-    [GetSpellName(72293)] = 10, -- Mark of the Fallen Champion, Deathbringer Saurfang
-	
-    [GetSpellName(71224)] = 9, -- Mutated Infection, Rotface
-    [GetSpellName(72272)] = 9, -- Vile Gas, Festergut
-    [GetSpellName(69279)] = 8, -- Gas Spore, Festergut
-	
-	[GetSpellName(70126)] = 9, -- Frost Beacon, Sindragosa
-	
-	[GetSpellName(70337)] = 9, -- Necrotic Plague, Lich King
-	[GetSpellName(70541)] = 6, -- Infest, Lich King
-	[GetSpellName(72754)] = 8, -- Defile, Lich King
-	[GetSpellName(68980)] = 10, -- Harvest Soul, Lich King
-
-	-- Suby Sanctum
-	[GetSpellName(74562)] = 8, -- Fiery Combustion, Halion
-	[GetSpellName(74792)] = 8, -- Soul Consumption, Halion
-
-	-- Blackwing Descent
-	[GetSpellName(91911)] = 8, -- Constricting Chains, Magmaw
-	[GetSpellName(94617)] = 10, -- Mangle, Magmaw
-	[GetSpellName(79505)] = 8, -- Aquiring target/flamethrower, Omnotron Defense System
-	[GetSpellName(77699)] = 8, -- Flash Freeze, Maloriak
-	[GetSpellName(89084)] = 8, -- Low Health, Chimaeron
-	[GetSpellName(92956)] = 8, -- Wrack, Sinestra
-
-	-- The Bastion of Twilight
-	[GetSpellName(81836)] = 8, -- Corruption: Accelerated, Cho'gall
-
-	-- Throne of the Four Winds
-
-},{ __index = function() 
-    return 0 
-end})
-
-    -- ----------------------------------------------------------------
-    -- Copyright (c) 2009, Chris Bannister (oUF_Grid - zariel)
-    -- All rights reserved.
-    -- Start
-    -- ----------------------------------------------------------------
-    
-local function UpdateAura(self, event, unit)
-	if (self.unit ~= unit) then 
+local function UpdateMainTankIcon(self, _, unit)
+	if (self.unit ~= unit) then
         return
     end
     
-    local cur, tex, dis, co
-    local debuffs = debuffList
-    
-	for i = 1, 40 do
-		local name, _, buffTexture, count, dtype = UnitAura(unit, i, 'HARMFUL')
-		if (not name) then 
-            break 
+    if (UnitExists(self.unit) and UnitInRaid(self.unit) and not UnitHasVehicleUI(self.unit)) then
+        local isMainTank = GetPartyAssignment('MAINTANK', self.unit)
+        if (isMainTank) then
+            self.MainTankIcon:Show()
+        else
+            self.MainTankIcon:Hide()
         end
+    else
+        self.MainTankIcon:Hide()
+    end
+end
 
-		if (not cur or (debuffs[name] >= debuffs[cur])) then
-			if (debuffs[name] > 0 and debuffs[name] > debuffs[cur or 1]) then
-				cur = name
-				tex = buffTexture
-				dis = dtype or 'none'
-                co = count
-			elseif (dtype and dtype ~= 'none') then
-				if (not dis or (dispellPriority[dtype] > dispellPriority[dis])) then
-					tex = buffTexture
-					dis = dtype
-                    co = count
-				end
-			end	
-		end
-	end
-
-	if (dis) then
-		if (dispellClass[dis] or cur) then
-            self.Icon:Show()
-            self.Icon.Icon:SetTexture(tex)
-            self.Icon.Count:SetText(co > 0 and co or '')
-            
-            local col = DebuffTypeColor[dis]
-            self.Icon.Border:SetVertexColor(col.r, col.g, col.b)
-
-            -- self.Health.Value:Hide()
-            self.Name:Hide()
-
-            self.Dispell = true
-		elseif (self.Dispell) then
-            self.Icon:Hide()
-
-            -- self.Health.Value:Show()
-            self.Name:Show()
-
-            self.Dispell = false
-		end
+local function UpdateRessurectStatus(self)
+	if (UnitHasIncomingResurrection(self.unit)) then
+		self.RessurectText:Show()
 	else
-        self.Icon:Hide()
-
-       --  self.Health.Value:Show()
-        self.Name:Show()
+		self.RessurectText:Hide()
 	end
 end
 
-    -- ----------------------------------------------------------------
-    -- Copyright (c) 2009, Chris Bannister (oUF_Grid - zariel)
-    -- All rights reserved.
-    -- End
-    -- ----------------------------------------------------------------
+local function UpdateTargetBorder(self)
+	if (UnitIsUnit('target', self.unit)) then
+		self.TargetBorder:Show()
+	else
+		self.TargetBorder:Hide()
+	end
+end
 
 local function UpdateThreat(self, _, unit)
 	if (self.unit ~= unit) then
@@ -404,43 +261,61 @@ local function UpdateThreat(self, _, unit)
     end
 end
 
+local function DeficitValue(self)
+    if (self >= 1000) then
+		return format('-%.1f', self/1000)
+	else
+		return self
+	end
+end
+
+local function GetHealthValue(unit)
+    local max = UnitHealthMax(unit)
+    local min = UnitHealth(unit)
+
+    if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
+        return format('|cff%02x%02x%02x%s|r', 0.5*255, 0.5*255, 0.5*255, (UnitIsDead(unit) and 'Dead') or (UnitIsGhost(unit) and 'Ghost') or (not UnitIsConnected(unit) and PLAYER_OFFLINE))
+    else
+        if ((min/max * 100) < 90) then
+            return format('|cff%02x%02x%02x%s|r', 0.9*255, 0*255, 0*255, DeficitValue(max-min))
+        else
+            return ''
+        end
+    end
+end
+
 local function UpdateHealth(Health, unit)
 	if (Health:GetParent().unit ~= unit) then
         return
     end
     
-    if (UnitIsDead(unit) or UnitIsGhost(unit) or not UnitIsConnected(unit)) then
+    --[[
+    if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
         Health:SetStatusBarColor(0.5, 0.5, 0.5)
     else
         local color = RAID_CLASS_COLORS[select(2, UnitClass(unit))]
-        if (color) then
+        if (color and UnitIsPlayer(unit)) then
             Health:SetStatusBarColor(color.r, color.g, color.b)
             Health.Background:SetVertexColor(color.r*0.25, color.g*0.25, color.b*0.25)
+        else
+            Health:SetStatusBarColor(1, 0.82, 0.6)
+            Health.Background:SetVertexColor(1*0.25, 0.82*0.25, 0.6*0.25)
         end
     end
-end
-
-local function UpdateRessurectStatus(self)
-	if (UnitHasIncomingResurrection(self.unit)) then
-		self.RessurectText:Show()
-	else
-		self.RessurectText:Hide()
-	end
-end
-
-local function UpdateTargetBorder(self)
-	if (UnitIsUnit('target', self.unit)) then
-		self.TargetBorder:Show()
-	else
-		self.TargetBorder:Hide()
-	end
+    --]]
+    
+    if (not UnitIsPlayer(unit)) then
+        Health:SetStatusBarColor(1, 0.82, 0.6)
+        Health.Background:SetVertexColor(1*0.25, 0.82*0.25, 0.6*0.25)
+    end
+    
+    Health.Value:SetText(GetHealthValue(unit))
 end
 
 local function UpdateHealPredictionSize(self)
     if (self.HealPrediction) then
         self.HealPrediction.myBar:SetWidth(self.Health:GetWidth())
         self.HealPrediction.myBar:SetHeight(self.Health:GetHeight())
-        
         self.HealPrediction.otherBar:SetWidth(self.Health:GetWidth())
         self.HealPrediction.otherBar:SetHeight(self.Health:GetHeight())
     end
@@ -456,10 +331,10 @@ local function UpdatePower(self, _, unit)
     
     self.Health:ClearAllPoints()
     
-	if (powerToken == 'MANA') then
+	if (powerToken == 'MANA' and not UnitIsDeadOrGhost(unit) and UnitIsConnected(unit)) then
         if (unitPower) then
             self.Power:SetStatusBarColor(unitPower.r, unitPower.g, unitPower.b)
-            self.Power.Background:SetVertexColor(unitPower.r*0.3, unitPower.g*0.3, unitPower.b*0.3)
+            self.Power.Background:SetVertexColor(unitPower.r * 0.3, unitPower.g * 0.3, unitPower.b * 0.3)
         end
         
         if (oUF_Neav.units.raid.manabar.horizontalOrientation) then
@@ -502,16 +377,17 @@ local function CreateRaidLayout(self, unit)
     self.Health.PostUpdate = UpdateHealth
 	self.Health.frequentUpdates = true
     self.Health.colorClass = true
-
+        
 	if (not isHealer or oUF_Neav.units.raid.smoothUpdatesForAllClasses) then
 		self.Health.Smooth = true
 	end
 
         -- health background
 
-    self.Health.Background = self.Health:CreateTexture(nil, 'BORDER')
-    self.Health.Background:SetAllPoints(self.Health)
-    self.Health.Background:SetTexture(oUF_Neav.media.statusbar)
+    self.Health.bg = self.Health:CreateTexture(nil, 'BORDER')
+    self.Health.bg:SetAllPoints(self.Health)
+    self.Health.bg:SetTexture(oUF_Neav.media.statusbar)
+    self.Health.bg.multiplier = 0.3
     
         -- mouseover darklight
         
@@ -527,7 +403,7 @@ local function CreateRaidLayout(self, unit)
     self.Health.Value:SetPoint('TOP', self.Health, 'CENTER', 0, 2)
     self.Health.Value:SetFont(oUF_Neav.media.font, 11)
     self.Health.Value:SetShadowOffset(1, -1)
-    self:Tag(self.Health.Value, '[health:Raid]')
+    -- self:Tag(self.Health.Value, '[health:Raid]')
 
         -- name text
 
@@ -558,7 +434,7 @@ local function CreateRaidLayout(self, unit)
             self.Power:SetWidth(2.5)
         end
         
-		self.Power.colorPower = true
+		-- self.Power.colorPower = true
 		self.Power.Smooth = true
     
 		self.Power.Background = self.Power:CreateTexture(nil, 'ARTWORK')
@@ -575,7 +451,7 @@ local function CreateRaidLayout(self, unit)
 	
 	local myBar = CreateFrame('StatusBar', nil, self.Health)
 	myBar:SetStatusBarTexture(oUF_Neav.media.statusbar)
-	myBar:SetStatusBarColor(0, 1, 0.5, 0.25)
+	myBar:SetStatusBarColor(0, 1, 0.5, 0.45)
 	if (oUF_Neav.units.raid.horizontalHealthBars) then
 		myBar:SetOrientation('HORIZONTAL')
 		myBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT', 0, 0)
@@ -631,6 +507,20 @@ local function CreateRaidLayout(self, unit)
     self.MasterLooter = self.Health:CreateTexture('$parentMasterLooterIcon', 'OVERLAY', self)
     self.MasterLooter:SetSize(11, 11)
     self.MasterLooter:SetPoint('RIGHT', self.Health, 'TOPRIGHT', -1, 1)
+    
+        -- main tank icon
+    
+    if (oUF_Neav.units.raid.showMainTankIcon) then
+        self.MainTankIcon = self.Health:CreateTexture(nil, 'OVERLAY')
+        self.MainTankIcon:SetSize(12, 11)
+        self.MainTankIcon:SetPoint('CENTER', self, 'TOP', 0, 1)
+        self.MainTankIcon:SetTexture('Interface\\GROUPFRAME\\UI-GROUP-MAINTANKICON')
+        
+        table.insert(self.__elements, UpdateMainTankIcon)
+        self:RegisterEvent('PLAYER_ENTERING_WORLD', UpdateMainTankIcon)
+        self:RegisterEvent('PARTY_MEMBERS_CHANGED', UpdateMainTankIcon)
+        self:RegisterEvent('RAID_ROSTER_UPDATE', UpdateMainTankIcon)
+    end
 
         -- leader icons
 
@@ -652,36 +542,13 @@ local function CreateRaidLayout(self, unit)
     self.ReadyCheck.delayTime = 4
 	self.ReadyCheck.fadeTime = 1
 
-        -- debuff icons
-
-    self.Icon = CreateFrame('Frame')
-    self.Icon:SetParent(self)
-    self.Icon:SetFrameStrata('MEDIUM')
+        -- debuff icons, using freebAuras from oUF_Freebgrid
+        
+    self.freebAuras = CreateFrame('Frame', nil, self)
+    self.freebAuras:SetSize(24, 24)
+    self.freebAuras:SetPoint('CENTER', self.Health)
+    self.freebAuras.size = 24
     
-	self.Icon.Icon = self.Icon:CreateTexture(nil, 'ARTWORK', self.Icon)
-	self.Icon.Icon:SetPoint('CENTER', self.Health)
-	self.Icon.Icon:SetHeight(oUF_Neav.units.raid.iconSize)
-	self.Icon.Icon:SetWidth(oUF_Neav.units.raid.iconSize)
-	self.Icon.Icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
-
-    self.Icon.Count = self.Icon:CreateFontString(nil, 'OVERLAY', self.Icon)
-    self.Icon.Count:SetPoint('BOTTOMRIGHT', self.Icon.Icon, 1, 0)
-    self.Icon.Count:SetFont(oUF_Neav.media.font, 14, 'OUTLINE')
-    self.Icon.Count:SetShadowColor(0, 0, 0, 0)
-    self.Icon.Count:SetTextColor(1, 1, 1)
-
-	self.Icon.Border = self.Icon:CreateTexture(nil, 'BORDER', self.Icon)
-	self.Icon.Border:SetPoint('CENTER', self.Health)
-	self.Icon.Border:SetHeight(oUF_Neav.units.raid.iconSize + 7)
-	self.Icon.Border:SetWidth(oUF_Neav.units.raid.iconSize + 7)
-	self.Icon.Border:SetTexture('Interface\\Addons\\oUF_Neav\\media\\borderIcon')
-	self.Icon.Border:SetVertexColor(1, 1, 1)
-            
-    table.insert(self.__elements, UpdateAura)
-    self:RegisterEvent('PLAYER_ENTERING_WORLD', UpdateAura)
-    self:RegisterEvent('UNIT_AURA', UpdateAura)
-    self:RegisterEvent('UNIT_DEAD', UpdateAura)
-
         -- create indicators
         
 	CreateIndicators(self, unit)

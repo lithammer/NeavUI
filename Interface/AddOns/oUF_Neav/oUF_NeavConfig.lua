@@ -85,6 +85,7 @@ oUF_Neav = {
         
         focus = {
             mouseoverText = false,
+            makeMoveable = true,
             
             scale = 1.193,
             
@@ -99,6 +100,8 @@ oUF_Neav = {
                         
             enableFocusToggleKeybind = true,
             focusToggleKey = 'type4', -- type1, type2 (mousebutton 1 or 2, 3, 4, 5 etc. works too)
+            
+            position = {'CENTER', UIParent, 0, 200}, -- if makeMoveable is enabled: this is just necessary for the first login/ui reload after you changed makeMoveable
         },
         
         focustarget = {
@@ -120,7 +123,9 @@ oUF_Neav = {
         raid = {
             show = true,    
             showSolo = true,
-        
+            
+            nameLength = 4,
+            
             width = 42,
             height = 40,
             scale = 1.1, 
@@ -137,6 +142,7 @@ oUF_Neav = {
             showThreatText = false,
             showRolePrefix = false,
             showRessurectText = true, -- 4.2 only
+            showMainTankIcon = true,
             
             showTargetBorder = true,
             targetBorderColor = {1, 1, 1},
@@ -145,7 +151,7 @@ oUF_Neav = {
             
             indicatorSize = 7,
             horizontalHealthBars = false,
-
+            
             manabar = {
                 show = true,
                 horizontalOrientation = false,
