@@ -88,9 +88,10 @@ end
     -- add a copychat-option to the dropdown menu of our chattabs
     
 local info = {
-	text = '|cffff00ffCopyChat|r',
+	text = 'ChatCopy',
+    colorCode = '|cffffffff',
 	func = copyChat,
-	notCheckable = 1	
+    notCheckable = true,
 }
 
 local origFCF_Tab_OnClick = _G.FCF_Tab_OnClick

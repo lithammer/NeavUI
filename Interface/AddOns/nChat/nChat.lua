@@ -1,9 +1,5 @@
-   
-    -- import globals for faster usage
-   
-local _G = _G
-local type = type
-local select = select
+
+local _G, type, select = _G, type, select
 local unpack = unpack
 local gsub = string.gsub
 
@@ -152,9 +148,9 @@ local function FCF_FadeOutChatFrameHook(chatFrame)
     
     if (not tabGlow:IsShown()) then
         if (frameName.isDocked) then
-            UIFrameFadeOut(chatTab, CHAT_FRAME_FADE_OUT_TIME, chatTab:GetAlpha(), CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA)
+            securecall('UIFrameFadeOut', chatTab, CHAT_FRAME_FADE_OUT_TIME, chatTab:GetAlpha(), CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA)
         else
-            UIFrameFadeOut(chatTab, CHAT_FRAME_FADE_OUT_TIME, chatTab:GetAlpha(), CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA)
+            securecall('UIFrameFadeOut', chatTab, CHAT_FRAME_FADE_OUT_TIME, chatTab:GetAlpha(), CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA)
         end
     end
 end
@@ -312,7 +308,7 @@ end
 
 local function ModChat(self)
     local chat = _G[self]
-    
+
 	if (not nChat.chatOutline) then
 		chat:SetShadowOffset(1, -1)
 	end
@@ -498,32 +494,51 @@ f:SetScript('OnEvent', function(_, event)
 end)
 
 local combatLog = {
-	text = '|cffffff00CombatLog|r',
+	text = 'CombatLog',
+    colorCode = '|cffFFD100',
+    isNotRadio = true,
+    
 	func = function() 
         if (not LoggingCombat()) then
-            LoggingCombat(flase) 
+            LoggingCombat(true) 
             DEFAULT_CHAT_FRAME:AddMessage(COMBATLOGENABLED, 1, 1, 0)
         else
-            LoggingCombat(flase)
+            LoggingCombat(false)
             DEFAULT_CHAT_FRAME:AddMessage(COMBATLOGDISABLED, 1, 1, 0)
         end
     end,
-	notCheckable = 1	
+
+    checked = function()
+        if (LoggingCombat()) then
+            return true
+        else
+            return false
+        end
+    end
 }
 
 local chatLog = {
-	text = '|cff00aaffChatLog|r',
+	text = 'ChatLog',
+    colorCode = '|cffFFD100',
+    isNotRadio = true,
+    
 	func = function() 
         if (not LoggingChat()) then
             LoggingChat(true) 
-            print(COMBATLOGENABLED)
-            DEFAULT_CHAT_FRAME:AddMessage(CHATLOGDISABLED, 1, 1, 0)
-        else
-            LoggingChat(flase)
             DEFAULT_CHAT_FRAME:AddMessage(CHATLOGENABLED, 1, 1, 0)
+        else
+            LoggingChat(false)
+            DEFAULT_CHAT_FRAME:AddMessage(CHATLOGDISABLED, 1, 1, 0)
         end
     end,
-	notCheckable = 1	
+    
+    checked = function()
+        if (LoggingChat()) then
+            return true
+        else
+            return false
+        end
+    end
 }
 
 local origFCF_Tab_OnClick = _G.FCF_Tab_OnClick
