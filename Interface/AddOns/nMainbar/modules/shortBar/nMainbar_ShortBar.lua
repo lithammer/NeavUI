@@ -74,7 +74,7 @@ end
 
 	-- remove divider
 
-for i = 10, 19 do
+for i = 1, 19, 2 do
     for _, object in pairs({
         _G['MainMenuXPBarDiv'..i],
     }) do
@@ -85,6 +85,8 @@ for i = 10, 19 do
         object:Hide()
     end
 end
+
+securecall('MainMenuExpBar_SetWidth', 512)
 
     -- reduce the size of some main menu bar objects
     
@@ -103,7 +105,7 @@ end
 	
 MainMenuExpBar:HookScript('OnSizeChanged', function(self, width, height)
 	if (math.floor(width) == EXP_DEFAULT_WIDTH) then
-        MainMenuExpBar_SetWidth(512)
+		securecall('MainMenuExpBar_SetWidth', 512)
 		CharacterMicroButton:ClearAllPoints()
 		CharacterMicroButton:SetPoint('BOTTOMLEFT', UIParent, 9000, 9000)
 	end
