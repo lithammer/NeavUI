@@ -10,7 +10,7 @@ local _, class = UnitClass('player')
 
 local f = CreateFrame('Frame', nil, Minimap)
 f:SetFrameStrata('BACKGROUND')
-f:SetFrameLevel(Minimap:GetFrameLevel()-1)
+f:SetFrameLevel(Minimap:GetFrameLevel() - 1)
 f:SetHeight(30)
 f:SetAlpha(nMinimap.drawerNoMouseoverAlpha)
 f:CreateBorder(11)
@@ -19,10 +19,9 @@ f:SetBackdropColor(0, 0, 0, 0.6)
 
     -- guild info frame
     
-f.Guild = CreateFrame('Frame', nil, UIParent)
+f.Guild = CreateFrame('Frame', nil, f)
 f.Guild:EnableMouse(true)
 f.Guild:SetFrameLevel(3)
-f.Guild:SetParent(f)
 f.Guild:SetAlpha(0)
 
 f.Guild:RegisterEvent('MODIFIER_STATE_CHANGED')
@@ -42,11 +41,10 @@ f.Guild.Text:SetTextColor(RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g
 
     -- friend info frame
     
-f.Friends = CreateFrame('Frame', nil, UIParent)
+f.Friends = CreateFrame('Frame', nil, f)
 f.Friends:EnableMouse(true)
 f.Friends:SetFrameStrata('BACKGROUND')
 f.Friends:SetFrameLevel(3)
-f.Friends:SetParent(f)
 f.Friends:SetAlpha(0)
 
 f.Friends:RegisterEvent('BN_FRIEND_ACCOUNT_ONLINE')
@@ -60,6 +58,10 @@ f.Friends:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 f.Friends.Text = f.Friends:CreateFontString(nil, 'OVERLAY')
 f.Friends.Text:SetFont('Fonts\\ARIALN.ttf', 12)
+f.Friends.Text:SetShadowColor(0, 0, 0)
+f.Friends.Text:SetShadowOffset(1, -1)
+f.Friends:SetAllPoints(f.Friends.Text)
+f.Friends.Text:SetTextColor(RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b )
 
 if (nMinimap.positionDrawerBelow) then
     f.Guild.Text:SetPoint('TOPLEFT', Minimap, 'BOTTOMLEFT', 18, -3)
@@ -68,11 +70,6 @@ else
     f.Guild.Text:SetPoint('BOTTOMLEFT', Minimap, 'TOPLEFT', 18, 3)
 	f.Friends.Text:SetPoint('BOTTOMRIGHT', Minimap, 'TOPRIGHT', -18, 3)
 end
-
-f.Friends.Text:SetShadowColor(0, 0, 0)
-f.Friends.Text:SetShadowOffset(1, -1)
-f.Friends:SetAllPoints(f.Friends.Text)
-f.Friends.Text:SetTextColor(RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b )
 
     -- fade fade functions
     
@@ -284,7 +281,7 @@ local function GuildTip(self)
     
     GameTooltip:AddLine(' ')
         
-    GameTooltip:AddLine('Online')
+    GameTooltip:AddLine(GUILD_ONLINE_LABEL)
     GameTooltip:AddLine(format('|cffffffff%d/%d|r', online, #guildTable))
     
 	if (online > 1) then
@@ -399,7 +396,6 @@ f.Guild:SetScript('OnMouseDown', function(self, button)
                             InviteUnit(arg1)
                         end
                     }
-                    
                 end
                 
                 menuCountWhispers = menuCountWhispers + 1
@@ -681,7 +677,7 @@ f.Friends:SetScript('OnEvent', function(self, event)
 		end
 	end
     
-    f.Friends.Text:SetFormattedText(format('%s |cffffffff%d|r', 'Friends', totalFriendsOnline + totalBattleNetOnline))
+    f.Friends.Text:SetFormattedText(format('%s.. |cffffffff%d|r', FRIENDS:sub(1, 5), totalFriendsOnline + totalBattleNetOnline))
 end)
 
 f.Friends:HookScript('OnEnter', function(self)
@@ -691,11 +687,10 @@ f.Friends:HookScript('OnEnter', function(self)
 	local totalfriends = #friendTable + #BNTable
 	local zonec, classc, levelc, realmc, grouped
 
-    
 	if (totalFriendsOnline > 0) then
 		GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMLEFT')
 		GameTooltip:ClearLines()
-		GameTooltip:AddLine(format('Online: %s/%s', totalFriendsOnline, totalfriends))
+		GameTooltip:AddLine(FRIENDS_LIST_ONLINE..format(': %s/%s', totalFriendsOnline, totalfriends))
         
 		if (totalFriendsOnline > 0) then
 			GameTooltip:AddLine(' ')

@@ -50,107 +50,119 @@ local function ColorGradient(perc, ...)
 	return r1 + (r2-r1)*relperc, g1 + (g2-g1)*relperc, b1 + (b2-b1)*relperc
 end
 
-    -- function for creating the dropdown menu
-    
-local function CreateDropDown()
-    local button = {}
-    
-    for i = 1, 12 do
-        button[i] = {}
-        button[i].notCheckable = true
-    end
-    
-    button[1].text = CHARACTER_BUTTON
-    button[1].func = function() 
-        ToggleCharacter('PaperDollFrame') 
-    end
-    
-    UIDropDownMenu_AddButton(button[1])
-    
-    button[2].text = SPELLBOOK_ABILITIES_BUTTON
-    button[2].func = function() 
-        ToggleFrame(SpellBookFrame) 
-    end
-    
-    UIDropDownMenu_AddButton(button[2])
-    
-    button[3].text = TALENTS_BUTTON
-    button[3].func = function() 
-        ToggleTalentFrame() 
-    end
-    
-    UIDropDownMenu_AddButton(button[3])
-    
-    button[4].text = ACHIEVEMENT_BUTTON
-    button[4].func = function() 
-        ToggleAchievementFrame() 
-    end  
-    
-    UIDropDownMenu_AddButton(button[4])
+local function RGBGradient(num)
+    local r, g, b = ColorGradient(num, unpack(gradientColor))
+    return r, g, b
+end
 
-    button[5].text = GetCalendarName()
-    button[5].func = function() 
-        ToggleCalendar() 
-    end
-    
-    UIDropDownMenu_AddButton(button[5])
-    
-    button[6].text = QUESTLOG_BUTTON
-    button[6].func = function() 
-        ToggleFrame(QuestLogFrame) 
-    end
-    
-    UIDropDownMenu_AddButton(button[6])
-    
-    button[7].text = SOCIAL_BUTTON
-    button[7].func = function() 
-        ToggleFriendsFrame() 
-    end
-    
-    UIDropDownMenu_AddButton(button[7])
+    -- creating the dropdown menu, using the EasyMenu function
 
-    if (IsInGuild('player')) then
-        button[8].text = GUILD..(IsInGuild('player') and (': |cff00aaff'.. GetGuildInfo('player')..'|r') or '')
-        button[8].func = function() 
+local menuFrame = CreateFrame('Frame', 'MinMapCuDropDownMenu', UIParent, 'UIDropDownMenuTemplate')
+local menuList = {
+    {
+        text = OPTIONS_MENU,
+        isTitle = true,
+        notCheckable = true,
+    },
+    {
+        text = CHARACTER_BUTTON,
+        func = function() 
+            securecall(ToggleCharacter, 'PaperDollFrame') 
+        end,
+        notCheckable = true,
+    },
+    {
+        text = TALENTS_BUTTON,
+        -- icon = 'Interface\\GossipFrame\\\BattleMasterGossipIcon',
+        func = function() 
+            securecall(ToggleTalentFrame) 
+        end,
+        notCheckable = true,
+    },
+    {
+        text = ACHIEVEMENT_BUTTON,
+        func = function() 
+            securecall(ToggleAchievementFrame) 
+        end,
+        notCheckable = true,
+    },
+    --[[
+    {
+        text = GetCalendarName(),
+        func = function() 
+            securecall(ToggleCalendar) 
+        end,
+        notCheckable = true,
+    },
+    --]]
+    {
+        text = QUESTLOG_BUTTON,
+        -- icon = 'Interface\\GossipFrame\\\ActiveQuestIcon',
+        func = function() 
+            securecall(ToggleFrame, QuestLogFrame) 
+        end,
+        notCheckable = true,
+    },
+    {
+        text = SOCIAL_BUTTON,
+        -- icon = 'Interface\\\FriendsFrame\\\UI-Toast-FriendOnlineIcon',
+        func = function() 
+            securecall(ToggleFriendsFrame) 
+        end,
+        notCheckable = true,
+    },
+    {
+        text = GUILD,
+        -- icon = 'Interface\\GossipFrame\\\TabardGossipIcon',
+        arg1 = IsInGuild('player'),
+        func = function() 
             if (IsInGuild('player')) then
-                ToggleGuildFrame() 
+                securecall(ToggleGuildFrame)
             else
                 return
             end
-        end
-
-        UIDropDownMenu_AddButton(button[8])
-    end
-    
-    button[9].text = PLAYER_V_PLAYER
-    button[9].func = function() 
-        ToggleFrame(PVPFrame) 
-    end
-    
-    UIDropDownMenu_AddButton(button[9])
-    
-
-    button[10].text = DUNGEONS_BUTTON
-    button[10].func = function() 
-        ToggleLFDParentFrame() 
-    end
-    
-    UIDropDownMenu_AddButton(button[10])
-    
-    button[11].text = GM_EMAIL_NAME
-    button[11].func = function() 
-        ToggleHelpFrame() 
-    end
-    
-    UIDropDownMenu_AddButton(button[11])
-    
-    button[12].text = '|cff999999'..BATTLEFIELD_MINIMAP..'|r'
-    button[12].func = function() 
-        ToggleBattlefieldMinimap()
-    end
-    
-    UIDropDownMenu_AddButton(button[12])
-end 
+        end,
+        notCheckable = true,
+    },
+    {
+        text = PLAYER_V_PLAYER,
+        func = function() 
+            securecall(ToggleFrame, PVPFrame) 
+        end,
+        notCheckable = true,
+    },
+    {
+        text = DUNGEONS_BUTTON,
+        func = function() 
+            securecall(ToggleLFDParentFrame)
+        end,
+        notCheckable = true,
+    },
+    {
+        text = GM_EMAIL_NAME,
+        -- notCheckable = true,
+        func = function() 
+            securecall(ToggleHelpFrame) 
+        end,
+        notCheckable = true,
+    },
+    {
+        text = SOCIAL_BUTTON,
+        -- notCheckable = 1,
+        func = function() 
+            securecall(ToggleFriendsFrame) 
+        end,
+        notCheckable = true,
+    },
+    {
+        text = BATTLEFIELD_MINIMAP,
+        colorCode = '|cff999999',
+        func = function() 
+            securecall(ToggleBattlefieldMinimap) 
+        end,
+        notCheckable = true,
+    }
+}
 
 local classColor = RAID_CLASS_COLORS[select(2, UnitClass('player'))]
 
@@ -218,23 +230,25 @@ local function ShowTip()
     
     GameTooltip:AddLine(' ')
 
-    local _, _, lagHome, lagWorld = GetNetStats();
-    local r, g, b = ColorGradient((select(3, GetNetStats()) / 100), unpack(gradientColor))
-    GameTooltip:AddLine('|cffffffffHome:|r '..format('%d ms', lagHome), r, g, b)
-    GameTooltip:AddLine('|cffffffff'..CHANNEL_CATEGORY_WORLD..':|r '..format('%d ms', lagWorld), r, g, b)
+    local _, _, lagHome, lagWorld = GetNetStats()
+    GameTooltip:AddLine('|cffffffffHome:|r '..format('%d ms', lagHome), RGBGradient(select(3, GetNetStats()) / 100))
+    GameTooltip:AddLine('|cffffffff'..CHANNEL_CATEGORY_WORLD..':|r '..format('%d ms', lagWorld), RGBGradient(select(4, GetNetStats()) / 100))
     
     GameTooltip:AddLine(' ')
-           
+
     for _, table in pairs(addonTable) do
-        local r, g, b = ColorGradient((table.memory / 800), unpack(gradientColor))
-        GameTooltip:AddDoubleLine(table.name, FormatValue(table.memory), 1, 1, 1, r, g, b)
+        GameTooltip:AddDoubleLine(table.name, FormatValue(table.memory), 1, 1, 1, RGBGradient(table.memory / 800))
     end
 
     GameTooltip:AddLine(' ')
     
-    local r, g, b = ColorGradient((total / (1024*10)), unpack(gradientColor)) 
-    GameTooltip:AddDoubleLine('Total', FormatValue(total), nil, nil, nil, r, g, b)
+    GameTooltip:AddDoubleLine('Total', FormatValue(total), nil, nil, nil, RGBGradient(total / (1024*10)))
     
+    if (SHOW_NEWBIE_TIPS == '1') then
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddLine(NEWBIE_TOOLTIP_MEMORY, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1)
+    end
+
     GameTooltip:Show()
 end
 
@@ -250,27 +264,30 @@ f:SetScript('OnEvent', function()
         if (TimeManagerClockButton:IsMouseOver() and not DropDownList1:IsShown()) then
             GameTooltip:Hide()
             ShowTip()
-        end   
+        end
     end
 end)
 
-TimeManagerClockButton:SetScript('OnEnter', function(self)
+TimeManagerClockButton:SetScript('OnEnter', function()
     ShowTip()
 end)
 
 TimeManagerClockButton:SetScript('OnClick', function(self, button)
     if (button == 'LeftButton') then
-        ToggleDropDownMenu(1, nil, TimeManagerClockDropDown, self, -0, -0)
-        GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMLEFT')
+        if (DropDownList1:IsShown()) then
+            DropDownList1:Hide()
+        else
+            securecall(EasyMenu, menuList, menuFrame, self, 0, 0, 'MENU', 2)
+            GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMLEFT')
+        end
     else
         if (self.alarmFiring) then
             TimeManager_TurnOffAlarm()
         end
+        
+        DropDownList1:Hide()
         ToggleTimeManager()
     end
     
     GameTooltip:Hide()
 end)
-
-TimeManagerClockDropDown = CreateFrame('Frame', '$parentGameMenuDropDown', nil, 'UIDropDownMenuTemplate')
-UIDropDownMenu_Initialize(TimeManagerClockDropDown, CreateDropDown, 'MENU')
