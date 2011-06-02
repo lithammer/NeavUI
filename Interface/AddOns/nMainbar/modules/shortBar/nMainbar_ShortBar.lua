@@ -99,22 +99,27 @@ for i = 1, 19, 2 do
     end
 end
 
-	-- re-position the dividers
-
-local divWidth = MainMenuExpBar:GetWidth() / 10
-local xpos = divWidth - 4.5
-for i = 2, 19, 2 do
-	local texture = _G['MainMenuXPBarDiv'..i]
-	local xalign = floor(xpos)
-	texture:SetPoint('LEFT', xalign, 1)
-	xpos = xpos + divWidth
+local function UpdateDividers()
+    local divWidth = MainMenuExpBar:GetWidth() / 10
+    local xpos = divWidth - 4.5
+    for i = 2, 19, 2 do
+        local texture = _G["MainMenuXPBarDiv"..i]
+        local xalign = floor(xpos)
+        texture:SetPoint("LEFT", xalign, 1)
+        xpos = xpos + divWidth
+    end
 end
+
+hooksecurefunc(_G['MainMenuXPBarDiv2'], 'Show', function(self)
+    UpdateDividers()
+end)
+_G['MainMenuXPBarDiv2']:Show()
 
 	-- fix the exp bar size when exiting vehicle
 	
 MainMenuExpBar:HookScript('OnSizeChanged', function(self, width, height)
 	if (math.floor(width) == EXP_DEFAULT_WIDTH) then
-		securecall('MainMenuExpBar_SetWidth', 512)
+        securecall(MainMenuExpBar_SetWidth, 512)
 		CharacterMicroButton:ClearAllPoints()
 		CharacterMicroButton:SetPoint('BOTTOMLEFT', UIParent, 9000, 9000)
 	end
