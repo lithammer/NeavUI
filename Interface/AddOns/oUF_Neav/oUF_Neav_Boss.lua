@@ -88,7 +88,7 @@ local function CreateBossLayout(self, unit)
         -- healthbar
 
     self.Health = CreateFrame('StatusBar', nil, self)
-	self.Health:SetStatusBarTexture(oUF_Neav.media.statusbar, 'BORDER')
+	self.Health:SetStatusBarTexture(ns.config.media.statusbar, 'BORDER')
     self.Health:SetSize(115, 8)
     self.Health:SetPoint('TOPRIGHT', self.Texture, -105, -43)
     
@@ -100,14 +100,14 @@ local function CreateBossLayout(self, unit)
         -- health text
 
     self.Health.Value = self.Health:CreateFontString(nil, 'ARTWORK')
-	self.Health.Value:SetFont('Fonts\\ARIALN.ttf', oUF_Neav.font.fontSmall, nil)
+	self.Health.Value:SetFont('Fonts\\ARIALN.ttf', ns.config.font.fontSmall, nil)
     self.Health.Value:SetShadowOffset(1, -1)
     self.Health.Value:SetPoint('CENTER', self.Health)
 
         -- powerbar
 
     self.Power = CreateFrame('StatusBar', nil, self)
-    self.Power:SetStatusBarTexture(oUF_Neav.media.statusbar, 'BORDER')
+    self.Power:SetStatusBarTexture(ns.config.media.statusbar, 'BORDER')
     self.Power:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', 0, -4)
     self.Power:SetPoint('TOPRIGHT', self.Health, 'BOTTOMRIGHT', 0, -4)
     self.Power:SetHeight(self.Health:GetHeight())
@@ -121,14 +121,14 @@ local function CreateBossLayout(self, unit)
         -- power text
 
     self.Power.Value = self.Health:CreateFontString(nil, 'ARTWORK')
-	self.Power.Value:SetFont('Fonts\\ARIALN.ttf', oUF_Neav.font.fontSmall, nil)
+	self.Power.Value:SetFont('Fonts\\ARIALN.ttf', ns.config.font.fontSmall, nil)
     self.Power.Value:SetShadowOffset(1, -1)
     self.Power.Value:SetPoint('CENTER', self.Power)
 
         -- background
 
     self.Background = self.Power:CreateTexture(nil, 'BACKGROUND')
-    self.Background:SetTexture(oUF_Neav.media.statusbar)
+    self.Background:SetTexture(ns.config.media.statusbar)
     self.Background:SetVertexColor(0, 0, 0, 0.55)
     self.Background:SetPoint('TOPRIGHT', self.Health)
     self.Background:SetPoint('BOTTOMLEFT', self.Power)
@@ -136,7 +136,7 @@ local function CreateBossLayout(self, unit)
         -- name
 
     self.Name = self.Health:CreateFontString(nil, 'ARTWORK')
-	self.Name:SetFont(oUF_Neav.media.fontThick, oUF_Neav.font.fontBig)
+	self.Name:SetFont(ns.config.media.fontThick, ns.config.font.fontBig)
     self.Name:SetShadowOffset(1, -1)
     self.Name:SetJustifyH('CENTER')
     self.Name:SetSize(110, 10)
@@ -183,7 +183,7 @@ local function CreateBossLayout(self, unit)
     self:RegisterEvent('UNIT_THREAT_SITUATION_UPDATE', UpdateThreat)
     
     self.Buffs = CreateFrame('Frame', nil, self)
-    self.Buffs.size = oUF_Neav.units.target.auraSize
+    self.Buffs.size = ns.config.units.target.auraSize
     self.Buffs:SetHeight(self.Buffs.size * 3)
     self.Buffs:SetWidth(self.Buffs.size * 5)
     self.Buffs:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 3, -6)
@@ -199,19 +199,19 @@ local function CreateBossLayout(self, unit)
     self.Buffs.PostUpdateIcon = ns.PostUpdateIcon
         
     self:SetSize(132, 46)
-    self:SetScale(oUF_Neav.units.boss.scale)
+    self:SetScale(ns.config.units.boss.scale)
     
-    if (oUF_Neav.castbar.boss.show) then
+    if (ns.config.castbar.boss.show) then
         self.Castbar = CreateFrame('StatusBar', self:GetName()..'Castbar', self)
-        self.Castbar:SetStatusBarTexture(oUF_Neav.media.statusbar)
+        self.Castbar:SetStatusBarTexture(ns.config.media.statusbar)
         self.Castbar:SetSize(150, 18)
-        self.Castbar:SetStatusBarColor(unpack(oUF_Neav.castbar.boss.color))
+        self.Castbar:SetStatusBarColor(unpack(ns.config.castbar.boss.color))
         self.Castbar:SetPoint('BOTTOM', self, 'TOP', 10, 13)
 
         self.Castbar.Background = self.Castbar:CreateTexture(nil, 'BACKGROUND')
         self.Castbar.Background:SetTexture('Interface\\Buttons\\WHITE8x8')
         self.Castbar.Background:SetAllPoints(self.Castbar)
-        self.Castbar.Background:SetVertexColor(oUF_Neav.castbar.boss.color[1]*0.3, oUF_Neav.castbar.boss.color[2]*0.3, oUF_Neav.castbar.boss.color[3]*0.3, 0.8)
+        self.Castbar.Background:SetVertexColor(ns.config.castbar.boss.color[1]*0.3, ns.config.castbar.boss.color[2]*0.3, ns.config.castbar.boss.color[3]*0.3, 0.8)
             
         self.Castbar:CreateBorder(11)
         self.Castbar:SetBorderPadding(3)
@@ -234,9 +234,9 @@ oUF:Factory(function(self)
         boss[i] = self:Spawn('boss'..i, 'oUF_Neav_BossFrame'..i)
 
         if (i == 1) then
-            boss[i]:SetPoint(unpack(oUF_Neav.units.boss.position))
+            boss[i]:SetPoint(unpack(ns.config.units.boss.position))
         else
-            boss[i]:SetPoint('TOPLEFT', boss[i-1], 'BOTTOMLEFT', 0, (oUF_Neav.castbar.boss.show and -80) or -50)
+            boss[i]:SetPoint('TOPLEFT', boss[i-1], 'BOTTOMLEFT', 0, (ns.config.castbar.boss.show and -80) or -50)
         end
     end
 end)

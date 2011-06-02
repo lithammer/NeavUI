@@ -56,11 +56,11 @@ oUF.Tags['name'] = function(unit)
 		r, g, b = colorB[1], colorB[2], colorB[3]
 	end
 
-    if (unitRealm) and (unitRealm ~= '') then
+    -- if (unitRealm) and (unitRealm ~= '') then
         return format('|cff%02x%02x%02x%s|r', r*255, g*255, b*255, unitName)     -- no abbrev
-    else
-        return format('|cff%02x%02x%02x%s|r', r*255, g*255, b*255, string.gsub(unitName, '%s(.[\128-\191]*)%S+%S', ' %1.'))     -- abbrev all words except the first
-    end
+    -- else
+        -- return format('|cff%02x%02x%02x%s|r', r*255, g*255, b*255, string.gsub(unitName, '%s(.[\128-\191]*)%S+%S', ' %1.'))     -- abbrev all words except the first
+    -- end
     -- return format('|cff%02x%02x%02x%s|r', r*255, g*255, b*255, string.gsub(unitName, '%s?(.[\128-\191]*)%S+%s', '%1. '))   -- abbrev all words except the last
 end
 
@@ -114,5 +114,6 @@ end
 oUF.TagEvents['name:Raid'] = 'UNIT_NAME_UPDATE'
 oUF.Tags['name:Raid'] = function(unit)
     local name = UnitName(unit)
-    return ns.utf8sub(name, oUF_Neav.units.raid.nameLength)
+    return ns.utf8sub(name, ns.config.units.raid.nameLength)
+    -- return ns.utf8sub(name, ns.config.units.raid.nameLength - 2  )..[[|TInterface\GroupFrame\UI-Group-MaintankIcon:0|t]]
 end

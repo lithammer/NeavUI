@@ -20,10 +20,10 @@ function ns.CreateCastbarStrings(self, size)
     self.Castbar.Time = self.Castbar:CreateFontString(nil, 'OVERLAY')
         
     if (size) then
-        self.Castbar.Time:SetFont(oUF_Neav.media.font, 21)
+        self.Castbar.Time:SetFont(ns.config.media.font, 21)
         self.Castbar.Time:SetPoint('RIGHT', self.Castbar, -2, 0)  
     else   
-        self.Castbar.Time:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontBig)
+        self.Castbar.Time:SetFont(ns.config.media.font, ns.config.font.fontBig)
         self.Castbar.Time:SetPoint('RIGHT', self.Castbar, -5, 0)  
     end
         
@@ -35,11 +35,11 @@ function ns.CreateCastbarStrings(self, size)
     self.Castbar.Text = self.Castbar:CreateFontString(nil, 'OVERLAY')
         
     if (size) then
-        self.Castbar.Text:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontBig - 2)
+        self.Castbar.Text:SetFont(ns.config.media.font, ns.config.font.fontBig - 2)
         self.Castbar.Text:SetPoint('LEFT', self.Castbar, 4, 0)
         self.Castbar.Text:SetPoint('RIGHT', self.Castbar.Time, 'LEFT', -7, 0)
     else
-        self.Castbar.Text:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontBig)
+        self.Castbar.Text:SetFont(ns.config.media.font, ns.config.font.fontBig)
         self.Castbar.Text:SetPoint('LEFT', self.Castbar, 4, 0)
         self.Castbar.Text:SetPoint('RIGHT', self.Castbar.Time, 'LEFT', -4, 0)
     end

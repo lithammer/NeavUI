@@ -25,18 +25,18 @@ end
 function ns.CreateCastbars(self, unit)
     local config
     if (unit == 'player') then
-        config = oUF_Neav.castbar.player
+        config = ns.config.castbar.player
     elseif (unit == 'target') then
-        config = oUF_Neav.castbar.target
+        config = ns.config.castbar.target
     elseif (unit == 'focus') then
-        config = oUF_Neav.castbar.focus
+        config = ns.config.castbar.focus
     elseif (unit == 'pet') then
-        config = oUF_Neav.castbar.pet
+        config = ns.config.castbar.pet
     end
 
     if (ns.MultiCheck(unit, 'player', 'target', 'focus', 'pet') and config.show) then 
         self.Castbar = CreateFrame('StatusBar', self:GetName()..'Castbar', self)
-        self.Castbar:SetStatusBarTexture(oUF_Neav.media.statusbar)
+        self.Castbar:SetStatusBarTexture(ns.config.media.statusbar)
         self.Castbar:SetScale(0.93)
         self.Castbar:SetSize(config.width, config.height)
         self.Castbar:SetStatusBarColor(unpack(config.color))
@@ -67,7 +67,7 @@ function ns.CreateCastbars(self, unit)
                 
             if (config.showLatency) then
                 self.Castbar.Latency = self.Castbar:CreateFontString(nil, 'OVERLAY')
-                self.Castbar.Latency:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontBig - 1)
+                self.Castbar.Latency:SetFont(ns.config.media.font, ns.config.font.fontBig - 1)
                 self.Castbar.Latency:SetShadowOffset(1, -1)
                 self.Castbar.Latency:SetVertexColor(0.6, 0.6, 0.6, 1)
             end
@@ -123,11 +123,11 @@ function ns.CreateCastbars(self, unit)
 
                 -- hide some special spells like waterbold or firebold (pets) because it gets really spammy
                 
-            if (oUF_Neav.castbar.pet.ignoreSpells) then   
+            if (ns.config.castbar.pet.ignoreSpells) then   
                 if (unit == 'pet') then
                     Castbar:SetAlpha(1)
                     
-                    for _, spellID in pairs(oUF_Neav.castbar.pet.ignoreList) do
+                    for _, spellID in pairs(ns.config.castbar.pet.ignoreList) do
                         if (UnitCastingInfo('pet') == GetSpellInfo(spellID)) then
                             Castbar:SetAlpha(0)
                         end
@@ -152,7 +152,7 @@ function ns.CreateCastbars(self, unit)
                 UpdateCastbarColor(Castbar, unit, config)
             end
             
-            if (oUF_Neav.castbar.pet.ignoreSpells) then
+            if (ns.config.castbar.pet.ignoreSpells) then
                 if (unit == 'pet' and Castbar:GetAlpha() == 0) then              
                     Castbar:SetAlpha(1)
                 end
@@ -181,7 +181,7 @@ for i = 1, MIRRORTIMER_NUMTIMERS do
     end
                     
     local statusbar = _G['MirrorTimer' .. i .. 'StatusBar']
-    statusbar:SetStatusBarTexture(oUF_Neav.media.statusbar)
+    statusbar:SetStatusBarTexture(ns.config.media.statusbar)
     statusbar:SetAllPoints(bar)
     
     local backdrop = select(1, bar:GetRegions())
@@ -193,7 +193,7 @@ for i = 1, MIRRORTIMER_NUMTIMERS do
     border:Hide()
     
     local text = _G['MirrorTimer' .. i .. 'Text']
-    text:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontBig)
+    text:SetFont(ns.config.media.font, ns.config.font.fontBig)
     text:ClearAllPoints()
     text:SetPoint('CENTER', bar)
 end
@@ -220,13 +220,13 @@ f:SetScript('OnEvent', function(self, event)
                 if (region and region:GetObjectType() == 'FontString') then
                     region:ClearAllPoints()
                     region:SetPoint('CENTER', bar)
-                    region:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontBig)
+                    region:SetFont(ns.config.media.font, ns.config.font.fontBig)
                 end
             end
             
             bar:CreateBorder(11)
             bar:SetBorderPadding(3)
-            bar:SetStatusBarTexture(oUF_Neav.media.statusbar)
+            bar:SetStatusBarTexture(ns.config.media.statusbar)
             
 			local backdrop = select(1, bar:GetRegions())
 			backdrop:SetTexture('Interface\\Buttons\\WHITE8x8')

@@ -16,11 +16,11 @@
 
 --]]
 
-if (not oUF_Neav.units.arena.show) then
+local _, ns = ...
+
+if (not ns.config.units.arena.show) then
     return
 end
-
-local _, ns = ...
 
 local function UpdateHealth(Health, unit, min, max)
     local self = Health:GetParent()
@@ -95,7 +95,7 @@ local function CreateArenaLayout(self, unit)
         -- healthbar
 
     self.Health = CreateFrame('StatusBar', nil, self)
-	self.Health:SetStatusBarTexture(oUF_Neav.media.statusbar, 'BORDER')
+	self.Health:SetStatusBarTexture(ns.config.media.statusbar, 'BORDER')
     self.Health:SetSize(115, 8)
     self.Health:SetPoint('TOPRIGHT', self.Texture, -105, -43)
     
@@ -107,7 +107,7 @@ local function CreateArenaLayout(self, unit)
         -- powerbar
 
     self.Power = CreateFrame('StatusBar', nil, self)
-    self.Power:SetStatusBarTexture(oUF_Neav.media.statusbar, 'BORDER')
+    self.Power:SetStatusBarTexture(ns.config.media.statusbar, 'BORDER')
     self.Power:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', 0, -3)
     self.Power:SetPoint('TOPRIGHT', self.Health, 'BOTTOMRIGHT', 0, -3)
     self.Power:SetHeight(self.Health:GetHeight())
@@ -121,7 +121,7 @@ local function CreateArenaLayout(self, unit)
         -- background
 
     self.Background = self.Power:CreateTexture(nil, 'BACKGROUND')
-    self.Background:SetTexture(oUF_Neav.media.statusbar)
+    self.Background:SetTexture(ns.config.media.statusbar)
     self.Background:SetVertexColor(0, 0, 0, 0.55)
     self.Background:SetPoint('TOPRIGHT', self.Health)
     self.Background:SetPoint('BOTTOMLEFT', self.Power)
@@ -129,7 +129,7 @@ local function CreateArenaLayout(self, unit)
         -- name
 
     self.Name = self.Health:CreateFontString(nil, 'ARTWORK')
-	self.Name:SetFont(oUF_Neav.media.fontThick, oUF_Neav.font.fontBig)
+	self.Name:SetFont(ns.config.media.fontThick, ns.config.font.fontBig)
     self.Name:SetShadowOffset(1, -1)
     self.Name:SetJustifyH('CENTER')
     self.Name:SetSize(110, 10)
@@ -143,14 +143,14 @@ local function CreateArenaLayout(self, unit)
             -- health text
 
         self.Health.Value = self.Health:CreateFontString(nil, 'ARTWORK')
-        self.Health.Value:SetFont('Fonts\\ARIALN.ttf', oUF_Neav.font.fontSmall, nil)
+        self.Health.Value:SetFont('Fonts\\ARIALN.ttf', ns.config.font.fontSmall, nil)
         self.Health.Value:SetShadowOffset(1, -1)
         self.Health.Value:SetPoint('CENTER', self.Health)
         
                 -- power text
 
         self.Power.Value = self.Health:CreateFontString(nil, 'ARTWORK')
-        self.Power.Value:SetFont('Fonts\\ARIALN.ttf', oUF_Neav.font.fontSmall, nil)
+        self.Power.Value:SetFont('Fonts\\ARIALN.ttf', ns.config.font.fontSmall, nil)
         self.Power.Value:SetShadowOffset(1, -1)
         self.Power.Value:SetPoint('CENTER', self.Power)
     
@@ -171,7 +171,7 @@ local function CreateArenaLayout(self, unit)
         self.RaidIcon:SetSize(26, 26)
         
         self.Debuffs = CreateFrame('Frame', nil, self)
-        self.Debuffs.size = oUF_Neav.units.arena.auraSize
+        self.Debuffs.size = ns.config.units.arena.auraSize
         self.Debuffs:SetHeight(self.Debuffs.size * 3)
         self.Debuffs:SetWidth(self.Debuffs.size * 5)
         self.Debuffs:SetPoint('TOPLEFT', self, 'TOPRIGHT', 6, -6)
@@ -185,30 +185,30 @@ local function CreateArenaLayout(self, unit)
         self.Debuffs.PostUpdateIcon = ns.PostUpdateIcon
         
         self.Castbar = CreateFrame('StatusBar', self:GetName()..'Castbar', self)
-        self.Castbar:SetStatusBarTexture(oUF_Neav.media.statusbar)
+        self.Castbar:SetStatusBarTexture(ns.config.media.statusbar)
         self.Castbar:SetParent(self)
         self.Castbar:SetHeight(21)
         self.Castbar:SetWidth(200)
-        self.Castbar:SetStatusBarColor(unpack(oUF_Neav.castbar.arena.color))
+        self.Castbar:SetStatusBarColor(unpack(ns.config.castbar.arena.color))
         self.Castbar:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT', -16, 4)
 
         self.Castbar.Background = self.Castbar:CreateTexture(nil, 'BACKGROUND')
         self.Castbar.Background:SetTexture('Interface\\Buttons\\WHITE8x8')
         self.Castbar.Background:SetAllPoints(self.Castbar)
-        self.Castbar.Background:SetVertexColor(oUF_Neav.castbar.arena.color[1]*0.3, oUF_Neav.castbar.arena.color[2]*0.3, oUF_Neav.castbar.arena.color[3]*0.3, 0.8)
+        self.Castbar.Background:SetVertexColor(ns.config.castbar.arena.color[1]*0.3, ns.config.castbar.arena.color[2]*0.3, ns.config.castbar.arena.color[3]*0.3, 0.8)
                 
         self.Castbar:CreateBorder(11)
         self.Castbar:SetBorderPadding(3)
             
         self.Castbar.Icon = self.Castbar:CreateTexture(nil, 'BACKGROUND')
-        self.Castbar.Icon:SetSize(oUF_Neav.castbar.arena.icon.size, oUF_Neav.castbar.arena.icon.size)
+        self.Castbar.Icon:SetSize(ns.config.castbar.arena.icon.size, ns.config.castbar.arena.icon.size)
         self.Castbar.Icon:SetPoint('TOPRIGHT', self.Castbar, 'TOPLEFT', -10, 0.45)
         self.Castbar.Icon:SetTexture(1, 1, 1)
             
         self.Castbar.Icon.Overlay = self.Castbar:CreateTexture(nil, 'ARTWORK')
         self.Castbar.Icon.Overlay:SetPoint('TOPRIGHT', self.Castbar.Icon, 3, 3)
         self.Castbar.Icon.Overlay:SetPoint('BOTTOMLEFT', self.Castbar.Icon, -3, -3)
-        self.Castbar.Icon.Overlay:SetTexture(oUF_Neav.media.border)
+        self.Castbar.Icon.Overlay:SetTexture(ns.config.media.border)
         self.Castbar.Icon.Overlay:SetVertexColor(1, 0, 0)
 
         self.Castbar.Icon.Shadow = self.Castbar:CreateTexture(nil, 'BACKGROUND')
@@ -233,7 +233,7 @@ local function CreateArenaLayout(self, unit)
             -- oUF_Talents support
         --[[    
         self.Talents = self.Health:CreateFontString(nil, 'OVERLAY')
-        self.Talents:SetFont(oUF_Neav.media.font, 16)
+        self.Talents:SetFont(ns.config.media.font, 16)
         self.Talents:SetTextColor(1, 0, 0)
         self.Talents:SetPoint('BOTTOM', self.Health, 'TOP', 0, 12)
         --]]
@@ -263,7 +263,7 @@ local function CreateArenaLayout(self, unit)
         self.Power:SetHeight(self.Health:GetHeight())
     end
     
-    self:SetScale(oUF_Neav.units.arena.scale)
+    self:SetScale(ns.config.units.arena.scale)
     
 	return self
 end
@@ -278,9 +278,9 @@ oUF:Factory(function(self)
         arena[i] = self:Spawn('arena'..i, 'oUF_Neav_ArenaFrame'..i)
 
         if (i == 1) then
-            arena[i]:SetPoint(unpack(oUF_Neav.units.arena.position))
+            arena[i]:SetPoint(unpack(ns.config.units.arena.position))
         else
-            arena[i]:SetPoint('TOPLEFT', arena[i-1], 'BOTTOMLEFT', 0, (oUF_Neav.castbar.arena.icon.size and -80) or -50)
+            arena[i]:SetPoint('TOPLEFT', arena[i-1], 'BOTTOMLEFT', 0, (ns.config.castbar.arena.icon.size and -80) or -50)
         end
     
         arenaTarget[i] = self:Spawn('arena'..i..'target', 'oUF_Neav_ArenaFrame'..i..'Target')

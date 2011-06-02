@@ -156,14 +156,14 @@ local function VehicleToPlayerTexture(self, event, unit)
     self.Texture:SetPoint('CENTER', self, -20, -7)
     self.Texture:SetTexCoord(1, 0.09375, 0, 0.78125)
     
-    if (oUF_Neav.units.player.style == 'NORMAL') then
+    if (ns.config.units.player.style == 'NORMAL') then
 		self.Texture:SetTexture('Interface\\TargetingFrame\\UI-TargetingFrame')
-	elseif (oUF_Neav.units.player.style == 'RARE') then
+	elseif (ns.config.units.player.style == 'RARE') then
 		self.Texture:SetTexture('Interface\\TargetingFrame\\UI-TargetingFrame-Rare')
-	elseif (oUF_Neav.units.player.style == 'ELITE') then
+	elseif (ns.config.units.player.style == 'ELITE') then
 		self.Texture:SetTexture('Interface\\TargetingFrame\\UI-TargetingFrame-Elite')
-    elseif (oUF_Neav.units.player.style == 'CUSTOM') then
-        self.Texture:SetTexture(oUF_Neav.units.player.customTexture)
+    elseif (ns.config.units.player.style == 'CUSTOM') then
+        self.Texture:SetTexture(ns.config.units.player.customTexture)
     end
 
     self.Health:SetHeight(12)
@@ -253,7 +253,7 @@ local function CreateUnitTabTexture(self)
     self.TabRight:SetTexCoord(0, 0.1875, 0, 1)
 
     self.TabText = self.Health:CreateFontString(nil, 'ARTWORK')
-    self.TabText:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontSmall - 2)
+    self.TabText:SetFont(ns.config.media.font, ns.config.font.fontSmall - 2)
     self.TabText:SetShadowOffset(1, -1)
     self.TabText:SetPoint('CENTER', self.TabMiddle, 0, -1)
     self.TabText:SetAlpha(0.5)
@@ -312,7 +312,7 @@ local function UpdateFrame(self, unit)
         self.NameBackground:SetVertexColor(UnitSelectionColor(unit))
     end
     
-    if (oUF_Neav.show.classPortraits) then
+    if (ns.config.show.classPortraits) then
         if (self.Portrait) then
             if (UnitIsPlayer(unit)) then
                 local _, unitClass = UnitClass(unit)
@@ -396,8 +396,8 @@ local function UpdateHealth(Health, unit, min, max)
         if (self.IsTargetUnit) then
             Health.Value:SetText((min/max * 100 < 100 and format('%d%%', min/max * 100)) or '')
         else
-            if (unit == 'player' and oUF_Neav.units.player.showHealthPercent or unit == 'target' and oUF_Neav.units.target.showHealthPercent or unit == 'focus' and oUF_Neav.units.focus.showHealthPercent or unit == 'pet' and oUF_Neav.units.pet.showHealthPercent) then
-                if (unit == 'target' and oUF_Neav.units.target.showHealthAndPercent or unit == 'focus' and oUF_Neav.units.focus.showHealthAndPercent) then
+            if (unit == 'player' and ns.config.units.player.showHealthPercent or unit == 'target' and ns.config.units.target.showHealthPercent or unit == 'focus' and ns.config.units.focus.showHealthPercent or unit == 'pet' and ns.config.units.pet.showHealthPercent) then
+                if (unit == 'target' and ns.config.units.target.showHealthAndPercent or unit == 'focus' and ns.config.units.focus.showHealthAndPercent) then
                     Health.Value:SetText((min/max * 100 < 100 and format('%s - %d%%', ns.FormatValue(min), min/max * 100)) or ns.FormatValue(min))
                 else
                     Health.Value:SetText((min/max * 100 < 100 and format('%d%%', min/max * 100)) or '')
@@ -435,7 +435,7 @@ local function UpdatePower(Power, unit, min, max)
         powerString = ns.FormatValue(min)..'/'..ns.FormatValue(max)
     end
 
-    if (unit == 'player' and oUF_Neav.units.player.showPowerPercent or unit == 'target' and oUF_Neav.units.target.showPowerPercent or unit == 'focus' and oUF_Neav.units.focus.showPowerPercent or unit == 'pet' and oUF_Neav.units.pet.showPowerPercent) then
+    if (unit == 'player' and ns.config.units.player.showPowerPercent or unit == 'target' and ns.config.units.target.showPowerPercent or unit == 'focus' and ns.config.units.focus.showPowerPercent or unit == 'pet' and ns.config.units.pet.showPowerPercent) then
         powerString = (min/max * 100 < 100 and format('%d%%', min/max * 100)) or ''
     end
     
@@ -461,12 +461,12 @@ local function CreateUnitLayout(self, unit)
     self.menu = CreateDropDown
     self:SetAttribute('*type2', 'menu')
 
-    if (oUF_Neav.units.focus.enableFocusToggleKeybind) then
+    if (ns.config.units.focus.enableFocusToggleKeybind) then
         if (unit == 'focus') then
-            self:SetAttribute(oUF_Neav.units.focus.focusToggleKey, 'macro')
+            self:SetAttribute(ns.config.units.focus.focusToggleKey, 'macro')
             self:SetAttribute('macrotext', '/clearfocus')
         else
-            self:SetAttribute(oUF_Neav.units.focus.focusToggleKey, 'focus')
+            self:SetAttribute(ns.config.units.focus.focusToggleKey, 'focus')
         end
     end
     
@@ -475,7 +475,7 @@ local function CreateUnitLayout(self, unit)
 
         -- create the castbars
         
-    if (oUF_Neav.show.castbars) then
+    if (ns.config.show.castbars) then
         ns.CreateCastbars(self, unit)
     end
     
@@ -511,7 +511,7 @@ local function CreateUnitLayout(self, unit)
         -- healthbar
 
     self.Health = CreateFrame('StatusBar', nil, self)
-	self.Health:SetStatusBarTexture(oUF_Neav.media.statusbar, 'BORDER')
+	self.Health:SetStatusBarTexture(ns.config.media.statusbar, 'BORDER')
 
     if (unit == 'player') then
         self.Health:SetSize(119, 12)
@@ -536,7 +536,7 @@ local function CreateUnitLayout(self, unit)
         -- health text
 
     self.Health.Value = self.Health:CreateFontString(nil, 'ARTWORK')
-	self.Health.Value:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontSmall, nil)
+	self.Health.Value:SetFont(ns.config.media.font, ns.config.font.fontSmall, nil)
     self.Health.Value:SetShadowOffset(1, -1)
 
     if (self.IsTargetUnit) then
@@ -550,7 +550,7 @@ local function CreateUnitLayout(self, unit)
         -- powerbar
 
     self.Power = CreateFrame('StatusBar', nil, self)
-    self.Power:SetStatusBarTexture(oUF_Neav.media.statusbar, 'BORDER')
+    self.Power:SetStatusBarTexture(ns.config.media.statusbar, 'BORDER')
     self.Power:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', 0, -1)
     self.Power:SetPoint('TOPRIGHT', self.Health, 'BOTTOMRIGHT', 0, -1)
     self.Power:SetHeight((self.Health:GetHeight() - 1))
@@ -564,7 +564,7 @@ local function CreateUnitLayout(self, unit)
         -- power text
 
     self.Power.Value = self.Health:CreateFontString(nil, 'ARTWORK')
-	self.Power.Value:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontSmall, nil)
+	self.Power.Value:SetFont(ns.config.media.font, ns.config.font.fontSmall, nil)
     self.Power.Value:SetShadowOffset(1, -1)
 
     if (self.IsMainUnit) then
@@ -585,7 +585,7 @@ local function CreateUnitLayout(self, unit)
         -- name
 
     self.Name = self.Health:CreateFontString(nil, 'ARTWORK')
-	self.Name:SetFont(oUF_Neav.media.fontThick, oUF_Neav.font.fontBig)
+	self.Name:SetFont(ns.config.media.fontThick, ns.config.font.fontBig)
     self.Name:SetShadowOffset(1, -1)
     self.Name:SetJustifyH('CENTER')
     self.Name:SetHeight(10)
@@ -641,7 +641,7 @@ local function CreateUnitLayout(self, unit)
 
         -- pvp icons
 
-    if (oUF_Neav.show.pvpicons) then
+    if (ns.config.show.pvpicons) then
         self.PvP = self.Health:CreateTexture('$parentPVPIcon', 'OVERLAY', self)
         
         if (unit == 'player') then
@@ -703,7 +703,7 @@ local function CreateUnitLayout(self, unit)
     --[[
     if (unit == 'target' or unit == 'focus' or self.IsPartyUnit) then
         self.PhaseText = self.Health:CreateFontString(nil, 'OVERLAY')
-        self.PhaseText:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontSmall)
+        self.PhaseText:SetFont(ns.config.media.font, ns.config.font.fontSmall)
         self.PhaseText:SetShadowOffset(1, -1)
         self.PhaseText:SetPoint('CENTER', self.Name, 0, 10)
         self.PhaseText:SetTextColor(1, 0, 0)
@@ -782,7 +782,7 @@ local function CreateUnitLayout(self, unit)
             
 		if (select(2, UnitClass('player')) == 'WARLOCK') then
 			ShardBarFrame:SetParent(oUF_Neav_Player)
-			ShardBarFrame:SetScale(oUF_Neav.units.player.scale * 0.8)
+			ShardBarFrame:SetScale(ns.config.units.player.scale * 0.8)
 			ShardBar_OnLoad(ShardBarFrame)
 			ShardBarFrame:ClearAllPoints()
 			ShardBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, -1)
@@ -793,7 +793,7 @@ local function CreateUnitLayout(self, unit)
             
 		if (select(2, UnitClass('player')) == 'PALADIN') then
 			PaladinPowerBar:SetParent(oUF_Neav_Player)
-			PaladinPowerBar:SetScale(oUF_Neav.units.player.scale * 0.81)
+			PaladinPowerBar:SetScale(ns.config.units.player.scale * 0.81)
 			PaladinPowerBar_OnLoad(PaladinPowerBar)
 			PaladinPowerBar:ClearAllPoints()
 			PaladinPowerBar:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 25, 2)
@@ -805,7 +805,7 @@ local function CreateUnitLayout(self, unit)
                 -- druid eclipse bar
             
 			EclipseBarFrame:SetParent(oUF_Neav_Player)
-			EclipseBarFrame:SetScale(oUF_Neav.units.player.scale * 0.82)
+			EclipseBarFrame:SetScale(ns.config.units.player.scale * 0.82)
 			EclipseBar_OnLoad(EclipseBarFrame)
 			EclipseBarFrame:ClearAllPoints()
 			EclipseBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, 4)
@@ -815,14 +815,14 @@ local function CreateUnitLayout(self, unit)
     
             self.Druid = CreateFrame('StatusBar', nil, self)
             self.Druid:SetPoint('TOP', self.Power, 'BOTTOM')
-            self.Druid:SetStatusBarTexture(oUF_Neav.media.statusbar)
+            self.Druid:SetStatusBarTexture(ns.config.media.statusbar)
             self.Druid:SetFrameLevel(self:GetFrameLevel() - 1)
             self.Druid:SetSize(100, 10)
             self.Druid:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
             self.Druid:SetBackdropColor(0, 0, 0, 0.5)
 
             self.Druid.Value = self.Health:CreateFontString(nil, 'ARTWORK')
-            self.Druid.Value:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontSmall, nil)
+            self.Druid.Value:SetFont(ns.config.media.font, ns.config.font.fontSmall, nil)
             self.Druid.Value:SetShadowOffset(1, -1)
             self.Druid.Value:SetPoint('CENTER', self.Druid, 0, 0.5)
             
@@ -833,7 +833,7 @@ local function CreateUnitLayout(self, unit)
             
                 -- on update timer for the druid mana
                 
-            if (oUF_Neav.units.player.druidManaFrequentUpdates) then
+            if (ns.config.units.player.druidManaFrequentUpdates) then
                 self.updateTimer = 0
                 self:HookScript('OnUpdate', function(self, elapsed)
                     self.updateTimer = self.updateTimer + elapsed
@@ -852,7 +852,7 @@ local function CreateUnitLayout(self, unit)
                 self:RegisterEvent('UNIT_DISPLAYPOWER', UpdateDruidPower)
             end
             
-            if (oUF_Neav.units.player.mouseoverText) then
+            if (ns.config.units.player.mouseoverText) then
                 self.Druid.Value:Hide()
 
                 self:HookScript('OnEnter', function(self)
@@ -867,7 +867,7 @@ local function CreateUnitLayout(self, unit)
 		
             -- deathknight runebar
 
-        if (RuneFrame:IsShown() and RuneButtonIndividual1:IsShown()) then
+        if (select(2, UnitClass('player')) == 'DEATHKNIGHT') then
             RuneFrame:ClearAllPoints()
             RuneFrame:SetPoint('TOP', self.Power, 'BOTTOM', 2, -2)
             RuneFrame:SetParent(self)
@@ -883,7 +883,7 @@ local function CreateUnitLayout(self, unit)
 
             -- resting/combat status flashing
 
-        if (oUF_Neav.units.player.showStatusFlash) then
+        if (ns.config.units.player.showStatusFlash) then
             self.StatusFlash = self.Health:CreateTexture('$parentStatusFlashTexture', 'OVERLAY', self)
             self.StatusFlash:SetTexture('Interface\\CharacterFrame\\UI-Player-Status')
             self.StatusFlash:SetTexCoord(0, 0.74609375, 0, 0.53125)
@@ -904,9 +904,9 @@ local function CreateUnitLayout(self, unit)
 
             -- pvptimer
 
-        if (oUF_Neav.show.pvpicons) then
+        if (ns.config.show.pvpicons) then
             self.PvPTimer = self.Health:CreateFontString('$parentPVPTimer', 'OVERLAY')
-            self.PvPTimer:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontSmall - 2, oUF_Neav.font.fontSmallOutline and 'OUTLINE' or nil)
+            self.PvPTimer:SetFont(ns.config.media.font, ns.config.font.fontSmall - 2, ns.config.font.fontSmallOutline and 'OUTLINE' or nil)
             self.PvPTimer:SetShadowOffset(1, -1)
             self.PvPTimer:SetPoint('BOTTOM', self.PvP, 'TOP', -12, -1)
             
@@ -928,7 +928,7 @@ local function CreateUnitLayout(self, unit)
     
             -- oUF_Swing support 
             
-        if (oUF_Neav.units.player.showSwingTimer) then
+        if (ns.config.units.player.showSwingTimer) then
             self.Swing = CreateFrame('Frame', nil, self)
             self.Swing:SetFrameStrata('LOW')
             -- self.Swing:SetSize(200, 7)
@@ -937,10 +937,10 @@ local function CreateUnitLayout(self, unit)
             self.Swing:SetPoint('TOPRIGHT', self.Castbar, 'BOTTOMRIGHT', 0, -10)
             self.Swing:Hide()
                 
-            self.Swing.texture = oUF_Neav.media.statusbar
+            self.Swing.texture = ns.config.media.statusbar
             self.Swing.color = {0, 0.8, 1, 1}
                 
-            self.Swing.textureBG = oUF_Neav.media.statusbar
+            self.Swing.textureBG = ns.config.media.statusbar
             self.Swing.colorBG = {0, 0, 0, 0.55}
          
             self.Swing:CreateBorder(11)
@@ -951,7 +951,7 @@ local function CreateUnitLayout(self, unit)
             self.Swing.f:SetFrameStrata('HIGH')       
                 
             self.Swing.Text = self.Swing.f:CreateFontString(nil, 'OVERLAY')
-            self.Swing.Text:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontSmall - 2)
+            self.Swing.Text:SetFont(ns.config.media.font, ns.config.font.fontSmall - 2)
             self.Swing.Text:SetPoint('CENTER', self.Swing)
 
             self.Swing.disableMelee = false
@@ -961,12 +961,12 @@ local function CreateUnitLayout(self, unit)
         
             -- oUF_Vengeance support 
          
-        if (oUF_Neav.units.player.showVengeance) then
+        if (ns.config.units.player.showVengeance) then
             self.Vengeance = CreateFrame('StatusBar', nil, self)
             self.Vengeance:SetHeight(7)
             self.Vengeance:SetPoint('TOPLEFT', self.Castbar, 'BOTTOMLEFT', 0, -10)
             self.Vengeance:SetPoint('TOPRIGHT', self.Castbar, 'BOTTOMRIGHT', 0, -10)
-            self.Vengeance:SetStatusBarTexture(oUF_Neav.media.statusbar)
+            self.Vengeance:SetStatusBarTexture(ns.config.media.statusbar)
             self.Vengeance:SetStatusBarColor(1, 0, 0)
             
             self.Vengeance:CreateBorder(11)
@@ -977,15 +977,15 @@ local function CreateUnitLayout(self, unit)
             self.Vengeance.Background:SetTexture(0, 0, 0, 0.55)
         
             self.Vengeance.Text = self.Vengeance:CreateFontString(nil, 'OVERLAY')
-            self.Vengeance.Text:SetFont(oUF_Neav.media.font, oUF_Neav.font.fontSmall - 2)
+            self.Vengeance.Text:SetFont(ns.config.media.font, ns.config.font.fontSmall - 2)
             self.Vengeance.Text:SetPoint('CENTER', self.Vengeance)
         end
         
             -- combat text
         
-        if (oUF_Neav.units.player.showCombatFeedback) then
+        if (ns.config.units.player.showCombatFeedback) then
             self.CombatFeedbackText = self.Health:CreateFontString(nil, 'ARTWORK')
-            self.CombatFeedbackText:SetFont(oUF_Neav.media.font, 23, 'OUTLINE')
+            self.CombatFeedbackText:SetFont(ns.config.media.font, 23, 'OUTLINE')
             self.CombatFeedbackText:SetShadowOffset(0, 0)
             self.CombatFeedbackText:SetPoint('CENTER', self.Portrait)
         end
@@ -1018,7 +1018,7 @@ local function CreateUnitLayout(self, unit)
 		self:SetSize(175, 42)
 
         self.Debuffs = CreateFrame('Frame', nil, self)
-        self.Debuffs.size = oUF_Neav.units.pet.auraSize
+        self.Debuffs.size = ns.config.units.pet.auraSize
         self.Debuffs:SetWidth(self.Debuffs.size * 4)
         self.Debuffs:SetHeight(self.Debuffs.size)
         self.Debuffs.spacing = 4
@@ -1045,9 +1045,9 @@ local function CreateUnitLayout(self, unit)
 
             -- combat feedback text
             
-        if (oUF_Neav.units.target.showCombatFeedback or oUF_Neav.units.focus.showCombatFeedback) then
+        if (ns.config.units.target.showCombatFeedback or ns.config.units.focus.showCombatFeedback) then
             self.CombatFeedbackText = self.Health:CreateFontString(nil, 'ARTWORK')
-            self.CombatFeedbackText:SetFont(oUF_Neav.media.font, 23, 'OUTLINE')
+            self.CombatFeedbackText:SetFont(ns.config.media.font, 23, 'OUTLINE')
             self.CombatFeedbackText:SetShadowOffset(0, 0)
             self.CombatFeedbackText:SetPoint('CENTER', self.Portrait)
         end
@@ -1064,19 +1064,19 @@ local function CreateUnitLayout(self, unit)
     if (unit == 'target') then
         self.Auras = CreateFrame('Frame', nil, self)
         self.Auras.gap = true
-        self.Auras.size = oUF_Neav.units.target.auraSize
+        self.Auras.size = ns.config.units.target.auraSize
         self.Auras:SetHeight(self.Auras.size * 3)
         self.Auras:SetWidth(self.Auras.size * 5)
         self.Auras:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', -3, -5)
         self.Auras.initialAnchor = 'TOPLEFT'
         self.Auras['growth-x'] = 'RIGHT'
         self.Auras['growth-y'] = 'DOWN'
-        self.Auras.numBuffs = oUF_Neav.units.target.numBuffs
-        self.Auras.numDebuffs = oUF_Neav.units.target.numDebuffs
+        self.Auras.numBuffs = ns.config.units.target.numBuffs
+        self.Auras.numDebuffs = ns.config.units.target.numDebuffs
         self.Auras.spacing = 4.5
         self.Auras.customBreak = true
         
-		if (oUF_Neav.units.target.colorPlayerDebuffsOnly) then
+		if (ns.config.units.target.colorPlayerDebuffsOnly) then
 			self.Auras.PostUpdateIcon = function(self, unit, icon)
 				if (unit ~= 'target') then 
                     return 
@@ -1093,13 +1093,13 @@ local function CreateUnitLayout(self, unit)
 			end
 		end
         
-        if (oUF_Neav.units.target.showComboPoints) then
-            if (oUF_Neav.units.target.showComboPointsAsNumber) then
+        if (ns.config.units.target.showComboPoints) then
+            if (ns.config.units.target.showComboPointsAsNumber) then
                 self.ComboPoints = self.Health:CreateFontString(nil, 'ARTWORK')
                 self.ComboPoints:SetFont(DAMAGE_TEXT_FONT, 26, 'OUTLINE')
                 self.ComboPoints:SetShadowOffset(0, 0)
                 self.ComboPoints:SetPoint('LEFT', self.Portrait, 'RIGHT', 8, 4)
-                self.ComboPoints:SetTextColor(unpack(oUF_Neav.units.target.numComboPointsColor))
+                self.ComboPoints:SetTextColor(unpack(ns.config.units.target.numComboPointsColor))
                 self:Tag(self.ComboPoints, '[combopoints]')
             else
                 self.CPoints = {}
@@ -1126,14 +1126,14 @@ local function CreateUnitLayout(self, unit)
     
     if (unit == 'focus') then
         self.Debuffs = CreateFrame('Frame', nil, self)
-        self.Debuffs.size = oUF_Neav.units.focus.auraSize + 7
+        self.Debuffs.size = ns.config.units.focus.auraSize + 7
         self.Debuffs:SetHeight(self.Debuffs.size * 3)
         self.Debuffs:SetWidth(self.Debuffs.size * 3)
         self.Debuffs:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', -3.5, -5)
         self.Debuffs.initialAnchor = 'TOPLEFT'
         self.Debuffs['growth-x'] = 'RIGHT'
         self.Debuffs['growth-y'] = 'DOWN'
-        self.Debuffs.num = oUF_Neav.units.focus.numDebuffs
+        self.Debuffs.num = ns.config.units.focus.numDebuffs
         self.Debuffs.spacing = 4
         
         CreateUnitTabTexture(self)
@@ -1165,7 +1165,7 @@ local function CreateUnitLayout(self, unit)
         self.Debuffs:SetFrameStrata('BACKGROUND')
         self.Debuffs:SetHeight(20)
         self.Debuffs:SetWidth(20 * 3)
-        self.Debuffs.size = oUF_Neav.units.party.auraSize
+        self.Debuffs.size = ns.config.units.party.auraSize
         self.Debuffs.spacing = 4
         self.Debuffs:SetPoint('TOPLEFT', self.Health, 'TOPRIGHT', 5, 1)
         self.Debuffs.initialAnchor = 'LEFT'
@@ -1176,7 +1176,7 @@ local function CreateUnitLayout(self, unit)
 
         -- mouseover text
 
-    if (unit == 'player' and oUF_Neav.units.player.mouseoverText or unit == 'pet' and oUF_Neav.units.pet.mouseoverText or unit == 'target' and oUF_Neav.units.target.mouseoverText or unit == 'focus' and oUF_Neav.units.focus.mouseoverText or self.IsPartyUnit and oUF_Neav.units.party.mouseoverText) then
+    if (unit == 'player' and ns.config.units.player.mouseoverText or unit == 'pet' and ns.config.units.pet.mouseoverText or unit == 'target' and ns.config.units.target.mouseoverText or unit == 'focus' and ns.config.units.focus.mouseoverText or self.IsPartyUnit and ns.config.units.party.mouseoverText) then
         self.Health.Value:Hide()
         self.Power.Value:Hide()
 
@@ -1225,9 +1225,9 @@ end
 
 local focusAnchor = CreateFrame('Frame', 'oUF_Neav_Focus_Anchor', UIParent)
 
-if (oUF_Neav.units.focus.makeMoveable) then
+if (ns.config.units.focus.makeMoveable) then
     focusAnchor:SetSize(1, 1)
-    focusAnchor:SetPoint(unpack(oUF_Neav.units.focus.position))
+    focusAnchor:SetPoint(unpack(ns.config.units.focus.position))
     focusAnchor:SetMovable(true)
     focusAnchor:SetClampedToScreen(true)
     focusAnchor:SetUserPlaced(true)
@@ -1236,25 +1236,25 @@ end
 oUF:RegisterStyle('oUF_Neav', CreateUnitLayout)
 oUF:Factory(function(self)
     local player = self:Spawn('player', 'oUF_Neav_Player')
-    player:SetPoint(unpack(oUF_Neav.units.player.position))
-    player:SetScale(oUF_Neav.units.player.scale)
+    player:SetPoint(unpack(ns.config.units.player.position))
+    player:SetScale(ns.config.units.player.scale)
 
     local pet = self:Spawn('pet', 'oUF_Neav_Pet')
-    pet:SetPoint('TOPLEFT', player, 'BOTTOMLEFT', unpack(oUF_Neav.units.pet.position))
-    pet:SetScale(oUF_Neav.units.pet.scale)
+    pet:SetPoint('TOPLEFT', player, 'BOTTOMLEFT', unpack(ns.config.units.pet.position))
+    pet:SetScale(ns.config.units.pet.scale)
 
     local target = self:Spawn('target', 'oUF_Neav_Target')
-    target:SetPoint(unpack(oUF_Neav.units.target.position))
-    target:SetScale(oUF_Neav.units.target.scale)
+    target:SetPoint(unpack(ns.config.units.target.position))
+    target:SetScale(ns.config.units.target.scale)
 
     local targettarget = self:Spawn('targettarget', 'oUF_Neav_TargetTarget')
     targettarget:SetPoint('TOPLEFT', target, 'BOTTOMRIGHT', -78, -15)
-    targettarget:SetScale(oUF_Neav.units.targettarget.scale)
+    targettarget:SetScale(ns.config.units.targettarget.scale)
 
     local focus = self:Spawn('focus', 'oUF_Neav_Focus')
-    focus:SetScale(oUF_Neav.units.focus.scale)
+    focus:SetScale(ns.config.units.focus.scale)
 
-    if (oUF_Neav.units.focus.makeMoveable) then
+    if (ns.config.units.focus.makeMoveable) then
         focus:SetPoint('CENTER', focusAnchor, 3, 0)
         focus:SetClampedToScreen(true)
         focus:RegisterForDrag('LeftButton')
@@ -1268,15 +1268,15 @@ oUF:Factory(function(self)
             focusAnchor:StopMovingOrSizing()
         end)
     else
-        focus:SetPoint(unpack(oUF_Neav.units.focus.position))
+        focus:SetPoint(unpack(ns.config.units.focus.position))
     end
     
     local focustarget = self:Spawn('focustarget', 'oUF_Neav_FocusTarget')
     focustarget:SetPoint('TOPLEFT', focus, 'BOTTOMRIGHT', -78, -15)
-    focustarget:SetScale(oUF_Neav.units.focustarget.scale)
+    focustarget:SetScale(ns.config.units.focustarget.scale)
 
-	if (oUF_Neav.units.party.show) then
-		local party = oUF:SpawnHeader('oUF_Neav_Party', nil, (oUF_Neav.units.party.hideInRaid and 'party') or 'party,raid',
+	if (ns.config.units.party.show) then
+		local party = oUF:SpawnHeader('oUF_Neav_Party', nil, (ns.config.units.party.hideInRaid and 'party') or 'party,raid',
 			'oUF-initialConfigFunction', [[
 				self:SetWidth(105)
 				self:SetHeight(30)
@@ -1284,7 +1284,7 @@ oUF:Factory(function(self)
 			'showParty', true,
 			'yOffset', -30
 		)
-        party:SetPoint(unpack(oUF_Neav.units.party.position))
-        party:SetScale(oUF_Neav.units.party.scale)
+        party:SetPoint(unpack(ns.config.units.party.position))
+        party:SetScale(ns.config.units.party.scale)
     end
 end)

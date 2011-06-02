@@ -1,5 +1,7 @@
 
-oUF_Neav = {
+local _, ns = ...
+
+ns.config = {
     show = {
         castbars = true,
         pvpicons = true,
