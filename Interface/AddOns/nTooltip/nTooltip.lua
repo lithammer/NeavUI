@@ -227,12 +227,12 @@ GameTooltip.Icon:SetSize(14, 14)
 
 if (nTooltip.showMouseoverTarget) then
     GameTooltip.TargetIcon = GameTooltip:CreateTexture('$parentRaidIcon', 'OVERLAY')
-    GameTooltip.TargetIcon:SetSize(12, 12)
+    GameTooltip.TargetIcon:SetSize(14, 14)
 end
 
 if (nTooltip.showPVPIcons) then
     GameTooltip.PVPIcon = GameTooltip:CreateTexture('$parentRaidIcon', 'OVERLAY')
-    GameTooltip.PVPIcon:SetSize(45, 45)
+    GameTooltip.PVPIcon:SetSize(35, 35)
 end
 
     -- tooltip position
@@ -339,6 +339,54 @@ local function ShortValue(value)
 	end
 end
 
+local function AddMouseoverTarget(self, unit)
+    local unitTargetName = UnitName(unit .. 'target')
+    local unitTargetClassColor = RAID_CLASS_COLORS[select(2, UnitClass(unit .. 'target'))] or { r = 1, g = 0, b = 1 }
+    local unitTargetReactionColor = { 
+        r = select(1, UnitSelectionColor(unit .. 'target')), 
+        g = select(2, UnitSelectionColor(unit .. 'target')), 
+        b = select(3, UnitSelectionColor(unit .. 'target')) 
+    }
+        
+    if (UnitExists(unit..'target')) then
+        if (UnitName('player') == unitTargetName) then
+            if (GetRaidTargetIndex(unit..'target') and not UnitIsDead(unit..'target')) then
+                self:AddLine(format('      |cffff00ff%s|r', string.upper(YOU)), 1, 1, 1)
+            else        
+                self:AddLine(format('  |cffff00ff%s|r', string.upper(YOU)), 1, 1, 1)
+            end
+        else
+            if (UnitIsPlayer(unit .. 'target')) then
+                if (GetRaidTargetIndex(unit .. 'target') and not UnitIsDead(unit .. 'target')) then
+                    self:AddLine(format('      |cff%02x%02x%02x%s|r', unitTargetClassColor.r*255, unitTargetClassColor.g*255, unitTargetClassColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)
+                    
+                    for i = 3, GameTooltip:NumLines() do
+                        if (_G['GameTooltipTextLeft'..i]:GetText():find(unitTargetName)) then
+                            self.TargetIcon:SetPoint('LEFT', _G['GameTooltipTextLeft'..i], 10, 0)
+                            self.TargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..GetRaidTargetIndex(unit .. 'target'))      
+                        end
+                    end
+                else
+                    self:AddLine(format('  |cff%02x%02x%02x%s|r', unitTargetClassColor.r*255, unitTargetClassColor.g*255, unitTargetClassColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)
+                end
+            else
+                if (GetRaidTargetIndex(unit..'target') and not UnitIsDead(unit..'target')) then
+                    self:AddLine(format('       |cff%02x%02x%02x%s|r', unitTargetReactionColor.r*255, unitTargetReactionColor.g*255, unitTargetReactionColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)                 
+                    
+                    for i = 3, GameTooltip:NumLines() do
+                        if (_G['GameTooltipTextLeft'..i]:GetText():find(unitTargetName)) then
+                            self.TargetIcon:SetPoint('LEFT', _G['GameTooltipTextLeft'..i], 10, 0)
+                            self.TargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..GetRaidTargetIndex(unit .. 'target'))         
+                        end
+                    end 
+                else
+                    self:AddLine(format('  |cff%02x%02x%02x%s|r', unitTargetReactionColor.r*255, unitTargetReactionColor.g*255, unitTargetReactionColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)
+                end
+            end
+        end
+    end
+end
+
 GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
     local unit = GameTooltip_GetUnit(self)
             
@@ -374,55 +422,9 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             -- mouse over target with raidicon support
             
         if (nTooltip.showMouseoverTarget) then
-            local unitTargetName = UnitName(unit .. 'target')
-            local unitTargetClassColor = RAID_CLASS_COLORS[select(2, UnitClass(unit .. 'target'))] or { r = 1, g = 0, b = 1 }
-            local unitTargetReactionColor = { 
-                r = select(1, UnitSelectionColor(unit .. 'target')), 
-                g = select(2, UnitSelectionColor(unit .. 'target')), 
-                b = select(3, UnitSelectionColor(unit .. 'target')) 
-            }
-        
-            if (UnitExists(unit..'target')) then
-                if (UnitName('player') == unitTargetName) then
-                    self:AddLine(format('  |cffff00ff%s|r', string.upper(YOU)), 1, 1, 1)
-                else
-                    if (UnitIsPlayer(unit .. 'target')) then
-                        if (GetRaidTargetIndex(unit .. 'target') and not UnitIsDead(unit .. 'target')) then
-                            self:AddLine(format('     |cff%02x%02x%02x%s|r', unitTargetClassColor.r*255, unitTargetClassColor.g*255, unitTargetClassColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)
-                            for i = 3, GameTooltip:NumLines() do
-                                if (_G['GameTooltipTextLeft'..i]:GetText():find(unitTargetName)) then
-                                        
-                                    self.TargetIcon:SetPoint('LEFT', _G['GameTooltipTextLeft'..i], 10, 0)
-                                    self.TargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..GetRaidTargetIndex(unit .. 'target'))      
-                                end
-                            end
-                       else
-                            self:AddLine(format('  |cff%02x%02x%02x%s|r', unitTargetClassColor.r*255, unitTargetClassColor.g*255, unitTargetClassColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)
-                        end
-                    else
-                        if (GetRaidTargetIndex(unit .. 'target') and not UnitIsDead(unit .. 'target')) then
-                            self:AddLine(format('     |cff%02x%02x%02x%s|r', unitTargetReactionColor.r*255, unitTargetReactionColor.g*255, unitTargetReactionColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)                 
-                            for i = 3, GameTooltip:NumLines() do
-                                if (_G['GameTooltipTextLeft'..i]:GetText():find(unitTargetName)) then
-                                    self.TargetIcon:SetPoint('LEFT', _G['GameTooltipTextLeft'..i], 10, 0)
-                                    self.TargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..GetRaidTargetIndex(unit .. 'target'))         
-                                end
-                            end 
-                       else
-                            self:AddLine(format('  |cff%02x%02x%02x%s|r', unitTargetReactionColor.r*255, unitTargetReactionColor.g*255, unitTargetReactionColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)
-                        end
-                    end
-                end
-            end
+            AddMouseoverTarget(self, unit)
         end
-
-            -- raid icon
-            
-        if (GetRaidTargetIndex(unit) and not UnitIsDead(unit)) then
-            GameTooltipTextLeft1:SetText('   '..GameTooltipTextLeft1:GetText())
-            self.Icon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..GetRaidTargetIndex(unit))
-        end
-                
+  
             -- pvp flag prefix 
             
 		for i = 3, GameTooltip:NumLines() do
@@ -431,13 +433,16 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
                 if (nTooltip.showPVPIcons) then
                     if (GetRaidTargetIndex(unit) and not UnitIsDead(unit)) then
                         GameTooltipTextLeft1:SetText('    '..GameTooltipTextLeft1:GetText())
+    
                         GameTooltip.PVPIcon:ClearAllPoints()
-                        GameTooltip.PVPIcon:SetPoint('TOPLEFT', GameTooltip, 24, -4)
+                        GameTooltip.PVPIcon:SetPoint('TOPLEFT', GameTooltip, 24, -7)
                     else
                         GameTooltipTextLeft1:SetText('   '..GameTooltipTextLeft1:GetText())
+                        
                         GameTooltip.PVPIcon:ClearAllPoints()
-                        GameTooltip.PVPIcon:SetPoint('TOPLEFT', GameTooltip, 2, -4)
+                        GameTooltip.PVPIcon:SetPoint('TOPLEFT', GameTooltip, 5, -7)
                     end
+                    
                     GameTooltip.PVPIcon:SetTexture(GameTooltip_GetUnitPVPIcon(unit))
                 else
                     if (UnitIsPVPFreeForAll(unit)) then
@@ -449,6 +454,13 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
 			end
 		end
         
+            -- raid icon
+            
+        if (GetRaidTargetIndex(unit) and not UnitIsDead(unit)) then
+            GameTooltipTextLeft1:SetText('   '..GameTooltipTextLeft1:GetText())
+            self.Icon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..GetRaidTargetIndex(unit))
+        end
+
             -- afk and dnd prefix
 
         if (UnitIsAFK(unit)) then 
