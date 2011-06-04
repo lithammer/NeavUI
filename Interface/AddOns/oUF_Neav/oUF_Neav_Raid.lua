@@ -443,7 +443,7 @@ local function CreateRaidLayout(self, unit)
     self.ThreatGlow = CreateFrame('Frame', nil, self)
     self.ThreatGlow:SetPoint('TOPLEFT', self, 'TOPLEFT', -4, 4)
     self.ThreatGlow:SetPoint('BOTTOMRIGHT', self, 'BOTTOMRIGHT', 4, -4)
-    self.ThreatGlow:SetBackdrop({edgeFile = [=[Interface\AddOns\oUF_Freebgrid\media\glowTex.tga]=], edgeSize = 3})
+    self.ThreatGlow:SetBackdrop({edgeFile = 'Interface\\AddOns\\oUF_Neav\\media\\textureGlow', edgeSize = 3})
     self.ThreatGlow:SetBackdropBorderColor(0, 0, 0, 0)
     self.ThreatGlow:SetFrameLevel(self:GetFrameLevel() - 1)
         
@@ -579,18 +579,26 @@ oUF:RegisterStyle('oUF_Neav_Raid', CreateRaidLayout)
 oUF:Factory(function(self)
 self:SetActiveStyle('oUF_Neav_Raid')
 
-        local offset
+        local offset, vis
         if (ns.config.units.raid.layout.orientationVertical == 'DOWN') then
             offset = -ns.config.units.raid.frameSpacing
         else
             offset = ns.config.units.raid.frameSpacing
         end
         
+        if (config.units.raid.showSolo and config.units.raid.showParty) then
+            vis = 'solo,party,raid' 
+        elseif (not config.units.raid.showSolo and config.units.raid.showParty) then    
+            vis = 'party,raid'
+        else
+            vis = 'raid'
+        end
+        
         local raid = {}
         for i = 1, ns.config.units.raid.numGroups do
         
         if (ns.config.units.raid.layout.orientation == 'VERTICAL') then
-            table.insert(raid, self:SpawnHeader('oUF_Neav_Raid'..i, nil, 'solo,party,raid',
+            table.insert(raid, self:SpawnHeader('oUF_Neav_Raid'..i, nil, vis,
                 'oUF-initialConfigFunction', ([[
                 self:SetWidth(%d)
                 self:SetHeight(%d)
@@ -607,13 +615,14 @@ self:SetActiveStyle('oUF_Neav_Raid')
                 'maxColumns', 1,
                 'unitsPerColumn', 5,
                 'point', 'LEFT',
-        
                 'columnAnchorPoint', 'TOP',
+                
+                'sortMethod', 'INDEX',
                 'groupFilter', i
                 )
             )
         else
-            table.insert(raid, self:SpawnHeader('oUF_Neav_Raid'..i, nil, 'solo,party,raid',
+            table.insert(raid, self:SpawnHeader('oUF_Neav_Raid'..i, nil, vis,
             'oUF-initialConfigFunction', ([[
             self:SetWidth(%d)
             self:SetHeight(%d)
@@ -622,10 +631,13 @@ self:SetActiveStyle('oUF_Neav_Raid')
                 'showParty', true,
                 'showPlayer', true,
                 'showSolo', (ns.config.units.raid.showSolo and true) or false,
+                
                 'columnSpacing', ns.config.units.raid.frameSpacing,
                 'unitsPerColumn', 1,
                 'maxColumns', 5,
                 'columnAnchorPoint', 'TOP',
+                
+                'sortMethod', 'INDEX',
                 'groupFilter', i
                 )
             )

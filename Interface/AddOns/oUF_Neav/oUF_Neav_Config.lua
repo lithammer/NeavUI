@@ -200,8 +200,9 @@ ns.config = {
         },
 
         ['raid'] = {
-            show = true,    
+            show = true,
             showSolo = true,
+            showParty = true,
             
             nameLength = 4,
             
@@ -210,8 +211,15 @@ ns.config = {
             scale = 1.1, 
             frameSpacing = 7,
             
+                -- notice: the position is important. 
+                -- So if you want to set the raidframes to the TOPLEFT position of you interface, 
+                -- a 'TOPLEFT' anchorpoint is necessary. Same for TOPRIGHT, BOTTOMLEFT, TOPLEFT etc.
+
             layout = {
-                position = {'LEFT', UIParent, 'CENTER', 330, 0}, -- just change the 'TOPLEFT' to 'BOTTOMRIGHT/LEFT' etc.
+            
+                    -- position = {RAID_ANCHROPOINT, ANCHOR_FRAME, ANCHORFRAME_ANCHOR, x, y}
+                    
+                position = {'TOPLEFT', UIParent, 'CENTER', 330, 150}, -- just change the 'TOPLEFT' to 'BOTTOMRIGHT/LEFT' etc.
                 orientation = 'HORIZONTAL', -- 'VERTICAL' 'HORIZONTAL'
                 orientationHORIZONTAL = 'RIGHT', -- 'LEFT', 'RIGHT'
                 orientationVERTICAL = 'DOWN', -- 'UP', 'DOWN'

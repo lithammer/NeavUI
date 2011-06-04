@@ -1088,7 +1088,7 @@ local function CreateUnitLayout(self, unit)
 
         if (config.units.target.showComboPoints) then
             if (config.units.target.showComboPointsAsNumber) then
-                self.ComboPoints = self.Health:CreateFontString(nil, 'ARTWORK')
+                self.ComboPoints = self.Health:CreateFontString(nil, 'OVERLAY')
                 self.ComboPoints:SetFont(DAMAGE_TEXT_FONT, 26, 'OUTLINE')
                 self.ComboPoints:SetShadowOffset(0, 0)
                 self.ComboPoints:SetPoint('LEFT', self.Portrait, 'RIGHT', 8, 4)
@@ -1096,23 +1096,18 @@ local function CreateUnitLayout(self, unit)
                 self:Tag(self.ComboPoints, '[combopoints]')
             else
                 self.CPoints = {}
-
+    
                 for i = 1, 5 do
-                    self.CPoints[i] = self.Health:CreateFontString(nil, 'OVERLAY')
-                    self.CPoints[i]:SetFont(DAMAGE_TEXT_FONT, 18, 'OUTLINE')
-                    self.CPoints[i]:SetShadowOffset(0, 0)
-                    self.CPoints[i]:SetText('*')
-                    self.CPoints[i]:SetTextColor(0, 1, 0)
+                    self.CPoints[i] = self.Health:CreateTexture(nil, 'OVERLAY')
+                    self.CPoints[i]:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\ComboPoint')
+                    self.CPoints[i]:SetSize(15, 15)
                 end
 
-                self.CPoints[1]:SetPoint('TOPRIGHT', self.Texture, -44, -8)
-                self.CPoints[2]:SetPoint('TOP', self.CPoints[1], 'BOTTOM', 8, 9)
-                self.CPoints[3]:SetPoint('TOP', self.CPoints[2], 'BOTTOM', 5, 7)
-                self.CPoints[3]:SetTextColor(1, 1, 0)
-                self.CPoints[4]:SetPoint('TOP', self.CPoints[3], 'BOTTOM', 1, 6)
-                self.CPoints[4]:SetTextColor(1, 0.5, 0)
-                self.CPoints[5]:SetPoint('TOP', self.CPoints[4], 'BOTTOM', -2, 6)
-                self.CPoints[5]:SetTextColor(1, 0, 0)
+                self.CPoints[1]:SetPoint('TOPRIGHT', self.Texture, -42, -8)
+                self.CPoints[2]:SetPoint('TOP', self.CPoints[1], 'BOTTOM', 7.33, 6.66)
+                self.CPoints[3]:SetPoint('TOP', self.CPoints[2], 'BOTTOM', 4.66, 4.33)
+                self.CPoints[4]:SetPoint('TOP', self.CPoints[3], 'BOTTOM', 1.33 , 3.66)
+                self.CPoints[5]:SetPoint('TOP', self.CPoints[4], 'BOTTOM', -1.66, 3.66)
             end
         end
     end
