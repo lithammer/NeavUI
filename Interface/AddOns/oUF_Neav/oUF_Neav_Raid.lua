@@ -544,9 +544,11 @@ local function CreateRaidLayout(self, unit)
         -- playertarget border
 
     if (config.units.raid.showTargetBorder) then
+        
         self.TargetBorder = self.Health:CreateTexture(nil, 'OVERLAY', self)
-        self.TargetBorder:SetPoint('TOPRIGHT', self, 3, 3)
-        self.TargetBorder:SetPoint('BOTTOMLEFT', self, -3, -3)
+        -- self.TargetBorder:SetPoint('TOPRIGHT', self, 5, 5)
+        -- self.TargetBorder:SetPoint('BOTTOMLEFT', self, -5, -5)
+        self.TargetBorder:SetAllPoints(self.Health)
         self.TargetBorder:SetTexture('Interface\\Addons\\oUF_Neav\\media\\borderTarget')
         self.TargetBorder:SetVertexColor(unpack(config.units.raid.targetBorderColor))
         self.TargetBorder:Hide()
