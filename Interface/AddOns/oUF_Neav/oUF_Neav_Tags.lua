@@ -1,5 +1,6 @@
 
 local _, ns = ...
+local config = ns.config
 
 oUF.Tags['level'] = function(unit)
     local r, g, b
@@ -114,6 +115,6 @@ end
 oUF.TagEvents['name:Raid'] = 'UNIT_NAME_UPDATE'
 oUF.Tags['name:Raid'] = function(unit)
     local name = UnitName(unit)
-    return ns.utf8sub(name, ns.config.units.raid.nameLength)
-    -- return ns.utf8sub(name, ns.config.units.raid.nameLength - 2  )..[[|TInterface\GroupFrame\UI-Group-MaintankIcon:0|t]]
+    return ns.utf8sub(name, config.units.raid.nameLength)
+    -- return ns.utf8sub(name, config.units.raid.nameLength - 2  )..[[|TInterface\GroupFrame\UI-Group-MaintankIcon:0|t]]
 end

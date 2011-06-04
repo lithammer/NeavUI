@@ -1,11 +1,25 @@
 
 local _, ns = ...
 
+ns.cUnit = function(unit)
+    if (unit:match('party%d')) then
+        return 'party'
+    elseif (unit:match('arena%d')) then
+        return 'arena'
+    elseif (unit:match('boss%d')) then
+        return 'boss'
+   -- elseif (unit:match('pet')) then
+      --  return 'pet'
+    else
+        return unit
+    end
+end
+
 local GetTime = GetTime
 local floor, fmod = floor, math.fmod
 local day, hour, minute = 86400, 3600, 60
 
-function ns.FormatTime(time)
+ns.FormatTime = function(time)
     if (time >= day) then
         return format('%dd', floor(time/day + 0.5))
     elseif (time>= hour) then
@@ -17,7 +31,19 @@ function ns.FormatTime(time)
     return format('%d', fmod(time, minute))
 end
 
-function ns.DeficitValue(self)
+ns.sText = function(unit)
+    if (UnitIsDead(unit)) then 
+        return 'Dead'
+    elseif (UnitIsGhost(unit)) then
+        return'Ghost' 
+    elseif (not UnitIsConnected(unit)) then
+        return PLAYER_OFFLINE
+    else
+        return ''
+    end
+end
+
+ns.DeficitValue = function(self)
     if (self >= 1000) then
 		return format('-%.1f', self/1000)
 	else
@@ -25,7 +51,7 @@ function ns.DeficitValue(self)
 	end
 end
 
-function ns.FormatValue(self)
+ns.FormatValue = function(self)
     if (self >= 1000000) then
 		return ('%.2fm'):format(self / 1e6)
         -- return ('%.3fK'):format(self / 1e6):gsub('%.', 'M ')
@@ -37,7 +63,7 @@ function ns.FormatValue(self)
     end
 end
 
-function ns.MultiCheck(what, ...)
+ns.MultiCheck = function(what, ...)
     for i = 1, select('#', ...) do
         if (what == select(i, ...)) then 
             return true 
@@ -47,7 +73,7 @@ function ns.MultiCheck(what, ...)
     return false
 end
 
-function ns.utf8sub(string, index)
+ns.utf8sub = function(string, index)
 	local bytes = string:len()
 	if (bytes <= index) then
 		return string

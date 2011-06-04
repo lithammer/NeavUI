@@ -23,16 +23,7 @@ end
     -- create the castbars
     
 function ns.CreateCastbars(self, unit)
-    local config
-    if (unit == 'player') then
-        config = ns.config.castbar.player
-    elseif (unit == 'target') then
-        config = ns.config.castbar.target
-    elseif (unit == 'focus') then
-        config = ns.config.castbar.focus
-    elseif (unit == 'pet') then
-        config = ns.config.castbar.pet
-    end
+    local config = ns.config.units[ns.cUnit(unit)].castbar
 
     if (ns.MultiCheck(unit, 'player', 'target', 'focus', 'pet') and config.show) then 
         self.Castbar = CreateFrame('StatusBar', self:GetName()..'Castbar', self)
@@ -105,56 +96,56 @@ function ns.CreateCastbars(self, unit)
 
             -- interrupt indicator
     
-        self.Castbar.PostCastStart = function(Castbar, unit)
+        self.Castbar.PostCastStart = function(self, unit)
             if (unit == 'player') then
-                if (Castbar.Latency) then
+                if (self.Latency) then
                     local down, up, lagHome, lagWorld = GetNetStats()
                     local avgLag = (lagHome + lagWorld) / 2
                     
-                    Castbar.Latency:ClearAllPoints()
-                    Castbar.Latency:SetPoint('RIGHT', Castbar, 'BOTTOMRIGHT', -1, -2) 
-                    Castbar.Latency:SetText(string.format('%.0f', avgLag)..'ms')
+                    self.Latency:ClearAllPoints()
+                    self.Latency:SetPoint('RIGHT', self, 'BOTTOMRIGHT', -1, -2) 
+                    self.Latency:SetText(string.format('%.0f', avgLag)..'ms')
                 end
             end
             
             if (unit == 'target' or unit == 'focus') then
-                UpdateCastbarColor(Castbar, unit, config)
+                UpdateCastbarColor(self, unit, config)
             end
 
                 -- hide some special spells like waterbold or firebold (pets) because it gets really spammy
                 
-            if (ns.config.castbar.pet.ignoreSpells) then   
+            if (ns.config.units.pet.castbar.ignoreSpells) then   
                 if (unit == 'pet') then
-                    Castbar:SetAlpha(1)
+                    self:SetAlpha(1)
                     
                     for _, spellID in pairs(ns.config.castbar.pet.ignoreList) do
                         if (UnitCastingInfo('pet') == GetSpellInfo(spellID)) then
-                            Castbar:SetAlpha(0)
+                            self:SetAlpha(0)
                         end
                     end
                 end
 			end
         end    
 
-        self.Castbar.PostChannelStart = function(Castbar, unit)
+        self.Castbar.PostChannelStart = function(self, unit)
             if (unit == 'player') then
-                if (Castbar.Latency) then
+                if (self.Latency) then
                     local down, up, lagHome, lagWorld = GetNetStats()
                     local avgLag = (lagHome + lagWorld) / 2
                     
                     Castbar.Latency:ClearAllPoints()
-                    Castbar.Latency:SetPoint('LEFT', self.Castbar, 'BOTTOMLEFT', 1, -2) 
+                    Castbar.Latency:SetPoint('LEFT', self, 'BOTTOMLEFT', 1, -2) 
                     Castbar.Latency:SetText(string.format('%.0f', avgLag)..'ms')
                 end
             end
     
             if (unit == 'target' or unit == 'focus') then
-                UpdateCastbarColor(Castbar, unit, config)
+                UpdateCastbarColor(self, unit, config)
             end
             
-            if (ns.config.castbar.pet.ignoreSpells) then
+            if (ns.config.units.pet.castbar.ignoreSpells) then
                 if (unit == 'pet' and Castbar:GetAlpha() == 0) then              
-                    Castbar:SetAlpha(1)
+                    self:SetAlpha(1)
                 end
             end
         end    

@@ -52,14 +52,13 @@ end
 
 local CreateAuraIcon = function(auras)
     if (not auras.button) then
-        local button = CreateFrame('Button', nil, auras)
+        local button = CreateFrame('Frame', nil, auras)
         button:EnableMouse(false)
         button:SetBackdrop(BBackdrop)
         button:SetBackdropColor(0, 0, 0, 1)
         button:SetBackdropBorderColor(0, 0, 0, 0)
-
-        button:SetSize(auras.size, auras.size)
-
+        button:SetAllPoints(auras)
+        
         local icon = button:CreateTexture(nil, 'OVERLAY')
         icon:SetAllPoints(button)
         icon:SetTexCoord(.1, .9, .1, .9)
@@ -70,21 +69,19 @@ local CreateAuraIcon = function(auras)
         overlay:SetBackdropColor(0, 0, 0, 0)
         overlay:SetBackdropBorderColor(1, 1, 1, 1)
         overlay:SetFrameLevel(6)
-        button.overlay = overlay
-
+        
         local font, fontsize = GameFontNormalSmall:GetFont()
         local count = overlay:CreateFontString(nil, 'OVERLAY')
         count:SetFont(font, 10, 'THINOUTLINE')
         count:SetPoint('BOTTOMRIGHT', button, 'BOTTOMRIGHT', 1, 1)
 
-        button:SetPoint('BOTTOMLEFT', auras, 'BOTTOMLEFT')
-
         local remaining = button:CreateFontString(nil, 'OVERLAY')
         remaining:SetPoint('CENTER', icon, 0.5, 0) 
         remaining:SetFont(font, 11, 'THINOUTLINE')
         remaining:SetTextColor(1, 0.82, 0)
+        
+        button.overlay = overlay
         button.remaining = remaining
-
         button.parent = auras
         button.icon = icon
         button.count = count
@@ -204,7 +201,7 @@ local zoneDelay = function(self, elapsed)
         SetMapToCurrentZone()
         local zone = GetCurrentMapAreaID()
 
-        if ns.auras.instances[zone] then
+        if (ns.auras.instances[zone]) then
             instDebuffs = ns.auras.instances[zone]
         end
     else

@@ -48,6 +48,19 @@ function ns.PostUpdateIcon(icons, unit, icon, index, offset)
     if (not icon.remaining) then
         return
     end
+            
+    if (ns.config.units.target.colorPlayerDebuffsOnly) then
+        if (unit == 'target') then 
+            if (icon.debuff) then
+                if (not UnitIsFriend('player', unit) and icon.owner ~= 'player' and icon.owner ~= 'vehicle') then
+                    icon.overlay:SetVertexColor(0.45, 0.45, 0.45)
+                    icon.icon:SetDesaturated(true)
+                else
+                    icon.icon:SetDesaturated(false)
+                end
+            end
+        end
+    end
     
     local _, _, _, _, _, duration, expirationTime = UnitAura(unit, index, icon.filter)
 
