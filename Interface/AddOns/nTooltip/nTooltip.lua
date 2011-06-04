@@ -326,13 +326,13 @@ end
     -- function to short-display HP value on StatusBar
     
 local function ShortValue(value)
-	if value >= 1e7 then
+	if (value >= 1e7) then
 		return ('%.1fm'):format(value / 1e6):gsub('%.?0+([km])$', '%1')
-	elseif value >= 1e6 then
+	elseif (value >= 1e6) then
 		return ('%.2fm'):format(value / 1e6):gsub('%.?0+([km])$', '%1')
-	elseif value >= 1e5 then
+	elseif (value >= 1e5) then
 		return ('%.0fk'):format(value / 1e3)
-	elseif value >= 1e3 then
+	elseif (value >= 1e3) then
 		return ('%.1fk'):format(value / 1e3):gsub('%.?0+([km])$', '%1')
 	else
 		return value
@@ -340,30 +340,36 @@ local function ShortValue(value)
 end
 
 local function AddMouseoverTarget(self, unit)
-    local unitTargetName = UnitName(unit .. 'target')
-    local unitTargetClassColor = RAID_CLASS_COLORS[select(2, UnitClass(unit .. 'target'))] or { r = 1, g = 0, b = 1 }
+    local unitTargetName = UnitName(unit..'target')
+    local unitTargetClassColor = RAID_CLASS_COLORS[select(2, UnitClass(unit..'target'))] or { r = 1, g = 0, b = 1 }
     local unitTargetReactionColor = { 
-        r = select(1, UnitSelectionColor(unit .. 'target')), 
-        g = select(2, UnitSelectionColor(unit .. 'target')), 
-        b = select(3, UnitSelectionColor(unit .. 'target')) 
+        r = select(1, UnitSelectionColor(unit..'target')), 
+        g = select(2, UnitSelectionColor(unit..'target')), 
+        b = select(3, UnitSelectionColor(unit..'target')) 
     }
         
     if (UnitExists(unit..'target')) then
         if (UnitName('player') == unitTargetName) then
-            if (GetRaidTargetIndex(unit..'target') and not UnitIsDead(unit..'target')) then
+            if (GetRaidTargetIndex(unitTargetName) and not UnitIsDead(unit..'target')) then
                 self:AddLine(format('      |cffff00ff%s|r', string.upper(YOU)), 1, 1, 1)
+                for i = 3, GameTooltip:NumLines() do
+                    if (_G['GameTooltipTextLeft'..i]:GetText():find(string.upper(YOU))) then
+                        self.TargetIcon:SetPoint('LEFT', _G['GameTooltipTextLeft'..i], 10, 0)
+                        self.TargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..GetRaidTargetIndex(unit..'target'))      
+                    end
+                end
             else        
                 self:AddLine(format('  |cffff00ff%s|r', string.upper(YOU)), 1, 1, 1)
             end
         else
-            if (UnitIsPlayer(unit .. 'target')) then
-                if (GetRaidTargetIndex(unit .. 'target') and not UnitIsDead(unit .. 'target')) then
+            if (UnitIsPlayer(unit..'target')) then
+                if (GetRaidTargetIndex(unit..'target') and not UnitIsDead(unit..'target')) then
                     self:AddLine(format('      |cff%02x%02x%02x%s|r', unitTargetClassColor.r*255, unitTargetClassColor.g*255, unitTargetClassColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)
                     
                     for i = 3, GameTooltip:NumLines() do
                         if (_G['GameTooltipTextLeft'..i]:GetText():find(unitTargetName)) then
                             self.TargetIcon:SetPoint('LEFT', _G['GameTooltipTextLeft'..i], 10, 0)
-                            self.TargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..GetRaidTargetIndex(unit .. 'target'))      
+                            self.TargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..GetRaidTargetIndex(unit..'target'))      
                         end
                     end
                 else
@@ -376,7 +382,7 @@ local function AddMouseoverTarget(self, unit)
                     for i = 3, GameTooltip:NumLines() do
                         if (_G['GameTooltipTextLeft'..i]:GetText():find(unitTargetName)) then
                             self.TargetIcon:SetPoint('LEFT', _G['GameTooltipTextLeft'..i], 10, 0)
-                            self.TargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..GetRaidTargetIndex(unit .. 'target'))         
+                            self.TargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..GetRaidTargetIndex(unit..'target'))         
                         end
                     end 
                 else
