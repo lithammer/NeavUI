@@ -118,7 +118,7 @@ function ns.CreateCastbars(self, unit)
                 if (unit == 'pet') then
                     self:SetAlpha(1)
                     
-                    for _, spellID in pairs(ns.config.castbar.pet.ignoreList) do
+                    for _, spellID in pairs(ns.config.units.pet.castbar.ignoreList) do
                         if (UnitCastingInfo('pet') == GetSpellInfo(spellID)) then
                             self:SetAlpha(0)
                         end
@@ -144,7 +144,7 @@ function ns.CreateCastbars(self, unit)
             end
             
             if (ns.config.units.pet.castbar.ignoreSpells) then
-                if (unit == 'pet' and Castbar:GetAlpha() == 0) then
+                if (unit == 'pet' and self:GetAlpha() == 0) then
                     self:SetAlpha(1)
                 end
             end
