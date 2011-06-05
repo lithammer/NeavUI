@@ -37,19 +37,14 @@ end
 local function UpdateHealth(Health, unit, min, max)
     local self = Health:GetParent()
 
-    if (UnitIsDead(unit)) then
-        Health.Value:SetText(ns.sText(unit))
+    if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
         Health:SetStatusBarColor(0.5, 0.5, 0.5)
     else
-        if (min == max) then
-            Health.Value:SetText(ns.FormatValue(min))
-        else
-            Health.Value:SetText(ns.FormatValue(min)..' - '..format('%d%%', min/max * 100))
-        end
+        Health:SetStatusBarColor(0, 1, 0)
     end
-
-    Health:SetStatusBarColor(0, 1, 0)
-
+    
+    Health.Value:SetText(ns.HealthString(self, unit))
+ 
     if (self.Name.Background) then
         self.Name.Background:SetVertexColor(UnitSelectionColor(unit))
     end
@@ -74,6 +69,8 @@ local function CreateBossLayout(self, unit)
 	self:SetScript('OnLeave', UnitFrame_OnLeave)
 
     self:SetFrameStrata('MEDIUM')
+    
+    self.IsBossFrame = true
 
         -- healthbar
 
@@ -184,7 +181,7 @@ local function CreateBossLayout(self, unit)
     self:RegisterEvent('UNIT_THREAT_SITUATION_UPDATE', UpdateThreat)
     
     self.Buffs = CreateFrame('Frame', nil, self)
-    self.Buffs.size = config.units.target.auraSize
+    self.Buffs.size = 22
     self.Buffs:SetHeight(self.Buffs.size * 3)
     self.Buffs:SetWidth(self.Buffs.size * 5)
     self.Buffs:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 3, -6)

@@ -1,5 +1,10 @@
 
 local _, ns = ...
+local config = ns.config
+
+local GetTime = GetTime
+local floor, fmod = floor, math.fmod
+local day, hour, minute = 86400, 3600, 60
 
 ns.cUnit = function(unit)
     if (unit:match('party%d')) then
@@ -8,16 +13,12 @@ ns.cUnit = function(unit)
         return 'arena'
     elseif (unit:match('boss%d')) then
         return 'boss'
-   -- elseif (unit:match('pet')) then
-      --  return 'pet'
+    elseif (unit:match('raid%d')) then
+        return 'raid'
     else
         return unit
     end
 end
-
-local GetTime = GetTime
-local floor, fmod = floor, math.fmod
-local day, hour, minute = 86400, 3600, 60
 
 ns.FormatTime = function(time)
     if (time >= day) then
@@ -61,6 +62,45 @@ ns.FormatValue = function(self)
     else
         return self
     end
+end
+
+ns.HealthString = function(self, unit)
+    local max = UnitHealthMax(unit)
+    local min = UnitHealth(unit)
+    
+    local exist = config.units[ns.cUnit(unit)]
+    local showCurr = config.units[ns.cUnit(unit)].showCurrentHealth
+    local showPerc = config.units[ns.cUnit(unit)].showHealthPercent
+    local showHealthPerc = config.units[ns.cUnit(unit)].showHealthAndPercent
+    local deficitValue = config.units[ns.cUnit(unit)].deficitValue
+    
+    local healthString
+    
+    if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
+        healthString = ns.sText(unit)
+    else
+        if (exist and showCurr) then
+            healthString = ns.FormatValue(min)
+        elseif (exist and showHealthPerc or self.IsBossFrame or self.IsArenaFrame) then
+            healthString = ns.FormatValue(min)..((min/max * 100 < 100 and format(' - %d%%', min/max * 100)) or '')
+        elseif (exist and showPerc or self.IsTargetFrame) then
+            healthString = (min/max * 100 < 100 and format('%d%%', min/max * 100)) or ''
+        elseif (exist and deficitValue or self.IsRaidFrame) then
+            if ((min/max * 100) < 95) then
+                healthString = format('|cff%02x%02x%02x%s|r', 0.9*255, 0*255, 0*255, ns.DeficitValue(max-min))
+            else
+                healthString = ''
+            end
+        else
+            if (min == max) then
+                healthString = ns.FormatValue(min)
+            else
+                healthString = ns.FormatValue(min)..'/'..ns.FormatValue(max)
+            end
+        end
+    end
+    
+    return healthString
 end
 
 ns.MultiCheck = function(what, ...)

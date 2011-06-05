@@ -32,11 +32,7 @@ oUF.Tags['name'] = function(unit)
     if (unitRealm) and (unitRealm ~= '') then
         unitName = unitName..' (*)'
     end
-    
-    if (unit == 'targettarget') then
-        unitName = unitName:len() > 8 and ns.utf8sub(unitName, 8)..'..' or unitName
-    end
-    
+
     for i = 1, 4 do
         if (unit == 'party'..i) then
             colorA = oUF.colors.class[class]
@@ -45,7 +41,7 @@ oUF.Tags['name'] = function(unit)
 
     if (unit == 'player' or not UnitIsFriend('player', unit) and UnitIsPlayer(unit) and UnitClass(unit)) then
 		colorA = oUF.colors.class[class]
-	elseif (unit == 'targettarget' and UnitIsPlayer(unit) and UnitClass(unit)) then
+	elseif (unit == 'targettarget' or unit == 'focustarget' and UnitIsPlayer(unit) and UnitClass(unit)) then
 		colorA = oUF.colors.class[class]
 	else
 		colorB = {1, 1, 1}
@@ -58,7 +54,7 @@ oUF.Tags['name'] = function(unit)
 	end
 
     -- if (unitRealm) and (unitRealm ~= '') then
-        return format('|cff%02x%02x%02x%s|r', r*255, g*255, b*255, unitName)     -- no abbrev
+    return format('|cff%02x%02x%02x%s|r', r*255, g*255, b*255, unitName)     -- no abbrev
     -- else
         -- return format('|cff%02x%02x%02x%s|r', r*255, g*255, b*255, string.gsub(unitName, '%s(.[\128-\191]*)%S+%S', ' %1.'))     -- abbrev all words except the first
     -- end
@@ -76,7 +72,26 @@ oUF.Tags['phase'] = function(unit)
 	end
 end
 --]]
+
+local timer = {}
+
+oUF.TagEvents['notHere'] = 'PLAYER_FLAGS_CHANGED UNIT_CONNECTION'
+oUF.Tags['notHere'] = function(unit)
+    local name = UnitName(unit)
     
+    if (UnitIsAFK(unit) or not UnitIsConnected(unit)) then
+        if (not timer[name]) then
+            timer[name] = GetTime()
+        end
+        
+        local time = (GetTime() - timer[name])
+        
+        return ns.FormatTime(time)
+    elseif timer[name] then
+        timer[name] = nil
+    end
+end
+
 oUF.TagEvents['combopoints'] = 'UNIT_COMBO_POINTS PLAYER_TARGET_CHANGED'
 oUF.Tags['combopoints'] = function(unit)
 	local cp

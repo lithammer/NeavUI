@@ -64,6 +64,55 @@ for _, object in pairs({
     _G['InterfaceOptions'..object]:EnableMouse(false)
 end
 
+    -- drop down menu
+    
+local dropdown = CreateFrame('Frame', 'oUF_Neav_Raid_DropDown', UIParent, 'UIDropDownMenuTemplate')
+
+local function menu(self)
+    dropdown:SetParent(self)
+    return ToggleDropDownMenu(1, nil, dropdown, 'cursor', 0, 0)
+end
+
+local init = function(self)
+    if (InCombatLockdown()) then
+        return
+    end
+
+    local unit = self:GetParent().unit
+    local menu, name, id
+
+    if(not unit) then
+        return
+    end
+
+    if(UnitIsUnit(unit, 'player')) then
+        menu = 'SELF'
+    elseif(UnitIsUnit(unit, 'vehicle')) then
+        menu = 'VEHICLE'
+    elseif(UnitIsUnit(unit, 'pet')) then
+        menu = 'PET'
+    elseif(UnitIsPlayer(unit)) then
+        id = UnitInRaid(unit)
+        if(id) then
+            menu = 'RAID_PLAYER'
+            name = GetRaidRosterInfo(id)
+        elseif(UnitInParty(unit)) then
+            menu = 'PARTY'
+        else
+            menu = 'PLAYER'
+        end
+    else
+        menu = 'TARGET'
+        name = RAID_TARGET_ICON
+    end
+
+    if(menu) then
+        UnitPopup_ShowMenu(self, menu, unit, name, id)
+    end
+end
+
+UIDropDownMenu_Initialize(dropdown, init, 'MENU')
+
     -- oUF_AuraWatch
     -- Class buffs { spell ID, position [, {r, g, b, a}][, anyUnit][, hideCooldown][, hideCount] }
     
@@ -213,11 +262,11 @@ local function UpdateThreat(self, _, unit)
     end
     
     if (threatStatus and threatStatus >= 2) then
-        --self.Background:SetVertexColor(0.75, 0, 0)
+        -- self.Background:SetVertexColor(0.75, 0, 0)
         local r, g, b = GetThreatStatusColor(threatStatus)
         self.ThreatGlow:SetBackdropBorderColor(r, g, b, 1)
     else
-       -- self.Background:SetVertexColor(0, 0, 0)
+        -- self.Background:SetVertexColor(0, 0, 0)
         self.ThreatGlow:SetBackdropBorderColor(0, 0, 0, 0)
         
         if (self.ThreatText) then
@@ -260,25 +309,8 @@ local function UpdatePower(self, _, unit)
     UpdateHealPredictionSize(self)
 end
 
-local function GetHealthValue(unit)
-    local max = UnitHealthMax(unit)
-    local min = UnitHealth(unit)
-
-    if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
-        return format('|cff%02x%02x%02x%s|r', 0.5*255, 0.5*255, 0.5*255, ns.sText(unit))
-    else
-        if ((min/max * 100) < 95) then
-            return format('|cff%02x%02x%02x%s|r', 0.9*255, 0*255, 0*255, ns.DeficitValue(max-min))
-        else
-            return ''
-        end
-    end
-end
-
 local function UpdateHealth(Health, unit)
-	if (Health:GetParent().unit ~= unit) then
-        return
-    end
+    local self = Health:GetParent()
 
     if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
         if (Health:GetParent().Power) then
@@ -287,15 +319,18 @@ local function UpdateHealth(Health, unit)
     end
     
     if (not UnitIsPlayer(unit)) then
-        local r, g, b = 1, 0.82, 0.6
+        local r, g, b = 0, 0.82, 1
         Health:SetStatusBarColor(r, g, b)
         Health.bg:SetVertexColor(r * 0.25, g * 0.25, b * 0.25)
     end
     
-    Health.Value:SetText(GetHealthValue(unit))
+    Health.Value:SetText(ns.HealthString(self, unit))
 end
 
 local function CreateRaidLayout(self, unit)
+    self.menu = menu
+    self:RegisterForClicks('AnyUp')
+    
     self:SetScript('OnEnter', function(self)
 		UnitFrame_OnEnter(self)
         
@@ -312,13 +347,13 @@ local function CreateRaidLayout(self, unit)
         end
 	end)
     
+    self.IsRaidFrame = true
+    
         -- health bar
 
     self.Health = CreateFrame('StatusBar', nil, self)
     self.Health:SetStatusBarTexture(config.media.statusbar, 'ARTWORK')
-    self.Health:SetFrameStrata('LOW')
     self.Health:SetAllPoints(self)
-    self.Health:SetFrameLevel(1)
     self.Health:SetOrientation(config.units.raid.horizontalHealthBars and 'HORIZONTAL' or 'VERTICAL')
 
     self.Health.PostUpdate = UpdateHealth
@@ -360,8 +395,6 @@ local function CreateRaidLayout(self, unit)
 	if (config.units.raid.manabar.show) then
 		self.Power = CreateFrame('StatusBar', nil, self)
 		self.Power:SetStatusBarTexture(config.media.statusbar, 'ARTWORK')
-		self.Power:SetFrameStrata('MEDIUM')
-		self.Power:SetFrameLevel(1)
         
         if (config.units.raid.manabar.horizontalOrientation) then
             self.Power:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', 0, -1)
@@ -419,7 +452,19 @@ local function CreateRaidLayout(self, unit)
 	}
     
     UpdateHealPredictionSize(self)
+    
+        -- afk /offline timer, using frequentUpdates function from oUF tags
         
+    if (config.units.raid.showNotHereTimer) then
+        self.NotHere = self.Health:CreateFontString(nil, 'OVERLAY')
+        self.NotHere:SetPoint('CENTER', self, 'BOTTOM')
+        self.NotHere:SetFont(config.media.font, 11)
+        self.NotHere:SetShadowOffset(1, -1)
+        self.NotHere:SetTextColor(0, 1, 0)
+        self.NotHere.frequentUpdates = 1
+        self:Tag(self.NotHere, '[notHere]')
+    end
+    
         -- background texture
         
     self.Background = self.Health:CreateTexture(nil, 'BACKGROUND')
@@ -456,7 +501,7 @@ local function CreateRaidLayout(self, unit)
         self.ThreatText:SetShadowColor(0, 0, 0, 0)
         self.ThreatText:SetTextColor(1, 1, 1)
     end
-    
+
     table.insert(self.__elements, UpdateThreat)
     self:RegisterEvent('UNIT_THREAT_LIST_UPDATE', UpdateThreat)
     self:RegisterEvent('UNIT_THREAT_SITUATION_UPDATE', UpdateThreat)
@@ -544,7 +589,6 @@ local function CreateRaidLayout(self, unit)
         -- playertarget border
 
     if (config.units.raid.showTargetBorder) then
-        
         self.TargetBorder = self.Health:CreateTexture(nil, 'OVERLAY', self)
         -- self.TargetBorder:SetPoint('TOPRIGHT', self, 5, 5)
         -- self.TargetBorder:SetPoint('BOTTOMLEFT', self, -5, -5)
@@ -552,7 +596,7 @@ local function CreateRaidLayout(self, unit)
         self.TargetBorder:SetTexture('Interface\\Addons\\oUF_Neav\\media\\borderTarget')
         self.TargetBorder:SetVertexColor(unpack(config.units.raid.targetBorderColor))
         self.TargetBorder:Hide()
-
+ 
         self:RegisterEvent('PLAYER_TARGET_CHANGED', function()
             if (UnitIsUnit('target', self.unit)) then
                 self.TargetBorder:Show()
@@ -577,93 +621,150 @@ local function CreateRaidLayout(self, unit)
     return self
 end
 
+local raidAnchor = CreateFrame('Button', 'oUF_Neav_Raid_Anchor', UIParent)
+raidAnchor:SetSize(80, 80)
+raidAnchor:SetPoint('CENTER')
+raidAnchor:SetFrameStrata('HIGH')
+raidAnchor:SetMovable(true)
+raidAnchor:SetClampedToScreen(true)
+raidAnchor:SetUserPlaced(true)
+raidAnchor:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
+raidAnchor:SetBackdropColor(0, 1, 0, 0.55)
+raidAnchor:EnableMouse(true)
+raidAnchor:RegisterForDrag('LeftButton')
+raidAnchor:RegisterForClicks('anyup')
+raidAnchor:Hide()
+
+raidAnchor.Text = raidAnchor:CreateFontString(nil, 'OVERLAY')
+raidAnchor.Text:SetAllPoints(raidAnchor)
+raidAnchor.Text:SetFont('Fonts\\ARIALN.ttf', 13)
+raidAnchor.Text:SetText('oUF_Neav Raid_Anchor "'..config.units.raid.layout.initialAnchor..'"')
+
+local function ToggleNeavRaidAnchor()
+    if (InCombatLockdown()) then
+        local addonName = select(1, GetAddOnInfo('oUF_Neav'))
+        local formatName = '|cffFF0000'..addonName
+        print(formatName..' error:|r You cant do this in combat!') 
+        return
+    end
+    
+    if (not raidAnchor:IsShown()) then
+        raidAnchor:Show()
+    else
+        raidAnchor:Hide()
+    end
+end
+
+raidAnchor:SetScript('OnClick', function(self, button) 
+    if (button ~= 'LeftButton') then
+        self:Hide()
+    end
+end)
+
+raidAnchor:SetScript('OnDragStart', function(self) 
+    self:StartMoving()
+end)
+
+raidAnchor:SetScript('OnDragStop', function(self) 
+    self:StopMovingOrSizing()
+end)
+
+SlashCmdList['oUF_Neav_Raid_AnchorToggle'] = function()
+    ToggleNeavRaidAnchor()
+end
+SLASH_oUF_Neav_Raid_AnchorToggle1 = '/neavrt'
+
 oUF:RegisterStyle('oUF_Neav_Raid', CreateRaidLayout)
 oUF:Factory(function(self)
 self:SetActiveStyle('oUF_Neav_Raid')
-
-        local offset, vis
-        if (ns.config.units.raid.layout.orientationVertical == 'DOWN') then
-            offset = -ns.config.units.raid.frameSpacing
-        else
-            offset = ns.config.units.raid.frameSpacing
+    local rlayout = ns.config.units.raid.layout
+        
+    local relpoint, anchpoint, offset
+    if (rlayout.orientation == 'HORIZONTAL') then
+        if (rlayout.initialAnchor == 'TOPRIGHT' or rlayout.initialAnchor == 'TOPLEFT') then
+            relpoint = 'TOP'
+            anchpoint = 'TOP'
+            offset = -rlayout.frameSpacing
+        elseif (rlayout.initialAnchor == 'BOTTOMLEFT' or rlayout.initialAnchor == 'BOTTOMRIGHT') then
+            relpoint = 'BOTTOM'
+            anchpoint = 'BOTTOM'
+            offset = rlayout.frameSpacing
         end
-        
-        if (config.units.raid.showSolo and config.units.raid.showParty) then
-            vis = 'solo,party,raid' 
-        elseif (not config.units.raid.showSolo and config.units.raid.showParty) then    
-            vis = 'party,raid'
-        else
-            vis = 'raid'
+    elseif (rlayout.orientation == 'VERTICAL') then
+        if (rlayout.initialAnchor == 'TOPRIGHT') then
+            relpoint = 'TOP'
+            anchpoint = 'RIGHT'
+            offset = -rlayout.frameSpacing
+        elseif (rlayout.initialAnchor == 'TOPLEFT') then
+            relpoint = 'TOP'
+            anchpoint = 'LEFT'
+            offset = rlayout.frameSpacing
+        elseif (rlayout.initialAnchor == 'BOTTOMLEFT') then
+            relpoint = 'BOTTOM'
+            anchpoint = 'LEFT'
+            offset = rlayout.frameSpacing
+        elseif (rlayout.initialAnchor == 'BOTTOMRIGHT') then
+            relpoint = 'BOTTOM'
+            anchpoint = 'RIGHT'
+            offset = -rlayout.frameSpacing
         end
-        
-        local raid = {}
-        for i = 1, ns.config.units.raid.numGroups do
-        
-        if (ns.config.units.raid.layout.orientation == 'VERTICAL') then
-            table.insert(raid, self:SpawnHeader('oUF_Neav_Raid'..i, nil, vis,
-                'oUF-initialConfigFunction', ([[
-                self:SetWidth(%d)
-                self:SetHeight(%d)
-                ]]):format(ns.config.units.raid.width, ns.config.units.raid.height),
-                
-                'showRaid', true,
-                'showParty', true,
-                'showPlayer', true,
-                'showSolo', (ns.config.units.raid.showSolo and true) or false,
-    
-                'xOffset', offset,
-                'yOffset', offset,
-    
-                'maxColumns', 1,
-                'unitsPerColumn', 5,
-                'point', 'LEFT',
-                'columnAnchorPoint', 'TOP',
-                
-                'sortMethod', 'INDEX',
-                'groupFilter', i
-                )
-            )
-        else
-            table.insert(raid, self:SpawnHeader('oUF_Neav_Raid'..i, nil, vis,
+    end
+            
+    local raid = {}
+    for i = 1, rlayout.numGroups do
+        table.insert(raid, self:SpawnHeader('oUF_Neav_Raid'..i, nil, 'solo,party,raid',
             'oUF-initialConfigFunction', ([[
             self:SetWidth(%d)
             self:SetHeight(%d)
             ]]):format(ns.config.units.raid.width, ns.config.units.raid.height),
-                'showRaid', true,
-                'showParty', true,
-                'showPlayer', true,
-                'showSolo', (ns.config.units.raid.showSolo and true) or false,
-                
-                'columnSpacing', ns.config.units.raid.frameSpacing,
-                'unitsPerColumn', 1,
-                'maxColumns', 5,
-                'columnAnchorPoint', 'TOP',
-                
-                'sortMethod', 'INDEX',
-                'groupFilter', i
-                )
-            )
-        end
-
+            
+            'showRaid', true,
+            'showParty', config.units.raid.showParty,
+            'showPlayer', true,
+            'showSolo', config.units.raid.showSolo,
     
+            'xOffset', offset,
+            'yOffset', offset,
+            'columnSpacing', offset,
+            
+            'point', anchpoint,
+            'columnAnchorPoint', relpoint,
+            
+            'sortMethod', 'INDEX',
+            'groupFilter', i
+            )
+        )
+
         if (i == 1) then
-            raid[i]:SetPoint(unpack(ns.config.units.raid.layout.position))
+            raid[i]:SetPoint(rlayout.initialAnchor, raidAnchor)
         else
-            if (ns.config.units.raid.layout.orientation == 'HORIZONTAL') then
-                if (ns.config.units.raid.layout.orientationHORIZONTAL == 'RIGHT') then
-                    raid[i]:SetPoint('TOPLEFT', raid[i-1], 'TOPRIGHT', ns.config.units.raid.frameSpacing, 0)
-                else
-                    raid[i]:SetPoint('TOPRIGHT', raid[i-1], 'TOPLEFT', -ns.config.units.raid.frameSpacing, 0)
+            if (rlayout.initialAnchor == 'TOPLEFT') then
+                if (rlayout.orientation == 'HORIZONTAL') then
+                    raid[i]:SetPoint('TOPLEFT', raid[i-1], 'TOPRIGHT', rlayout.frameSpacing, 0)
+                elseif (rlayout.orientation == 'VERTICAL') then
+                    raid[i]:SetPoint('TOPLEFT', raid[i-1], 'BOTTOMLEFT', 0, -rlayout.frameSpacing)
                 end
-            else
-                if (ns.config.units.raid.layout.orientationVERTICAL == 'DOWN') then
-                    raid[i]:SetPoint('TOPLEFT', raid[i-1], 'BOTTOMLEFT', 0, -ns.config.units.raid.frameSpacing)
+            elseif (rlayout.initialAnchor == 'TOPRIGHT') then
+                if (rlayout.orientation == 'HORIZONTAL') then
+                    raid[i]:SetPoint('TOPRIGHT', raid[i-1], 'TOPLEFT', -rlayout.frameSpacing, 0)
                 else
-                    raid[i]:SetPoint('BOTTOMLEFT', raid[i-1], 'TOPLEFT', 0, ns.config.units.raid.frameSpacing)
+                    raid[i]:SetPoint('TOPRIGHT', raid[i-1], 'BOTTOMRIGHT', 0, -rlayout.frameSpacing)
+                end   
+            elseif (rlayout.initialAnchor == 'BOTTOMLEFT') then
+                if (rlayout.orientation == 'HORIZONTAL') then
+                    raid[i]:SetPoint('BOTTOMLEFT', raid[i-1], 'BOTTOMRIGHT', rlayout.frameSpacing, 0)
+                else
+                    raid[i]:SetPoint('BOTTOMLEFT', raid[i-1], 'TOPLEFT', 0, rlayout.frameSpacing)
+                end
+            elseif (rlayout.initialAnchor == 'BOTTOMRIGHT') then
+                    if (rlayout.orientation == 'HORIZONTAL') then
+                    raid[i]:SetPoint('BOTTOMRIGHT', raid[i-1], 'BOTTOMLEFT', -rlayout.frameSpacing, 0)
+                else
+                    raid[i]:SetPoint('BOTTOMRIGHT', raid[i-1], 'TOPRIGHT', 0, rlayout.frameSpacing)
                 end
             end
         end
-
+        
         raid[i]:SetScale(ns.config.units.raid.scale) 
     end
 end)

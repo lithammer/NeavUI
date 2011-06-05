@@ -26,22 +26,14 @@ end
 local function UpdateHealth(Health, unit, min, max)
     local self = Health:GetParent()
 
-    if (Health.Value) then
-        if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
-            Health.Value:SetText(ns.sText(unit))
-        else
-            if (min == max) then
-                Health.Value:SetText(ns.FormatValue(min))
-            else
-                Health.Value:SetText(ns.FormatValue(min)..' - '..format('%d%%', min/max * 100))
-            end
-        end
-    end
-    
     if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
         Health:SetStatusBarColor(0.5, 0.5, 0.5)
     else
         Health:SetStatusBarColor(0, 1, 0)
+    end
+    
+    if (Health.Value) then
+        Health.Value:SetText(ns.HealthString(self, unit))
     end
     
     if (self.Name.Background) then
@@ -56,7 +48,7 @@ local function UpdatePower(Power, unit, min, max)
         Power:SetValue(0)
     end
     
-    if (Health.Value) then
+    if (Power.Value) then
         if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
             Power.Value:SetText('')
         elseif (min == 0) then
@@ -81,6 +73,8 @@ local function CreateArenaLayout(self, unit)
     else
         self.arenaUnit = true
     end
+    
+    self.IsArenaFrame = true
     
         -- healthbar
 
@@ -172,7 +166,7 @@ local function CreateArenaLayout(self, unit)
         self.RaidIcon:SetSize(26, 26)
         
         self.Debuffs = CreateFrame('Frame', nil, self)
-        self.Debuffs.size = config.units.arena.auraSize
+        self.Debuffs.size = 22
         self.Debuffs:SetHeight(self.Debuffs.size * 3)
         self.Debuffs:SetWidth(self.Debuffs.size * 5)
         self.Debuffs:SetPoint('TOPLEFT', self, 'TOPRIGHT', 6, -6)

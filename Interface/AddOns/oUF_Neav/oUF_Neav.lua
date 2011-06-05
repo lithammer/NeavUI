@@ -409,31 +409,15 @@ end
 
 local function UpdateHealth(Health, unit, min, max)
     local self = Health:GetParent()
-    
-    local healthString, r, g, b
  
     if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
-        healthString = ns.sText(unit)
-        r, g, b = 0.5, 0.5, 0.5
+        Health:SetStatusBarColor(0.5, 0.5, 0.5)
     else
-        if (config.units[ns.cUnit(unit)] and config.units[ns.cUnit(unit)].showHealthAndPercent) then
-            healthString = ns.FormatValue(min)..((min/max * 100 < 100 and format(' - %d%%', min/max * 100)) or '')
-        elseif (config.units[ns.cUnit(unit)] and config.units[ns.cUnit(unit)].showHealthPercent or self.IsTargetUnit) then
-            healthString = (min/max * 100 < 100 and format('%d%%', min/max * 100)) or ''
-        else
-            if (min == max) then
-                healthString = ns.FormatValue(min)
-            else
-                healthString = ns.FormatValue(min)..'/'..ns.FormatValue(max)
-            end
-        end
-
-        r, g, b = 0, 1, 0
+        Health:SetStatusBarColor(0, 1, 0)
     end
     
-    Health.Value:SetText(healthString)
-    Health:SetStatusBarColor(r, g, b)
-    
+    Health.Value:SetText(ns.HealthString(self, unit))
+
     UpdateFrame(self, unit)
     UpdatePortraitColor(self, unit, min, max)
 end
@@ -465,12 +449,19 @@ local function UpdatePower(Power, unit, min, max)
     Power.Value:SetText(powerString)
 end
 
+local focusAnchor = CreateFrame('Frame', 'oUF_Neav_Focus_Anchor', UIParent)
+focusAnchor:SetSize(1, 1)
+focusAnchor:SetPoint('CENTER')
+focusAnchor:SetMovable(true)
+focusAnchor:SetClampedToScreen(true)
+focusAnchor:SetUserPlaced(true)
+
 local function CreateUnitLayout(self, unit)
-    self.IsMainUnit = ns.MultiCheck(unit, 'player', 'target', 'focus')
-    self.IsTargetUnit = ns.MultiCheck(unit, 'targettarget', 'focustarget')
-    self.IsPartyUnit = unit:match('party')
+    self.IsMainFrame = ns.MultiCheck(unit, 'player', 'target', 'focus')
+    self.IsTargetFrame = ns.MultiCheck(unit, 'targettarget', 'focustarget')
+    self.IsPartyFrame = unit:match('party')
     
-    if (self.IsTargetUnit) then
+    if (self.IsTargetFrame) then
         self:SetFrameStrata('MEDIUM')
     else
         self:SetFrameStrata('LOW')
@@ -508,7 +499,7 @@ local function CreateUnitLayout(self, unit)
 
     self.Texture = self.Health:CreateTexture('$parentTextureFrame', 'ARTWORK')
 
-    if (self.IsTargetUnit) then
+    if (self.IsTargetFrame) then
         self.Texture:SetSize(93, 45)
         self.Texture:SetPoint('CENTER', self, 0, 0)
         self.Texture:SetTexture('Interface\\TargetingFrame\\UI-TargetofTargetFrame')
@@ -523,7 +514,7 @@ local function CreateUnitLayout(self, unit)
         self.Texture:SetPoint('CENTER', self, 20, -7)
         self.Texture:SetTexture('Interface\\TargetingFrame\\UI-TargetingFrame')
         self.Texture:SetTexCoord(0.09375, 1, 0, 0.78125)
-    elseif (self.IsPartyUnit) then
+    elseif (self.IsPartyFrame) then
         self.Texture:SetSize(128, 64)
         self.Texture:SetPoint('TOPLEFT', self, 0, -2)
         self.Texture:SetTexture('Interface\\TargetingFrame\\UI-PartyFrame')
@@ -542,10 +533,10 @@ local function CreateUnitLayout(self, unit)
     elseif (unit == 'target' or unit == 'focus') then
         self.Health:SetSize(119, 12)
         self.Health:SetPoint('TOPRIGHT', self.Texture, -105, -41)
-    elseif (self.IsTargetUnit) then
+    elseif (self.IsTargetFrame) then
         self.Health:SetSize(47, 7)
         self.Health:SetPoint('CENTER', self, 22, 4)
-    elseif (self.IsPartyUnit) then   
+    elseif (self.IsPartyFrame) then   
         self.Health:SetPoint('TOPLEFT', self.Texture, 47, -12)
         self.Health:SetSize(70, 7) 
     end
@@ -559,7 +550,7 @@ local function CreateUnitLayout(self, unit)
     self.Health.Value = self.Health:CreateFontString(nil, 'ARTWORK')
 	self.Health.Value:SetFont(config.media.font, config.font.fontSmall, nil)
     self.Health.Value:SetShadowOffset(1, -1)
-    self.Health.Value:SetPoint('CENTER', self.Health, 0, self.IsTargetUnit and -4 or 1)
+    self.Health.Value:SetPoint('CENTER', self.Health, 1, self.IsTargetFrame and -3.5 or 1)
 
         -- powerbar
 
@@ -576,7 +567,7 @@ local function CreateUnitLayout(self, unit)
     
         -- power text
         
-    if (not self.IsTargetUnit) then
+    if (not self.IsTargetFrame) then
         self.Power.Value = self.Health:CreateFontString(nil, 'ARTWORK')
         self.Power.Value:SetFont(config.media.font, config.font.fontSmall, nil)
         self.Power.Value:SetShadowOffset(1, -1)
@@ -607,11 +598,11 @@ local function CreateUnitLayout(self, unit)
     elseif (unit == 'target' or unit == 'focus') then
         self.Name:SetWidth(110)
         self.Name:SetPoint('CENTER', self, 'CENTER', -30, 12)
-    elseif (self.IsTargetUnit) then
+    elseif (self.IsTargetFrame) then
         self.Name:SetWidth(65)
         self.Name:SetJustifyH('LEFT')
         self.Name:SetPoint('TOPLEFT', self, 'CENTER', -3, -11)
-    elseif (self.IsPartyUnit) then    
+    elseif (self.IsPartyFrame) then    
         self.Name:SetJustifyH('CENTER')
         self.Name:SetHeight(10)
         self.Name:SetPoint('TOPLEFT', self.Power, 'BOTTOMLEFT', 0, -3)
@@ -621,7 +612,7 @@ local function CreateUnitLayout(self, unit)
 
         -- level
 
-    if (self.IsMainUnit) then
+    if (self.IsMainFrame) then
         self.Level = self.Health:CreateFontString(nil, 'ARTWORK')
         self.Level:SetFont('Interface\\AddOns\\oUF_Neav\\media\\fontNumber.ttf', 17, 'OUTLINE')
         self.Level:SetShadowOffset(0, 0)
@@ -641,10 +632,10 @@ local function CreateUnitLayout(self, unit)
     elseif (unit == 'target' or unit == 'focus') then
         self.Portrait:SetSize(64, 64)
         self.Portrait:SetPoint('TOPRIGHT', self.Texture, -42, -12)
-    elseif (self.IsTargetUnit) then
+    elseif (self.IsTargetFrame) then
         self.Portrait:SetSize(40, 40)
         self.Portrait:SetPoint('LEFT', self, 'CENTER', -43, 0)
-    elseif (self.IsPartyUnit) then
+    elseif (self.IsPartyFrame) then
         self.Portrait:SetSize(37, 37)
         self.Portrait:SetPoint('TOPLEFT', self.Texture, 7, -6)
     end
@@ -662,7 +653,7 @@ local function CreateUnitLayout(self, unit)
         elseif (unit == 'target' or unit == 'focus') then
             self.PvP:SetSize(64, 64)
             self.PvP:SetPoint('TOPRIGHT', self.Texture, 3, -20)
-        elseif (self.IsPartyUnit) then
+        elseif (self.IsPartyFrame) then
             self.PvP:SetSize(40, 40)
             self.PvP:SetPoint('TOPLEFT', self.Texture, -9, -10)
         end
@@ -675,9 +666,9 @@ local function CreateUnitLayout(self, unit)
     
     if (unit == 'target' or unit == 'focus') then
         self.MasterLooter:SetPoint('TOPLEFT', self.Portrait, 3, 3)
-    elseif (self.IsTargetUnit) then
+    elseif (self.IsTargetFrame) then
         self.MasterLooter:SetPoint('CENTER', self.Portrait, 'TOPLEFT', 3, -3)
-    elseif (self.IsPartyUnit) then  
+    elseif (self.IsPartyFrame) then  
         self.MasterLooter:SetSize(14, 14)
         self.MasterLooter:SetPoint('TOPLEFT', self.Texture, 29, 0)
     end
@@ -689,9 +680,9 @@ local function CreateUnitLayout(self, unit)
 
     if (unit == 'target' or unit == 'focus') then
         self.Leader:SetPoint('TOPRIGHT', self.Portrait, -3, 2)
-    elseif (self.IsTargetUnit) then
+    elseif (self.IsTargetFrame) then
         self.Leader:SetPoint('TOPLEFT', self.Portrait, -3, 4)
-    elseif (self.IsPartyUnit) then
+    elseif (self.IsPartyFrame) then
         self.Leader:SetSize(14, 14)
         self.Leader:SetPoint('CENTER', self.Portrait, 'TOPLEFT', 1, -1)
     end
@@ -702,7 +693,7 @@ local function CreateUnitLayout(self, unit)
     self.RaidIcon:SetPoint('CENTER', self.Portrait, 'TOP', 0, -1)
     self.RaidIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
 
-    if (self.IsMainUnit) then
+    if (self.IsMainFrame) then
         self.RaidIcon:SetSize(26, 26)
     else
         self.RaidIcon:SetSize(20, 20)
@@ -711,7 +702,7 @@ local function CreateUnitLayout(self, unit)
         -- phase text
     
     --[[
-    if (unit == 'target' or unit == 'focus' or self.IsPartyUnit) then
+    if (unit == 'target' or unit == 'focus' or self.IsPartyFrame) then
         self.PhaseText = self.Health:CreateFontString(nil, 'OVERLAY')
         self.PhaseText:SetFont(config.media.font, config.font.fontSmall)
         self.PhaseText:SetShadowOffset(1, -1)
@@ -730,7 +721,7 @@ local function CreateUnitLayout(self, unit)
 
         -- ready check icons
 
-    if (unit == 'player' or self.IsPartyUnit) then
+    if (unit == 'player' or self.IsPartyFrame) then
         self.ReadyCheck = self.Health:CreateTexture(nil, 'OVERLAY')
         self.ReadyCheck:SetPoint('TOPRIGHT', self.Portrait, -7, -7)
         self.ReadyCheck:SetPoint('BOTTOMLEFT', self.Portrait, 7, 7)
@@ -758,7 +749,7 @@ local function CreateUnitLayout(self, unit)
         self.ThreatGlow:SetPoint('TOPRIGHT', self.Texture, -14, 1)
         self.ThreatGlow:SetTexture('Interface\\TargetingFrame\\UI-TargetingFrame-Flash')
         self.ThreatGlow:SetTexCoord(0, 0.945, 0, 0.182)
-    elseif (self.IsPartyUnit) then
+    elseif (self.IsPartyFrame) then
         self.ThreatGlow:SetSize(128, 63)
         self.ThreatGlow:SetPoint('TOPLEFT', self.Texture, -3, 4)
         self.ThreatGlow:SetTexture('Interface\\TargetingFrame\\UI-PartyFrame-Flash')
@@ -770,7 +761,7 @@ local function CreateUnitLayout(self, unit)
     
         -- lfg role icon
 
-    if (self.IsPartyUnit or unit == 'player' or unit == 'target') then
+    if (self.IsPartyFrame or unit == 'player' or unit == 'target') then
         self.LFDRole = self.Health:CreateTexture('$parentRoleIcon', 'OVERLAY')
         self.LFDRole:SetSize(20, 20)
         
@@ -925,7 +916,7 @@ local function CreateUnitLayout(self, unit)
                 self.updateTimer = self.updateTimer + elapsed
                     
                 if (self.updateTimer > 0.5) then
-                    if (IsPVPTimerRunning() and self.PvP:IsShown()) then
+                    if (IsPVPTimerRunning() and GetPVPTimer() ~= 0) then
                         self.PvPTimer:SetText(ns.FormatTime(math.floor(GetPVPTimer()/1000)))
                     else
                         self.PvPTimer:SetText(nil)
@@ -1028,7 +1019,7 @@ local function CreateUnitLayout(self, unit)
 		self:SetSize(175, 42)
 
         self.Debuffs = CreateFrame('Frame', nil, self)
-        self.Debuffs.size = config.units.pet.auraSize
+        self.Debuffs.size = 20
         self.Debuffs:SetWidth(self.Debuffs.size * 4)
         self.Debuffs:SetHeight(self.Debuffs.size)
         self.Debuffs.spacing = 4
@@ -1074,7 +1065,7 @@ local function CreateUnitLayout(self, unit)
     if (unit == 'target') then
         self.Auras = CreateFrame('Frame', nil, self)
         self.Auras.gap = true
-        self.Auras.size = config.units.target.auraSize
+        self.Auras.size = 20
         self.Auras:SetHeight(self.Auras.size * 3)
         self.Auras:SetWidth(self.Auras.size * 5)
         self.Auras:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', -3, -5)
@@ -1114,7 +1105,7 @@ local function CreateUnitLayout(self, unit)
     
     if (unit == 'focus') then
         self.Debuffs = CreateFrame('Frame', nil, self)
-        self.Debuffs.size = config.units.focus.auraSize + 7
+        self.Debuffs.size = 26
         self.Debuffs:SetHeight(self.Debuffs.size * 3)
         self.Debuffs:SetWidth(self.Debuffs.size * 3)
         self.Debuffs:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', -3.5, -5)
@@ -1129,15 +1120,33 @@ local function CreateUnitLayout(self, unit)
         self.TabText:SetText(FOCUS)
         self.TabMiddle:SetPoint('BOTTOM', self.NameBackground, 'TOP', 0, 1)
         self.TabMiddle:SetWidth(self.TabMiddle:GetWidth() + 8)
+        
+            -- the drag frame
+
+        self.DragFrame = CreateFrame('Frame')
+        self.DragFrame:SetPoint('TOP', self.TabMiddle)
+        self.DragFrame:SetPoint('BOTTOM', self.TabMiddle)
+        self.DragFrame:SetPoint('LEFT', self.TabMiddle, -15, 0)
+        self.DragFrame:SetPoint('RIGHT', self.TabMiddle, 15, 0)
+        self.DragFrame:RegisterForDrag('LeftButton')
+        self.DragFrame:EnableMouse(true)
+        
+        self.DragFrame:SetScript('OnDragStart', function() 
+            focusAnchor:StartMoving()
+        end)
+
+        self.DragFrame:SetScript('OnDragStop', function() 
+            focusAnchor:StopMovingOrSizing()
+        end)
     end
     
-    if (self.IsTargetUnit) then
+    if (self.IsTargetFrame) then
 		self:SetSize(85, 20)
 
         self.Debuffs = CreateFrame('Frame', nil, self)
         self.Debuffs:SetHeight(20)
         self.Debuffs:SetWidth(20 * 3)
-        self.Debuffs.size = 22
+        self.Debuffs.size = 20
         self.Debuffs.spacing = 4
         self.Debuffs:SetPoint('TOPLEFT', self.Health, 'TOPRIGHT', 5, 0)
         self.Debuffs.initialAnchor = 'LEFT'
@@ -1146,14 +1155,14 @@ local function CreateUnitLayout(self, unit)
         self.Debuffs.num = 4
     end
 
-    if (self.IsPartyUnit) then
+    if (self.IsPartyFrame) then
 		self:SetSize(105, 30)
 
         self.Debuffs = CreateFrame('Frame', nil, self)
         self.Debuffs:SetFrameStrata('BACKGROUND')
         self.Debuffs:SetHeight(20)
         self.Debuffs:SetWidth(20 * 3)
-        self.Debuffs.size = config.units.party.auraSize
+        self.Debuffs.size = 20
         self.Debuffs.spacing = 4
         self.Debuffs:SetPoint('TOPLEFT', self.Health, 'TOPRIGHT', 5, 1)
         self.Debuffs.initialAnchor = 'LEFT'
@@ -1170,7 +1179,7 @@ local function CreateUnitLayout(self, unit)
     
         -- oor and oUF_SpellRange settings
         
-    if (unit == 'pet' or self.IsPartyUnit) then
+    if (unit == 'pet' or self.IsPartyFrame) then
         self.Range = {
             insideAlpha = 1,
             outsideAlpha = 0.3,
@@ -1197,19 +1206,9 @@ local function CreateUnitLayout(self, unit)
         self.Debuffs.showDebuffType = true
     end
     
-    self:SetScale(config.units[ns.cUnit(unit)].scale)
+    self:SetScale(config.units[ns.cUnit(unit)].scale or 1)
             
 	return self
-end
-
-local focusAnchor = CreateFrame('Frame', 'oUF_Neav_Focus_Anchor', UIParent)
-
-if (config.units.focus.makeMoveable) then
-    focusAnchor:SetSize(1, 1)
-    focusAnchor:SetPoint(unpack(config.units.focus.position))
-    focusAnchor:SetMovable(true)
-    focusAnchor:SetClampedToScreen(true)
-    focusAnchor:SetUserPlaced(true)
 end
 
 oUF:RegisterStyle('oUF_Neav', CreateUnitLayout)
@@ -1227,24 +1226,9 @@ oUF:Factory(function(self)
     targettarget:SetPoint('TOPLEFT', target, 'BOTTOMRIGHT', -78, -15)
 
     local focus = self:Spawn('focus', 'oUF_Neav_Focus')
+    focus:SetPoint('CENTER', focusAnchor, 3, 0)
+    focus:SetClampedToScreen(true)
 
-    if (config.units.focus.makeMoveable) then
-        focus:SetPoint('CENTER', focusAnchor, 3, 0)
-        focus:SetClampedToScreen(true)
-        focus:RegisterForDrag('LeftButton')
-        focus:SetScript('OnDragStart', function() 
-            if (IsShiftKeyDown() and IsAltKeyDown()) then
-                focusAnchor:StartMoving()
-            end
-        end)
-
-        focus:SetScript('OnDragStop', function() 
-            focusAnchor:StopMovingOrSizing()
-        end)
-    else
-        focus:SetPoint(unpack(config.units.focus.position))
-    end
-    
     local focustarget = self:Spawn('focustarget', 'oUF_Neav_FocusTarget')
     focustarget:SetPoint('TOPLEFT', focus, 'BOTTOMRIGHT', -78, -15)
 

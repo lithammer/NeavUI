@@ -28,22 +28,22 @@ ns.config = {
             mouseoverText = false,
             
             scale = 1.193,
-            style = 'NORMAL', -- 'NORMAL', 'RARE', 'ELITE' or 'CUSTOM'
-            customTexture = 'Interface\\AddOns\\oUF_Neav\\media\\customFrameTexture',
+            style = 'NORMAL',                                                               -- 'NORMAL' 'RARE' 'ELITE' 'CUSTOM'
+            customTexture = 'Interface\\AddOns\\oUF_Neav\\media\\customFrameTexture',       -- Custom texture if style = 'CUSTOM'
             
             showHealthPercent = false,
             showPowerPercent = false,
             
             druidManaFrequentUpdates = false,
             
-            showVengeance = false, -- attention: vengeance and swingtimer will overlap eachother, 
-            showSwingTimer = false, -- change the pos in the oUF_Neav file if you want both
+            showVengeance = false,                                                          -- Attention: vengeance and swingtimer will overlap eachother, 
+            showSwingTimer = false,                                                         -- Change the pos in the oUF_Neav file if you want both
             showStatusFlash = true,
             showCombatFeedback = true,
             
             position = {'TOPLEFT', UIParent, 34, -30},
             
-            ['castbar'] = {
+            castbar = {
                 show = true, 
                             
                 width = 220,
@@ -58,7 +58,7 @@ ns.config = {
                 
                 icon = {
                     show = false,
-                    position = 'LEFT',   -- 'LEFT' or 'RIGHT'
+                    position = 'LEFT',                                                      -- 'LEFT' 'RIGHT'
                     positionOutside = true,
                 },
                 
@@ -78,7 +78,7 @@ ns.config = {
             
             position = {43, -20},
             
-            ['castbar'] = {
+            castbar = {
                 show = true, 
                         
                 width = 220,
@@ -87,13 +87,13 @@ ns.config = {
                             
                 icon = {
                     show = false,
-                    position = 'LEFT',   -- 'LEFT' or 'RIGHT'
+                    position = 'LEFT',                                                      -- 'LEFT' 'RIGHT'
                     positionOutside = true,
                 },
                 
                 position = {'BOTTOM', UIParent, 'BOTTOM', 0, 390},
                 
-                ignoreSpells = true, -- hides castbar for spells listed in "ignoreList"
+                ignoreSpells = true,                                                        -- Hides castbar for spells listed in "ignoreList"
                 ignoreList = {
                     3110,	-- firebolt (imp)
                     31707,	-- waterbolt (water elemental)
@@ -105,17 +105,16 @@ ns.config = {
             mouseoverText = false,
             
             scale = 1.193,
-            
-            auraSize = 20,
+
             numBuffs = 20,
             numDebuffs = 20,
             
             showComboPoints = true,
             showComboPointsAsNumber = false,
-            numComboPointsColor = {0.9, 0, 0},      -- textcolor of the combopoints if showComboPointsAsNumber is true
+            numComboPointsColor = {0.9, 0, 0},                                              -- Textcolor of the combopoints if showComboPointsAsNumber = true
             
             showHealthPercent = true,
-            showHealthAndPercent = true,   -- overrides showHealthPercent
+            showHealthAndPercent = true,                                                    -- Overrides showHealthPercent
             showPowerPercent = false,
             
             showCombatFeedback = true,
@@ -124,7 +123,7 @@ ns.config = {
             
             position = {'TOPLEFT', UIParent, 270, -30},
             
-            ['castbar'] = {
+            castbar = {
                 show = true, 
                 
                 width = 220,
@@ -135,7 +134,7 @@ ns.config = {
                             
                 icon = {
                     show = false,
-                    position = 'LEFT',   -- 'LEFT' or 'RIGHT'
+                    position = 'LEFT',                                                      -- 'LEFT' 'RIGHT'
                     positionOutside = false,
                 },
                 
@@ -149,25 +148,21 @@ ns.config = {
         
         ['focus'] = {
             mouseoverText = false,
-            makeMoveable = true,
             
             scale = 1.193,
-            
-            auraSize = 22,
+
             numDebuffs = 6,
             
             showHealthPercent = false,
-            showHealthAndPercent = false,   -- overrides showHealthPercent
+            showHealthAndPercent = true,                                                   -- Overrides showHealthPercent
             showPowerPercent = false,
             
             showCombatFeedback = true,
                         
             enableFocusToggleKeybind = true,
-            focusToggleKey = 'type4', -- type1, type2 (mousebutton 1 or 2, 3, 4, 5 etc. works too)
+            focusToggleKey = 'type4',                                                       -- type1, type2 (mousebutton 1 or 2, 3, 4, 5 etc. works too)
             
-            position = {'CENTER', UIParent, 0, 200}, -- if makeMoveable is enabled: this is just necessary for the first login/ui reload after you changed makeMoveable
-            
-            ['castbar'] = {
+            castbar = {
                 show = true, 
                 
                 width = 176,
@@ -194,7 +189,6 @@ ns.config = {
             mouseoverText = true,
             
             scale = 1.11,
-            auraSize = 22,
             
             position = {'TOPLEFT', UIParent, 25, -200},
         },
@@ -205,40 +199,32 @@ ns.config = {
             showParty = true,
             
             nameLength = 4,
-            
+
             width = 42,
             height = 40,
             scale = 1.1, 
-            frameSpacing = 7,
-            
-                -- notice: the position is important. 
-                -- So if you want to set the raidframes to the TOPLEFT position of you interface, 
-                -- a 'TOPLEFT' anchorpoint is necessary. Same for TOPRIGHT, BOTTOMLEFT, TOPLEFT etc.
 
             layout = {
-            
-                    -- position = {RAID_ANCHROPOINT, ANCHOR_FRAME, ANCHORFRAME_ANCHOR, x, y}
-                    
-                position = {'TOPLEFT', UIParent, 'CENTER', 330, 150}, -- just change the 'TOPLEFT' to 'BOTTOMRIGHT/LEFT' etc.
-                orientation = 'HORIZONTAL', -- 'VERTICAL' 'HORIZONTAL'
-                orientationHORIZONTAL = 'RIGHT', -- 'LEFT', 'RIGHT'
-                orientationVERTICAL = 'DOWN', -- 'UP', 'DOWN'
+                frameSpacing = 7,
+                numGroups = 8,
+                
+                initialAnchor = 'TOPLEFT',                                                  -- 'TOPLEFT' 'BOTTOMLEFT' 'TOPRIGHT' 'BOTTOMRIGHT'
+                orientation = 'HORIZONTAL',                                                 -- 'VERTICAL' 'HORIZONTAL'
             },
-            
-            numGroups = 8,
-            
-            showThreatText = false,
-            showRolePrefix = false,
-            showRessurectText = false, -- 4.2 only, not working
-            showMainTankIcon = true,
+
+            showThreatText = false,                                                         -- Show a red 'THREAT' text on the raidframes in addition to the glow
+            showRolePrefix = false,                                                         -- A simple role abbrev..tanks = '>'..healer = '+'..dds = '-'
+            showNotHereTimer = true,                                                        -- A afk and offline timer
+            showMainTankIcon = true,                                                        -- A little shield on the top of a raidframe if the unit is marked as maintank
+            -- showRessurectText = false,                                                   -- Not working atm. just a placeholder
             showMouseoverHighlight = true,
-            
-            showTargetBorder = true,
+
+            showTargetBorder = true,                                                        -- Ahows a little border on the raid/party frame if this unit is your target
             targetBorderColor = {1, 1, 1},
 
-            smoothUpdatesForAllClasses = true, -- Set to true to enable smooth updates for healing classes
+            smoothUpdatesForAllClasses = true,                                              -- Set to true to enable smooth updates for healing classes
             
-            iconSize = 22,
+            iconSize = 22,                                                                  -- The size of the debufficon
             indicatorSize = 7,
 
             horizontalHealthBars = false,
@@ -250,11 +236,11 @@ ns.config = {
         },
         
         ['boss'] = {
-            scale = 1.0,
+            scale = 1,
 
             position = {'TOPRIGHT', UIParent, 'TOPRIGHT', -80, -300},
             
-            ['castbar'] = {
+            castbar = {
                 color = {1, 0, 0},
                             
                 icon = {
@@ -267,13 +253,13 @@ ns.config = {
         
         ['arena'] = {
             show = true,
-            scale = 1.0,
+            scale = 1,
             
             auraSize = 22,
             
             position = {'TOPRIGHT', UIParent, 'TOPRIGHT', -80, -300},
             
-            ['castbar'] = {
+            castbar = {
                 icon = {
                     size = 22,
                 },
