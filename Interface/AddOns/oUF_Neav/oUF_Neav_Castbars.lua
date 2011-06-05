@@ -133,9 +133,9 @@ function ns.CreateCastbars(self, unit)
                     local down, up, lagHome, lagWorld = GetNetStats()
                     local avgLag = (lagHome + lagWorld) / 2
                     
-                    Castbar.Latency:ClearAllPoints()
-                    Castbar.Latency:SetPoint('LEFT', self, 'BOTTOMLEFT', 1, -2) 
-                    Castbar.Latency:SetText(string.format('%.0f', avgLag)..'ms')
+                    self.Latency:ClearAllPoints()
+                    self.Latency:SetPoint('LEFT', self, 'BOTTOMLEFT', 1, -2) 
+                    self.Latency:SetText(string.format('%.0f', avgLag)..'ms')
                 end
             end
     
@@ -144,11 +144,11 @@ function ns.CreateCastbars(self, unit)
             end
             
             if (ns.config.units.pet.castbar.ignoreSpells) then
-                if (unit == 'pet' and Castbar:GetAlpha() == 0) then              
+                if (unit == 'pet' and Castbar:GetAlpha() == 0) then
                     self:SetAlpha(1)
                 end
             end
-        end    
+        end
         
         self.Castbar.CustomDelayText = ns.CustomDelayText
         self.Castbar.CustomTimeText = ns.CustomTimeText
