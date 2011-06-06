@@ -13,7 +13,7 @@ ns.cUnit = function(unit)
         return 'arena'
     elseif (unit:match('boss%d')) then
         return 'boss'
-    elseif (unit:match('raid%d')) then
+    elseif (unit:match('raid')) then
         return 'raid'
     else
         return unit
