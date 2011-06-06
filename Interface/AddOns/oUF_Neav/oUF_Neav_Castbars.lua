@@ -7,7 +7,7 @@ local normalTexture = 'Interface\\AddOns\\!Beautycase\\media\\textureNormal'
 local function UpdateCastbarColor(self, unit, config)
     if (self.interrupt) then
         ns.ColorBorder(self, interruptTexture, unpack(config.interruptColor))
-        
+
         if (self.IconOverlay) then
             ns.ColorBorder(self.IconOverlay, interruptTexture, unpack(config.interruptColor))
         end
@@ -21,7 +21,7 @@ local function UpdateCastbarColor(self, unit, config)
 end
 
     -- create the castbars
-    
+
 function ns.CreateCastbars(self, unit)
     local config = ns.config.units[ns.cUnit(unit)].castbar
 
@@ -31,7 +31,7 @@ function ns.CreateCastbars(self, unit)
         self.Castbar:SetScale(0.93)
         self.Castbar:SetSize(config.width, config.height)
         self.Castbar:SetStatusBarColor(unpack(config.color))
-    
+
         if (unit == 'focus') then
             self.Castbar:SetPoint('BOTTOM', self, 'TOP', 0, 25)
         else
@@ -45,17 +45,17 @@ function ns.CreateCastbars(self, unit)
 
         if (unit == 'player') then
             local playerColor = RAID_CLASS_COLORS[select(2, UnitClass('player'))]
-            
+
             if (config.classcolor) then
                 self.Castbar:SetStatusBarColor(playerColor.r, playerColor.g, playerColor.b)
                 self.Castbar.Background:SetVertexColor(playerColor.r * 0.3, playerColor.g * 0.3, playerColor.b * 0.3, 0.8)
             end
-            
+
             if (config.showSafezone) then
                 self.Castbar.SafeZone = self.Castbar:CreateTexture(nil, 'BORDER') 
                 self.Castbar.SafeZone:SetTexture(unpack(config.safezoneColor))
             end
-                
+
             if (config.showLatency) then
                 self.Castbar.Latency = self.Castbar:CreateFontString(nil, 'OVERLAY')
                 self.Castbar.Latency:SetFont(ns.config.media.font, ns.config.font.fontBig - 1)
@@ -63,17 +63,17 @@ function ns.CreateCastbars(self, unit)
                 self.Castbar.Latency:SetVertexColor(0.6, 0.6, 0.6, 1)
             end
         end
-        
+
         self.Castbar:CreateBorder(11)
         self.Castbar:SetBorderPadding(3)
-        
+
         ns.CreateCastbarStrings(self)
-        
+
         if (config.icon.show) then
             self.Castbar.Icon = self.Castbar:CreateTexture(nil, 'ARTWORK')
             self.Castbar.Icon:SetSize(config.height + 2, config.height + 2)
             self.Castbar.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-            
+
             if (config.icon.position == 'LEFT') then
                 self.Castbar.Icon:SetPoint('RIGHT', self.Castbar, 'LEFT', (config.icon.positionOutside and -8) or 0, 0)
             else
@@ -95,29 +95,29 @@ function ns.CreateCastbars(self, unit)
         end
 
             -- interrupt indicator
-    
+
         self.Castbar.PostCastStart = function(self, unit)
             if (unit == 'player') then
                 if (self.Latency) then
                     local down, up, lagHome, lagWorld = GetNetStats()
                     local avgLag = (lagHome + lagWorld) / 2
-                    
+
                     self.Latency:ClearAllPoints()
                     self.Latency:SetPoint('RIGHT', self, 'BOTTOMRIGHT', -1, -2) 
                     self.Latency:SetText(string.format('%.0f', avgLag)..'ms')
                 end
             end
-            
+
             if (unit == 'target' or unit == 'focus') then
                 UpdateCastbarColor(self, unit, config)
             end
 
                 -- hide some special spells like waterbold or firebold (pets) because it gets really spammy
-                
-            if (ns.config.units.pet.castbar.ignoreSpells) then   
+
+            if (ns.config.units.pet.castbar.ignoreSpells) then
                 if (unit == 'pet') then
                     self:SetAlpha(1)
-                    
+
                     for _, spellID in pairs(ns.config.castbar.pet.ignoreList) do
                         if (UnitCastingInfo('pet') == GetSpellInfo(spellID)) then
                             self:SetAlpha(0)
@@ -125,31 +125,31 @@ function ns.CreateCastbars(self, unit)
                     end
                 end
 			end
-        end    
+        end
 
         self.Castbar.PostChannelStart = function(self, unit)
             if (unit == 'player') then
                 if (self.Latency) then
                     local down, up, lagHome, lagWorld = GetNetStats()
                     local avgLag = (lagHome + lagWorld) / 2
-                    
+
                     self.Latency:ClearAllPoints()
-                    self.Latency:SetPoint('LEFT', self, 'BOTTOMLEFT', 1, -2) 
+                    self.Latency:SetPoint('LEFT', self, 'BOTTOMLEFT', 1, -2)
                     self.Latency:SetText(string.format('%.0f', avgLag)..'ms')
                 end
             end
-    
+
             if (unit == 'target' or unit == 'focus') then
                 UpdateCastbarColor(self, unit, config)
             end
-            
+
             if (ns.config.units.pet.castbar.ignoreSpells) then
-                if (unit == 'pet' and self:GetAlpha() == 0) then              
+                if (unit == 'pet' and self:GetAlpha() == 0) then
                     self:SetAlpha(1)
                 end
             end
-        end    
-        
+        end
+
         self.Castbar.CustomDelayText = ns.CustomDelayText
         self.Castbar.CustomTimeText = ns.CustomTimeText
     end
@@ -165,24 +165,24 @@ for i = 1, MIRRORTIMER_NUMTIMERS do
     bar:SetWidth(220)
     bar:CreateBorder(11)
     bar:SetBorderPadding(3)
-    
+
     if (i > 1) then
         local p1, p2, p3, p4, p5 = bar:GetPoint()
         bar:SetPoint(p1, p2, p3, p4, p5 - 15)
     end
-                    
+
     local statusbar = _G['MirrorTimer' .. i .. 'StatusBar']
     statusbar:SetStatusBarTexture(ns.config.media.statusbar)
     statusbar:SetAllPoints(bar)
-    
+
     local backdrop = select(1, bar:GetRegions())
     backdrop:SetTexture('Interface\\Buttons\\WHITE8x8')
     backdrop:SetVertexColor(0, 0, 0, 0.5)
     backdrop:SetAllPoints(bar)
-    
+
     local border = _G['MirrorTimer' .. i .. 'Border']
     border:Hide()
-    
+
     local text = _G['MirrorTimer' .. i .. 'Text']
     text:SetFont(ns.config.media.font, ns.config.font.fontBig)
     text:ClearAllPoints()
@@ -200,25 +200,25 @@ f:SetScript('OnEvent', function(self, event)
 			bar:SetScale(1.132)
 			bar:SetHeight(18)
 			bar:SetWidth(220)
-            
+
             for i = 1, select('#', bar:GetRegions()) do
                 local region = select(i, bar:GetRegions())
-                
+
                 if (region and region:GetObjectType() == 'Texture') then
                     region:SetTexture(nil)
                 end
-                
+
                 if (region and region:GetObjectType() == 'FontString') then
                     region:ClearAllPoints()
                     region:SetPoint('CENTER', bar)
                     region:SetFont(ns.config.media.font, ns.config.font.fontBig)
                 end
             end
-            
+
             bar:CreateBorder(11)
             bar:SetBorderPadding(3)
             bar:SetStatusBarTexture(ns.config.media.statusbar)
-            
+
 			local backdrop = select(1, bar:GetRegions())
 			backdrop:SetTexture('Interface\\Buttons\\WHITE8x8')
 			backdrop:SetVertexColor(0, 0, 0, 0.5)
