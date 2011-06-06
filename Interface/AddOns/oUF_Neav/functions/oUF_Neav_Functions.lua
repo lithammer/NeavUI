@@ -68,24 +68,24 @@ ns.HealthString = function(self, unit)
     local max = UnitHealthMax(unit)
     local min = UnitHealth(unit)
     
-    local exist = config.units[ns.cUnit(unit)]
-    local showCurr = config.units[ns.cUnit(unit)].showCurrentHealth
-    local showPerc = config.units[ns.cUnit(unit)].showHealthPercent
-    local showHealthPerc = config.units[ns.cUnit(unit)].showHealthAndPercent
-    local deficitValue = config.units[ns.cUnit(unit)].deficitValue
-    
     local healthString
-    
+    local uconf = config.units[ns.cUnit(unit)]
+
     if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
         healthString = ns.sText(unit)
-    else
-        if (exist and showCurr) then
+    elseif (uconf) then
+        local showCurr = uconf.showCurrentHealth
+        local showPerc = uconf.showHealthPercent
+        local showHealthPerc = uconf.showHealthAndPercent
+        local deficitValue = uconf.deficitValue
+    
+        if (showCurr) then
             healthString = ns.FormatValue(min)
-        elseif (exist and showHealthPerc or self.IsBossFrame or self.IsArenaFrame) then
+        elseif (showHealthPerc or self.IsBossFrame or self.IsArenaFrame) then
             healthString = ns.FormatValue(min)..((min/max * 100 < 100 and format(' - %d%%', min/max * 100)) or '')
-        elseif (exist and showPerc or self.IsTargetFrame) then
+        elseif (showPerc or self.IsTargetFrame) then
             healthString = (min/max * 100 < 100 and format('%d%%', min/max * 100)) or ''
-        elseif (exist and deficitValue or self.IsRaidFrame) then
+        elseif (deficitValue or self.IsRaidFrame) then
             if ((min/max * 100) < 95) then
                 healthString = format('|cff%02x%02x%02x%s|r', 0.9*255, 0*255, 0*255, ns.DeficitValue(max-min))
             else
@@ -97,6 +97,12 @@ ns.HealthString = function(self, unit)
             else
                 healthString = ns.FormatValue(min)..'/'..ns.FormatValue(max)
             end
+        end
+    else
+        if (min == max) then
+            healthString = ns.FormatValue(min)
+        else
+            healthString = ns.FormatValue(min)..'/'..ns.FormatValue(max)
         end
     end
     
