@@ -1,16 +1,9 @@
 
 nMainbar = {
-    indicator = { 
-        range = 'R',             -- you can set everything as range indicator, but only shown if you use 'hotkey' as OutOfRangeColoring :)  -- \226\128\162 
-    },
-    
     button = { 
         showVehicleKeybinds = true,
         showKeybinds = false,
-        showMacronames = false, 
-        OutOfRangeColoring = 'ICON',    -- 'ICON'
-                                        -- 'HOTKEY' (will show the range indicator instead of the hotkey if ['Keybind = false'] )
-                                        --  false (no range indicator)
+        showMacronames = false,
 
         countFontsize = 19,
         countFont = 'Interface\\AddOns\\nMainbar\\media\\font.ttf',
@@ -55,7 +48,7 @@ nMainbar = {
         shortBar = true,
         skinButton = true,
         
-        moveableExtraBars = false,  -- make the pet, possess, shapeshift and totembar maveable, even when the mainmenubar is not "short"
+        moveableExtraBars = false,  -- make the pet, possess, shapeshift and totembar moveable, even when the mainmenubar is not "short"
     },
 
     vehicle = {

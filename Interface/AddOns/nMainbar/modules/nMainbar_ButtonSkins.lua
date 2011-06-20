@@ -63,13 +63,21 @@ hooksecurefunc('PetActionBar_Update', function()
                 
                 local normal = _G[name..i..'NormalTexture2'] or _G[name..i..'NormalTexture']
                 normal:ClearAllPoints()
-                normal:SetPoint('TOPRIGHT', button, 1, 1)
-                normal:SetPoint('BOTTOMLEFT', button, -1, -1)
+                normal:SetPoint('TOPRIGHT', button, 1.5, 1.5)
+                normal:SetPoint('BOTTOMLEFT', button, -1.5, -1.5)
                 normal:SetVertexColor(nMainbar.color.Normal[1], nMainbar.color.Normal[2], nMainbar.color.Normal[3], 1)
     
                 local flash = _G[name..i..'Flash']
                 flash:SetTexture(flashtex)
                 
+                if (not InCombatLockdown()) then
+                    local cooldown = _G[name..i..'Cooldown']
+                    cooldown:ClearAllPoints()
+                    cooldown:SetPoint('TOPRIGHT', icon, -2.33, -2.33)
+                    cooldown:SetPoint('BOTTOMLEFT', icon, 1.66, 2.33)
+                    -- cooldown:SetDrawEdge(true)
+                end
+        
                 button:SetCheckedTexture(path..'textureChecked')
                 button:GetCheckedTexture():SetAllPoints(normal)
                 button:GetCheckedTexture():SetDrawLayer('OVERLAY')
@@ -205,6 +213,7 @@ hooksecurefunc('ActionButton_UpdateUsable', function(self)
     _G[self:GetName()..'NormalTexture']:SetVertexColor(nMainbar.color.Normal[1], nMainbar.color.Normal[2], nMainbar.color.Normal[3], 1) 
     
 	local isUsable, notEnoughMana = IsUsableAction(self.action)
+    
 	if (isUsable) then
 		_G[self:GetName()..'Icon']:SetVertexColor(1, 1, 1)
 	elseif (notEnoughMana) then
@@ -218,18 +227,14 @@ hooksecurefunc('ActionButton_UpdateHotkeys', function(self)
     local hotkey = _G[self:GetName()..'HotKey']
     
     if (not IsSpecificButton(self, 'VehicleMenuBarActionButton')) then
-        if (not nMainbar.button.showKeybinds) then
-            hotkey:SetText(nMainbar.indicator.range)
-            hotkey:Hide()
-        end
-    
-        if (nMainbar.button.showKeybinds or nMainbar.button.OutOfRangeColoring == 'HOTKEY') then
-            hotkey:Show()
+        if (nMainbar.button.showKeybinds) then
             hotkey:ClearAllPoints()
             hotkey:SetPoint('TOPRIGHT', self, 0, -3)
             hotkey:SetDrawLayer('OVERLAY')
             hotkey:SetFont(nMainbar.button.hotkeyFont, nMainbar.button.hotkeyFontsize, 'OUTLINE')
             hotkey:SetVertexColor(nMainbar.color.HotKeyText[1], nMainbar.color.HotKeyText[2], nMainbar.color.HotKeyText[3])
+        else
+            hotkey:Hide()    
         end
     else
         UpdateVehicleButton()
@@ -268,54 +273,21 @@ function ActionButton_OnUpdate(self, elapsed)
 	if (rangeTimer) then
 		rangeTimer = rangeTimer - elapsed
 		if (rangeTimer <= 0) then
+            local isInRange = false
             
-            if (nMainbar.button.OutOfRangeColoring == 'ICON') then
-                local isInRange = false
-                if (ActionHasRange(self.action) and IsActionInRange(self.action) == 0) then
-                    _G[self:GetName()..'Icon']:SetVertexColor(unpack(nMainbar.color.OutOfRange))
-                    isInRange = true
-                end
-                    
-                if (self.isInRange ~= isInRange) then
-                    self.isInRange = isInRange
-                    ActionButton_UpdateUsable(self)
-                end
-                rangeTimer = TOOLTIP_UPDATE_TIME
+            if (ActionHasRange(self.action) and IsActionInRange(self.action) == 0) then
+                _G[self:GetName()..'Icon']:SetVertexColor(unpack(nMainbar.color.OutOfRange))
+                isInRange = true
             end
-            
-            if (nMainbar.button.OutOfRangeColoring == 'HOTKEY') then
-                local rangeTimer = self.rangeTimer;
-                if (rangeTimer) then
-                    rangeTimer = rangeTimer - elapsed;
-
-                    if (rangeTimer <= 0) then
-                        local hotkey = _G[self:GetName()..'HotKey']
-                        local valid = IsActionInRange(self.action)
-                        if (hotkey:GetText() == RANGE_INDICATOR or hotkey:GetText() == nMainbar.indicator.range) then
-                            hotkey:SetText(nMainbar.indicator.range)
-                            if (valid == 0) then
-                                hotkey:Show()
-                                hotkey:SetVertexColor(unpack(nMainbar.color.OutOfRange))
-                            elseif (valid == 1) then
-                                hotkey:Show()
-                                hotkey:SetVertexColor(unpack(nMainbar.color.HotKeyText))
-                            else
-                                hotkey:Hide()
-                            end
-                        else
-                            if (valid == 0) then
-                                hotkey:SetVertexColor(unpack(nMainbar.color.OutOfRange))
-                            else
-                                hotkey:SetVertexColor(unpack(nMainbar.color.HotKeyText))
-                            end
-                        end
-                        rangeTimer = TOOLTIP_UPDATE_TIME
-                    end
                     
-                    self.rangeTimer = rangeTimer
-                end
+            if (self.isInRange ~= isInRange) then
+                self.isInRange = isInRange
+                ActionButton_UpdateUsable(self)
             end
+                
+            rangeTimer = TOOLTIP_UPDATE_TIME
 		end
+        
 		self.rangeTimer = rangeTimer
 	end
 end

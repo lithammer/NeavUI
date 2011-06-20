@@ -6,5 +6,3 @@ end
 
 MainMenuBar:SetScale(nMainbar.MainMenuBar.scale)
 VehicleMenuBar:SetScale(nMainbar.vehicle.scale)
-
-

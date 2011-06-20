@@ -11,6 +11,7 @@ modules\nMainbar_BarLeft.lua
 modules\nMainbar_BarRight.lua
 modules\nMainbar_ButtonSkins.lua
 modules\nMainbar_ExpBar.lua
+modules\nMainbar_Hotkey.lua
 modules\nMainbar_Mouseover.lua
 modules\nMainbar_PetBar.lua
 modules\nMainbar_PossessBar.lua
