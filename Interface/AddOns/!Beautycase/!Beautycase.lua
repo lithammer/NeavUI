@@ -1,95 +1,35 @@
 --[[
     
     How to use:
-         
-    ----------------------------------------------
+
+    myFrame:CreateBeautyBorder(borderSize)
     
-    CreateBorder(myFrame, borderSize, r, g, b, uL1, uL2, uR1, uR2, bL1, bL2, bR1, bR2)
-        
-        myFrame         -> The name of your frame, It must be a frame not a texture/fontstring
-        borderSize      -> The size of the simple square Border. 10-12 looks amazing with the default beautycase texture
-        r, g, b         -> The colors of the Border. r = Red, g = Green, b = Blue
-        uL1, uL2        -> top left x, top left y
-        uR1, uR2        -> top right x, top right y
-        bL1, bL2        -> bottom left x, bottom left y
-        bR1, bR2        -> bottom right x, bottom right y
+    myFrame:SetBeautyBorderSize(borderSize)
+    myFrame:SetBeautyBorderPadding(number or [uL1, uL2, uR1, uR2, bL1, bL2, bR1, bR2])
     
+    myFrame:SetBeautyBorderTexture(texture or 'default' or 'white')
+    myFrame:SetBeautyShadowTexture(texture)
     
-    for example:
-            
-            local r, g, b = 1, 1, 0 -- for yellow
-            CreateBorder(myFrame, 12, r, g, b, 1, 1, 1, 1, 1, 1, 1, 1)
-        
-        
-        shorter method if the spacing between the frame is always the same
-        
-            CreateBorder(myFrame, 12, r, g, b, 1)
-            
-        
-        or for no spacing
-        
-            CreateBorder(myFrame, 12, r, g, b)
+    myFrame:SetBeautyBorderColor(r, g, b)
+    myFrame:SetBeautyShadowColor(r, g, b)
     
+    myFrame:HideBeautyBorder()
+    myFrame:ShowBeautyBorder()
     
-    ----------------------------------------------
+    myFrame:HasBeautyBorder() - true if has a beautycase border, false if not
     
-    If you want you recolor the border or shadow (for aggrowarning or similar) you can make this with this little trick
-    
-        ColorBorder(myFrame, r, g, b, alpha)
-        ColorBorderShadow(myFrame, r, g, b, alpha)
-        
-    ----------------------------------------------
-    
-    For changing the border or shadow texture
-    
-        SetBorderTexture(myFrame, texture.tga)
-        SetBorderShadowTexture(myFrame, texture.tga)
-     
-    ----------------------------------------------
-    
-    For all Border Infos
-    
-        local borderSize, texture, r, g, b, alpha = GetBorderInfo(myFrame)
-     
-    ----------------------------------------------
-    
-    
-    
-    ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    
-    
-    NEW!
-    
-    myFrame:CreateBorder(borderSize)
-    myFrame:SetBorderSize(borderSize)
-    
-    myFrame:SetBorderPadding(number or [uL1, uL2, uR1, uR2, bL1, bL2, bR1, bR2])
-    
-    myFrame:SetBorderTexture(texture)
-    myFrame:SetBorderShadowTexture(texture)
-    
-    myFrame:SetBorderColor(r, g, b)
-    myFrame:SetBorderShadowColor(r, g, b)
-    
-    myFrame:HideBorder()
-    myFrame:ShowBorder()
-    
-    myFrame:GetBorder() - true if has a beautycase border, otherwise false
-    
-    local borderSize, texture, r, g, b, alpha = myFrame:GetBorderInfo()
-    
-    
-    ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    
+    local borderSize, texture, r, g, b, alpha = myFrame:GetBeautyBorderInfo()
+
 --]]
 
 local addonName = select(1, GetAddOnInfo('!Beautycase'))
 local formatName = '|cffFF0000'..addonName
 
 local textureNormal = 'Interface\\AddOns\\!Beautycase\\media\\textureNormal'
+local textureWhite = 'Interface\\AddOns\\!Beautycase\\media\\textureNormalWhite'
 local textureShadow = 'Interface\\AddOns\\!Beautycase\\media\\textureShadow'
 
-local function GetBorder(self)
+local function HasBeautyBorder(self)
     if (self.beautyBorder) then
         return true
     else
@@ -97,7 +37,7 @@ local function GetBorder(self)
     end
 end
 
-function GetBorderInfo(self)
+local function GetBeautyBorderInfo(self)
     if (not self) then
         print(formatName..' error:|r This frame does not exist!') 
     elseif (self.beautyBorder) then
@@ -111,7 +51,7 @@ function GetBorderInfo(self)
     end
 end
 
-local function SetBorderPadding(self, uL1, ...)
+local function SetBeautyBorderPadding(self, uL1, ...)
     if (not self) then
         print(formatName..' error:|r This frame does not exist!') 
         return
@@ -131,10 +71,10 @@ local function SetBorderPadding(self, uL1, ...)
     end
     
     local space
-    if (GetBorderInfo(self) >= 10) then
+    if (GetBeautyBorderInfo(self) >= 10) then
         space = 3
     else
-        space = GetBorderInfo(self)/3.5
+        space = GetBeautyBorderInfo(self)/3.5
     end
         
     if (self.beautyBorder) then
@@ -152,8 +92,12 @@ local function SetBorderPadding(self, uL1, ...)
     end
 end
 
-function ColorBorder(self, ...)
-    local r, g, b, a = ...
+local function SetBeautyBorderColor(self, r, ...)
+    local r, g, b, a = r, ...
+    
+    if (type(r) == 'table') then
+        r, g, b, a = unpack(r)
+    end
     
     if (not self) then
         print(formatName..' error:|r This frame does not exist!') 
@@ -166,8 +110,12 @@ function ColorBorder(self, ...)
     end
 end
 
-function ColorBorderShadow(self, ...)
-    local r, g, b, a = ...
+local function SetBeautyShadowColor(self, r, ...)
+    local r, g, b, a = r, ...
+    
+    if (type(r) == 'table') then
+        r, g, b, a = unpack(r)
+    end
     
     if (not self) then
         print(formatName..' error:|r This frame does not exist!') 
@@ -180,19 +128,25 @@ function ColorBorderShadow(self, ...)
     end
 end
 
-function SetBorderTexture(self, texture)
+local function SetBeautyBorderTexture(self, texture)
     if (not self) then
         print(formatName..' error:|r This frame does not exist!') 
     elseif (self.beautyBorder) then
         for i = 1, 8 do
-            self.beautyBorder[i]:SetTexture(texture)
+            if (texture == 'default') then
+                self.beautyBorder[i]:SetTexture(textureNormal)
+            elseif (texture == 'white') then
+                self.beautyBorder[i]:SetTexture(textureWhite)
+            else  
+                self.beautyBorder[i]:SetTexture(texture)
+            end
         end
     else
         print(formatName..' error:|r Invalid frame! This object has no '..addonName..' border')  
     end
 end
 
-function SetBorderShadowTexture(self, texture)
+local function SetBeautyShadowTexture(self, texture)
     if (not self) then
         print(formatName..' error:|r This frame does not exist!') 
     elseif (self.beautyShadow) then
@@ -204,7 +158,7 @@ function SetBorderShadowTexture(self, texture)
     end
 end
 
-local function SetBorderSize(self, size)
+local function SetBeautyBorderSize(self, size)
     if (not self) then
         print(formatName..' error:|r This frame does not exist!') 
     elseif (self.beautyShadow) then
@@ -217,7 +171,7 @@ local function SetBorderSize(self, size)
     end
 end
 
-local function HideBorder(self)
+local function HideBeautyBorder(self)
     if (not self) then
         print(formatName..' error:|r This frame does not exist!') 
     elseif (self.beautyShadow) then
@@ -230,7 +184,7 @@ local function HideBorder(self)
     end
 end
 
-local function ShowBorder(self)
+local function ShowBeautyBorder(self)
     if (not self) then
         print(formatName..' error:|r This frame does not exist!') 
     elseif (self.beautyShadow) then
@@ -243,7 +197,7 @@ local function ShowBorder(self)
     end
 end
 
-local function ApplyBorder(self, borderSize, R, G, B, uL1, ...)
+local function FuncCreateBorder(self, borderSize, R, G, B, uL1, ...)
     if (not self) then
         print(formatName..' error:|r This frame does not exist!') 
         return
@@ -255,7 +209,7 @@ local function ApplyBorder(self, borderSize, R, G, B, uL1, ...)
         return
     end
     
-    if (self.HasBeautyBorder) then
+    if (self.beautyBorder) then
         return
     end
     
@@ -273,7 +227,7 @@ local function ApplyBorder(self, borderSize, R, G, B, uL1, ...)
         space = borderSize/3.5
     end
         
-    if (not self.HasBeautyBorder) then
+    if (not self.beautyBorder) then
     
         self.beautyShadow = {}
         for i = 1, 8 do
@@ -348,38 +302,28 @@ local function ApplyBorder(self, borderSize, R, G, B, uL1, ...)
         self.beautyShadow[8]:SetTexCoord(2/3, 1, 1/3, 2/3)
         self.beautyShadow[8]:SetPoint('TOPRIGHT', self.beautyShadow[2], 'BOTTOMRIGHT')
         self.beautyShadow[8]:SetPoint('BOTTOMRIGHT', self.beautyShadow[4], 'TOPRIGHT')
-        
-        self.HasBeautyBorder = true
     end
-end
-
-function CreateBorder(self, borderSize, R, G, B, uL1, ...)
-    ApplyBorder(self, borderSize, R, G, B, uL1, ...)
-end
-
-local function FuncCreateBorder(self, borderSize)
-    ApplyBorder(self, borderSize)
 end
 
 local function addapi(object)
 	local mt = getmetatable(object).__index
+
+	mt.CreateBeautyBorder = FuncCreateBorder
     
-	mt.CreateBorder = FuncCreateBorder
-    mt.SetBorderSize = SetBorderSize
+    mt.SetBeautyBorderSize = SetBeautyBorderSize
+    mt.SetBeautyBorderPadding = SetBeautyBorderPadding
     
-    mt.SetBorderPadding = SetBorderPadding
+    mt.SetBeautyBorderColor = SetBeautyBorderColor
+    mt.SetBeautyBorderTexture = SetBeautyBorderTexture
+
+    mt.SetBeautyShadowColor = SetBeautyShadowColor
+    mt.SetBeautyShadowTexture = SetBeautyShadowTexture
+        
+    mt.HideBeautyBorder = HideBeautyBorder
+    mt.ShowBeautyBorder = ShowBeautyBorder
     
-    mt.SetBorderTexture = SetBorderTexture
-    mt.SetBorderShadowTexture = SetBorderShadowTexture
-    
-    mt.SetBorderColor = ColorBorder
-    mt.SetBorderShadowColor = ColorBorderShadow
-    
-    mt.HideBorder = HideBorder
-    mt.ShowBorder = ShowBorder
-    
-    mt.GetBorder = GetBorder
-    mt.GetBorderInfo = GetBorderInfo
+    mt.HasBeautyBorder = HasBeautyBorder
+    mt.GetBeautyBorderInfo = GetBeautyBorderInfo
 end
 
 
@@ -389,8 +333,6 @@ local handled = {
 
 local object = CreateFrame('Frame')
 addapi(object)
-addapi(object:CreateTexture())
-addapi(object:CreateFontString())
 
 object = EnumerateFrames()
 
