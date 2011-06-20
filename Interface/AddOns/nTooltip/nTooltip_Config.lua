@@ -4,13 +4,13 @@ nTooltip = {
         'BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT', -27.35, 27.35
     },
     
-    disableFade = false, -- can cause errors or a buggy tooltip!
+    disableFade = false,                        -- Can cause errors or a buggy tooltip!
     
-    reactionBorderColor = false, -- WOHA! Try this out!
+    reactionBorderColor = false,
     itemqualityBorderColor = true,
     
     showPlayerTitles = false,
-    showPVPIcons = false, -- show pvp icons instead of just a prefix
+    showPVPIcons = false,                        -- Show pvp icons instead of just a prefix
     abbrevRealmNames = false, 
     showMouseoverTarget = true,
     
@@ -21,9 +21,9 @@ nTooltip = {
         fontSize = 13,
         font = 'Fonts\\ARIALN.ttf',
         showOutline = false,
-        textPos = 'CENTER',    -- possible 'TOP' 'BOTTOM' 'CENTER'
+        textPos = 'CENTER',                     -- Possible 'TOP' 'BOTTOM' 'CENTER'
         
-        reactionColoring = false,    -- overrides customColor 
+        reactionColoring = false,               -- Overrides customColor 
         customColor = {
             apply = false, 
             r = 0, 

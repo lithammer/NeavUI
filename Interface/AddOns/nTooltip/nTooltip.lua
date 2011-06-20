@@ -27,10 +27,7 @@ GameTooltipStatusBar:SetHeight(7)
 GameTooltipStatusBar:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
     
     -- load texture paths locally
-    
-local whiteTexture = 'Interface\\AddOns\\!Beautycase\\media\\textureNormalWhite'
-local normalTexture = 'Interface\\AddOns\\!Beautycase\\media\\textureNormal'
-    
+
 local function ApplyTooltipStyle(self)
     local bgsize, bsize
 
@@ -61,7 +58,7 @@ local function ApplyTooltipStyle(self)
         self:SetBackdropColor(0, 0, 0, 0.70)
     end)
     
-    self:CreateBorder(bsize)
+    self:CreateBeautyBorder(bsize)
 end
 
 hooksecurefunc('GameTooltip_ShowCompareItem', function(self)  
@@ -133,15 +130,15 @@ if (nTooltip.itemqualityBorderColor) then
                     
                 if (quality) then
                     local r, g, b = GetItemQualityColor(quality)
-                    self:SetBorderTexture(whiteTexture)
-                    self:SetBorderColor(r, g, b)
+                    self:SetBeautyBorderTexture('white')
+                    self:SetBeautyBorderColor(r, g, b)
                 end
             end
         end)
         
         tooltip:HookScript('OnTooltipCleared', function(self)
-            self:SetBorderTexture(normalTexture)
-            self:SetBorderColor(1, 1, 1)
+            self:SetBeautyBorderTexture('default')
+            self:SetBeautyBorderColor(1, 1, 1)
         end)
     end
 end
@@ -160,6 +157,7 @@ end
 
 local function GameTooltip_UnitCreatureType(unit)
     local creaturetype = UnitCreatureType(unit)
+    
     if (creaturetype) then
         return creaturetype
     else
@@ -169,6 +167,7 @@ end
 
 local function GameTooltip_UnitClassification(unit)
     local class = UnitClassification(unit)
+    
     if (class == 'worldboss') then
         return '|cffFF0000'..BOSS..'|r '
     elseif (class == 'rareelite') then
@@ -208,33 +207,6 @@ local function GameTooltip_UnitType(unit)
     end
 end
 
-local function GameTooltip_GetUnitPVPIcon(unit) 
-    local factionGroup = UnitFactionGroup(unit)
-    if (UnitIsPVPFreeForAll(unit)) then
-        return 'Interface\\TargetingFrame\\UI-PVP-FFA'
-    elseif (factionGroup and UnitIsPVP(unit)) then
-        return 'Interface\\TargetingFrame\\UI-PVP-'..factionGroup
-    else
-        return ''
-    end
-end
-        
-    -- create some icons, they dont like cookies
-    
-GameTooltip.Icon = GameTooltip:CreateTexture('$parentRaidIcon', 'OVERLAY')
-GameTooltip.Icon:SetPoint('TOPLEFT', GameTooltip, 10, -11)
-GameTooltip.Icon:SetSize(14, 14)
-
-if (nTooltip.showMouseoverTarget) then
-    GameTooltip.TargetIcon = GameTooltip:CreateTexture('$parentRaidIcon', 'OVERLAY')
-    GameTooltip.TargetIcon:SetSize(14, 14)
-end
-
-if (nTooltip.showPVPIcons) then
-    GameTooltip.PVPIcon = GameTooltip:CreateTexture('$parentRaidIcon', 'OVERLAY')
-    GameTooltip.PVPIcon:SetSize(35, 35)
-end
-
     -- tooltip position
     
 hooksecurefunc('GameTooltip_SetDefaultAnchor', function(self)
@@ -251,18 +223,10 @@ GameTooltip:HookScript('OnTooltipCleared', function(self)
     if (GameTooltip.PVPIcon) then
         GameTooltip.PVPIcon:SetTexture(nil)
     end
-    
-    if (self.TargetIcon) then
-        self.Icon:SetTexture(nil)
-    end
-    
-    if (self.TargetIcon) then
-        self.TargetIcon:SetTexture(nil)
-    end
-    
+
     if (nTooltip.reactionBorderColor) then
-        self:SetBorderTexture(normalTexture)
-        self:SetBorderColor(1, 1, 1)
+        self:SetBeautyBorderTexture('default')
+        self:SetBeautyBorderColor(1, 1, 1)
     end
 end)
 
@@ -323,6 +287,40 @@ local function GetItemLVL(unit)
     return 0
 end
 
+local function GetUnitRaidIcon(unit)
+    local index = GetRaidTargetIndex(unit)
+
+    if (index) then
+        if (UnitIsPVP(unit) and nTooltip.showPVPIcons) then
+            return ICON_LIST[index]..'11|t'
+        else
+            return ICON_LIST[index]..'11|t '
+        end
+    else
+        return ''
+    end
+end
+
+local function GameTooltip_GetUnitPVPIcon(unit) 
+    local factionGroup = UnitFactionGroup(unit)
+    
+    if (UnitIsPVPFreeForAll(unit)) then
+        if (nTooltip.showPVPIcons) then
+            return '|TInterface\\AddOns\\nTooltip\\media\\UI-PVP-FFA:12|t'
+        else
+            return '|cffFF0000# |r'
+        end
+    elseif (factionGroup and UnitIsPVP(unit)) then
+        if (nTooltip.showPVPIcons) then
+            return '|TInterface\\AddOns\\nTooltip\\media\\UI-PVP-'..factionGroup..':12|t'
+        else
+            return '|cff00FF00# |r'
+        end
+    else
+        return ''
+    end
+end
+
     -- function to short-display HP value on StatusBar
     
 local function ShortValue(value)
@@ -349,45 +347,13 @@ local function AddMouseoverTarget(self, unit)
     }
         
     if (UnitExists(unit..'target')) then
-        if (UnitName('player') == unitTargetName) then
-            if (GetRaidTargetIndex(unitTargetName) and not UnitIsDead(unit..'target')) then
-                self:AddLine(format('      |cffff00ff%s|r', string.upper(YOU)), 1, 1, 1)
-                for i = 3, GameTooltip:NumLines() do
-                    if (_G['GameTooltipTextLeft'..i]:GetText():find(string.upper(YOU))) then
-                        self.TargetIcon:SetPoint('LEFT', _G['GameTooltipTextLeft'..i], 10, 0)
-                        self.TargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..GetRaidTargetIndex(unit..'target'))      
-                    end
-                end
-            else        
-                self:AddLine(format('  |cffff00ff%s|r', string.upper(YOU)), 1, 1, 1)
-            end
+        if (UnitName('player') == unitTargetName) then   
+            self:AddLine(format('  '..GetUnitRaidIcon(unit..'target')..'|cffff00ff%s|r', string.upper(YOU)), 1, 1, 1)
         else
             if (UnitIsPlayer(unit..'target')) then
-                if (GetRaidTargetIndex(unit..'target') and not UnitIsDead(unit..'target')) then
-                    self:AddLine(format('      |cff%02x%02x%02x%s|r', unitTargetClassColor.r*255, unitTargetClassColor.g*255, unitTargetClassColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)
-                    
-                    for i = 3, GameTooltip:NumLines() do
-                        if (_G['GameTooltipTextLeft'..i]:GetText():find(unitTargetName)) then
-                            self.TargetIcon:SetPoint('LEFT', _G['GameTooltipTextLeft'..i], 10, 0)
-                            self.TargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..GetRaidTargetIndex(unit..'target'))      
-                        end
-                    end
-                else
-                    self:AddLine(format('  |cff%02x%02x%02x%s|r', unitTargetClassColor.r*255, unitTargetClassColor.g*255, unitTargetClassColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)
-                end
+                self:AddLine(format('  '..GetUnitRaidIcon(unit..'target')..'|cff%02x%02x%02x%s|r', unitTargetClassColor.r*255, unitTargetClassColor.g*255, unitTargetClassColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)
             else
-                if (GetRaidTargetIndex(unit..'target') and not UnitIsDead(unit..'target')) then
-                    self:AddLine(format('       |cff%02x%02x%02x%s|r', unitTargetReactionColor.r*255, unitTargetReactionColor.g*255, unitTargetReactionColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)                 
-                    
-                    for i = 3, GameTooltip:NumLines() do
-                        if (_G['GameTooltipTextLeft'..i]:GetText():find(unitTargetName)) then
-                            self.TargetIcon:SetPoint('LEFT', _G['GameTooltipTextLeft'..i], 10, 0)
-                            self.TargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..GetRaidTargetIndex(unit..'target'))         
-                        end
-                    end 
-                else
-                    self:AddLine(format('  |cff%02x%02x%02x%s|r', unitTargetReactionColor.r*255, unitTargetReactionColor.g*255, unitTargetReactionColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)
-                end
+                self:AddLine(format('  '..GetUnitRaidIcon(unit..'target')..'|cff%02x%02x%02x%s|r', unitTargetReactionColor.r*255, unitTargetReactionColor.g*255, unitTargetReactionColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)                 
             end
         end
     end
@@ -432,47 +398,25 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
         end
   
             -- pvp flag prefix 
-            
+
 		for i = 3, GameTooltip:NumLines() do
 			if (_G['GameTooltipTextLeft'..i]:GetText():find(PVP_ENABLED)) then
 				_G['GameTooltipTextLeft'..i]:SetText(nil)
-                if (nTooltip.showPVPIcons) then
-                    if (GetRaidTargetIndex(unit) and not UnitIsDead(unit)) then
-                        GameTooltipTextLeft1:SetText('    '..GameTooltipTextLeft1:GetText())
-    
-                        GameTooltip.PVPIcon:ClearAllPoints()
-                        GameTooltip.PVPIcon:SetPoint('TOPLEFT', GameTooltip, 24, -7)
-                    else
-                        GameTooltipTextLeft1:SetText('   '..GameTooltipTextLeft1:GetText())
-                        
-                        GameTooltip.PVPIcon:ClearAllPoints()
-                        GameTooltip.PVPIcon:SetPoint('TOPLEFT', GameTooltip, 5, -7)
-                    end
-                    
-                    GameTooltip.PVPIcon:SetTexture(GameTooltip_GetUnitPVPIcon(unit))
-                else
-                    if (UnitIsPVPFreeForAll(unit)) then
-                        GameTooltipTextLeft1:SetText('|cffFF0000# |r'..GameTooltipTextLeft1:GetText())
-                    elseif (UnitIsPVP(unit)) then
-                        GameTooltipTextLeft1:SetText('|cff00FF00# |r'..GameTooltipTextLeft1:GetText())
-                    end
-                end
+                GameTooltipTextLeft1:SetText(GameTooltip_GetUnitPVPIcon(unit)..GameTooltipTextLeft1:GetText())
 			end
 		end
         
-            -- raid icon
+            -- raid icon, want to see the raidicon on the left
             
-        if (GetRaidTargetIndex(unit) and not UnitIsDead(unit)) then
-            GameTooltipTextLeft1:SetText('   '..GameTooltipTextLeft1:GetText())
-            self.Icon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..GetRaidTargetIndex(unit))
-        end
+        GameTooltipTextLeft1:SetText(GetUnitRaidIcon(unit)..GameTooltipTextLeft1:GetText())
 
             -- afk and dnd prefix
 
         if (UnitIsAFK(unit)) then 
-            self:AppendText(' |cffffffff[|r|cff00ff00AFK|r|cffffffff]|r')   
+            self:AppendText(' |cff00ff00[AFK]|r')   
+            -- self:AppendText(' |cff00ff00<AFK>|r')  
         elseif (UnitIsDND(unit)) then
-            self:AppendText(' |cffffffff[|r|cff00ff00DND|r|cffffffff]|r')
+            self:AppendText(' |cff00ff00[DND]|r')
         end
 
             -- player realm names
@@ -509,8 +453,8 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
         if (nTooltip.reactionBorderColor) then
             local r, g, b = UnitSelectionColor(unit)
             
-            self:SetBorderTexture(whiteTexture)
-            self:SetBorderColor(r, g, b)
+            self:SetBeautyBorderTexture('white')
+            self:SetBeautyBorderColor(r, g, b)
         end
         
             -- dead or ghost recoloring
@@ -610,4 +554,3 @@ if (nTooltip.disableFade) then
         end
     end)
 end
-
