@@ -10,6 +10,14 @@ f:SetScript('OnEvent', function(_, event, ...)
 	end
 end)
 
+SlashCmdList['NCHAT_DEFAULT'] = function()
+    ChatFrame1:SetSize(480, 250)
+    
+    ChatFrame1:ClearAllPoints()
+    ChatFrame1:SetPoint('BOTTOMLEFT', 20, 15)
+end
+SLASH_NCHAT_DEFAULT1 = '/ncd'
+
 SlashCmdList['FRAMENAME'] = function()
     local name = GetMouseFocus():GetName()
     

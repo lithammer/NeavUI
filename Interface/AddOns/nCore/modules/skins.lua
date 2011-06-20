@@ -7,8 +7,8 @@ f:RegisterEvent('PLAYER_ENTERING_WORLD')
 f:SetScript('OnEvent', function(self)
     if (IsAddOnLoaded('Omen')) then
         if (not OmenBarList.beautyBorder) then
-            OmenBarList:CreateBorder(11)
-            OmenBarList:SetBorderPadding(3)
+            OmenBarList:CreateBeautyBorder(11)
+            OmenBarList:SetBeautyBorderPadding(3)
         end
     end
     
@@ -26,8 +26,8 @@ f:SetScript('OnEvent', function(self)
                 PitBull4_Frames_targettarget,
             }) do
                 if (pitframe:IsShown()) then
-                    pitframe:CreateBorder(11)
-                    pitframe:SetBorderPadding(2)
+                    pitframe:CreateBeautyBorder(11)
+                    pitframe:SetBeautyBorderPadding(2)
                 end
             end
         end)
@@ -59,8 +59,8 @@ f:SetScript('OnEvent', function(self)
                 name:SetFont('Fonts\\ARIALN.ttf', 15)
 
                 tbar:SetHeight(24)
-                tbar:CreateBorder(10)
-                tbar:SetBorderPadding(tbar:GetHeight() + 3, 2, 2, 2, tbar:GetHeight() + 3, 2, 2, 2)
+                tbar:CreateBeautyBorder(10)
+                tbar:SetBeautyBorderPadding(tbar:GetHeight() + 3, 2, 2, 2, tbar:GetHeight() + 3, 2, 2, 2)
                 tbar:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
                 tbar:SetBackdropColor(0, 0, 0, 0.5)
                 
@@ -84,8 +84,8 @@ f:SetScript('OnEvent', function(self)
 
     if (IsAddOnLoaded('Recount')) then
         if (not Recount.MainWindow.beautyBorder) then
-            Recount.MainWindow:CreateBorder(11)
-            Recount.MainWindow:SetBorderPadding(2, -10, 2, -10, 2, 2, 2, 2)
+            Recount.MainWindow:CreateBeautyBorder(11)
+            Recount.MainWindow:SetBeautyBorderPadding(2, -10, 2, -10, 2, 2, 2, 2)
             Recount.MainWindow:SetBackdrop({
                 bgFile = 'Interface\\Buttons\\WHITE8x8',
                 insets = { left = 0, right = 0, top = 10, bottom = 0 },

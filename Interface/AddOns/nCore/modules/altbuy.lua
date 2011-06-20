@@ -40,13 +40,13 @@ end
     -- add a hint to the tooltip
     
 local function IsMerchantButtonOver()
-    return GetMouseFocus():GetName():find('MerchantItem') -- MerchantItem1ItemButton:IsMouseOver()
+    return GetMouseFocus():GetName():find('MerchantItem%d')
 end
 
 GameTooltip:HookScript('OnTooltipSetItem', function(self)
     if (MerchantFrame:IsShown() and IsMerchantButtonOver()) then 
         for i = 2, GameTooltip:NumLines() do
-            if (_G['GameTooltipTextLeft'..i]:GetText():find('<Shift')) then
+            if (_G['GameTooltipTextLeft'..i]:GetText():find('<[sS]hift')) then
                 GameTooltip:AddLine('|cff00ffcc'..GetAltClickString()..'|r')       
             end
         end
