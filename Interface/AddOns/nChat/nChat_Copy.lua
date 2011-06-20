@@ -11,7 +11,7 @@ f:SetBackdropColor(0, 0, 0, 1)
 f:SetPoint('BOTTOMLEFT', ChatFrame1EditBox, 'TOPLEFT', 3, 10)
 f:SetPoint('BOTTOMRIGHT', ChatFrame1EditBox, 'TOPRIGHT', -3, 10)
 f:SetFrameStrata('DIALOG')
-f:CreateBorder(12)
+f:CreateBeautyBorder(12)
 f:SetBackdrop({
 	bgFile = 'Interface\\DialogFrame\\UI-DialogBox-Background',
 	edgeFile = '',

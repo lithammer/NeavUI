@@ -99,11 +99,11 @@ for k = 6, 11 do
    select(k, ChatFrame1EditBox:GetRegions()):SetTexture(nil)
 end
     
-ChatFrame1EditBox:CreateBorder(11)
-ChatFrame1EditBox:SetBorderPadding(-2, -1, -2, -1, -2, -1, -2, -1)
+ChatFrame1EditBox:CreateBeautyBorder(11)
+ChatFrame1EditBox:SetBeautyBorderPadding(-2, -1, -2, -1, -2, -1, -2, -1)
 
 if (nChat.enableBorderColoring) then
-    ChatFrame1EditBox:SetBorderTexture('Interface\\AddOns\\!Beautycase\\media\\textureNormalWhite')
+    ChatFrame1EditBox:SetBeautyBorderTexture('Interface\\AddOns\\!Beautycase\\media\\textureNormalWhite')
     
     hooksecurefunc('ChatEdit_UpdateHeader', function(editBox)
         local type = editBox:GetAttribute('chatType')
@@ -113,7 +113,7 @@ if (nChat.enableBorderColoring) then
         end
 
         local info = ChatTypeInfo[type]
-        ChatFrame1EditBox:SetBorderColor(info.r, info.g, info.b)
+        ChatFrame1EditBox:SetBeautyBorderColor(info.r, info.g, info.b)
     end)
 end
 
