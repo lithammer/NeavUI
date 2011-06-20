@@ -1,10 +1,10 @@
 
     -- local stuff for faster usage
     
-local ColorBorder = _G.ColorBorder
-local CreateBorder = _G.CreateBorder
-local SetBorderTexture = _G.SetBorderTexture
-    
+local ColorBeautyBorder = _G.ColorBeautyBorder
+local CreateBeautyBorder = _G.CreateBeautyBorder
+local SetBeautyBorderTexture = _G.SetBeautyBorderTexture
+  
 local len = string.len
 local find = string.find
 local gsub = string.gsub
@@ -19,10 +19,44 @@ local UnitName = UnitName
 local UnitCastingInfo = UnitCastingInfo
 local UnitChannelInfo = UnitChannelInfo
 
-    -- load texture locally
+local function RGBHex(r, g, b)
+    if(type(r) == 'table') then
+        if(r.r) then r, g, b = r.r, r.g, r.b else r, g, b = unpack(r) end
+    end
+    return ('|cff%02x%02x%02x'):format(r * 255, g * 255, b * 255)
+end
+
+--[[
+
+    local GetUnitAggroStatus
+	do
+		local shown 
+		local red, green, blue
+		function GetUnitAggroStatus( region)
+			-- High = 1, 0, 0	-- Medium High = 1, .6, 0  -- Medium Low = 1, 1, .47
+			shown = region:IsShown()
+			if not shown then return "LOW", 0 end
+			red, green, blue = region:GetVertexColor()
+			if red > 0 then
+				if green > 0 then
+					if blue > 0 then return "MEDIUM", 1 end
+					return "MEDIUM", 2
+				end
+				return "HIGH", 3
+			end
+		end
+	end
+
     
-local whiteTexture = 'Interface\\AddOns\\!Beautycase\\media\\textureNormalWhite'
-local normalTexture = 'Interface\\AddOns\\!Beautycase\\media\\textureNormal'
+    local function GetUnitCombatStatus(r, g, b) 
+        return (r > .5 and g < .5) 
+    end
+
+    
+    unit.isInCombat = GetUnitCombatStatus(regions.name:GetTextColor())
+        
+--]]
+
 
 local function IsTarget(self) 
 	local targetName = UnitName('target')
@@ -85,28 +119,55 @@ local function UpdateTime(self, curValue)
 	self.Name:SetText(castName)
 end
 
+local function UpdateNameL(self)
+	local oldName = self.oldName:GetText()
+	-- local newName = (len(oldName) > 20) and gsub(oldName, '%s?(.[\128-\191]*)%S+%s', '%1. ') or oldName
+    local newName = oldName
+
+    local level, elite = self.Level:GetText(), self.EliteIcon:IsShown()
+        
+    if (self.BossIcon:IsShown()) then
+        self.Level:SetFont('Fonts\\ARIALN.ttf', 12)
+    else
+        self.Level:SetFont('Fonts\\ARIALN.ttf', 10)
+    end
+        
+    local r, g, b = self.Name:GetTextColor()
+    local nameColor = RGBHex(r, g, b)
+        
+    if (self.BossIcon:IsShown()) then
+        self.Level:SetText('|cffff0000??|r '..nameColor..newName)
+        self.Level:Show()
+    elseif (self.EliteIcon:IsVisible() and (not self.EliteIcon:GetTexture() == 'Interface\\Tooltips\\EliteNameplateIcon')) then
+        self.Level:SetText('|cffffff00(r)|r'..level..' '..nameColor..newName)
+    else
+        self.Level:SetText((elite and '|cffffff00+|r' or '')..level..' '..nameColor..newName)
+    end	
+end
+
 local function ThreatUpdate(self, elapsed)
 	self.elapsed = self.elapsed + elapsed
 	if (self.elapsed >= 0.1) then
         if (self:IsVisible()) then
             ColorHealthBar(self)
+            
+            if (IsTarget(self)) then
+                self.Health:SetBeautyBorderTexture('white')
+            else
+                self.Health:SetBeautyBorderTexture('default')
+            end
+            
             if (not self.oldGlow:IsShown()) then
-                if (IsTarget(self)) then
-                    self.Health:SetBorderTexture(whiteTexture)
-                    
-                    -- if (UnitIsEnemy('player', 'target')) then
-                        self.Health:SetBorderColor(1, 1, 1)  	
-                    -- else
-                        -- self.Health:SetBorderColor(0, 1, 0)  	
-                    -- end
-                else
-                    self.Health:SetBorderTexture(normalTexture)
-                    self.Health:SetBorderColor(1, 1, 1)  
+                if (self.Health.bg:IsShown()) then
+                    self.Health.bg:Hide()
                 end
-            else			
+            else
                 local r, g, b = self.oldGlow:GetVertexColor()
-                self.Health:SetBorderTexture(whiteTexture)
-                self.Health:SetBorderColor(r, g, b)			
+                self.Health.bg:SetBeautyBorderColor(r, g, b, 1)
+                
+                if (not self.Health.bg:IsShown()) then
+                    self.Health.bg:Show()
+                end
             end
         end
         
@@ -137,43 +198,24 @@ local function UpdatePlate(self)
 	self.Castbar.IconOverlay:SetVertexColor(r, g, b)
     
         -- shorter names
-        
-	local oldName = self.oldName:GetText()
-	local newName = (len(oldName) > 20) and gsub(oldName, '%s?(.[\128-\191]*)%S+%s', '%1. ') or oldName
 
     self.Level:ClearAllPoints()
-    self.Level:SetPoint('CENTER', self.Health, 'CENTER', 0, 10)
-    self.Level:SetSize(134, 13)
+    self.Level:SetPoint('CENTER', self.Health, 'CENTER', 0, 9)
+    self.Level:SetSize(110, 13)
     
     if (self.Level) then
-        local level, elite = self.Level:GetText(), self.EliteIcon:IsShown()
-        
-        if (self.BossIcon:IsShown()) then
-            self.Level:SetFont('Fonts\\ARIALN.ttf', 12)
-        else
-            self.Level:SetFont('Fonts\\ARIALN.ttf', 10)
-        end
-        
-        if (self.BossIcon:IsShown()) then
-            self.Level:SetText('?? |cffffffff'..newName)
-            self.Level:SetTextColor(1, 0, 0)
-            self.Level:Show()
-        elseif (self.EliteIcon:IsVisible() and (not self.EliteIcon:GetTexture() == 'Interface\\Tooltips\\EliteNameplateIcon')) then
-            self.Level:SetText('|cffffff00(r)|r'..level..' |cffffffff'..newName)
-        else
-            self.Level:SetText((elite and '|cffffff00+|r' or '')..level..' |cffffffff'..newName)
-        end	
+        UpdateNameL(self)
     end
 end
 
 local function ColorCastBar(self, shield)		
 	if (shield) then
-        self:SetBorderTexture(whiteTexture)
-        self:SetBorderColor(1, 0, 1)  	
+        self:SetBeautyBorderTexture('white')
+        self:SetBeautyBorderColor(1, 0, 1)  	
         self.CastTime:SetTextColor(1, 0, 1)
     else
-        self:SetBorderTexture(normalTexture)
-        self:SetBorderColor(1, 1, 1)  
+        self:SetBeautyBorderTexture('default')
+        self:SetBeautyBorderColor(1, 1, 1)  
         self.CastTime:SetTextColor(1, 1, 1)
 	end
 end
@@ -223,23 +265,37 @@ local function SkinPlate(self)
         -- hide original name font string
 
 	self.Name:Hide()
-    
+
         -- create the healtbar border and background
     
     if (not self.Health.beautyBorder) then
-        self.Health:CreateBorder(7.33333)
-        self.Health:SetBorderPadding(2.666666666665)
-        
-        for i = 1, 8 do 
-            self.Health.beautyBorder[i]:SetDrawLayer('BORDER')
-        end
+        self.Health:CreateBeautyBorder(7.33333)
+        self.Health:SetBeautyBorderPadding(2.6666667)
     end
-    
+
     self.Health:SetBackdrop({
         bgFile = 'Interface\\Buttons\\WHITE8x8',
-        insets = { left = -2, right = -2, top = -2, bottom = -2 }
+        insets = { 
+            left = -2, 
+            right = -2, 
+            top = -2, 
+            bottom = -2 
+        }
     })
     self.Health:SetBackdropColor(0, 0, 0, 0.55)
+    
+    if (not self.Health.bg) then
+        self.Health.bg = CreateFrame('Frame', nil, self.Health)
+        self.Health.bg:SetPoint('TOP', self.Health, 0, 3)
+        self.Health.bg:SetPoint('BOTTOM', self.Health, 0, -3)
+        self.Health.bg:SetPoint('LEFT', self.Health, -3, 0)
+        self.Health.bg:SetPoint('RIGHT', self.Health, 3, 0)
+        self.Health.bg:Hide()
+
+        self.Health.bg:CreateBeautyBorder(7.3333334)
+        self.Health.bg:SetBeautyBorderPadding(2.3333334)
+        self.Health.bg:SetBeautyBorderTexture('white')
+    end
 
     --[[
 	self.NewName = self:CreateFontString(nil, 'OVERLAY')
@@ -251,11 +307,13 @@ local function SkinPlate(self)
         
         -- create health value font string
         
-	self.Health.Value = self:CreateFontString()
-	self.Health.Value:SetPoint('CENTER', self.Health, 0, 0)
-    self.Health.Value:SetFont('Fonts\\ARIALN.ttf', 9)
-    self.Health.Value:SetShadowOffset(1, -1)
-        
+    if (not self.Health.Value) then    
+        self.Health.Value = self:CreateFontString()
+        self.Health.Value:SetPoint('CENTER', self.Health, 0, 0)
+        self.Health.Value:SetFont('Fonts\\ARIALN.ttf', 9)
+        self.Health.Value:SetShadowOffset(1, -1)
+    end
+    
         -- the level text string, we abuse it as namestring too
         
 	self.Level:SetFont('Fonts\\ARIALN.ttf', 10) --, 'THINOUTLINE')
@@ -264,12 +322,8 @@ local function SkinPlate(self)
         -- create castbar borders
         
     if (not self.Castbar.beautyBorder) then
-        self.Castbar:CreateBorder(8)
-        self.Castbar:SetBorderPadding(3)
-        
-        for i = 1, 8 do 
-            self.Castbar.beautyBorder[i]:SetDrawLayer('BORDER')
-        end
+        self.Castbar:CreateBeautyBorder(7.3333334)
+        self.Castbar:SetBeautyBorderPadding(2.3333334)
     end
     
         -- castbar
@@ -281,8 +335,8 @@ local function SkinPlate(self)
     self.Castbar:SetBackdropColor(0.2, 0.2, 0.2, 0.5)
     
     self.Castbar:ClearAllPoints()
-    self.Castbar:SetPoint('TOPRIGHT', self.Health, 'BOTTOMRIGHT', 0, -9)
-    self.Castbar:SetPoint('BOTTOMLEFT', self.Health, 'BOTTOMLEFT', 0, -20)
+    self.Castbar:SetPoint('TOPRIGHT', self.Health, 'BOTTOMRIGHT', 0, -9.3333334)
+    self.Castbar:SetPoint('BOTTOMLEFT', self.Health, 'BOTTOMLEFT', 0, -20.6666667)
     
 	self.Castbar:HookScript('OnShow', OnShow)
 	self.Castbar:HookScript('OnValueChanged', OnValueChanged)
@@ -292,22 +346,26 @@ local function SkinPlate(self)
     
         -- castbar casttime font string
         
-    self.Castbar.CastTime = self.Castbar:CreateFontString(nil, 'OVERLAY')
-	self.Castbar.CastTime:SetPoint('RIGHT', self.Castbar, 'RIGHT', 5, 0)
-	self.Castbar.CastTime:SetFont('Fonts\\ARIALN.ttf', 21)   -- , 'THINOUTLINE')
-	self.Castbar.CastTime:SetTextColor(1, 1, 1)
-    self.Castbar.CastTime:SetShadowOffset(1, -1)
+    if (not self.Castbar.CastTime) then   
+        self.Castbar.CastTime = self.Castbar:CreateFontString(nil, 'OVERLAY')
+        self.Castbar.CastTime:SetPoint('RIGHT', self.Castbar, 1.6666667, 0)
+        self.Castbar.CastTime:SetFont('Fonts\\ARIALN.ttf', 16)   -- , 'THINOUTLINE')
+        self.Castbar.CastTime:SetTextColor(1, 1, 1)
+        self.Castbar.CastTime:SetShadowOffset(1, -1)
+    end
     
         -- castbar castname font string
     
-	self.Castbar.Name = self.Castbar:CreateFontString(nil, 'OVERLAY')
-	self.Castbar.Name:SetPoint('LEFT', self.Castbar, 3, 0)
-    self.Castbar.Name:SetPoint('RIGHT', self.Castbar.CastTime, 'LEFT', -6, 0)
-	self.Castbar.Name:SetFont('Fonts\\ARIALN.ttf', 10)
-	self.Castbar.Name:SetTextColor(1, 1, 1)
-	self.Castbar.Name:SetShadowOffset(1, -1)
-    self.Castbar.Name:SetJustifyH('LEFT')
-
+    if (not self.Castbar.Name) then
+        self.Castbar.Name = self.Castbar:CreateFontString(nil, 'OVERLAY')
+        self.Castbar.Name:SetPoint('LEFT', self.Castbar, 1.5, 0)
+        self.Castbar.Name:SetPoint('RIGHT', self.Castbar.CastTime, 'LEFT', -6, 0)
+        self.Castbar.Name:SetFont('Fonts\\ARIALN.ttf', 10)
+        self.Castbar.Name:SetTextColor(1, 1, 1)
+        self.Castbar.Name:SetShadowOffset(1, -1)
+        self.Castbar.Name:SetJustifyH('LEFT')
+    end
+    
         -- castbar spellicon and overlay
         
     self.Castbar.Icon:SetParent(self.Castbar)
@@ -317,10 +375,12 @@ local function SkinPlate(self)
     self.Castbar.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
     self.Castbar.Icon:SetDrawLayer('BACKGROUND')
     
-    self.Castbar.IconOverlay = self.Castbar:CreateTexture(nil, 'OVERLAY')
-	self.Castbar.IconOverlay:SetPoint('TOPLEFT', self.Castbar.Icon, -1, 1)
-	self.Castbar.IconOverlay:SetPoint('BOTTOMRIGHT', self.Castbar.Icon, 1, -1)
-	self.Castbar.IconOverlay:SetTexture(whiteTexture)
+    if (not self.Castbar.IconOverlay) then
+        self.Castbar.IconOverlay = self.Castbar:CreateTexture(nil, 'OVERLAY')
+        self.Castbar.IconOverlay:SetPoint('TOPLEFT', self.Castbar.Icon, -1, 1)
+        self.Castbar.IconOverlay:SetPoint('BOTTOMRIGHT', self.Castbar.Icon, 1, -1)
+        self.Castbar.IconOverlay:SetTexture('Interface\\AddOns\\!Beautycase\\media\\textureNormalWhite')
+    end
     
         -- mouseover highlight
         
