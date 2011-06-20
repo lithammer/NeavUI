@@ -97,11 +97,15 @@ Minimap:ClearAllPoints()
 Minimap:SetPoint('TOPRIGHT', UIParent, -26, -26)
 
     -- square minimap and create a border
-    
+
+function GetMinimapShape()
+    return 'SQUARE'
+end
+
 Minimap:SetMaskTexture('Interface\\ChatFrame\\ChatFrameBackground')
 
-Minimap:CreateBorder(11)
-Minimap:SetBorderPadding(1)
+Minimap:CreateBeautyBorder(11)
+Minimap:SetBeautyBorderPadding(1)
 
     -- enable mousewheel zooming
 
@@ -145,7 +149,7 @@ TicketStatusFrameButton:HookScript('OnShow', function(self)
         }
     })
     self:SetBackdropColor(0, 0, 0, 0.5)
-    self:CreateBorder(12)
+    self:CreateBeautyBorder(12)
 end)
 
     -- mouseover zone text

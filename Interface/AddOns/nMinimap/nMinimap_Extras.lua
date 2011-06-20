@@ -13,7 +13,7 @@ f:SetFrameStrata('BACKGROUND')
 f:SetFrameLevel(Minimap:GetFrameLevel() - 1)
 f:SetHeight(30)
 f:SetAlpha(nMinimap.drawerNoMouseoverAlpha)
-f:CreateBorder(11)
+f:CreateBeautyBorder(11)
 f:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
 f:SetBackdropColor(0, 0, 0, 0.6)
 
