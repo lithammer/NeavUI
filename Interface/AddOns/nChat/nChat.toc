@@ -1,0 +1,11 @@
+## Interface: 40100
+## Title: |cffCC3333 n|rChat
+## RequiredDeps: !Beautycase
+
+config.lua
+
+core.lua
+whisper.lua
+urlcopy.lua
+copy.lua
+

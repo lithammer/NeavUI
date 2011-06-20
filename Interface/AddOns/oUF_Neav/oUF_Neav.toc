@@ -1,0 +1,24 @@
+## Interface: 40100
+## Author: Neav
+## Title: oUF_|cffCC3333N|r|cffE53300e|r|cffFF4D00a|r|cffFF6633v|r
+## RequiredDeps: oUF, !Beautycase
+## OptionalDeps: oUF_AuraWatch, oUF_SpellRange, oUF_CombatFeedback, oUF_Smooth, oUF_Swing, oUF_Vengeance
+
+config.lua
+
+func\aura.lua
+func\castbar.lua
+func\func.lua
+func\flash.lua
+
+modules\offline.lua
+modules\smartthreat.lua
+
+modules\oUF_CombatFeedback\oUF_CombatFeedback.lua
+modules\oUF_Smooth\oUF_Smooth.lua
+
+tags.lua
+castbar.lua
+core.lua
+boss.lua
+arena.lua

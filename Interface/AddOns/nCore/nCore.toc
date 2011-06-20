@@ -1,0 +1,17 @@
+## Interface: 40100
+## Title: |cffCC3333 n|rCore
+## RequiredDeps: !Beautycase
+## OptionalDeps: Recount, Omen, DBM, PitBull4
+
+core.lua
+
+modules\altbuy.lua
+modules\coords.lua
+modules\durability.lua
+modules\errors.lua
+modules\fonts.lua
+modules\mail.lua
+modules\skins.lua
+modules\warning.lua
+modules\watchframe.lua
+

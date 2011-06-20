@@ -1,0 +1,10 @@
+## Interface: 40100
+## Title: |cffCC3333 n|rMinimap
+## RequiredDeps: !Beautycase
+
+config.lua
+core.lua
+calendar.lua
+clock.lua
+difficulty.lua
+extras.lua
