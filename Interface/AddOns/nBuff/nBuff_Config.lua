@@ -8,7 +8,7 @@ nBuff = {
         
         buffBorderColor     = {1, 1, 1},
         
-        durationFontsize    = 16,
+        durationFontsize    = 15,
         durationFont        = 'Fonts\\ARIALN.ttf',
         
         countFontsize       = 17,

@@ -5,8 +5,6 @@ local _G = _G
 local unpack = unpack
 
     -- some global/local stuff
-    
-local BUFF_NEW_INDEX = 1
 
 DAY_ONELETTER_ABBR    = '|cffffffff%dd|r'
 HOUR_ONELETTER_ABBR   = '|cffffffff%dh|r'
@@ -22,7 +20,7 @@ TempEnchant2:SetPoint('TOPRIGHT', TempEnchant1, 'TOPLEFT', -nBuff.padding.x, 0)
 
 ConsolidatedBuffs:SetSize(20, 20)
 ConsolidatedBuffs:ClearAllPoints()
-ConsolidatedBuffs:SetPoint('BOTTOM', TempEnchant1, 'TOP', 0, 5)
+ConsolidatedBuffs:SetPoint('BOTTOM', TempEnchant1, 'TOP', 1, 2)
 ConsolidatedBuffs.SetPoint = function() end
 
 ConsolidatedBuffsIcon:SetAlpha(0)
@@ -85,7 +83,6 @@ hooksecurefunc('BuffFrame_UpdateAllBuffAnchors', function()
 
 	for i = 1, BUFF_ACTUAL_DISPLAY do
 		local buff = _G['BuffButton'..i]
-        local hasMainHandEnchant, _, _, hasOffHandEnchant, _, _, hasThrownEnchant = GetWeaponEnchantInfo()
 
 		if (buff.consolidated) then
 			if (buff.parent == BuffFrame) then
@@ -115,7 +112,6 @@ hooksecurefunc('BuffFrame_UpdateAllBuffAnchors', function()
             end
             
             BUFF_PREVIOUS = buff
-            BUFF_NEW_INDEX = numBuffs
         end
 	end
 end)
@@ -124,7 +120,7 @@ hooksecurefunc('DebuffButton_UpdateAnchors', function(self, index)
     local BUFF_NEW_SPACE, BUFF_NEW_ROW, BUFF_NUM_ROWS, BUFF_NUM_BUFFS
 
     BUFF_NEW_SPACE = 31 + nBuff.padding.y
-    BUFF_NUM_BUFFS = (BUFF_NEW_INDEX > 0 and BUFF_NEW_INDEX) or 1
+    BUFF_NUM_BUFFS = (BUFF_ACTUAL_DISPLAY > 0 and BUFF_ACTUAL_DISPLAY) or 1
     BUFF_NUM_ROWS  = ceil(BUFF_NUM_BUFFS/nBuff.button.buffPerRow)
     
     if (BUFF_NUM_ROWS and BUFF_NUM_ROWS > 1) then
