@@ -81,6 +81,11 @@ MinimapZoneText:Hide()
 MinimapZoneTextButton:Hide()
 MinimapZoneTextButton:UnregisterAllEvents()
 
+    -- hide the tracking button
+
+MiniMapTracking:UnregisterAllEvents()
+MiniMapTracking:Hide()
+
     -- hide the durability frame (the armored man)
     
 DurabilityFrame:Hide()
@@ -128,11 +133,6 @@ Minimap:SetScript('OnMouseUp', function(self, button)
     end
 end)
 
-    -- the dirty method, move it out of the screen, no error anymore? Will see.. 
-
-MiniMapTracking:UnregisterAllEvents()
-MiniMapTracking:Hide()
-
     -- skin the ticket status frame
 
 TicketStatusFrame:ClearAllPoints()
@@ -152,32 +152,54 @@ TicketStatusFrameButton:HookScript('OnShow', function(self)
     self:CreateBeautyBorder(12)
 end)
 
+local function GetZoneColor()
+	local zoneType = GetZonePVPInfo()
+    
+	if (zoneType == 'sanctuary') then
+		return 0.4, 0.8, 0.94
+	elseif (zoneType == 'arena') then
+		return 1, 0.1, 0.1
+	elseif (zoneType == 'friendly') then
+		return 0.1, 1, 0.1
+	elseif (zoneType == 'hostile') then
+		return 1, 0.1, 0.1
+	elseif (zoneType == 'contested') then
+		return 1, 0.8, 0
+	else
+		return 1, 1, 1
+	end
+end
+
     -- mouseover zone text
     
 local MainZone = Minimap:CreateFontString(nil, 'OVERLAY')
 MainZone:SetParent(Minimap)
-MainZone:SetFont('Fonts\\ARIALN.ttf', 15, 'THINOUTLINE')
+MainZone:SetFont('Fonts\\ARIALN.ttf', 16, 'THINOUTLINE')
 MainZone:SetPoint('TOP', Minimap, 0, -22)
 MainZone:SetTextColor(1, 1, 1)
 MainZone:SetAlpha(0)
-MainZone:SetSize(130, 15)
+MainZone:SetSize(130, 32)
+MainZone:SetJustifyV('BOTTOM')
 
 local SubZone = Minimap:CreateFontString(nil, 'OVERLAY')
 SubZone:SetParent(Minimap)
-SubZone:SetFont('Fonts\\ARIALN.ttf', 12, 'THINOUTLINE')
-SubZone:SetPoint('TOP', MainZone, 'BOTTOM', 0, 2)
+SubZone:SetFont('Fonts\\ARIALN.ttf', 13, 'THINOUTLINE')
+SubZone:SetPoint('TOP', MainZone, 'BOTTOM', 0, -1)
 SubZone:SetTextColor(1, 1, 1)
 SubZone:SetAlpha(0)
-SubZone:SetSize(130, 12)
+SubZone:SetSize(130, 26)
+SubZone:SetJustifyV('TOP')
 
 Minimap:HookScript('OnEnter', function()
 
         -- disable the mouseover if the shift key is pressed, in cases we want to make a ping and the text is annoying
         
     if (nMinimap.showMouseoverZoneText and SubZone and not IsShiftKeyDown()) then
+        SubZone:SetTextColor(GetZoneColor())
         SubZone:SetText(GetSubZoneText())
         securecall('UIFrameFadeIn', SubZone, 0.235, SubZone:GetAlpha(), nMinimap.alphaMouseoverZoneText)
-
+        
+        MainZone:SetTextColor(GetZoneColor())
         MainZone:SetText(GetRealZoneText())
         securecall('UIFrameFadeIn', MainZone, 0.235, MainZone:GetAlpha(), nMinimap.alphaMouseoverZoneText)
    end
