@@ -366,40 +366,6 @@ local function UpdateFrame(self, unit)
     end
 end
 
-    -- druid power bar function 
-    
-local function UpdateDruidPower(self, event, unit)
-    if (not self.Druid) then
-        return
-    end
-    
-    if (ns.MultiCheck(GetShapeshiftForm(), 1, 3)) then
-        local unitPower = PowerBarColor['MANA']
-        
-        if (unitPower) then
-            self.Druid:SetStatusBarColor(unitPower.r, unitPower.g, unitPower.b)
-        end
-
-        self.Druid:SetAlpha(1)
-        self.Druid.Value:SetAlpha(1)
-        self.Druid.Texture:SetAlpha(1)
-
-        local min, max = UnitPower('player', 0), UnitPowerMax('player', 0)
-        self.Druid:SetMinMaxValues(0, max)
-        self.Druid:SetValue(min)
-            
-        if (min == max) then
-            self.Druid.Value:SetText(ns.FormatValue(min))
-        else
-            self.Druid.Value:SetText(ns.FormatValue(min)..'/'..ns.FormatValue(max))
-        end
-    else
-        self.Druid:SetAlpha(0)
-        self.Druid.Value:SetAlpha(0)
-        self.Druid.Texture:SetAlpha(0)
-    end
-end
-
 local function EnableMouseOver(self)
     self.Health.Value:Hide()
     self.Power.Value:Hide()
@@ -757,12 +723,8 @@ local function CreateUnitLayout(self, unit)
     self.RaidIcon = self.Health:CreateTexture(nil, 'OVERLAY', self)
     self.RaidIcon:SetPoint('CENTER', self.Portrait, 'TOP', 0, -1)
     self.RaidIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
-
-    if (self.IsMainFrame) then
-        self.RaidIcon:SetSize(26, 26)
-    else
-        self.RaidIcon:SetSize(20, 20)
-    end
+    local s1 = self.Portrait.Bg and self.Portrait.Bg:GetSize()/2.5 or self.Portrait:GetSize()/2.5
+    self.RaidIcon:SetSize(s1, s1)
     
         -- phase text
     
@@ -776,6 +738,7 @@ local function CreateUnitLayout(self, unit)
         self:Tag(self.PhaseText, '[phase]')
     end
     --]]
+
         -- afk text
 
     self.AFKText = self.Health:CreateFontString(nil, 'OVERLAY')
@@ -892,57 +855,37 @@ local function CreateUnitLayout(self, unit)
 			EclipseBarFrame:ClearAllPoints()
 			EclipseBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, 4)
 			EclipseBarFrame:Show()
-            
+
                 -- druid powerbar
-    
-            self.Druid = CreateFrame('StatusBar', nil, self)
-            self.Druid:SetPoint('TOP', self.Power, 'BOTTOM')
-            self.Druid:SetStatusBarTexture(config.media.statusbar)
-            self.Druid:SetFrameLevel(self:GetFrameLevel() - 1)
-            self.Druid:SetSize(100, 10)
-            self.Druid:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
-            self.Druid:SetBackdropColor(0, 0, 0, 0.5)
 
-            self.Druid.Value = self.Health:CreateFontString(nil, 'ARTWORK')
-            self.Druid.Value:SetFont(config.font.normal, config.font.normalSize)
-            self.Druid.Value:SetShadowOffset(1, -1)
-            self.Druid.Value:SetPoint('CENTER', self.Druid, 0, 0.5)
-            
-            self.Druid.Texture = self:CreateTexture(nil, 'BACKGROUND')
-            self.Druid.Texture:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\druidmanaTexture')
-            self.Druid.Texture:SetSize(104, 28)
-            self.Druid.Texture:SetPoint('TOP', self.Power, 'BOTTOM', -1, 8)
-            
-                -- on update timer for the druid mana
-                
-            if (config.units.player.druidManaFrequentUpdates) then
-                self.updateTimer = 0
-                self:HookScript('OnUpdate', function(self, elapsed)
-                    self.updateTimer = self.updateTimer + elapsed
-                    
-                    if (self.updateTimer > TOOLTIP_UPDATE_TIME/2) then
-                        UpdateDruidPower(self, event, unit)
-                        self.updateTimer = 0
-                    end
-                end)
-            else
-                    -- events for the druid mana
+            self.DruidMana = CreateFrame('StatusBar', nil, self)
+            self.DruidMana:SetPoint('TOP', self.Power, 'BOTTOM')
+            self.DruidMana:SetStatusBarTexture(config.media.statusbar, 'BORDER')
+            self.DruidMana:SetSize(100, 10)
+            self.DruidMana:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
+            self.DruidMana:SetBackdropColor(0, 0, 0, 0.55)
 
-                UpdateDruidPower(self, _, unit)
-                
-                self:RegisterEvent('UNIT_POWER', UpdateDruidPower)
-                self:RegisterEvent('UNIT_DISPLAYPOWER', UpdateDruidPower)
-            end
+            self.DruidMana.Value = self.Health:CreateFontString(nil, 'OVERLAY')
+            self.DruidMana.Value:SetFont(config.font.normal, config.font.normalSize)
+            self.DruidMana.Value:SetShadowOffset(1, -1)
+            self.DruidMana.Value:SetPoint('CENTER', self.DruidMana, 0, 0.5)
+            self.DruidMana.Value:SetParent(self.DruidMana)
+
+            self.DruidMana.Texture = self:CreateTexture(nil, 'OVERLAY')
+            self.DruidMana.Texture:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\druidmanaTexture')
+            self.DruidMana.Texture:SetSize(104, 28)
+            self.DruidMana.Texture:SetPoint('TOP', self.Power, 'BOTTOM', -1, 8)
+            self.DruidMana.Texture:SetParent(self.DruidMana)
             
             if (config.units.player.mouseoverText) then
-                self.Druid.Value:Hide()
+                self.DruidMana.Value:Hide()
 
                 self:HookScript('OnEnter', function(self)
-                    self.Druid.Value:Show()
+                    self.DruidMana.Value:Show()
                 end)
 
                 self:HookScript('OnLeave', function(self)
-                    self.Druid.Value:Hide()
+                    self.DruidMana.Value:Hide()
                 end)
             end
 		end
@@ -986,26 +929,13 @@ local function CreateUnitLayout(self, unit)
 
             -- pvptimer
 
-        if (config.show.pvpicons) then
+        if (self.PvP) then
             self.PvPTimer = self.Health:CreateFontString(nil, 'OVERLAY')
             self.PvPTimer:SetFont(config.font.normal, config.font.normalSize)
             self.PvPTimer:SetShadowOffset(1, -1)
             self.PvPTimer:SetPoint('BOTTOM', self.PvP, 'TOP', -12, -1)
-            
-            self.updateTimer = 0
-            self:HookScript('OnUpdate', function(self, elapsed)
-                self.updateTimer = self.updateTimer + elapsed
-                    
-                if (self.updateTimer > 0.33) then
-                    if (IsPVPTimerRunning() and GetPVPTimer() ~= 0 and self.PvP:IsShown()) then
-                        self.PvPTimer:SetText(ns.FormatTime(math.floor(GetPVPTimer()/1000)))
-                    else
-                        self.PvPTimer:SetText(nil)
-                    end
-                    
-                    self.updateTimer = 0
-                end
-            end)
+            self.PvPTimer.frequentUpdates = 0.5
+            self:Tag(self.PvPTimer, '[pvptimer]')
         end
     
             -- oUF_Swing support 

@@ -6,8 +6,6 @@ local GetTime = GetTime
 local floor, fmod = floor, math.fmod
 local day, hour, minute = 86400, 3600, 60
 
--- /run print(SecureButton_GetUnit(oUF_Neav_Raid1UnitButton1))
-
 ns.cUnit = function(unit)
     if (unit:match('party%d')) then
         return 'party'
@@ -46,18 +44,18 @@ end
 
 ns.DeficitValue = function(self)
     if (self >= 1000) then
-		return format('-%.1f', self/1000)
-	else
-		return self
-	end
+        return format('-%.1f', self/1000)
+    else
+        return self
+    end
 end
 
 ns.FormatValue = function(self)
     if (self >= 1000000) then
-		return ('%.2fm'):format(self / 1e6)
+        return ('%.2fm'):format(self / 1e6)
         -- return ('%.3fK'):format(self / 1e6):gsub('%.', 'M ')
     elseif (self >= 100000) then
-		return ('%.1fk'):format(self / 1e3)
+        return ('%.1fk'):format(self / 1e3)
         -- return ('%.3f'):format(self / 1e3):gsub('%.', 'K ')
     else
         return self

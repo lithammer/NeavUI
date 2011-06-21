@@ -2,6 +2,14 @@
 local _, ns = ...
 local config = ns.config
 
+oUF.Tags['pvptimer'] = function(unit)
+    if (not IsPVPTimerRunning() and GetPVPTimer() > 0) then
+        return
+    end
+    
+    return ns.FormatTime(math.floor(GetPVPTimer()/1000))
+end
+
 oUF.Tags['level'] = function(unit)
     local r, g, b
     local level = UnitLevel(unit)

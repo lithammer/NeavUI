@@ -32,9 +32,7 @@ ns.config = {
             
             showHealthPercent = false,
             showPowerPercent = false,
-            
-            druidManaFrequentUpdates = false,
-            
+
             showVengeance = false,                                                          -- Attention: vengeance and swingtimer will overlap eachother, 
             showSwingTimer = false,                                                         -- Change the pos in the oUF_Neav file if you want both
             showStatusFlash = true,

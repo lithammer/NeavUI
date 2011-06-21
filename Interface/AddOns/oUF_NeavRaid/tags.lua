@@ -2,17 +2,10 @@
 local _, ns = ...
 local config = ns.config
 
-oUF.TagEvents['name:Raid'] = 'UNIT_NAME_UPDATE'
-oUF.Tags['name:Raid'] = function(unit)
-    local name = UnitName(unit)
-    return ns.utf8sub(name, config.units.raid.nameLength)
-    -- return ns.utf8sub(name, config.units.raid.nameLength - 2  )..[[|TInterface\GroupFrame\UI-Group-MaintankIcon:0|t]]
-end
-
 local timer = {}
 
-oUF.TagEvents['notHere'] = 'PLAYER_FLAGS_CHANGED UNIT_CONNECTION'
-oUF.Tags['notHere'] = function(unit)
+oUF.TagEvents['status:raid'] = 'PLAYER_FLAGS_CHANGED UNIT_CONNECTION'
+oUF.Tags['status:raid'] = function(unit)
     local name = UnitName(unit)
 
     if (UnitIsAFK(unit) or not UnitIsConnected(unit)) then
@@ -27,9 +20,9 @@ oUF.Tags['notHere'] = function(unit)
     end
 end
 
-oUF.TagEvents['role:Raid'] = 'PARTY_MEMBERS_CHANGED PLAYER_ROLES_ASSIGNED'
-if (not oUF.Tags['role:Raid']) then
-	oUF.Tags['role:Raid'] = function(unit)
+oUF.TagEvents['role:raid'] = 'PARTY_MEMBERS_CHANGED PLAYER_ROLES_ASSIGNED'
+if (not oUF.Tags['role:raid']) then
+	oUF.Tags['role:raid'] = function(unit)
 		local role = UnitGroupRolesAssigned(unit)
         
 		if (role) then
@@ -48,4 +41,11 @@ if (not oUF.Tags['role:Raid']) then
             return ''
 		end
 	end
+end
+
+oUF.TagEvents['name:raid'] = 'UNIT_NAME_UPDATE'
+oUF.Tags['name:raid'] = function(unit)
+    local name = UnitName(unit)
+    return ns.utf8sub(name, config.units.raid.nameLength)
+    -- return ns.utf8sub(name, config.units.raid.nameLength - 2  )..[[|TInterface\GroupFrame\UI-Group-MaintankIcon:0|t]]
 end

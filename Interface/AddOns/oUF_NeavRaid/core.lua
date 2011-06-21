@@ -209,11 +209,9 @@ do
             {23333, 'TOPLEFT', {1, 0, 0}}, -- Warsong flag, Horde
             {23335, 'TOPLEFT', {0, 0, 1}}, -- Warsong flag, Alliance 
 		},
-
-
 end
 ]]
-        
+
 local function AuraIcon(self, icon)
 	if (icon.cd) then
 		icon.cd:SetReverse()
@@ -505,7 +503,6 @@ local function CreateRaidLayout(self, unit)
     self.Health.Value:SetPoint('TOP', self.Health, 'CENTER', 0, 2)
     self.Health.Value:SetFont(config.font.fontSmall, config.font.fontSmallSize)
     self.Health.Value:SetShadowOffset(1, -1)
-    -- self.Health.Value.frequentUpdates = 1
 
         -- name text
 
@@ -514,7 +511,7 @@ local function CreateRaidLayout(self, unit)
     self.Name:SetFont(config.font.fontBig,config.font.fontBigSize)
     self.Name:SetShadowOffset(1, -1)
     self.Name:SetTextColor(1, 1, 1)
-    self:Tag(self.Name, '[name:Raid]')
+    self:Tag(self.Name, '[name:raid]')
 
         -- power bar
                 
@@ -588,7 +585,7 @@ local function CreateRaidLayout(self, unit)
         self.NotHere:SetShadowOffset(1, -1)
         self.NotHere:SetTextColor(0, 1, 0)
         self.NotHere.frequentUpdates = 1
-        self:Tag(self.NotHere, '[notHere]')
+        self:Tag(self.NotHere, '[status:raid]')
     end
     
         -- background texture
@@ -642,7 +639,7 @@ local function CreateRaidLayout(self, unit)
         -- main tank icon
     
     if (config.units.raid.showMainTankIcon) then
-        self.MainTank = self.Health:CreateTexture(nil, 'OVERLAY')
+        self.MainTank = self.Health:CreateTexture(nil, 'ARTWORK')
         self.MainTank:SetSize(12, 11)
         self.MainTank:SetPoint('CENTER', self, 'TOP', 0, 1)
     end
@@ -664,14 +661,14 @@ local function CreateRaidLayout(self, unit)
     self.ReadyCheck = self.Health:CreateTexture(nil, 'OVERLAY')
     self.ReadyCheck:SetPoint('CENTER')
     self.ReadyCheck:SetSize(20, 20)
-    self.ReadyCheck.delayTime = 4
+    self.ReadyCheck.delayTime = 2
 	self.ReadyCheck.fadeTime = 1
 
         -- debuff icons, using freebAuras from oUF_Freebgrid
         
-    self.freebAuras = CreateFrame('Frame', nil, self)
-    self.freebAuras:SetSize(config.units.raid.iconSize, config.units.raid.iconSize)
-    self.freebAuras:SetPoint('CENTER', self.Health)
+    self.FreebAuras = CreateFrame('Frame', nil, self)
+    self.FreebAuras:SetSize(config.units.raid.iconSize, config.units.raid.iconSize)
+    self.FreebAuras:SetPoint('CENTER', self.Health)
     
         -- create indicators
         
@@ -691,7 +688,7 @@ local function CreateRaidLayout(self, unit)
         self.LFDRoleText:SetFont(config.font.fontSmall, 15)
         self.LFDRoleText:SetShadowOffset(0.5, -0.5)
         self.LFDRoleText:SetTextColor(1, 0, 1)
-        self:Tag(self.LFDRoleText, '[role:Raid]')
+        self:Tag(self.LFDRoleText, '[role:raid]')
     end
 
         -- ressurection text

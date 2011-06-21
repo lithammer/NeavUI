@@ -313,7 +313,7 @@ local Update = function(self, event, unit)
 
     local cur
     local hide = true
-    local auras = self.freebAuras
+    local auras = self.FreebAuras
     local icon = auras.button
 
     local index = 1
@@ -400,7 +400,7 @@ local Update = function(self, event, unit)
 end
 
 local Enable = function(self)
-    local auras = self.freebAuras
+    local auras = self.FreebAuras
 
     if (auras) then
         auras.button = CreateAuraIcon(auras)
@@ -411,11 +411,11 @@ local Enable = function(self)
 end
 
 local Disable = function(self)
-    local auras = self.freebAuras
+    local auras = self.FreebAuras
 
     if (auras) then
         self:UnregisterEvent('UNIT_AURA', Update)
     end
 end
 
-oUF:AddElement('freebAuras', Update, Enable, Disable)
+oUF:AddElement('FreebAuras', Update, Enable, Disable)
