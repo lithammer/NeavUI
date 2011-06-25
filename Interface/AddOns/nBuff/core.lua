@@ -156,12 +156,10 @@ for i = 1, NUM_TEMP_ENCHANT_FRAMES do
 
     button:SetScript('OnShow', function()
         UpdateFirstButton()
-        print('MO')
     end)
     
     button:SetScript('OnHide', function()
         UpdateFirstButton()
-        print('MO')
     end)
     
     local icon = _G['TempEnchant'..i..'Icon']
