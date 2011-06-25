@@ -1,23 +1,5 @@
+
 PowerBarColor['MANA'] = { r = 0/255, g = 0.55, b = 1 }
-
---[[
-PowerBarColor['RAGE'] = { r = 240/255, g = 45/255, b = 75/255 }
-PowerBarColor['FOCUS'] = { r = 255/255, g = 175/255, b = 0 }
-PowerBarColor['ENERGY'] = { r = 1, g = 1, b = 35/255 }
-PowerBarColor['RUNIC_POWER'] = { r = 0.45, g = 0.85, b = 1 }
-
-FACTION_BAR_COLORS = {
-    [1] = {r = 1, g = 0, b = 0},
-    [2] = {r = 1, g = 0, b = 0},
-    [3] = {r = 1, g = 1, b = 0},
-    [4] = {r = 1, g = 1, b = 0},
-    [5] = {r = 0, g = 1, b = 0},
-    [6] = {r = 0, g = 1, b = 0},
-    [7] = {r = 0, g = 1, b = 0},
-    [8] = {r = 0, g = 1, b = 0},
-}
---]]
-    
 
 CUSTOM_FACTION_BAR_COLORS = {
     [1] = {r = 1, g = 0, b = 0},
@@ -32,6 +14,7 @@ CUSTOM_FACTION_BAR_COLORS = {
 
 function GameTooltip_UnitColor(unit)
     local r, g, b
+    
     if (UnitIsDead(unit) or UnitIsGhost(unit) or UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit)) then
         r = 0.5
         g = 0.5
@@ -73,6 +56,7 @@ function GameTooltip_UnitColor(unit)
         end
     else
         local reaction = UnitReaction(unit, 'player')
+        
         if (reaction) then
             r = CUSTOM_FACTION_BAR_COLORS[reaction].r
             g = CUSTOM_FACTION_BAR_COLORS[reaction].g
@@ -83,6 +67,7 @@ function GameTooltip_UnitColor(unit)
             b = 255/255
         end
     end
+    
     return r, g, b
 end
   

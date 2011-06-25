@@ -1,5 +1,6 @@
 local f = CreateFrame('Frame')
 f:RegisterEvent('PLAYER_LOGIN')
+f:RegisterEvent('ACTIVE_TALENT_GROUP_CHANGED')
 f:SetScript('OnEvent', function(_, event, ...)
     if (event == 'PLAYER_LOGIN') then
         SetCVar('ScreenshotQuality', 10)
@@ -9,14 +10,6 @@ f:SetScript('OnEvent', function(_, event, ...)
 		LoadAddOn('Blizzard_GlyphUI')
 	end
 end)
-
-SlashCmdList['NCHAT_DEFAULT'] = function()
-    ChatFrame1:SetSize(480, 250)
-    
-    ChatFrame1:ClearAllPoints()
-    ChatFrame1:SetPoint('BOTTOMLEFT', 20, 15)
-end
-SLASH_NCHAT_DEFAULT1 = '/ncd'
 
 SlashCmdList['FRAMENAME'] = function()
     local name = GetMouseFocus():GetName()
@@ -34,8 +27,8 @@ SlashCmdList['RELOADUI'] = function()
 end
 SLASH_RELOADUI1 = '/rl'
 
---[[
+function ma2()
     function UnitAura() 
         return 'TestAura', nil, 'Interface\\Icons\\Spell_Nature_RavenForm', 9, nil, 120, 120, 1, 0 
     end
---]]
+end
