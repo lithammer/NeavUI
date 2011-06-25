@@ -1,17 +1,3 @@
---[[
-
-	Supported Units:
-        Boss
-        
-	Supported Plugins:
-        oUF_Smooth
-
-	Features:
-        Castbars
-        Buff icons (for boss abilities)
-        Raid icons
-
---]]
 
 local _, ns = ...
 local config = ns.config

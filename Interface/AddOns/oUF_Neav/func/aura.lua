@@ -31,7 +31,7 @@ local function ExactTime(time)
 	return format("%.1f", time), (time * 100 - floor(time * 100))/100
 end
 
-local function CreateAuraTimer(self, elapsed)
+ns.CreateAuraTimer = function(self, elapsed)
     self.elapsed = (self.elapsed or 0) + elapsed
 
     if (self.elapsed < 0.1) then 
@@ -46,10 +46,16 @@ local function CreateAuraTimer(self, elapsed)
     else
         if (timeLeft < 8 and IsMine(self)) then
             self.remaining:SetText('|cffff0000'..ExactTime(timeLeft))
-            self.remaining:SetFont(ns.config.font.normal, 12, 'THINOUTLINE')
+            
+            if (not self.ignoreSize) then
+                self.remaining:SetFont(ns.config.font.normal, 12, 'THINOUTLINE')
+            end
         else
             self.remaining:SetText(ns.FormatTime(timeLeft))
-            self.remaining:SetFont(ns.config.font.normal, 8, 'THINOUTLINE')
+            
+            if (not self.ignoreSize) then
+                self.remaining:SetFont(ns.config.font.normal, 8, 'THINOUTLINE')
+            end
         end
     end
 end
@@ -87,7 +93,7 @@ ns.PostUpdateIcon = function(icons, unit, icon, index, offset)
     icon.duration = duration
     icon.expires = expirationTime
     
-    icon:SetScript('OnUpdate', CreateAuraTimer)
+    icon:SetScript('OnUpdate', ns.CreateAuraTimer)
 end
 
 ns.UpdateAuraIcons = function(auras, button)

@@ -1,36 +1,8 @@
---[[
-
-	Supported Units:
-		Player
-		Pet
-		Target
-		Target Target
-		Focus
-		Focus Target
-		Party 
-
-	Supported Plugins:
-		oUF_CombatFeedback
-		oUF_Smooth
-        oUF_SpellRange
-        oUF_Swing
-        oUF_Vengeance
-        
-	Features:
-		Aggro highlighting
-        PvP Timer on the Playerframe
-        Combat & Resting Flashing
-        Combat & Resting Icons
-        Leader-, MasterLooter- and Raidicons
-        Role Icon (DD, Tank or Healer)
-        Castbars for Player, Target, Focus and Pet
-        Raidicons
-        Class coloring
-
---]]
 
 local _, ns = ...
 local config = ns.config
+
+local playerClass = select(2, UnitClass('player'))
 
     -- remove all blizz stuff that doesnt work while other unitframes are active
     
@@ -59,6 +31,7 @@ local dropdown = CreateFrame('Frame', 'CustomUnitDropDownMenu', UIParent, 'UIDro
 
 UIDropDownMenu_Initialize(dropdown, function(self)
 	local unit = self:GetParent().unit
+    
 	if (not unit) then 
         return 
     end
@@ -76,7 +49,7 @@ UIDropDownMenu_Initialize(dropdown, function(self)
 		if (id) then
 			menu = 'RAID_PLAYER'
 			name = GetRaidRosterInfo(id)
-		elseif UnitInParty(unit) then
+		elseif (UnitInParty(unit)) then
 			menu = 'PARTY'
 		else
 			menu = 'PLAYER'
@@ -93,8 +66,8 @@ end, 'MENU')
 
 local function CreateDropDown(self)
 	dropdown:SetParent(self)
-    ToggleDropDownMenu(1, nil, dropdown, 'cursor', 15, -15)
-	-- ToggleDropDownMenu(1, nil, dropdown, self, self:GetWidth() * 0.75, -5)
+    -- ToggleDropDownMenu(1, nil, dropdown, 'cursor', 15, -15)
+	ToggleDropDownMenu(1, nil, dropdown, self, self:GetWidth()*1.2, -5)
 end
 
 local function PlayerToVehicleTexture(self, event, unit)
@@ -165,7 +138,7 @@ local function VehicleToPlayerTexture(self, event, unit)
 
     self.Health:SetHeight(12)
     self.Health:SetWidth(119)
-    self.Health:SetPoint('TOPLEFT', self.Texture, 106, -41)
+    self.Health:SetPoint('TOPLEFT', self.Texture, 107, -41)
 
     self.Name.Bg:Show()
 
@@ -514,7 +487,7 @@ local function CreateUnitLayout(self, unit)
         self.Health:SetSize(119, 12)
         self.Health:SetPoint('TOPRIGHT', self.Texture, -105, -41)
     elseif (self.IsTargetFrame) then
-        self.Health:SetSize(45, 6)
+        self.Health:SetSize(43, 6)
         self.Health:SetPoint('CENTER', self, 20, 4)
     elseif (self.IsPartyFrame) then   
         self.Health:SetPoint('TOPLEFT', self.Texture, 47, -12)
@@ -548,8 +521,8 @@ local function CreateUnitLayout(self, unit)
     self.Power:SetStatusBarTexture(config.media.statusbar, 'BORDER')
 
     if (self.IsTargetFrame) then
-        self.Power:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', 0, 0)
-        self.Power:SetPoint('TOPRIGHT', self.Health, 'BOTTOMRIGHT', -10, 0)
+        self.Power:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', 0, -1)
+        self.Power:SetPoint('TOPRIGHT', self.Health, 'BOTTOMRIGHT', -9, -1)
         self.Power:SetHeight(self.Health:GetHeight() + 1)
     else
         self.Power:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', 0, 0)
@@ -619,7 +592,7 @@ local function CreateUnitLayout(self, unit)
         self.Portrait = CreateFrame('PlayerModel', nil, self.Health)
         self.Portrait:SetFrameStrata('BACKGROUND')
         
-        self.Portrait.Bg = self:CreateTexture(nil, 'BACKGROUND')
+        self.Portrait.Bg = self.Health:CreateTexture(nil, 'BACKGROUND')
         self.Portrait.Bg:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\portraitBackground')
         self.Portrait.Bg:SetParent(self.Portrait)
         
@@ -652,7 +625,7 @@ local function CreateUnitLayout(self, unit)
             self.Portrait.Bg:SetPoint('TOPLEFT', self.Texture, 7, -6)
         end
     else
-        self.Portrait = self:CreateTexture(nil, 'BACKGROUND')
+        self.Portrait = self.Health:CreateTexture(nil, 'BACKGROUND')
         
         if (unit == 'player') then
             self.Portrait:SetSize(64, 64)
@@ -670,7 +643,56 @@ local function CreateUnitLayout(self, unit)
             self.Portrait:SetPoint('TOPLEFT', self.Texture, 7, -6)
         end
     end
+
+        -- portrait timer
+
+    self.Buffs = CreateFrame('Frame', nil, self.Health)
+    self.Buffs:SetAllPoints(self.Portrait)
+    self.Buffs:SetFrameLevel(self.Health:GetFrameLevel() - 1)
+    self.Buffs.num = 1
     
+    self.Buffs.PostUpdateIcon = function(icons, unit, icon, index, offset)
+        local self = icon:GetParent()
+        
+        icon.icon:SetDrawLayer('BORDER')
+        icon.icon:SetAllPoints(self)
+        SetPortraitToTexture(icon.icon, icon.icon:GetTexture())
+
+            
+        local _, _, _, _, _, duration, expirationTime = UnitAura(unit, index, icon.filter)
+
+        if (duration and duration > 0) then
+            icon.remaining:Show()
+        else
+            icon.remaining:Hide()
+        end
+
+        icon.duration = duration
+        icon.expires = expirationTime
+        icon.ignoreSize = true
+        
+        icon:SetScript('OnUpdate', ns.CreateAuraTimer)
+    end
+    
+    self.Buffs.PostCreateIcon = function(auras, button)
+        button:EnableMouse(false)
+        button.count:Hide()
+        button.overlay:SetTexture(nil)
+
+        auras.disableCooldown = true
+
+        button.remaining = button:CreateFontString(nil, 'OVERLAY')
+        button.remaining:SetFont(ns.config.font.normal, 16, 'THINOUTLINE')
+        button.remaining:SetShadowOffset(0, 0)
+        button.remaining:SetPoint('CENTER', button.icon)
+    end
+    
+    self.Buffs.CustomFilter = function(icons, unit, icon, name, rank, texture, count, dtype, duration, timeLeft, caster)
+        if (ns.buffList[name]) then
+            return true
+        end
+    end
+        
         -- pvp icons
 
     if (config.show.pvpicons) then
@@ -825,7 +847,7 @@ local function CreateUnitLayout(self, unit)
 			-- warlock soulshard bar
             
             
-		if (select(2, UnitClass('player')) == 'WARLOCK') then
+		if (playerClass == 'WARLOCK') then
 			ShardBarFrame:SetParent(oUF_Neav_Player)
 			ShardBarFrame:SetScale(config.units.player.scale * 0.8)
 			ShardBar_OnLoad(ShardBarFrame)
@@ -836,7 +858,7 @@ local function CreateUnitLayout(self, unit)
 
 			-- holy power bar
             
-		if (select(2, UnitClass('player')) == 'PALADIN') then
+		if (playerClass == 'PALADIN') then
 			PaladinPowerBar:SetParent(oUF_Neav_Player)
 			PaladinPowerBar:SetScale(config.units.player.scale * 0.81)
 			PaladinPowerBar_OnLoad(PaladinPowerBar)
@@ -845,7 +867,7 @@ local function CreateUnitLayout(self, unit)
 			PaladinPowerBar:Show()
 		end
             
-		if (select(2, UnitClass('player')) == 'DRUID') then
+		if (playerClass == 'DRUID') then
         
                 -- druid eclipse bar
             
@@ -892,7 +914,7 @@ local function CreateUnitLayout(self, unit)
 		
             -- deathknight runebar
 
-        if (select(2, UnitClass('player')) == 'DEATHKNIGHT') then
+        if (playerClass == 'DEATHKNIGHT') then
             RuneFrame:ClearAllPoints()
             RuneFrame:SetPoint('TOP', self.Power, 'BOTTOM', 2, -2)
             RuneFrame:SetParent(self)
@@ -1213,9 +1235,9 @@ local function CreateUnitLayout(self, unit)
         self.Auras.PostCreateIcon = ns.UpdateAuraIcons
         self.Auras.PostUpdateIcon = ns.PostUpdateIcon
         self.Auras.showDebuffType = true
-    elseif (self.Buffs) then
-        self.Buffs.PostCreateIcon = ns.UpdateAuraIcons
-        self.Buffs.PostUpdateIcon = ns.PostUpdateIcon
+    -- elseif (self.Buffs) then
+        -- self.Buffs.PostCreateIcon = ns.UpdateAuraIcons
+        -- self.Buffs.PostUpdateIcon = ns.PostUpdateIcon
     elseif (self.Debuffs) then
         self.Debuffs.PostCreateIcon = ns.UpdateAuraIcons
         self.Debuffs.PostUpdateIcon = ns.PostUpdateIcon
