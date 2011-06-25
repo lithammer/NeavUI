@@ -5,6 +5,8 @@ local _G = _G
 local unpack = unpack
 
     -- some global/local stuff
+    
+BUFF_MIN_ALPHA = 1
 
 DAY_ONELETTER_ABBR    = '|cffffffff%dd|r'
 HOUR_ONELETTER_ABBR   = '|cffffffff%dh|r'
@@ -35,25 +37,24 @@ ConsolidatedBuffsCount:SetShadowOffset(0, 0)
 ConsolidatedBuffsContainer:SetScale(0.57)
 ConsolidatedBuffsTooltip:SetScale(1.2)
 
-local function BuffFrame_SetPoint(self)
-    local hasMainHandEnchant, _, _, hasOffHandEnchant, _, _, hasThrownEnchant = GetWeaponEnchantInfo()
-    
+local function UpdateFirstAnchor(self)
     if (self and self:IsShown()) then
         self:ClearAllPoints()
+        
         if (UnitHasVehicleUI('player')) then
             self:SetPoint('TOPRIGHT', TempEnchant1)
             return
         else
-            if (hasMainHandEnchant and hasOffHandEnchant and hasThrownEnchant) then
-                self:SetPoint('TOPRIGHT', TempEnchant3, 'TOPLEFT', -nBuff.paddingX, 0)
-                return
-			elseif (hasMainHandEnchant and hasOffHandEnchant) or (hasMainHandEnchant and hasThrownEnchant) or (hasOffHandEnchant and hasThrownEnchant) then
-				self:SetPoint('TOPRIGHT', TempEnchant2, 'TOPLEFT', -nBuff.paddingX, 0)
-				return
-            elseif (hasMainHandEnchant or hasOffHandEnchant or hasThrownEnchant) then
+            if (BuffFrame.numEnchants == 1) then
                 self:SetPoint('TOPRIGHT', TempEnchant1, 'TOPLEFT', -nBuff.paddingX, 0)
                 return
-            elseif (not hasMainHandEnchant and not hasOffHandEnchant and not hasThrownEnchant) then
+            elseif (BuffFrame.numEnchants == 2) then	
+                self:SetPoint('TOPRIGHT', TempEnchant2, 'TOPLEFT', -nBuff.paddingX, 0)
+				return
+            elseif (BuffFrame.numEnchants == 3) then
+                self:SetPoint('TOPRIGHT', TempEnchant3, 'TOPLEFT', -nBuff.paddingX, 0)
+                return
+            else
                 self:SetPoint('TOPRIGHT', TempEnchant1)
                 return
             end
@@ -67,22 +68,11 @@ hooksecurefunc('BuffFrame_UpdatePositions', function()
     end
 end)
 
-BuffFrame:SetScript('OnUpdate', function(self, elapsed)
-    self.BuffFrameUpdateTime = self.BuffFrameUpdateTime + elapsed
-    if (self.BuffFrameUpdateTime > TOOLTIP_UPDATE_TIME) then
-        self.BuffFrameUpdateTime = 0
-        if (BuffButton1) then
-            if (not BuffButton1:GetParent() == ConsolidatedBuffsContainer) then
-                BuffFrame_SetPoint(BuffButton1)
-            end
-        end
-    end
-end)
-
 hooksecurefunc('BuffFrame_UpdateAllBuffAnchors', function()  
-    local BUFF_PREVIOUS, BUFF_ABOVE
+    local previousBuff, aboveBuff
 	-- local numBuffs = 0
-    local numBuffs = BuffFrame.numEnchants 
+    local numBuffs = 0
+    local numTotal = BuffFrame.numEnchants 
     
 	for i = 1, BUFF_ACTUAL_DISPLAY do
 		local buff = _G['BuffButton'..i]
@@ -94,30 +84,31 @@ hooksecurefunc('BuffFrame_UpdateAllBuffAnchors', function()
 			end
 		else
 			numBuffs = numBuffs + 1
+            		numTotal = numTotal + 1
             
 			if (buff.parent ~= BuffFrame) then
 				buff:SetParent(BuffFrame)
-                buff.parent = BuffFrame
+                		buff.parent = BuffFrame
 			end
                 
-            buff:ClearAllPoints()
-            
-            if (numBuffs > 1 and mod(numBuffs, nBuff.buffPerRow) == 1) then
-                if (numBuffs == nBuff.buffPerRow + 1) then
-                    buff:SetPoint('TOP', TempEnchant1, 'BOTTOM', 0, -nBuff.paddingY)
-                else
-                    buff:SetPoint('TOP', BUFF_ABOVE, 'BOTTOM', 0, -nBuff.paddingY)
-                end
-                
-                BUFF_ABOVE = buff
-            elseif (numBuffs == 1) then
-                BuffFrame_SetPoint(buff)
-            else
-                buff:SetPoint('RIGHT', BUFF_PREVIOUS, 'LEFT', -nBuff.paddingX, 0)
+			buff:ClearAllPoints()
+
+            if (numBuffs == 1) then
+				UpdateFirstAnchor(buff)
+            elseif (numBuffs > 1 and mod(numTotal, nBuff.buffPerRow) == 1) then
+				if (numTotal == nBuff.buffPerRow + 1) then
+			    		buff:SetPoint('TOP', TempEnchant1, 'BOTTOM', 0, -nBuff.paddingY)
+				else
+			    		buff:SetPoint('TOP', aboveBuff, 'BOTTOM', 0, -nBuff.paddingY)
+				end
+
+				aboveBuff = buff
+			else
+				buff:SetPoint('RIGHT', previousBuff, 'LEFT', -nBuff.paddingX, 0)
             end
-            
-            BUFF_PREVIOUS = buff
-        end
+
+            previousBuff = buff
+		end
 	end
 end)
 
@@ -125,7 +116,7 @@ hooksecurefunc('DebuffButton_UpdateAnchors', function(self, index)
     local numBuffs = BUFF_ACTUAL_DISPLAY + BuffFrame.numEnchants
     
 	if (BuffFrame.numConsolidated > 0) then
-		numBuffs = numBuffs - BuffFrame.numConsolidated + 1
+		numBuffs = numBuffs - BuffFrame.numConsolidated -- + 1
 	end
 
     local debuffSpace = nBuff.buffSize + nBuff.paddingY
@@ -150,11 +141,29 @@ hooksecurefunc('DebuffButton_UpdateAnchors', function(self, index)
 	end
 end)
 
-for i = 1, 3 do
+local function UpdateFirstButton()
+    if (BuffButton1) then
+        if (not BuffButton1:GetParent() == ConsolidatedBuffsContainer) then
+            UpdateFirstAnchor(BuffButton1)
+        end
+    end
+end
+
+for i = 1, NUM_TEMP_ENCHANT_FRAMES do
     local button = _G['TempEnchant'..i]
     button:SetScale(nBuff.buffScale)
     button:SetSize(nBuff.buffSize, nBuff.buffSize)
 
+    button:SetScript('OnShow', function()
+        UpdateFirstButton()
+        print('MO')
+    end)
+    
+    button:SetScript('OnHide', function()
+        UpdateFirstButton()
+        print('MO')
+    end)
+    
     local icon = _G['TempEnchant'..i..'Icon']
     icon:SetTexCoord(0.03, 0.97, 0.03, 0.97)
 
