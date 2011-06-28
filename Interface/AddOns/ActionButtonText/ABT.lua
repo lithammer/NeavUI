@@ -348,32 +348,34 @@ function ABT_NS.init()
 end
 
 function ABT_NS.combat()
+	-- 4.1: timestamp 1, eventType 2, hideCaster 3, sourceGUID 4, sourceName 5, sourceFlags 6, destGUID 7, destName 8, destFlags 9, spellId 10, spellName 11, spellSchool 12
+	-- 4.2: timestamp 1, eventType 2, hideCaster 3, sourceGUID 4, sourceName 5, sourceFlags 6, sourceRaidFlags 7, destGUID 8, destName 9, destFlags 10, destRaidFlags 11, spellId 12, spellName 13, spellSchool 14
 	if (arg5) and (arg5 == ABT_NS.playername) then
 		if arg2 == 'SPELL_DAMAGE' or arg2 == 'SPELL_MISSED' or arg2 == 'SPELL_HEAL' then -- or arg2 == 'SPELL_PERIODIC_DAMAGE' 
-			if arg11 and arg13 then
-				ABT_NS.atkinfo[arg10] = {arg12,GetTime(),arg17}
+			if arg13 and arg15 then
+				ABT_NS.atkinfo[arg10] = {arg14, GetTime(), arg19}
 				ABT_NS.lastbuttonupdate = 0
 			end
 		end
 
 		if arg2 == 'SWING_DAMAGE' or arg2 == 'SWING_MISSED' then
-			if arg9 then
-				ABT_NS.atkinfo['Attack'] = {arg9,GetTime(),arg14}
+			if arg10 then
+				ABT_NS.atkinfo['Attack'] = {arg10, GetTime(), arg16}
 				ABT_NS.lastbuttonupdate = 0
 			end
 		end
 
 		-- Actually has the spellname even tho it's most likely always 'Auto Shot' - identical to SPELL_ in fact
 		if arg2 == 'RANGE_DAMAGE' or arg2 == 'RANGE_MISSED' then
-			if arg10 and arg12 then
-				ABT_NS.atkinfo[arg10] = {arg12,GetTime(),arg17}
+			if arg12 and arg14 then
+				ABT_NS.atkinfo[arg10] = {arg14, GetTime(), arg19}
 				ABT_NS.lastbuttonupdate = 0
 			end
 		end
 	end
 
-	if (arg8) and (arg8 == ABT_NS.playername) then
-		if arg10 == 'Clearcasting' then
+	if (arg9) and (arg9 == ABT_NS.playername) then
+		if arg13 == 'Clearcasting' then
 			if arg2 == 'SPELL_AURA_APPLIED' then
 				ABT_NS.clearcasting = true
 				ABT_NS.lastbuttonupdate = 0
