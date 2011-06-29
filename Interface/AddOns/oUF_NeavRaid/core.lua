@@ -30,7 +30,7 @@ for _, object in pairs({
 end
 
 for _, object in pairs({
-    'UnitFramePanelRaidStylePartyFrames',
+    --'UnitFramePanelRaidStylePartyFrames', -- Gone in 4.2?
     'FrameCategoriesButton11',
 }) do
     _G['InterfaceOptions'..object]:SetAlpha(0.35)
