@@ -74,7 +74,6 @@ end
     -- fade fade functions
     
 local function fadeOut()
-	--[[
     securecall('UIFrameFadeOut', f.Guild, 0.1, f.Guild:GetAlpha(), 0)
     securecall('UIFrameFadeOut', f.Friends, 0.1, f.Friends:GetAlpha(), 0)
 
@@ -87,7 +86,6 @@ local function fadeOut()
 	end
     
     f:SetAlpha(nMinimap.drawerNoMouseoverAlpha)
-    ]]--
     GameTooltip:Hide() 
 end
 
@@ -134,8 +132,7 @@ end
 
     -- make sure that the frame is faded out on login
     
---fadeOut()
-fadeIn()
+fadeOut()
 
     -- some local function
     
