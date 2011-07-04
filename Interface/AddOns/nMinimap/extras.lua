@@ -74,6 +74,7 @@ end
     -- fade fade functions
     
 local function fadeOut()
+	--[[
     securecall('UIFrameFadeOut', f.Guild, 0.1, f.Guild:GetAlpha(), 0)
     securecall('UIFrameFadeOut', f.Friends, 0.1, f.Friends:GetAlpha(), 0)
 
@@ -86,7 +87,7 @@ local function fadeOut()
 	end
     
     f:SetAlpha(nMinimap.drawerNoMouseoverAlpha)
-    
+    ]]--
     GameTooltip:Hide() 
 end
 
@@ -133,7 +134,8 @@ end
 
     -- make sure that the frame is faded out on login
     
-fadeOut()
+--fadeOut()
+fadeIn()
 
     -- some local function
     
@@ -489,7 +491,7 @@ local function BuildBNTable(total)
 
 	for i = 1, total do
 		local presenceID, givenName, surname, toonName, toonID, client, isOnline, _, isAFK, isDND, _, noteText = BNGetFriendInfo(i)
-		local _, _, _, realmName, faction, race, class, _, zoneName, level = BNGetToonInfo(presenceID)
+		local _, _, _, realmName, faction, _, race, class, _, zoneName, level = BNGetToonInfo(presenceID)
 		
         for k,v in pairs(LOCALIZED_CLASS_NAMES_MALE) do 
             if class == v then 
@@ -517,7 +519,7 @@ local function UpdateBNTable(total)
     
 	for i = 1, #BNTable do
 		local presenceID, givenName, surname, toonName, toonID, client, isOnline, _, isAFK, isDND, _, noteText = BNGetFriendInfo(i)
-		local _, _, _, realmName, faction, race, class, _, zoneName, level = BNGetToonInfo(presenceID)
+		local _, _, _, realmName, faction, _, race, class, _, zoneName, level = BNGetToonInfo(presenceID)
         
 		for k,v in pairs(LOCALIZED_CLASS_NAMES_MALE) do 
             if (class == v) then 
