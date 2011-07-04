@@ -109,7 +109,9 @@ local function PlayerToVehicleTexture(self, event, unit)
     
     self.Leader:SetPoint('TOPLEFT', self.Texture, 23, -14)
     self.MasterLooter:SetPoint('TOPLEFT', self.Texture, 74, -14)
-    self.PvP:SetPoint('TOPLEFT', self.Texture, 3, -28)
+	if (self.PvP) then
+		self.PvP:SetPoint('TOPLEFT', self.Texture, 3, -28)
+	end
     self.RaidIcon:SetPoint('CENTER', self.Portrait, 'TOP', 0, -5)
     
     self.TabMiddle:SetPoint('BOTTOM', self.Name, 'TOP', 0, 10)
@@ -154,7 +156,9 @@ local function VehicleToPlayerTexture(self, event, unit)
     
     self.Leader:SetPoint('TOPLEFT', self.Portrait, 3, 2)
     self.MasterLooter:SetPoint('TOPRIGHT', self.Portrait, -3, 3)
-    self.PvP:SetPoint('TOPLEFT', self.Texture, 18, -20)
+	if (self.PvP) then
+		self.PvP:SetPoint('TOPLEFT', self.Texture, 18, -20)
+	end
     self.RaidIcon:SetPoint('CENTER', self.Portrait, 'TOP', 0, -1)
     
     self.TabMiddle:SetPoint('BOTTOM', self.Name.Bg, 'TOP', -1, 0)

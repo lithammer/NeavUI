@@ -74,19 +74,20 @@ end
     -- fade fade functions
     
 local function fadeOut()
-    securecall('UIFrameFadeOut', f.Guild, 0.1, f.Guild:GetAlpha(), 0)
-    securecall('UIFrameFadeOut', f.Friends, 0.1, f.Friends:GetAlpha(), 0)
+	if (not nMinimap.alwaysShowDrawer) then
+		securecall('UIFrameFadeOut', f.Guild, 0.1, f.Guild:GetAlpha(), 0)
+		securecall('UIFrameFadeOut', f.Friends, 0.1, f.Friends:GetAlpha(), 0)
 
-	if (nMinimap.positionDrawerBelow) then
-		f:SetPoint('TOPLEFT', Minimap, 'BOTTOMLEFT', 10, 23)
-		f:SetPoint('TOPRIGHT', Minimap, 'BOTTOMRIGHT', -10, 23)
-	else
-		f:SetPoint('BOTTOMLEFT', Minimap, 'TOPLEFT', 10, -23)
-		f:SetPoint('BOTTOMRIGHT', Minimap, 'TOPRIGHT', -10, -23)
+		if (nMinimap.positionDrawerBelow) then
+			f:SetPoint('TOPLEFT', Minimap, 'BOTTOMLEFT', 10, 23)
+			f:SetPoint('TOPRIGHT', Minimap, 'BOTTOMRIGHT', -10, 23)
+		else
+			f:SetPoint('BOTTOMLEFT', Minimap, 'TOPLEFT', 10, -23)
+			f:SetPoint('BOTTOMRIGHT', Minimap, 'TOPRIGHT', -10, -23)
+		end
+		
+		f:SetAlpha(nMinimap.drawerNoMouseoverAlpha)
 	end
-    
-    f:SetAlpha(nMinimap.drawerNoMouseoverAlpha)
-    
     GameTooltip:Hide() 
 end
 
@@ -132,8 +133,12 @@ if (nMinimap.showDrawerOnMinimapMouseOver) then
 end
 
     -- make sure that the frame is faded out on login
-    
-fadeOut()
+
+if (nMinimap.alwaysShowDrawer) then
+	fadeIn()
+else
+	fadeOut()
+end
 
     -- some local function
     
@@ -489,7 +494,7 @@ local function BuildBNTable(total)
 
 	for i = 1, total do
 		local presenceID, givenName, surname, toonName, toonID, client, isOnline, _, isAFK, isDND, _, noteText = BNGetFriendInfo(i)
-		local _, _, _, realmName, faction, race, class, _, zoneName, level = BNGetToonInfo(presenceID)
+		local _, _, _, realmName, faction, _, race, class, _, zoneName, level = BNGetToonInfo(presenceID)
 		
         for k,v in pairs(LOCALIZED_CLASS_NAMES_MALE) do 
             if class == v then 
@@ -517,7 +522,7 @@ local function UpdateBNTable(total)
     
 	for i = 1, #BNTable do
 		local presenceID, givenName, surname, toonName, toonID, client, isOnline, _, isAFK, isDND, _, noteText = BNGetFriendInfo(i)
-		local _, _, _, realmName, faction, race, class, _, zoneName, level = BNGetToonInfo(presenceID)
+		local _, _, _, realmName, faction, _, race, class, _, zoneName, level = BNGetToonInfo(presenceID)
         
 		for k,v in pairs(LOCALIZED_CLASS_NAMES_MALE) do 
             if (class == v) then 

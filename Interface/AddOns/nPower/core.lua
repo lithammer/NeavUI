@@ -249,7 +249,7 @@ f:SetScript('OnEvent', function(self, event, arg1)
         end
     end
     
-    if (event == 'RUNE_TYPE_UPDATE') then
+    if (event == 'RUNE_TYPE_UPDATE' and nPower.rune.showRuneCooldown) then
         f.Rune[arg1].type = GetRuneType(arg1)
     end
     
