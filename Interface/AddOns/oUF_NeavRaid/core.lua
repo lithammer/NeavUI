@@ -19,24 +19,13 @@ for _, object in pairs({
     end)
 end
 
-for _, object in pairs({
-	'OptionsButton',
-	'LockedModeToggle',
-	'HiddenModeToggle',
-}) do
-    _G['CompactRaidFrameManagerDisplayFrame'..object]:Hide()
-    _G['CompactRaidFrameManagerDisplayFrame'..object]:Disable()
-    _G['CompactRaidFrameManagerDisplayFrame'..object]:EnableMouse(false)
-end
+InterfaceOptionsFrameCategoriesButton10:SetScale(0.00001)
+InterfaceOptionsFrameCategoriesButton10:SetAlpha(0)		
+InterfaceOptionsFrameCategoriesButton11:SetScale(0.00001)
+InterfaceOptionsFrameCategoriesButton11:SetAlpha(0)
 
-for _, object in pairs({
-    --'UnitFramePanelRaidStylePartyFrames', -- Gone in 4.2?
-    'FrameCategoriesButton11',
-}) do
-    _G['InterfaceOptions'..object]:SetAlpha(0.35)
-    _G['InterfaceOptions'..object]:Disable()
-    _G['InterfaceOptions'..object]:EnableMouse(false)
-end
+CompactUnitFrame_UpateVisible = function() end
+CompactUnitFrame_UpdateAll = function() end
 
     -- drop down menu
 
@@ -624,7 +613,7 @@ local function CreateRaidLayout(self, unit)
         -- main tank icon
     
     if (config.units.raid.showMainTankIcon) then
-        self.MainTank = self.Health:CreateTexture(nil, 'ARTWORK')
+        self.MainTank = self.Health:CreateTexture(nil, 'OVERLAY')
         self.MainTank:SetSize(12, 11)
         self.MainTank:SetPoint('CENTER', self, 'TOP', 0, 1)
     end
@@ -748,6 +737,12 @@ f:SetScript('OnDragStop', function(self)
 end)
 
 SlashCmdList['oUF_Neav_Raid_AnchorToggle'] = function()
+    if (InCombatLockdown()) then
+        f:Hide()
+        print('oUF_NeavRaid: You cant do this in combat!')
+        return
+    end
+    
     if (not f:IsShown()) then
         f:Show()
     else
