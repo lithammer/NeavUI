@@ -671,7 +671,7 @@ local function CreateRaidLayout(self, unit)
 
         -- ressurection icon....ehm text!
 
-    if (config.units.raid.showRessurectText) then
+    if (config.units.raid.showResurrectText) then
         self.ResurrectIcon = self.Health:CreateFontString(nil, 'OVERLAY')
         self.ResurrectIcon:SetPoint('CENTER', self, 'BOTTOM', 0, 1)
         self.ResurrectIcon:SetFont(config.font.fontSmall, 11, 'THINOUTLINE')
@@ -684,10 +684,16 @@ local function CreateRaidLayout(self, unit)
 
             if (incomingResurrect) then
                 self.ResurrectIcon:Show()
-                self.NotHere:Hide()
+                
+                if (self.NotHere) then
+                    self.NotHere:Hide()
+                end
             else
                 self.ResurrectIcon:Hide()
-                self.NotHere:Show()
+                
+                if (self.NotHere) then
+                    self.NotHere:Show()
+                end
             end
         end
     end
