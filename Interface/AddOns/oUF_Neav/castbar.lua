@@ -158,7 +158,7 @@ end
     -- mirror timers
 
 for i = 1, MIRRORTIMER_NUMTIMERS do
-    local bar = _G['MirrorTimer' .. i]
+    local bar = _G['MirrorTimer'..i]
     bar:SetParent(UIParent)
     bar:SetScale(1.132)
     bar:SetSize(220, 18)
@@ -171,7 +171,7 @@ for i = 1, MIRRORTIMER_NUMTIMERS do
         bar:SetPoint(p1, p2, p3, p4, p5 - 15)
     end
 
-    local statusbar = _G['MirrorTimer' .. i .. 'StatusBar']
+    local statusbar = _G['MirrorTimer'..i..'StatusBar']
     statusbar:SetStatusBarTexture(ns.config.media.statusbar)
     statusbar:SetAllPoints(bar)
 
@@ -180,10 +180,10 @@ for i = 1, MIRRORTIMER_NUMTIMERS do
     backdrop:SetVertexColor(0, 0, 0, 0.5)
     backdrop:SetAllPoints(bar)
 
-    local border = _G['MirrorTimer' .. i .. 'Border']
+    local border = _G['MirrorTimer'..i..'Border']
     border:Hide()
 
-    local text = _G['MirrorTimer' .. i .. 'Text']
+    local text = _G['MirrorTimer'..i..'Text']
     text:SetFont(ns.config.font.normal, ns.config.font.normalSize)
     text:ClearAllPoints()
     text:SetPoint('CENTER', bar)

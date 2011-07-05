@@ -1200,7 +1200,7 @@ local function CreateUnitLayout(self, unit)
             self.Debuffs:SetWidth(20 * 3)
             self.Debuffs.size = 20
             self.Debuffs.spacing = 4
-            self.Debuffs:SetPoint('TOPLEFT', self.Health, 'TOPRIGHT', 5, 0)
+            self.Debuffs:SetPoint('TOPLEFT', self.Health, 'TOPRIGHT', 7, 1)
             self.Debuffs.initialAnchor = 'LEFT'
             self.Debuffs['growth-y'] = 'DOWN'
             self.Debuffs['growth-x'] = 'RIGHT'
