@@ -5,8 +5,9 @@ ns.config = {
     show = {
         castbars = true,
         pvpicons = true,
-        classPortraits = false,
-        ThreeDPortraits = false,                                                             -- 3DPortraits; Overrides classPortraits
+        classPortraits = true,
+        threeDPortraits = false,                                                            -- 3DPortraits; Overrides classPortraits
+        disableCooldown = false,                                                            -- Disable custom cooldown text to use addons like omnicc
     },
 
     media = {
@@ -103,6 +104,7 @@ ns.config = {
 
         ['target'] = {
             mouseoverText = false,
+            disableAura = false,                                                             -- Disable Auras on this unitframe
             
             scale = 1.193,
 
@@ -147,6 +149,7 @@ ns.config = {
         
         ['targettarget'] = {
             scale = 1.193,
+            disableAura = false,                                                             -- Disable Auras on this unitframe
         },
         
         ['focus'] = {

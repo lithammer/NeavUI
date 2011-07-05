@@ -1,12 +1,13 @@
 
 local _, ns = ...
+local config = ns.config
 
 local GetTime = GetTime
 local floor, fmod = floor, math.fmod
 local day, hour, minute = 86400, 3600, 60
 
 local function IsMine(icon)
-    return icon.owner == 'player' or icon.owner == 'vehicle' or icon.owner == 'pet'
+    return icon.owner == 'player' and icon.owner == 'vehicle' and icon.owner == 'pet'
 end
 
 local function AuraMouseover(button, ...)
@@ -33,7 +34,6 @@ end
 
 ns.CreateAuraTimer = function(self, elapsed)
     self.elapsed = (self.elapsed or 0) + elapsed
-
     if (self.elapsed < 0.1) then 
         return 
     end
@@ -82,18 +82,20 @@ ns.PostUpdateIcon = function(icons, unit, icon, index, offset)
         end
     end
     
-    local _, _, _, _, _, duration, expirationTime = UnitAura(unit, index, icon.filter)
+    if (icon.remaining) then
+        local _, _, _, _, _, duration, expirationTime = UnitAura(unit, index, icon.filter)
 
-    if (duration and duration > 0) then
-        icon.remaining:Show()
-    else
-        icon.remaining:Hide()
+        if (duration and duration > 0) then
+            icon.remaining:Show()
+        else
+            icon.remaining:Hide()
+        end
+
+        icon.duration = duration
+        icon.expires = expirationTime
+        
+        icon:SetScript('OnUpdate', ns.CreateAuraTimer)
     end
-
-    icon.duration = duration
-    icon.expires = expirationTime
-    
-    icon:SetScript('OnUpdate', ns.CreateAuraTimer)
 end
 
 ns.UpdateAuraIcons = function(auras, button)
@@ -112,24 +114,24 @@ ns.UpdateAuraIcons = function(auras, button)
     button.overlay:SetPoint('TOPRIGHT', button.icon, 1.35, 1.35)
     button.overlay:SetPoint('BOTTOMLEFT', button.icon, -1.35, -1.35)
 
-    auras.disableCooldown = true
-
-    button.remaining = button:CreateFontString(nil, 'OVERLAY')
-	button.remaining:SetFont(ns.config.font.normal, 8, 'THINOUTLINE')
-    button.remaining:SetShadowOffset(0, 0)
-    button.remaining:SetPoint('TOP', button.icon, 0, 2)
-
     button.count:SetFont(ns.config.font.normal, 11, 'THINOUTLINE')
     button.count:SetShadowOffset(0, 0)
     button.count:ClearAllPoints()
     button.count:SetPoint('BOTTOMRIGHT', button.icon, 1, 1)
 
-    if (not auras.disableCooldown) then
+    if (config.show.disableCooldown) then
         button.cd:SetReverse()
         button.cd:SetDrawEdge(true)
         button.cd:ClearAllPoints()
         button.cd:SetPoint('TOPRIGHT', button.icon, 'TOPRIGHT', -1, -1)
         button.cd:SetPoint('BOTTOMLEFT', button.icon, 'BOTTOMLEFT', 1, 1)
+    else
+        auras.disableCooldown = true
+        
+        button.remaining = button:CreateFontString(nil, 'OVERLAY')
+        button.remaining:SetFont(ns.config.font.normal, 8, 'THINOUTLINE')
+        button.remaining:SetShadowOffset(0, 0)
+        button.remaining:SetPoint('TOP', button.icon, 0, 2)
     end
 
     if (not button.Shadow) then

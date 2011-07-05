@@ -7,23 +7,23 @@ local playerClass = select(2, UnitClass('player'))
     -- remove all blizz stuff that doesnt work while other unitframes are active
     
 for _, button in pairs({
-    'UnitFramePanelPartyBackground',
-    'UnitFramePanelPartyPets',
-	'UnitFramePanelFullSizeFocusFrame',
-
     'CombatPanelTargetOfTarget',
     'CombatPanelTOTDropDown',
     'CombatPanelTOTDropDownButton',
     'CombatPanelEnemyCastBarsOnPortrait',
 
     'DisplayPanelShowAggroPercentage',
-
-    'FrameCategoriesButton9',
+    'DisplayPanelemphasizeMySpellEffects'
 }) do
     _G['InterfaceOptions'..button]:SetAlpha(0.35)
     _G['InterfaceOptions'..button]:Disable()
     _G['InterfaceOptions'..button]:EnableMouse(false)
 end
+
+InterfaceOptionsFrameCategoriesButton9:SetScale(0.00001)
+InterfaceOptionsFrameCategoriesButton9:SetAlpha(0)	
+	
+SetCVar('showArenaEnemyFrames', 0)
 
     -- create the drop downmenu of our unitframes
     
@@ -31,7 +31,6 @@ local dropdown = CreateFrame('Frame', 'CustomUnitDropDownMenu', UIParent, 'UIDro
 
 UIDropDownMenu_Initialize(dropdown, function(self)
 	local unit = self:GetParent().unit
-    
 	if (not unit) then 
         return 
     end
@@ -107,11 +106,12 @@ local function PlayerToVehicleTexture(self, event, unit)
         self.Portrait:SetPoint('TOPLEFT', self.Texture, 23, -12)
     end
     
+    if (self.PvP) then
+        self.PvP:SetPoint('TOPLEFT', self.Texture, 3, -28)
+    end
+    
     self.Leader:SetPoint('TOPLEFT', self.Texture, 23, -14)
     self.MasterLooter:SetPoint('TOPLEFT', self.Texture, 74, -14)
-	if (self.PvP) then
-		self.PvP:SetPoint('TOPLEFT', self.Texture, 3, -28)
-	end
     self.RaidIcon:SetPoint('CENTER', self.Portrait, 'TOP', 0, -5)
     
     self.TabMiddle:SetPoint('BOTTOM', self.Name, 'TOP', 0, 10)
@@ -154,11 +154,12 @@ local function VehicleToPlayerTexture(self, event, unit)
         self.Portrait:SetPoint('TOPLEFT', self.Texture, 42, -12)
     end
     
+    if (self.PvP) then
+        self.PvP:SetPoint('TOPLEFT', self.Texture, 18, -20)
+    end
+    
     self.Leader:SetPoint('TOPLEFT', self.Portrait, 3, 2)
     self.MasterLooter:SetPoint('TOPRIGHT', self.Portrait, -3, 3)
-	if (self.PvP) then
-		self.PvP:SetPoint('TOPLEFT', self.Texture, 18, -20)
-	end
     self.RaidIcon:SetPoint('CENTER', self.Portrait, 'TOP', 0, -1)
     
     self.TabMiddle:SetPoint('BOTTOM', self.Name.Bg, 'TOP', -1, 0)
@@ -291,6 +292,16 @@ local function UpdateTarFoFrame(self, _, unit)
     end
 end
 
+local function UpdateClassPortraits(self, unit)
+    local _, unitClass = UnitClass(unit)
+    if (unitClass and UnitIsPlayer(unit)) then
+        self:SetTexture('Interface\\TargetingFrame\\UI-Classes-Circles')
+        self:SetTexCoord(unpack(CLASS_ICON_TCOORDS[unitClass]))
+    else
+        self:SetTexCoord(0, 1, 0, 1)
+    end
+end
+
     -- generic frame update
     
 local function UpdateFrame(self, unit)
@@ -318,18 +329,6 @@ local function UpdateFrame(self, unit)
                 self.TabMiddle:SetWidth(self.TabText:GetWidth())
             else
                 SetTabAlpha(self, 0)
-            end
-        end
-    end
-
-    if (config.show.classPortraits and not self.Portrait.Bg) then
-        if (self.Portrait) then
-            if (UnitIsPlayer(unit)) then
-                local _, unitClass = UnitClass(unit)
-                self.Portrait:SetTexture('Interface\\TargetingFrame\\UI-Classes-Circles')
-                self.Portrait:SetTexCoord(unpack(CLASS_ICON_TCOORDS[unitClass]))
-            else
-                self.Portrait:SetTexCoord(0, 1, 0, 1)
             end
         end
     end
@@ -492,7 +491,7 @@ local function CreateUnitLayout(self, unit)
         self.Health:SetPoint('TOPRIGHT', self.Texture, -105, -41)
     elseif (self.IsTargetFrame) then
         self.Health:SetSize(43, 6)
-        self.Health:SetPoint('CENTER', self, 20, 4)
+        self.Health:SetPoint('CENTER', self, 18, 4)
     elseif (self.IsPartyFrame) then   
         self.Health:SetPoint('TOPLEFT', self.Texture, 47, -12)
         self.Health:SetSize(70, 7) 
@@ -526,7 +525,7 @@ local function CreateUnitLayout(self, unit)
 
     if (self.IsTargetFrame) then
         self.Power:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', 0, -1)
-        self.Power:SetPoint('TOPRIGHT', self.Health, 'BOTTOMRIGHT', -9, -1)
+        self.Power:SetPoint('TOPRIGHT', self.Health, 'BOTTOMRIGHT', -7, -1)
         self.Power:SetHeight(self.Health:GetHeight() + 1)
     else
         self.Power:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', 0, 0)
@@ -592,7 +591,7 @@ local function CreateUnitLayout(self, unit)
 
         -- portrait
         
-    if (config.show.ThreeDPortraits) then    
+    if (config.show.threeDPortraits) then    
         self.Portrait = CreateFrame('PlayerModel', nil, self.Health)
         self.Portrait:SetFrameStrata('BACKGROUND')
         
@@ -645,6 +644,10 @@ local function CreateUnitLayout(self, unit)
         elseif (self.IsPartyFrame) then
             self.Portrait:SetSize(37, 37)
             self.Portrait:SetPoint('TOPLEFT', self.Texture, 7, -6)
+        end
+        
+        if (config.show.classPortraits) then
+            self.Portrait.PostUpdate = UpdateClassPortraits
         end
     end
 
@@ -1053,17 +1056,20 @@ local function CreateUnitLayout(self, unit)
 
     if (unit == 'pet') then
 		self:SetSize(175, 42)
-
-        self.Debuffs = CreateFrame('Frame', nil, self)
-        self.Debuffs.size = 20
-        self.Debuffs:SetWidth(self.Debuffs.size * 4)
-        self.Debuffs:SetHeight(self.Debuffs.size)
-        self.Debuffs.spacing = 4
-        self.Debuffs:SetPoint('TOPLEFT', self.Power, 'BOTTOMLEFT', 1, -3)
-        self.Debuffs.initialAnchor = 'TOPLEFT'
-        self.Debuffs['growth-x'] = 'RIGHT'
-        self.Debuffs['growth-y'] = 'DOWN'
-        self.Debuffs.num = 9
+        
+        
+        if (not config.units[ns.cUnit(unit)].disableAura) then
+            self.Debuffs = CreateFrame('Frame', nil, self)
+            self.Debuffs.size = 20
+            self.Debuffs:SetWidth(self.Debuffs.size * 4)
+            self.Debuffs:SetHeight(self.Debuffs.size)
+            self.Debuffs.spacing = 4
+            self.Debuffs:SetPoint('TOPLEFT', self.Power, 'BOTTOMLEFT', 1, -3)
+            self.Debuffs.initialAnchor = 'TOPLEFT'
+            self.Debuffs['growth-x'] = 'RIGHT'
+            self.Debuffs['growth-y'] = 'DOWN'
+            self.Debuffs.num = 9
+        end
     end
 
         -- target + focusframe
@@ -1104,21 +1110,23 @@ local function CreateUnitLayout(self, unit)
             self.TabMiddle:SetPoint('BOTTOM', self.Name.Bg, 'TOP', 0, 1)
         end
         
-        self.Auras = CreateFrame('Frame', nil, self)
-        self.Auras.gap = true
-        self.Auras.size = 20
-        self.Auras:SetHeight(self.Auras.size * 3)
-        self.Auras:SetWidth(self.Auras.size * 5)
-        self.Auras:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', -3, -5)
-        self.Auras.initialAnchor = 'TOPLEFT'
-        self.Auras['growth-x'] = 'RIGHT'
-        self.Auras['growth-y'] = 'DOWN'
-        self.Auras.numBuffs = config.units.target.numBuffs
-        self.Auras.numDebuffs = config.units.target.numDebuffs
-        self.Auras.spacing = 4.5
+        if (not config.units[ns.cUnit(unit)].disableAura) then
+            self.Auras = CreateFrame('Frame', nil, self)
+            self.Auras.gap = true
+            self.Auras.size = 20
+            self.Auras:SetHeight(self.Auras.size * 3)
+            self.Auras:SetWidth(self.Auras.size * 5)
+            self.Auras:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', -3, -5)
+            self.Auras.initialAnchor = 'TOPLEFT'
+            self.Auras['growth-x'] = 'RIGHT'
+            self.Auras['growth-y'] = 'DOWN'
+            self.Auras.numBuffs = config.units.target.numBuffs
+            self.Auras.numDebuffs = config.units.target.numDebuffs
+            self.Auras.spacing = 4.5
+            
+            self.Auras.customBreak = true
+        end
         
-        self.Auras.customBreak = true
-
         if (config.units.target.showComboPoints) then
             if (config.units.target.showComboPointsAsNumber) then
                 self.ComboPoints = self.Health:CreateFontString(nil, 'OVERLAY')
@@ -1146,16 +1154,18 @@ local function CreateUnitLayout(self, unit)
     end
     
     if (unit == 'focus') then
-        self.Debuffs = CreateFrame('Frame', nil, self)
-        self.Debuffs.size = 26
-        self.Debuffs:SetHeight(self.Debuffs.size * 3)
-        self.Debuffs:SetWidth(self.Debuffs.size * 3)
-        self.Debuffs:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', -3.5, -5)
-        self.Debuffs.initialAnchor = 'TOPLEFT'
-        self.Debuffs['growth-x'] = 'RIGHT'
-        self.Debuffs['growth-y'] = 'DOWN'
-        self.Debuffs.num = config.units.focus.numDebuffs
-        self.Debuffs.spacing = 4
+        if (not config.units[ns.cUnit(unit)].disableAura) then
+            self.Debuffs = CreateFrame('Frame', nil, self)
+            self.Debuffs.size = 26
+            self.Debuffs:SetHeight(self.Debuffs.size * 3)
+            self.Debuffs:SetWidth(self.Debuffs.size * 3)
+            self.Debuffs:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', -3.5, -5)
+            self.Debuffs.initialAnchor = 'TOPLEFT'
+            self.Debuffs['growth-x'] = 'RIGHT'
+            self.Debuffs['growth-y'] = 'DOWN'
+            self.Debuffs.num = config.units.focus.numDebuffs
+            self.Debuffs.spacing = 4
+        end
         
         CreateUnitTabTexture(self)
         
@@ -1165,7 +1175,7 @@ local function CreateUnitLayout(self, unit)
         
             -- the drag frame
 
-        self.DragFrame = CreateFrame('Frame')
+        self.DragFrame = CreateFrame('Frame', nil, self)
         self.DragFrame:SetPoint('TOP', self.TabMiddle)
         self.DragFrame:SetPoint('BOTTOM', self.TabMiddle)
         self.DragFrame:SetPoint('LEFT', self.TabMiddle, -15, 0)
@@ -1174,7 +1184,7 @@ local function CreateUnitLayout(self, unit)
         self.DragFrame:EnableMouse(true)
         
         self.DragFrame:SetScript('OnDragStart', function() 
-            focusAnchor:StartMoving()
+            focusAnchor:StartMoving()   
         end)
 
         self.DragFrame:SetScript('OnDragStop', function() 
@@ -1185,32 +1195,36 @@ local function CreateUnitLayout(self, unit)
     if (self.IsTargetFrame) then
 		self:SetSize(85, 20)
 
-        self.Debuffs = CreateFrame('Frame', nil, self)
-        self.Debuffs:SetHeight(20)
-        self.Debuffs:SetWidth(20 * 3)
-        self.Debuffs.size = 20
-        self.Debuffs.spacing = 4
-        self.Debuffs:SetPoint('TOPLEFT', self.Health, 'TOPRIGHT', 5, 0)
-        self.Debuffs.initialAnchor = 'LEFT'
-        self.Debuffs['growth-y'] = 'DOWN'
-        self.Debuffs['growth-x'] = 'RIGHT'
-        self.Debuffs.num = 4
+        if (not config.units[ns.cUnit(unit)].disableAura) then
+            self.Debuffs = CreateFrame('Frame', nil, self)
+            self.Debuffs:SetHeight(20)
+            self.Debuffs:SetWidth(20 * 3)
+            self.Debuffs.size = 20
+            self.Debuffs.spacing = 4
+            self.Debuffs:SetPoint('TOPLEFT', self.Health, 'TOPRIGHT', 5, 0)
+            self.Debuffs.initialAnchor = 'LEFT'
+            self.Debuffs['growth-y'] = 'DOWN'
+            self.Debuffs['growth-x'] = 'RIGHT'
+            self.Debuffs.num = 4
+        end
     end
 
     if (self.IsPartyFrame) then
 		self:SetSize(105, 30)
 
-        self.Debuffs = CreateFrame('Frame', nil, self)
-        self.Debuffs:SetFrameStrata('BACKGROUND')
-        self.Debuffs:SetHeight(20)
-        self.Debuffs:SetWidth(20 * 3)
-        self.Debuffs.size = 20
-        self.Debuffs.spacing = 4
-        self.Debuffs:SetPoint('TOPLEFT', self.Health, 'TOPRIGHT', 5, 1)
-        self.Debuffs.initialAnchor = 'LEFT'
-        self.Debuffs['growth-y'] = 'DOWN'
-        self.Debuffs['growth-x'] = 'RIGHT'
-        self.Debuffs.num = 3
+        if (not config.units[ns.cUnit(unit)].disableAura) then
+            self.Debuffs = CreateFrame('Frame', nil, self)
+            self.Debuffs:SetFrameStrata('BACKGROUND')
+            self.Debuffs:SetHeight(20)
+            self.Debuffs:SetWidth(20 * 3)
+            self.Debuffs.size = 20
+            self.Debuffs.spacing = 4
+            self.Debuffs:SetPoint('TOPLEFT', self.Health, 'TOPRIGHT', 5, 1)
+            self.Debuffs.initialAnchor = 'LEFT'
+            self.Debuffs['growth-y'] = 'DOWN'
+            self.Debuffs['growth-x'] = 'RIGHT'
+            self.Debuffs.num = 3
+        end
     end
 
         -- mouseover text
@@ -1270,7 +1284,7 @@ oUF:Factory(function(self)
     local focus = self:Spawn('focus', 'oUF_Neav_Focus')
     focus:SetPoint('CENTER', focusAnchor, 3, 0)
     focus:SetClampedToScreen(true)
-
+    
     local focustarget = self:Spawn('focustarget', 'oUF_Neav_FocusTarget')
     focustarget:SetPoint('TOPLEFT', focus, 'BOTTOMRIGHT', -78, -15)
 
