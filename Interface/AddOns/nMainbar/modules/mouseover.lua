@@ -1,6 +1,7 @@
 
 local function GetNumShapeSlots()
     local _, class = UnitClass('Player')
+    
     if (class == 'DEATHKNIGHT' or class == 'WARRIOR') then
         return 3
     elseif (class == 'ROGUE' or class == 'PRIEST') then
@@ -48,7 +49,7 @@ local function EnableMouseOver(self, bar, min, max, alpha)
         end)
     end
 end
-    
+
 if (nMainbar.multiBarLeft.mouseover) then
     EnableMouseOver('MultiBarLeftButton', MultiBarLeft, 1, 12, nMainbar.multiBarLeft.alpha)
 end

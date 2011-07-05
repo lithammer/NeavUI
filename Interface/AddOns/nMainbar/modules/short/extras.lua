@@ -6,10 +6,10 @@ end
 function ShapeshiftBar_Update()
     local numForms = GetNumShapeshiftForms()
     if (numForms > 0) then
-		ShapeshiftBarFrame:Show()
-	else
-		ShapeshiftBarFrame:Hide()
-	end
+        ShapeshiftBarFrame:Show()
+    else
+        ShapeshiftBarFrame:Hide()
+    end
     
     securecall('ShapeshiftBar_UpdateState')
 end

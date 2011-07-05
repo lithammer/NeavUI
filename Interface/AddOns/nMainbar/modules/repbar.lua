@@ -1,6 +1,6 @@
  
     -- reputation bar mouseover text
-    
+
 ReputationWatchStatusBarText:SetFont(nMainbar.repBar.font, nMainbar.repBar.fontsize, 'THINOUTLINE')
 ReputationWatchStatusBarText:SetShadowOffset(0, 0)
 

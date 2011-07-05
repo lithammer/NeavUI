@@ -51,7 +51,7 @@ nMainbar = {
         moveableExtraBars = false,  -- make the pet, possess, shapeshift and totembar moveable, even when the mainmenubar is not "short"
     },
 
-    vehicle = {
+    vehicleBar = {
         scale = 0.8,
     },
     

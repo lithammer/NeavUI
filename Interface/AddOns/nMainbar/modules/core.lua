@@ -5,4 +5,4 @@ if (nMainbar.MainMenuBar.hideGryphons) then
 end
 
 MainMenuBar:SetScale(nMainbar.MainMenuBar.scale)
-VehicleMenuBar:SetScale(nMainbar.vehicle.scale)
+VehicleMenuBar:SetScale(nMainbar.vehicleBar.scale)
