@@ -37,7 +37,7 @@ ns.config = {
             showRolePrefix = false,                                                         -- A simple role abbrev..tanks = '>'..healer = '+'..dds = '-'
             showNotHereTimer = true,                                                        -- A afk and offline timer
             showMainTankIcon = true,                                                        -- A little shield on the top of a raidframe if the unit is marked as maintank
-            -- showRessurectText = false,                                                   -- Not working atm. just a placeholder
+            showRessurectText = true,                                                       -- Not working atm. just a placeholder
             showMouseoverHighlight = true,
 
             showTargetBorder = true,                                                        -- Ahows a little border on the raid/party frame if this unit is your target

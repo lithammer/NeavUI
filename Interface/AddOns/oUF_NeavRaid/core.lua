@@ -525,7 +525,7 @@ local function CreateRaidLayout(self, unit)
 
         table.insert(self.__elements, UpdatePower)
         self:RegisterEvent('UNIT_DISPLAYPOWER', UpdatePower)
-end
+    end
 
         -- heal prediction, new healcomm
 
@@ -598,7 +598,7 @@ end
     if (config.units.raid.showThreatText) then
         self.ThreatText = self.Health:CreateFontString(nil, 'OVERLAY')
         self.ThreatText:SetPoint('CENTER', self, 'BOTTOM')
-        self.ThreatText:SetFont(config.font.fontSmall, 10, 'THINOUTLINE')
+        self.ThreatText:SetFont(config.font.fontSmall, 11, 'THINOUTLINE')
         self.ThreatText:SetShadowColor(0, 0, 0, 0)
         self.ThreatText:SetTextColor(1, 0, 0)
         self.ThreatText:SetText('AGGRO')
@@ -673,10 +673,23 @@ end
 
     if (config.units.raid.showRessurectText) then
         self.ResurrectIcon = self.Health:CreateFontString(nil, 'OVERLAY')
-        self.ResurrectIcon:SetPoint('CENTER', self, 'BOTTOM')
-        self.ResurrectIcon:SetFont(config.font.fontSmall, 10, 'THINOUTLINE')
+        self.ResurrectIcon:SetPoint('CENTER', self, 'BOTTOM', 0, 1)
+        self.ResurrectIcon:SetFont(config.font.fontSmall, 11, 'THINOUTLINE')
         self.ResurrectIcon:SetShadowColor(0, 0, 0, 0)
         self.ResurrectIcon:SetTextColor(0.1, 1, 0.1)
+        self.ResurrectIcon:SetText('RES') -- RESURRECT
+
+        self.ResurrectIcon.Override = function()
+            local incomingResurrect = UnitHasIncomingResurrection(self.unit)
+
+            if (incomingResurrect) then
+                self.ResurrectIcon:Show()
+                self.NotHere:Hide()
+            else
+                self.ResurrectIcon:Hide()
+                self.NotHere:Show()
+            end
+        end
     end
 
         -- playertarget border
