@@ -5,7 +5,8 @@
 config.lua
 
 core.lua
-whisper.lua
-urlcopy.lua
 copy.lua
+hyperlink.lua
+urlcopy.lua
+whisper.lua
 

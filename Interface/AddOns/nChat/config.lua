@@ -10,13 +10,14 @@ CHAT_FRAME_FADE_TIME = 0.1
 
 nChat = {
     enableURLCopy = true, 
-    
+    enableHyperlinkTooltip = true, 
+
     chatOutline = false,
-   
+
     enableBottomButton = false, 
     disableFade = false,
     enableBorderColoring = true,
-    
+
     tab = {
         fontSize = 15,
         fontOutline = true, 
