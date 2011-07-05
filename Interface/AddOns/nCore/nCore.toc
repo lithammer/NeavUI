@@ -8,6 +8,7 @@
 core.lua
 
 modules\altbuy.lua
+modules\autogreed.lua
 modules\coords.lua
 modules\durability.lua
 modules\errors.lua

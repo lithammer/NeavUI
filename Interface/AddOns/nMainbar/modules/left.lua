@@ -13,7 +13,7 @@ if (nMainbar.multiBarLeft.orderHorizontal and nMainbar.multiBarRight.orderHorizo
 
     MultiBarLeftButton1:HookScript('OnShow', function(self)
         self:ClearAllPoints()
-        
+
         if (not nMainbar.MainMenuBar.shortBar) then
             self:SetPoint('BOTTOMLEFT', MultiBarBottomLeftButton1, 'TOPLEFT', 0, 6)
         else

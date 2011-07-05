@@ -36,7 +36,7 @@ local function ApplyTooltipStyle(self)
         bsize = 8
     elseif (self == FriendsTooltip) then
         FriendsTooltip:SetScale(1.1)
-        
+
         bgsize = 1
         bsize = 9
     else
@@ -62,9 +62,9 @@ local function ApplyTooltipStyle(self)
 end
 
 hooksecurefunc('GameTooltip_ShowCompareItem', function(self)  
-	if (not self) then
-		self = GameTooltip
-	end
+    if (not self) then
+        self = GameTooltip
+    end
 
     local shoppingTooltip1, shoppingTooltip2, shoppingTooltip3 = unpack(self.shoppingTooltips)
 
@@ -124,10 +124,10 @@ if (nTooltip.itemqualityBorderColor) then
     }) do
         tooltip:HookScript('OnTooltipSetItem', function(self)
             local name, item = self:GetItem()
-                
+
             if (item) then
                 local quality = select(3, GetItemInfo(item))
-                    
+
                 if (quality) then
                     local r, g, b = GetItemQualityColor(quality)
                     self:SetBeautyBorderTexture('white')
@@ -148,16 +148,16 @@ end
 local function GetRealUnit(self)
     if (GetMouseFocus() and not GetMouseFocus():GetAttribute('unit') and GetMouseFocus() ~= WorldFrame) then
         return select(2, self:GetUnit())
-	elseif (GetMouseFocus() and GetMouseFocus():GetAttribute('unit')) then
-		return GetMouseFocus():GetAttribute('unit')
+    elseif (GetMouseFocus() and GetMouseFocus():GetAttribute('unit')) then
+        return GetMouseFocus():GetAttribute('unit')
     else
         return select(2, self:GetUnit())  
-	end
+    end
 end
 
 local function GetFormattedUnitType(unit)
     local creaturetype = UnitCreatureType(unit)
-    
+
     if (creaturetype) then
         return creaturetype
     else
@@ -211,18 +211,18 @@ local healIcon = '|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES.blp:13:13:0:0
 local damagerIcon = '|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES.blp:13:13:0:0:64:64:20:39:22:41|t'
 
 local function GetUnitRoleString(unit)
-	local role = UnitGroupRolesAssigned(unit)
+    local role = UnitGroupRolesAssigned(unit)
     local roleList
 
-	if (role == 'TANK') then
+    if (role == 'TANK') then
         roleList = '  '..tankIcon..' '..TANK
     elseif (role == 'HEALER') then
         roleList = '  '..healIcon..' '..HEALER
     elseif (role == 'DAMAGER') then
         roleList = '  '..damagerIcon..' '..DAMAGER
-	else
-		roleList = nil
-	end
+    else
+        roleList = nil
+    end
 
     return roleList
 end
@@ -230,7 +230,7 @@ end
     -- tooltip position
 
 hooksecurefunc('GameTooltip_SetDefaultAnchor', function(self)
-	self:SetPoint(unpack(nTooltip.position))
+    self:SetPoint(unpack(nTooltip.position))
 end)
 
     -- set all to the defaults if tooltip hides
@@ -262,7 +262,7 @@ local function HealthBarColor(unit)
     else
         r, g, b = 0, 1, 0
     end
-    
+
     GameTooltipStatusBar:SetStatusBarColor(r, g, b)
     GameTooltipStatusBar:SetBackdropColor(r, g, b, 0.3)
 end
@@ -344,17 +344,17 @@ end
     -- function to short-display HP value on StatusBar
 
 local function ShortValue(value)
-	if (value >= 1e7) then
-		return ('%.1fm'):format(value / 1e6):gsub('%.?0+([km])$', '%1')
-	elseif (value >= 1e6) then
-		return ('%.2fm'):format(value / 1e6):gsub('%.?0+([km])$', '%1')
-	elseif (value >= 1e5) then
-		return ('%.0fk'):format(value / 1e3)
-	elseif (value >= 1e3) then
-		return ('%.1fk'):format(value / 1e3):gsub('%.?0+([km])$', '%1')
-	else
-		return value
-	end
+    if (value >= 1e7) then
+        return ('%.1fm'):format(value / 1e6):gsub('%.?0+([km])$', '%1')
+    elseif (value >= 1e6) then
+        return ('%.2fm'):format(value / 1e6):gsub('%.?0+([km])$', '%1')
+    elseif (value >= 1e5) then
+        return ('%.0fk'):format(value / 1e3)
+    elseif (value >= 1e3) then
+        return ('%.1fk'):format(value / 1e3):gsub('%.?0+([km])$', '%1')
+    else
+        return value
+    end
 end
 
 local function AddMouseoverTarget(self, unit)
@@ -382,11 +382,11 @@ end
 GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
     local unit = GetRealUnit(self)
 
-	if (UnitExists(unit) and UnitName(unit) ~= UNKNOWN) then
+    if (UnitExists(unit) and UnitName(unit) ~= UNKNOWN) then
         local name, realm = UnitName(unit)
 
             -- hide player titles
-            
+
         if (nTooltip.showPlayerTitles) then
             if (UnitPVPName(unit)) then 
                 name = UnitPVPName(unit) 
@@ -425,15 +425,15 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
   
             -- pvp flag prefix 
 
-		for i = 3, GameTooltip:NumLines() do
-			if (_G['GameTooltipTextLeft'..i]:GetText():find(PVP_ENABLED)) then
-				_G['GameTooltipTextLeft'..i]:SetText(nil)
+        for i = 3, GameTooltip:NumLines() do
+            if (_G['GameTooltipTextLeft'..i]:GetText():find(PVP_ENABLED)) then
+                _G['GameTooltipTextLeft'..i]:SetText(nil)
                 GameTooltipTextLeft1:SetText(GetUnitPVPIcon(unit)..GameTooltipTextLeft1:GetText())
-			end
-		end
-        
+            end
+        end
+
             -- raid icon, want to see the raidicon on the left
-            
+
         GameTooltipTextLeft1:SetText(GetUnitRaidIcon(unit)..GameTooltipTextLeft1:GetText())
 
             -- afk and dnd prefix

@@ -1,5 +1,5 @@
-    
-    -- a 'new' mail notification    
+
+    -- a 'new' mail notification
 
 MiniMapMailFrame:SetSize(14, 14)
 MiniMapMailFrame:ClearAllPoints()
@@ -21,7 +21,7 @@ MiniMapMailFrame.Text:SetTextColor(1, 0, 1)
 MiniMapMailFrame.Text:SetText('N')
 
    -- modify the lfg frame
-    
+
 MiniMapLFGFrame:ClearAllPoints()
 MiniMapLFGFrame:SetPoint('TOPLEFT', Minimap, 4, -4)
 MiniMapLFGFrame:SetSize(14, 14)
@@ -29,9 +29,9 @@ MiniMapLFGFrame:SetHighlightTexture(nil)
 
 MiniMapLFGFrameBorder:SetTexture()
 MiniMapLFGFrame.eye:Hide()
-    
+
 hooksecurefunc('EyeTemplate_StartAnimating', function(self)
-	self:SetScript('OnUpdate', nil)
+    self:SetScript('OnUpdate', nil)
 end)
 
 MiniMapLFGFrame.Text = MiniMapLFGFrame:CreateFontString(nil, 'OVERLAY')
@@ -42,7 +42,7 @@ MiniMapLFGFrame.Text:SetTextColor(1, 0.4, 0)
 MiniMapLFGFrame.Text:SetText('L')
 
    -- modify the battlefield frame
-   
+
 MiniMapBattlefieldFrame:ClearAllPoints()
 MiniMapBattlefieldFrame:SetPoint('BOTTOMLEFT', Minimap, 5, 5)
 MiniMapBattlefieldFrame:SetSize(14, 14)
@@ -61,7 +61,7 @@ MiniMapBattlefieldFrame.Text:SetTextColor(0, 0.75, 1)
 MiniMapBattlefieldFrame.Text:SetText('P')
 
     -- hide all unwanted things
-    
+
 MinimapZoomIn:Hide()
 MinimapZoomIn:UnregisterAllEvents()
 
@@ -87,17 +87,17 @@ MiniMapTracking:UnregisterAllEvents()
 MiniMapTracking:Hide()
 
     -- hide the durability frame (the armored man)
-    
+
 DurabilityFrame:Hide()
 DurabilityFrame:UnregisterAllEvents()
 
     -- bigger minimap
-    
+
 MinimapCluster:SetScale(1.1)
 MinimapCluster:EnableMouse(false)
 
     -- new position
-    
+
 Minimap:ClearAllPoints()
 Minimap:SetPoint('TOPRIGHT', UIParent, -26, -26)
 
@@ -116,11 +116,11 @@ Minimap:SetBeautyBorderPadding(1)
 
 Minimap:EnableMouseWheel(true)
 Minimap:SetScript('OnMouseWheel', function(self, delta)
-	if (delta > 0) then
-		_G.MinimapZoomIn:Click()
-	elseif delta < 0 then
-		_G.MinimapZoomOut:Click()
-	end
+    if (delta > 0) then
+        _G.MinimapZoomIn:Click()
+    elseif delta < 0 then
+        _G.MinimapZoomOut:Click()
+    end
 end)
 
     -- modify the minimap tracking
@@ -139,7 +139,7 @@ TicketStatusFrame:ClearAllPoints()
 TicketStatusFrame:SetPoint('BOTTOMRIGHT', UIParent, 0, 0)
 
 TicketStatusFrameButton:HookScript('OnShow', function(self)
-	self:SetBackdrop({
+    self:SetBackdrop({
         bgFile = 'Interface\\Buttons\\WHITE8x8', 
         insets = {
             left = 3, 
@@ -153,25 +153,25 @@ TicketStatusFrameButton:HookScript('OnShow', function(self)
 end)
 
 local function GetZoneColor()
-	local zoneType = GetZonePVPInfo()
+    local zoneType = GetZonePVPInfo()
     
-	if (zoneType == 'sanctuary') then
-		return 0.4, 0.8, 0.94
-	elseif (zoneType == 'arena') then
-		return 1, 0.1, 0.1
-	elseif (zoneType == 'friendly') then
-		return 0.1, 1, 0.1
-	elseif (zoneType == 'hostile') then
-		return 1, 0.1, 0.1
-	elseif (zoneType == 'contested') then
-		return 1, 0.8, 0
-	else
-		return 1, 1, 1
-	end
+    if (zoneType == 'sanctuary') then
+        return 0.4, 0.8, 0.94
+    elseif (zoneType == 'arena') then
+        return 1, 0.1, 0.1
+    elseif (zoneType == 'friendly') then
+        return 0.1, 1, 0.1
+    elseif (zoneType == 'hostile') then
+        return 1, 0.1, 0.1
+    elseif (zoneType == 'contested') then
+        return 1, 0.8, 0
+    else
+        return 1, 1, 1
+    end
 end
 
     -- mouseover zone text
-    
+
 local MainZone = Minimap:CreateFontString(nil, 'OVERLAY')
 MainZone:SetParent(Minimap)
 MainZone:SetFont('Fonts\\ARIALN.ttf', 16, 'THINOUTLINE')
@@ -191,14 +191,11 @@ SubZone:SetSize(130, 26)
 SubZone:SetJustifyV('TOP')
 
 Minimap:HookScript('OnEnter', function()
-
-        -- disable the mouseover if the shift key is pressed, in cases we want to make a ping and the text is annoying
-        
     if (nMinimap.showMouseoverZoneText and SubZone and not IsShiftKeyDown()) then
         SubZone:SetTextColor(GetZoneColor())
         SubZone:SetText(GetSubZoneText())
         securecall('UIFrameFadeIn', SubZone, 0.235, SubZone:GetAlpha(), nMinimap.alphaMouseoverZoneText)
-        
+
         MainZone:SetTextColor(GetZoneColor())
         MainZone:SetText(GetRealZoneText())
         securecall('UIFrameFadeIn', MainZone, 0.235, MainZone:GetAlpha(), nMinimap.alphaMouseoverZoneText)

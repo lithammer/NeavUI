@@ -4,10 +4,10 @@ local oUF = ns.oUF or _G.oUF
 
 local FormatValue = function(self)
     if (self >= 1000000) then
-		return ('%.2fm'):format(self / 1e6)
+        return ('%.2fm'):format(self / 1e6)
         -- return ('%.3fK'):format(self / 1e6):gsub('%.', 'M ')
     elseif (self >= 100000) then
-		return ('%.1fk'):format(self / 1e3)
+        return ('%.1fk'):format(self / 1e3)
         -- return ('%.3f'):format(self / 1e3):gsub('%.', 'K ')
     else
         return self
@@ -18,23 +18,23 @@ local Update = function(self, event, unit)
     if (unit ~= self.unit) then 
         return 
     end
-    
+
     local unit = unit or self.unit
     local druid = self.DruidMana
-    
+
         -- show druid mana only as bear or cat
-        
+
     if (GetShapeshiftForm() == 1 or GetShapeshiftForm() == 3) then
-    	if (druid.PreUpdate) then 
+        if (druid.PreUpdate) then 
             druid:PreUpdate(unit)
         end
-        
+
         druid:Show()
-                
+
         local min, max = UnitPower('player', SPELL_POWER_MANA), UnitPowerMax('player', SPELL_POWER_MANA)
         druid:SetMinMaxValues(0, max)
         druid:SetValue(min)
-        
+
         local r, g, b
         if (druid.colorClass and UnitIsPlayer(unit)) then
             local t = RAID_CLASS_COLORS['DRUID']
@@ -45,7 +45,7 @@ local Update = function(self, event, unit)
             local t = PowerBarColor['MANA']
             r, g, b = t['r'], t['g'], t['b']
         end
-        
+
         if (b) then
             self.DruidMana:SetStatusBarColor(r, g, b)
 
@@ -55,7 +55,7 @@ local Update = function(self, event, unit)
                 bg:SetVertexColor(r * mu, g * mu, b * mu)
             end
         end
-        
+
         local value = druid.Value
         if (value) then
             if (min == max) then
@@ -64,7 +64,7 @@ local Update = function(self, event, unit)
                 value:SetText(FormatValue(min)..'/'..ns.FormatValue(max))
             end
         end
-        
+
         if (druid.PostUpdate) then
             return druid:PostUpdate(unit, min, max)
         end
@@ -92,9 +92,9 @@ local Enable = function(self)
         self:RegisterEvent('UNIT_DISPLAYPOWER', Path)
         self:RegisterEvent('UNIT_MAXPOWER', Path)
         
-		if (not druid:GetStatusBarTexture()) then
-			druid:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
-		end
+        if (not druid:GetStatusBarTexture()) then
+            druid:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
+        end
         
         return true
     end

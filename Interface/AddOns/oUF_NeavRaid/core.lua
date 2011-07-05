@@ -5,29 +5,29 @@ local config = ns.config
 local playerClass = select(2, UnitClass('player'))
 local isHealer = ns.MultiCheck(playerClass, 'SHAMAN', 'PALADIN', 'DRUID', 'PRIEST')
 
-    -- kill the Blizzard party/raid frame stuff
+    -- kill the blizzard raid frame stuff
 
 for _, object in pairs({
-	CompactPartyFrame,
-	CompactRaidFrameManager,
-	CompactRaidFrameContainer,
+    CompactPartyFrame,
+    CompactRaidFrameManager,
+    CompactRaidFrameContainer,
 }) do
-	object:UnregisterAllEvents()
-    
+    object:UnregisterAllEvents()
+
     hooksecurefunc(object, 'Show', function(self)
         self:Hide()
     end)
 end
 
 InterfaceOptionsFrameCategoriesButton10:SetScale(0.00001)
-InterfaceOptionsFrameCategoriesButton10:SetAlpha(0)		
+InterfaceOptionsFrameCategoriesButton10:SetAlpha(0)
 InterfaceOptionsFrameCategoriesButton11:SetScale(0.00001)
 InterfaceOptionsFrameCategoriesButton11:SetAlpha(0)
 
 CompactUnitFrame_UpateVisible = function() end
 CompactUnitFrame_UpdateAll = function() end
 
-    -- drop down menu
+    -- create the drop down menu
 
 local dropdown = CreateFrame('Frame', 'oUF_Neav_Raid_DropDown', UIParent, 'UIDropDownMenuTemplate')
 
@@ -81,41 +81,45 @@ UIDropDownMenu_Initialize(dropdown, init, 'MENU')
     
 local indicatorList
 do
-	indicatorList = {
-		DRUID = {
-			{774, 'BOTTOMRIGHT', {1, 0.2, 1}}, -- Rejuvenation
-			{33763, 'BOTTOM', {0.5, 1, 0.5}, false, false, true}, -- Lifebloom
-			{48438, 'BOTTOMLEFT', {0.7, 1, 0}}, -- Wild Growth
-		},
-		MAGE = {
-			{54648, 'BOTTOMRIGHT', {0.7, 0, 1}, true, true}, -- Focus Magic
-		},
-		PALADIN = {
-			{53563, 'BOTTOMRIGHT', {0, 1, 0}}, -- Beacon of Light
-		},
-		PRIEST = {
-			{6788, 'BOTTOMRIGHT', {0.6, 0, 0}, true}, -- Weakened Soul
-			{17, 'BOTTOMRIGHT', {1, 1, 0}, true}, -- Power Word: Shield
-			{33076, 'TOPRIGHT', {1, 0.6, 0.6}, true, true}, -- Prayer of Mending
-			{139, 'BOTTOMLEFT', {0, 1, 0}}, -- Renew
-		},
-		SHAMAN = {
-			{61295, 'TOPLEFT', {0.7, 0.3, 0.7}}, -- Riptide
-			{51945, 'TOPRIGHT', {0.2, 0.7, 0.2}}, -- Earthliving
-			{16177, 'BOTTOMLEFT', {0.4, 0.7, 0.2}}, -- Ancestral Fortitude
-			{974, 'BOTTOMRIGHT', {0.7, 0.4, 0}, false, true}, -- Earth Shield
-		},
-		WARLOCK = {
-			{20707, 'BOTTOMRIGHT', {0.7, 0, 1}, true, true}, -- Soulstone
-			{85767, 'BOTTOMLEFT', {0.7, 0.5, 1}, true, true, true}, -- Dark Intent
-		},
-		ALL = {
+    indicatorList = {
+        DRUID = {
+            {774, 'BOTTOMRIGHT', {1, 0.2, 1}}, -- Rejuvenation
+            {33763, 'BOTTOM', {0.5, 1, 0.5}, false, false, true}, -- Lifebloom
+            {48438, 'BOTTOMLEFT', {0.7, 1, 0}}, -- Wild Growth
+        },
+        MAGE = {
+            {54648, 'BOTTOMRIGHT', {0.7, 0, 1}, true, true}, -- Focus Magic
+        },
+        PALADIN = {
+            {53563, 'BOTTOMRIGHT', {0, 1, 0}}, -- Beacon of Light
+        },
+        PRIEST = {
+            {6788, 'BOTTOMRIGHT', {0.6, 0, 0}, true}, -- Weakened Soul
+            {17, 'BOTTOMRIGHT', {1, 1, 0}, true}, -- Power Word: Shield
+            {33076, 'TOPRIGHT', {1, 0.6, 0.6}, true, true}, -- Prayer of Mending
+            {139, 'BOTTOMLEFT', {0, 1, 0}}, -- Renew
+        },
+        SHAMAN = {
+            {61295, 'TOPLEFT', {0.7, 0.3, 0.7}}, -- Riptide
+            {51945, 'TOPRIGHT', {0.2, 0.7, 0.2}}, -- Earthliving
+            {16177, 'BOTTOMLEFT', {0.4, 0.7, 0.2}}, -- Ancestral Fortitude
+            {974, 'BOTTOMRIGHT', {0.7, 0.4, 0}, false, true}, -- Earth Shield
+        },
+        WARLOCK = {
+            {20707, 'BOTTOMRIGHT', {0.7, 0, 1}, true, true}, -- Soulstone
+            {85767, 'BOTTOMLEFT', {0.7, 0.5, 1}, true, true, true}, -- Dark Intent
+        },
+        ALL = {
             {23333, 'TOPLEFT', {1, 0, 0}}, -- Warsong flag, Horde
             {23335, 'TOPLEFT', {0, 0, 1}}, -- Warsong flag, Alliance 
-		},
-	}
+        },
+    }
 end
-        --[[
+
+--[[
+
+    -- W    I   P
+    
 local inlist
 do
 	inlist = {
@@ -180,16 +184,16 @@ end
 ]]
 
 local function AuraIcon(self, icon)
-	if (icon.cd) then
-		icon.cd:SetReverse()
-		icon.cd:SetAllPoints(icon.icon)
-	end
+    if (icon.cd) then
+        icon.cd:SetReverse()
+        icon.cd:SetAllPoints(icon.icon)
+    end
 end
 
 local offsets
 do
     local space = 2
-    
+
     offsets = {
         TOPLEFT = {
             icon = {space, -space},
@@ -199,7 +203,7 @@ do
         TOPRIGHT = {
             icon = {-space, -space},
             count = {'TOP', icon, 'BOTTOM', 0, 0},
-        },   
+        },
 
         BOTTOMLEFT = {
             icon = {space, space},
@@ -240,40 +244,40 @@ local function CreateIndicators(self, unit)
     self.AuraWatch.hideCooldown = false
     self.AuraWatch.noCooldownCount = true
     self.AuraWatch.icons = {}
-	self.AuraWatch.PostCreateIcon = AuraIcon
+    self.AuraWatch.PostCreateIcon = AuraIcon
 
-	local buffs = {}
+    local buffs = {}
 
-	if (indicatorList['ALL']) then
-		for key, value in pairs(indicatorList['ALL']) do
-			tinsert(buffs, value)
-		end
-	end
+    if (indicatorList['ALL']) then
+        for key, value in pairs(indicatorList['ALL']) do
+            tinsert(buffs, value)
+        end
+    end
 
-	if (indicatorList[playerClass]) then
-		for key, value in pairs(indicatorList[playerClass]) do
-			tinsert(buffs, value)
-		end
-	end
+    if (indicatorList[playerClass]) then
+        for key, value in pairs(indicatorList[playerClass]) do
+            tinsert(buffs, value)
+        end
+    end
 
-	if (buffs) then
-		for key, spell in pairs(buffs) do
-			local icon = CreateFrame('Frame', nil, self.AuraWatch)
+    if (buffs) then
+        for key, spell in pairs(buffs) do
+            local icon = CreateFrame('Frame', nil, self.AuraWatch)
             icon:SetFrameStrata('HIGH')
-			icon:SetWidth(config.units.raid.indicatorSize)
-			icon:SetHeight(config.units.raid.indicatorSize)
-			icon:SetPoint(spell[2], self.Health, unpack(offsets[spell[2]].icon))
+            icon:SetWidth(config.units.raid.indicatorSize)
+            icon:SetHeight(config.units.raid.indicatorSize)
+            icon:SetPoint(spell[2], self.Health, unpack(offsets[spell[2]].icon))
 
-			icon.spellID = spell[1]
-			icon.anyUnit = spell[4]
-			icon.hideCooldown = spell[5]
-			icon.hideCount = spell[6]
+            icon.spellID = spell[1]
+            icon.anyUnit = spell[4]
+            icon.hideCooldown = spell[5]
+            icon.hideCount = spell[6]
 
                 -- Exception to place PW:S above Weakened Soul
 
-			if (spell[1] == 17) then
-				icon:SetFrameLevel(icon:GetFrameLevel() + 5)
-			end
+            if (spell[1] == 17) then
+                icon:SetFrameLevel(icon:GetFrameLevel() + 5)
+            end
 
                 -- indicator icon
 
@@ -287,21 +291,21 @@ local function CreateIndicators(self, unit)
                 icon.icon:SetVertexColor(0.8, 0.8, 0.8)
             end
 
-			if (not icon.hideCount) then
-				icon.count = icon:CreateFontString(nil, 'OVERLAY')
-				icon.count:SetShadowColor(0, 0, 0)
-				icon.count:SetShadowOffset(1, -1)
+            if (not icon.hideCount) then
+                icon.count = icon:CreateFontString(nil, 'OVERLAY')
+                icon.count:SetShadowColor(0, 0, 0)
+                icon.count:SetShadowOffset(1, -1)
                 icon.count:SetPoint(unpack(offsets[spell[2]].count))
                 icon.count:SetFont('Interface\\AddOns\\oUF_NeavRaid\\media\\fontVisitor.ttf', 13)
-			end
+            end
 
-			self.AuraWatch.icons[spell[1]] = icon
-		end
-	end
+            self.AuraWatch.icons[spell[1]] = icon
+        end
+    end
 end
 
 local function UpdateThreat(self, _, unit)
-	if (self.unit ~= unit) then
+    if (self.unit ~= unit) then
         return
     end
 
@@ -336,14 +340,14 @@ local function UpdateHealPredictionSize(self)
 end
 
 local function UpdatePower(self, _, unit)
-	if (self.unit ~= unit) then
+    if (self.unit ~= unit) then
         return 
     end
 
     local _, powerToken = UnitPowerType(unit)
 
     self.Health:ClearAllPoints()
-	-- if (powerToken == 'MANA' and not UnitIsDeadOrGhost(unit) and UnitIsConnected(unit)) then
+    -- if (powerToken == 'MANA' and not UnitIsDeadOrGhost(unit) and UnitIsConnected(unit)) then
     if (powerToken == 'MANA') then
         if (config.units.raid.manabar.horizontalOrientation) then
             self.Health:SetPoint('BOTTOMLEFT', self, 0, 3)
@@ -354,20 +358,20 @@ local function UpdatePower(self, _, unit)
         end
 
         self.Power:Show()
-	else
+    else
         self.Health:SetAllPoints(self)
-		self.Power:Hide()
-	end
+        self.Power:Hide()
+    end
 
     UpdateHealPredictionSize(self)
 end
 
 local function DeficitValue(self)
     if (self >= 1000) then
-		return format('-%.1f', self/1000)
-	else
-		return self
-	end
+        return format('-%.1f', self/1000)
+    else
+        return self
+    end
 end
 
 local function StatusText(unit)
@@ -424,23 +428,23 @@ local function CreateRaidLayout(self, unit)
     self:RegisterForClicks('AnyUp')
 
     self:SetScript('OnEnter', function(self)
-		UnitFrame_OnEnter(self)
+        UnitFrame_OnEnter(self)
         
         if (self.Mouseover) then
             self.Mouseover:SetAlpha(0.175)
         end
-	end)
+    end)
 
     self:SetScript('OnLeave', function(self)
-		UnitFrame_OnLeave(self)
+        UnitFrame_OnLeave(self)
         
         if (self.Mouseover) then
             self.Mouseover:SetAlpha(0)
         end
-	end)
+    end)
 
     self:SetBackdrop({
-          bgFile = 'Interface\\Buttons\\WHITE8x8', 
+          bgFile = 'Interface\\Buttons\\WHITE8x8',
           insets = {
             left = -1.5,
             right = -1.5,
@@ -459,14 +463,14 @@ local function CreateRaidLayout(self, unit)
     self.Health:SetOrientation(config.units.raid.horizontalHealthBars and 'HORIZONTAL' or 'VERTICAL')
 
     self.Health.PostUpdate = UpdateHealth
-	self.Health.frequentUpdates = true
+    self.Health.frequentUpdates = true
 
     self.Health.colorClass = true
     self.Health.colorDisconnected = true   
 
-	if (not isHealer or config.units.raid.smoothUpdatesForAllClasses) then
-		self.Health.Smooth = true
-	end
+    if (not isHealer or config.units.raid.smoothUpdatesForAllClasses) then
+        self.Health.Smooth = true
+    end
 
         -- health background
 
@@ -494,9 +498,9 @@ local function CreateRaidLayout(self, unit)
 
         -- power bar
 
-	if (config.units.raid.manabar.show) then
-		self.Power = CreateFrame('StatusBar', nil, self)
-		self.Power:SetStatusBarTexture(config.media.statusbar, 'ARTWORK')
+    if (config.units.raid.manabar.show) then
+        self.Power = CreateFrame('StatusBar', nil, self)
+        self.Power:SetStatusBarTexture(config.media.statusbar, 'ARTWORK')
 
         if (config.units.raid.manabar.horizontalOrientation) then
             self.Power:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', 0, -1)
@@ -510,50 +514,50 @@ local function CreateRaidLayout(self, unit)
             self.Power:SetWidth(2.5)
         end
 
-		self.Power.colorPower = true
-		self.Power.Smooth = true
+        self.Power.colorPower = true
+        self.Power.Smooth = true
 
-		self.Power.bg = self.Power:CreateTexture(nil, 'BORDER')
-		self.Power.bg:SetAllPoints(self.Power)
+        self.Power.bg = self.Power:CreateTexture(nil, 'BORDER')
+        self.Power.bg:SetAllPoints(self.Power)
         self.Power.bg:SetTexture(1, 1, 1)
 
         self.Power.bg.multiplier = 0.3
 
         table.insert(self.__elements, UpdatePower)
-		self:RegisterEvent('UNIT_DISPLAYPOWER', UpdatePower)
-	end
+        self:RegisterEvent('UNIT_DISPLAYPOWER', UpdatePower)
+end
 
         -- heal prediction, new healcomm
 
-	local myBar = CreateFrame('StatusBar', nil, self.Health)
-	myBar:SetStatusBarTexture(config.media.statusbar)
-	myBar:SetStatusBarColor(0, 1, 0.3, 0.5)
+    local myBar = CreateFrame('StatusBar', nil, self.Health)
+    myBar:SetStatusBarTexture(config.media.statusbar)
+    myBar:SetStatusBarColor(0, 1, 0.3, 0.5)
 
-	if (config.units.raid.horizontalHealthBars) then
-		myBar:SetOrientation('HORIZONTAL')
-		myBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT', 0, 0)
-	else
-		myBar:SetOrientation('VERTICAL')
-		myBar:SetPoint('BOTTOM', self.Health:GetStatusBarTexture(), 'TOP', 0, 0)
-	end
+    if (config.units.raid.horizontalHealthBars) then
+        myBar:SetOrientation('HORIZONTAL')
+        myBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT', 0, 0)
+    else
+        myBar:SetOrientation('VERTICAL')
+        myBar:SetPoint('BOTTOM', self.Health:GetStatusBarTexture(), 'TOP', 0, 0)
+    end
 
-	local otherBar = CreateFrame('StatusBar', nil, self.Health)
-	otherBar:SetStatusBarTexture(config.media.statusbar)
-	otherBar:SetStatusBarColor(0, 1, 0, 0.25)
+    local otherBar = CreateFrame('StatusBar', nil, self.Health)
+    otherBar:SetStatusBarTexture(config.media.statusbar)
+    otherBar:SetStatusBarColor(0, 1, 0, 0.25)
 
-	if (config.units.raid.horizontalHealthBars) then
-		otherBar:SetOrientation('HORIZONTAL')
-		otherBar:SetPoint('LEFT', myBar:GetStatusBarTexture(), 'RIGHT', 0, 0)
-	else
-		otherBar:SetOrientation('VERTICAL')
-		otherBar:SetPoint('BOTTOM', myBar:GetStatusBarTexture(), 'TOP', 0, 0)
-	end
+    if (config.units.raid.horizontalHealthBars) then
+        otherBar:SetOrientation('HORIZONTAL')
+        otherBar:SetPoint('LEFT', myBar:GetStatusBarTexture(), 'RIGHT', 0, 0)
+    else
+        otherBar:SetOrientation('VERTICAL')
+        otherBar:SetPoint('BOTTOM', myBar:GetStatusBarTexture(), 'TOP', 0, 0)
+    end
 
-	self.HealPrediction = {
-		myBar = myBar,
-		otherBar = otherBar,
-		maxOverflow = 1,
-	}
+    self.HealPrediction = {
+        myBar = myBar,
+        otherBar = otherBar,
+        maxOverflow = 1,
+    }
 
     UpdateHealPredictionSize(self)
 
@@ -609,9 +613,9 @@ local function CreateRaidLayout(self, unit)
     self.MasterLooter = self.Health:CreateTexture(nil, 'OVERLAY', self)
     self.MasterLooter:SetSize(11, 11)
     self.MasterLooter:SetPoint('RIGHT', self, 'TOPRIGHT', -1, 1)
-    
+
         -- main tank icon
-    
+
     if (config.units.raid.showMainTankIcon) then
         self.MainTank = self.Health:CreateTexture(nil, 'OVERLAY')
         self.MainTank:SetSize(12, 11)
@@ -636,7 +640,7 @@ local function CreateRaidLayout(self, unit)
     self.ReadyCheck:SetPoint('CENTER')
     self.ReadyCheck:SetSize(20, 20)
     self.ReadyCheck.delayTime = 2
-	self.ReadyCheck.fadeTime = 1
+    self.ReadyCheck.fadeTime = 1
 
         -- debuff icons, using freebAuras from oUF_Freebgrid
 
@@ -646,7 +650,7 @@ local function CreateRaidLayout(self, unit)
 
         -- create indicators
 
-	CreateIndicators(self, unit)
+    CreateIndicators(self, unit)
 
         -- role indicator
 
@@ -697,10 +701,10 @@ local function CreateRaidLayout(self, unit)
 
         -- range check
 
-	self.Range = {
-		insideAlpha = 1,
-		outsideAlpha = 0.3,
-	}
+    self.Range = {
+        insideAlpha = 1,
+        outsideAlpha = 0.3,
+    }
 
     self.SpellRange = {
         insideAlpha = 1,
@@ -742,7 +746,7 @@ SlashCmdList['oUF_Neav_Raid_AnchorToggle'] = function()
         print('oUF_NeavRaid: You cant do this in combat!')
         return
     end
-    
+
     if (not f:IsShown()) then
         f:Show()
     else
@@ -787,7 +791,7 @@ oUF:Factory(function(self)
             offset = -rlayout.frameSpacing
         end
     end
-            
+
     local raid = {}
     for i = 1, rlayout.numGroups do
         table.insert(raid, self:SpawnHeader('oUF_Neav_Raid'..i, nil, 'solo,party,raid',
@@ -795,19 +799,19 @@ oUF:Factory(function(self)
             self:SetWidth(%d)
             self:SetHeight(%d)
             ]]):format(ns.config.units.raid.width, ns.config.units.raid.height),
-            
+
             'showRaid', true,
             'showParty', config.units.raid.showParty,
             'showPlayer', true,
             'showSolo', config.units.raid.showSolo,
-    
+
             'xOffset', offset,
             'yOffset', offset,
             'columnSpacing', offset,
-            
+
             'point', anchpoint,
             'columnAnchorPoint', relpoint,
-            
+
             'sortMethod', 'INDEX',
             'groupFilter', i
             )
@@ -842,7 +846,7 @@ oUF:Factory(function(self)
                 end
             end
         end
-        
+
         raid[i]:SetScale(ns.config.units.raid.scale) 
     end
 end)

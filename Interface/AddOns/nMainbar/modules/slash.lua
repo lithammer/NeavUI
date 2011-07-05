@@ -1,6 +1,6 @@
-   
+
    -- slash commands for the gm frame
-    
+
 SlashCmdList['GM'] = function()
     ToggleHelpFrame() 
 end

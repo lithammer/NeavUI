@@ -6,15 +6,15 @@ local Update = function(self, event, unit)
     if (unit ~= self.unit) then 
         return 
     end
-    
+
     local unit = unit or self.unit
     local raidID = UnitInRaid(unit)
-    
+
     if (not raidID) then
         self.MainTank:Hide()
         return
     end
-    
+
     local _, _, _, _, _, _, _, _, _, rinfo = GetRaidRosterInfo(raidID)
 
     if (raidID and (rinfo == 'MAINTANK') and not UnitHasVehicleUI(unit)) then

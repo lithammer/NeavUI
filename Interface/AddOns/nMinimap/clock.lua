@@ -18,18 +18,18 @@ local function FormatValue(i)
 end
 
 local function ColorGradient(perc, ...)
-	if (perc > 1) then
-		local r, g, b = select(select('#', ...) - 2, ...) return r, g, b
-	elseif (perc < 0) then
-		local r, g, b = ... return r, g, b
-	end
-	
-	local num = select('#', ...) / 3
+    if (perc > 1) then
+        local r, g, b = select(select('#', ...) - 2, ...) return r, g, b
+    elseif (perc < 0) then
+        local r, g, b = ... return r, g, b
+    end
 
-	local segment, relperc = modf(perc*(num-1))
-	local r1, g1, b1, r2, g2, b2 = select((segment*3)+1, ...)
+    local num = select('#', ...) / 3
 
-	return r1 + (r2-r1)*relperc, g1 + (g2-g1)*relperc, b1 + (b2-b1)*relperc
+    local segment, relperc = modf(perc*(num-1))
+    local r1, g1, b1, r2, g2, b2 = select((segment*3)+1, ...)
+
+    return r1 + (r2-r1)*relperc, g1 + (g2-g1)*relperc, b1 + (b2-b1)*relperc
 end
 
 local function RGBGradient(num)
@@ -189,24 +189,24 @@ local addonTable = {}
 
 local function AddonMem()
     total = 0
-    
+
     collectgarbage()
     UpdateAddOnMemoryUsage()
-    
+
     wipe(addonTable)
 
     for i = 1, GetNumAddOns() do
         if (IsAddOnLoaded(i)) then
             local memory = GetAddOnMemoryUsage(i)
             total = total + memory
-            
+
             entry = {
                 name = select(2, GetAddOnInfo(i)), 
                 memory = GetAddOnMemoryUsage(i)
             }
-          
+
             tinsert(addonTable, entry)
-        
+
             if (IsShiftKeyDown()) then
                 sort(addonTable, function(a, b) 
                     return a.memory > b.memory 
@@ -219,17 +219,17 @@ end
 local function ShowTip()
     GameTooltip:ClearLines()
     GameTooltip:SetOwner(TimeManagerClockButton, 'ANCHOR_BOTTOMLEFT')
-    
+
     AddonMem()
 
     GameTooltip:AddLine(COMBAT_MISC_INFO)    
-    
+
     GameTooltip:AddLine(' ')
 
     local _, _, lagHome, lagWorld = GetNetStats()
     GameTooltip:AddLine('|cffffffffHome:|r '..format('%d ms', lagHome), RGBGradient(select(3, GetNetStats()) / 100))
     GameTooltip:AddLine('|cffffffff'..CHANNEL_CATEGORY_WORLD..':|r '..format('%d ms', lagWorld), RGBGradient(select(4, GetNetStats()) / 100))
-    
+
     GameTooltip:AddLine(' ')
 
     for _, table in pairs(addonTable) do
@@ -237,9 +237,9 @@ local function ShowTip()
     end
 
     GameTooltip:AddLine(' ')
-    
+
     GameTooltip:AddDoubleLine('Total', FormatValue(total), nil, nil, nil, RGBGradient(total / (1024*10)))
-    
+
     if (SHOW_NEWBIE_TIPS == '1') then
         GameTooltip:AddLine(' ')
         GameTooltip:AddLine(NEWBIE_TOOLTIP_MEMORY, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1)
@@ -280,10 +280,10 @@ TimeManagerClockButton:SetScript('OnClick', function(self, button)
         if (self.alarmFiring) then
             TimeManager_TurnOffAlarm()
         end
-        
+
         DropDownList1:Hide()
         ToggleTimeManager()
     end
-    
+
     GameTooltip:Hide()
 end)

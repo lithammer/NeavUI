@@ -201,14 +201,14 @@ end)
 hooksecurefunc('ActionButton_UpdateUsable', function(self)
     _G[self:GetName()..'NormalTexture']:SetVertexColor(nMainbar.color.Normal[1], nMainbar.color.Normal[2], nMainbar.color.Normal[3], 1) 
 
-	local isUsable, notEnoughMana = IsUsableAction(self.action)
-	if (isUsable) then
-		_G[self:GetName()..'Icon']:SetVertexColor(1, 1, 1)
-	elseif (notEnoughMana) then
-		_G[self:GetName()..'Icon']:SetVertexColor(unpack(nMainbar.color.OutOfMana))
-	else
-		_G[self:GetName()..'Icon']:SetVertexColor(unpack(nMainbar.color.NotUsable))
-	end
+    local isUsable, notEnoughMana = IsUsableAction(self.action)
+    if (isUsable) then
+        _G[self:GetName()..'Icon']:SetVertexColor(1, 1, 1)
+    elseif (notEnoughMana) then
+        _G[self:GetName()..'Icon']:SetVertexColor(unpack(nMainbar.color.OutOfMana))
+    else
+        _G[self:GetName()..'Icon']:SetVertexColor(unpack(nMainbar.color.NotUsable))
+    end
 end)
 
 hooksecurefunc('ActionButton_UpdateHotkeys', function(self)
@@ -230,33 +230,33 @@ hooksecurefunc('ActionButton_UpdateHotkeys', function(self)
 end)
 
 function ActionButton_OnUpdate(self, elapsed)
-	if (ActionButton_IsFlashing(self)) then
-		local flashtime = self.flashtime
-		flashtime = flashtime - elapsed
+    if (ActionButton_IsFlashing(self)) then
+        local flashtime = self.flashtime
+        flashtime = flashtime - elapsed
 
-		if (flashtime <= 0) then
-			local overtime = - flashtime
-			if (overtime >= ATTACK_BUTTON_FLASH_TIME) then
-				overtime = 0
-			end
+        if (flashtime <= 0) then
+            local overtime = - flashtime
+            if (overtime >= ATTACK_BUTTON_FLASH_TIME) then
+                overtime = 0
+            end
 
-			flashtime = ATTACK_BUTTON_FLASH_TIME - overtime
+            flashtime = ATTACK_BUTTON_FLASH_TIME - overtime
 
-			local flashTexture = _G[self:GetName()..'Flash']
-			if (flashTexture:IsShown()) then
-				flashTexture:Hide()
-			else
-				flashTexture:Show()
-			end
-		end
+            local flashTexture = _G[self:GetName()..'Flash']
+            if (flashTexture:IsShown()) then
+                flashTexture:Hide()
+            else
+                flashTexture:Show()
+            end
+        end
 
-		self.flashtime = flashtime
-	end
+        self.flashtime = flashtime
+    end
 
-	local rangeTimer = self.rangeTimer
-	if (rangeTimer) then
-		rangeTimer = rangeTimer - elapsed
-		if (rangeTimer <= 0) then
+    local rangeTimer = self.rangeTimer
+    if (rangeTimer) then
+        rangeTimer = rangeTimer - elapsed
+        if (rangeTimer <= 0) then
             local isInRange = false
 
             if (ActionHasRange(self.action) and IsActionInRange(self.action) == 0) then
@@ -270,8 +270,8 @@ function ActionButton_OnUpdate(self, elapsed)
             end
 
             rangeTimer = TOOLTIP_UPDATE_TIME
-		end
+        end
 
-		self.rangeTimer = rangeTimer
-	end
+        self.rangeTimer = rangeTimer
+    end
 end

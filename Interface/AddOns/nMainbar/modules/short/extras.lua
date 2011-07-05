@@ -10,12 +10,12 @@ function ShapeshiftBar_Update()
     else
         ShapeshiftBarFrame:Hide()
     end
-    
+
     securecall('ShapeshiftBar_UpdateState')
 end
 
     -- moveable bars
-    
+
 for _, frame in pairs({        
     _G['PetActionBarFrame'],
     _G['ShapeshiftBarFrame'],
@@ -26,7 +26,7 @@ for _, frame in pairs({
 end
 
     -- key + alt-key and left mouse to move
-    
+
 for _, button in pairs({        
     _G['PossessButton1'],
     _G['PetActionButton1'],
@@ -34,10 +34,10 @@ for _, button in pairs({
 }) do
     button:ClearAllPoints()
     button:SetPoint('CENTER', UIParent, -100)
-    
+
     button:SetMovable(true)
     button:SetUserPlaced(true)
-    
+
     button:RegisterForDrag('LeftButton')
     button:HookScript('OnDragStart', function(self)
         if (IsShiftKeyDown() and IsAltKeyDown()) then

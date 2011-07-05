@@ -1,6 +1,6 @@
 
     -- experience bar mouseover text
-    
+
 MainMenuBarExpText:SetFont(nMainbar.expBar.font, nMainbar.expBar.fontsize, 'THINOUTLINE')
 MainMenuBarExpText:SetShadowOffset(0, 0)
 

@@ -11,9 +11,9 @@ f:SetScript('OnEvent', function(self)
             OmenBarList:SetBeautyBorderPadding(3)
         end
     end
-    
+
         -- a example for addons like pitbull
-    
+
     --[[ 
     if (IsAddOnLoaded('PitBull4')) then
         f:SetScript('OnUpdate', function(self)
@@ -45,14 +45,14 @@ f:SetScript('OnEvent', function(self)
                 local icon2 = _G[frame:GetName()..'BarIcon2']
                 local name = _G[frame:GetName()..'BarName']
                 local timer = _G[frame:GetName()..'BarTimer']
-                
+
                 spark:SetTexture(nil)
-                
+
                 timer:ClearAllPoints()
                 timer:SetPoint('RIGHT', tbar, 'RIGHT', -4, 0)
                 timer:SetFont('Fonts\\ARIALN.ttf', 22)
                 timer:SetJustifyH('RIGHT')
-                
+
                 name:ClearAllPoints()
                 name:SetPoint('LEFT', tbar, 4, 0)
                 name:SetPoint('RIGHT', timer, 'LEFT', -4, 0)
@@ -63,17 +63,17 @@ f:SetScript('OnEvent', function(self)
                 tbar:SetBeautyBorderPadding(tbar:GetHeight() + 3, 2, 2, 2, tbar:GetHeight() + 3, 2, 2, 2)
                 tbar:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
                 tbar:SetBackdropColor(0, 0, 0, 0.5)
-                
+
                 icon1:SetTexCoord(0.07, 0.93, 0.07, 0.93)
                 icon1:SetSize(tbar:GetHeight(), tbar:GetHeight() - 1)
-                
+
                 icon2:SetTexCoord(0.07, 0.93, 0.07, 0.93)
                 icon2:SetSize(tbar:GetHeight(), tbar:GetHeight() - 1)
             end
         end)
-        
+
             -- hide the pesky range check
-            
+
         DBM.RangeCheck:Show()
         DBM.RangeCheck:Hide()
         DBMRangeCheck:HookScript('OnShow', function(self)

@@ -31,7 +31,7 @@ for i = 1, 12 do
     }) do
         button:SetScale(nMainbar.totemManager.scale)
         button:SetAlpha(nMainbar.totemManager.alpha)
-        
+
         button:RegisterForDrag('LeftButton')
         button:HookScript('OnDragStart', function()
             if (IsControlKeyDown()) then
@@ -57,13 +57,13 @@ MultiCastActionButton9:SetPoint('CENTER', MultiCastSlotButton1)
 MultiCastFlyoutFrame:SetScale(nMainbar.totemManager.scale * 1.1)
 
 hooksecurefunc('MultiCastFlyoutFrame_LoadSlotSpells', function(self, slot, ...)
-	local numSpells = select('#', ...)
+    local numSpells = select('#', ...)
 
-	if (numSpells == 0) then
-		return false
-	end
+    if (numSpells == 0) then
+        return false
+    end
 
-	numSpells = numSpells + 1
+    numSpells = numSpells + 1
 
     for i = 2, numSpells do
         _G['MultiCastFlyoutButton'..i..'Icon']:SetTexCoord(0.1, 0.9, 0.1, 0.9)

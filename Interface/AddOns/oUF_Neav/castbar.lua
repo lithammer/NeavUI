@@ -121,7 +121,7 @@ function ns.CreateCastbars(self, unit)
                         end
                     end
                 end
-			end
+            end
         end
 
         self.Castbar.PostChannelStart = function(self, unit)
@@ -189,16 +189,16 @@ for i = 1, MIRRORTIMER_NUMTIMERS do
     text:SetPoint('CENTER', bar)
 end
 
-	-- battleground timer
+    -- battleground timer
 
 local f = CreateFrame('Frame')
 f:RegisterEvent('START_TIMER')
 f:SetScript('OnEvent', function(self, event)
-	for _, b in pairs(TimerTracker.timerList) do
-		if (not b['bar'].beautyBorder) then
-			local bar = b['bar']
-			bar:SetScale(1.132)
-			bar:SetSize(220, 18)
+    for _, b in pairs(TimerTracker.timerList) do
+        if (not b['bar'].beautyBorder) then
+            local bar = b['bar']
+            bar:SetScale(1.132)
+            bar:SetSize(220, 18)
 
             for i = 1, select('#', bar:GetRegions()) do
                 local region = select(i, bar:GetRegions())
@@ -218,10 +218,10 @@ f:SetScript('OnEvent', function(self, event)
             bar:SetBeautyBorderPadding(3)
             bar:SetStatusBarTexture(ns.config.media.statusbar)
 
-			local backdrop = select(1, bar:GetRegions())
-			backdrop:SetTexture('Interface\\Buttons\\WHITE8x8')
-			backdrop:SetVertexColor(0, 0, 0, 0.5)
-			backdrop:SetAllPoints(bar)
-		end
-	end
+            local backdrop = select(1, bar:GetRegions())
+            backdrop:SetTexture('Interface\\Buttons\\WHITE8x8')
+            backdrop:SetVertexColor(0, 0, 0, 0.5)
+            backdrop:SetAllPoints(bar)
+        end
+    end
 end)

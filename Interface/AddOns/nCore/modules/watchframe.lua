@@ -1,7 +1,7 @@
 
 local watchFrame = _G['WatchFrame']
 watchFrame:SetHeight(400)
-watchFrame:ClearAllPoints()	
+watchFrame:ClearAllPoints()
 watchFrame.ClearAllPoints = function() end
 watchFrame:SetPoint('TOPRIGHT', UIParent, -100, -250)
 watchFrame:SetClampedToScreen(true)

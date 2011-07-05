@@ -12,14 +12,14 @@ end
 
 local function AuraMouseover(button, ...)
     local size = ...
-    
+
     button:HookScript('OnEnter', function(self)
         button.icon:SetSize(size + 8, size + 8)
         button:SetFrameLevel(2)
         -- button.remaining:SetFont(ns.config.font.normal, 13, 'THINOUTLINE')
         button.count:SetFont(ns.config.font.normal, 15, 'THINOUTLINE')
     end)
-    
+
     button:HookScript('OnLeave', function(self)
         button.icon:SetSize(size, size)
         button:SetFrameLevel(1)
@@ -29,7 +29,7 @@ local function AuraMouseover(button, ...)
 end
 
 local function ExactTime(time)
-	return format("%.1f", time), (time * 100 - floor(time * 100))/100
+    return format("%.1f", time), (time * 100 - floor(time * 100))/100
 end
 
 ns.CreateAuraTimer = function(self, elapsed)
@@ -37,7 +37,7 @@ ns.CreateAuraTimer = function(self, elapsed)
     if (self.elapsed < 0.1) then 
         return 
     end
-    
+
     self.elapsed = 0
 
     local timeLeft = self.expires - GetTime()
@@ -46,13 +46,13 @@ ns.CreateAuraTimer = function(self, elapsed)
     else
         if (timeLeft < 8 and IsMine(self)) then
             self.remaining:SetText('|cffff0000'..ExactTime(timeLeft))
-            
+
             if (not self.ignoreSize) then
                 self.remaining:SetFont(ns.config.font.normal, 12, 'THINOUTLINE')
             end
         else
             self.remaining:SetText(ns.FormatTime(timeLeft))
-            
+
             if (not self.ignoreSize) then
                 self.remaining:SetFont(ns.config.font.normal, 8, 'THINOUTLINE')
             end
@@ -64,9 +64,9 @@ ns.PostUpdateIcon = function(icons, unit, icon, index, offset)
     if (not icon.remaining) then
         return
     end
-    
+
     icon:SetAlpha(1)
-    
+
     if (ns.config.units.target.colorPlayerDebuffsOnly) then
         if (unit == 'target') then 
             if (icon.debuff) then
@@ -81,7 +81,7 @@ ns.PostUpdateIcon = function(icons, unit, icon, index, offset)
             end
         end
     end
-    
+
     if (icon.remaining) then
         local _, _, _, _, _, duration, expirationTime = UnitAura(unit, index, icon.filter)
 
@@ -108,8 +108,8 @@ ns.UpdateAuraIcons = function(auras, button)
     button.icon:SetPoint('CENTER', button)
     button.icon:SetSize(size, size)
 
-	button.overlay:SetTexture(ns.config.media.border)
-	button.overlay:SetTexCoord(0, 1, 0, 1)
+    button.overlay:SetTexture(ns.config.media.border)
+    button.overlay:SetTexCoord(0, 1, 0, 1)
     button.overlay:ClearAllPoints()
     button.overlay:SetPoint('TOPRIGHT', button.icon, 1.35, 1.35)
     button.overlay:SetPoint('BOTTOMLEFT', button.icon, -1.35, -1.35)
@@ -142,7 +142,7 @@ ns.UpdateAuraIcons = function(auras, button)
         button.Shadow:SetVertexColor(0, 0, 0, 1)
     end
 
-	button.overlay.Hide = function(self)
+    button.overlay.Hide = function(self)
         if (auras.customColor) then
             self:SetVertexColor(unpack(auras.customColor))
         else

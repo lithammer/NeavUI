@@ -1,6 +1,6 @@
 
--- THANKS & CREDITS GOES TO Freebaser (oUF Freebgrid)
--- http://www.wowinterface.com/downloads/info12264-oUF_Freebgrid.html
+    -- THANKS & CREDITS GOES TO Freebaser (oUF Freebgrid)
+    -- http://www.wowinterface.com/downloads/info12264-oUF_Freebgrid.html
 
 local _, ns = ...
 local oUF = ns.oUF or oUF
@@ -58,7 +58,7 @@ local CreateAuraIcon = function(auras)
         button:SetBackdropColor(0, 0, 0, 1)
         button:SetBackdropBorderColor(0, 0, 0, 0)
         button:SetAllPoints(auras)
-        
+
         local icon = button:CreateTexture(nil, 'OVERLAY')
         icon:SetAllPoints(button)
         icon:SetTexCoord(.1, .9, .1, .9)
@@ -69,7 +69,7 @@ local CreateAuraIcon = function(auras)
         overlay:SetBackdropColor(0, 0, 0, 0)
         overlay:SetBackdropBorderColor(1, 1, 1, 1)
         overlay:SetFrameLevel(6)
-        
+
         local font, fontsize = GameFontNormalSmall:GetFont()
         local count = overlay:CreateFontString(nil, 'OVERLAY')
         count:SetFont(font, 10, 'THINOUTLINE')
@@ -79,7 +79,7 @@ local CreateAuraIcon = function(auras)
         remaining:SetPoint('CENTER', icon, 0.5, 0) 
         remaining:SetFont(font, 11, 'THINOUTLINE')
         remaining:SetTextColor(1, 0.82, 0)
-        
+
         button.overlay = overlay
         button.remaining = remaining
         button.parent = auras
@@ -218,7 +218,7 @@ getZone:RegisterEvent('ZONE_CHANGED_NEW_AREA')
 getZone:SetScript('OnEvent', function(self, event)
 
         -- Delay just in case zone data hasn't loaded
-        
+
     self:SetScript('OnUpdate', zoneDelay)
 
     if (event == 'PLAYER_ENTERING_WORLD') then
@@ -259,7 +259,7 @@ local AuraTimerAsc = function(self, elapsed)
     if (self.elapsed < .2) then 
         return 
     end
-    
+
     self.elapsed = 0
 
     local timeLeft = self.expires - GetTime()
@@ -277,7 +277,7 @@ local AuraTimer = function(self, elapsed)
     if (self.elapsed) < .2 then 
         return 
     end
-    
+
     self.elapsed = 0
 
     local timeLeft = self.expires - GetTime()
@@ -322,7 +322,7 @@ local Update = function(self, event, unit)
         if (not name) then 
             break 
         end
-        
+
         local show = CustomFilter(auras, unit, icon, name, rank, texture, count, dtype, duration, expires, caster)
 
         if (show) then
@@ -340,11 +340,11 @@ local Update = function(self, event, unit)
             if (self.Name) then
                 self.Name:Hide()
             end
-            
+
             if (self.Health.Value) then
                 self.Health.Value:Hide()
             end
-            
+
             hide = false
         end
 
@@ -357,7 +357,7 @@ local Update = function(self, event, unit)
         if (not name) then 
             break 
         end
-        
+
         local show = CustomFilter(auras, unit, icon, name, rank, texture, count, dtype, duration, expires, caster)
 
         if (show and icon.buff) then
@@ -371,11 +371,11 @@ local Update = function(self, event, unit)
             end
 
             icon:Show()
-            
+
             if (self.Name) then
                 self.Name:Hide()
             end
-            
+
             if (self.Health.Value) then
                 self.Health.Value:Hide()
             end
@@ -388,11 +388,11 @@ local Update = function(self, event, unit)
 
     if (hide) then
         icon:Hide()
-        
+
         if (self.Name) then
             self.Name:Show()
         end
-        
+
         if (self.Health.Value) then
             self.Health.Value:Show()
         end

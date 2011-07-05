@@ -44,7 +44,7 @@ local function GetBeautyBorderInfo(self)
         local tex = self.beautyBorder[1]:GetTexture()
         local size = self.beautyBorder[1]:GetSize()
         local r, g, b, a = self.beautyBorder[1]:GetVertexColor()
-        
+
         return size, tex, r, g, b, a
     else
         print(formatName..' error:|r Invalid frame! This object has no '..addonName..' border')   
@@ -56,37 +56,37 @@ local function SetBeautyBorderPadding(self, uL1, ...)
         print(formatName..' error:|r This frame does not exist!') 
         return
     end
-    
+
     if (not self:IsObjectType('Frame')) then
         local frame  = 'frame'
         print(formatName..' error:|r The entered object is not a '..frame..'!') 
         return
     end
-    
+
     local uL2, uR1, uR2, bL1, bL2, bR1, bR2 = ...
     if (uL1) then
         if (not uL2 and not uR1 and not uR2 and not bL1 and not bL2 and not bR1 and not bR2) then
             uL2, uR1, uR2, bL1, bL2, bR1, bR2 = uL1, uL1, uL1, uL1, uL1, uL1, uL1
         end
     end
-    
+
     local space
     if (GetBeautyBorderInfo(self) >= 10) then
         space = 3
     else
         space = GetBeautyBorderInfo(self)/3.5
     end
-        
+
     if (self.beautyBorder) then
         self.beautyBorder[1]:SetPoint('TOPLEFT', self, -(uL1 or 0), uL2 or 0)
         self.beautyShadow[1]:SetPoint('TOPLEFT', self, -(uL1 or 0)-space, (uL2 or 0)+space)
-        
+
         self.beautyBorder[2]:SetPoint('TOPRIGHT', self, uR1 or 0, uR2 or 0)
         self.beautyShadow[2]:SetPoint('TOPRIGHT', self, (uR1 or 0)+space, (uR2 or 0)+space)
-        
+
         self.beautyBorder[3]:SetPoint('BOTTOMLEFT', self, -(bL1 or 0), -(bL2 or 0))
         self.beautyShadow[3]:SetPoint('BOTTOMLEFT', self, -(bL1 or 0)-space, -(bL2 or 0)-space)
-        
+
         self.beautyBorder[4]:SetPoint('BOTTOMRIGHT', self, bR1 or 0, -(bR2 or 0))
         self.beautyShadow[4]:SetPoint('BOTTOMRIGHT', self, (bR1 or 0)+space, -(bR2 or 0)-space)
     end
@@ -94,11 +94,11 @@ end
 
 local function SetBeautyBorderColor(self, r, ...)
     local r, g, b, a = r, ...
-    
+
     if (type(r) == 'table') then
         r, g, b, a = unpack(r)
     end
-    
+
     if (not self) then
         print(formatName..' error:|r This frame does not exist!') 
     elseif (self.beautyBorder) then
@@ -112,11 +112,11 @@ end
 
 local function SetBeautyShadowColor(self, r, ...)
     local r, g, b, a = r, ...
-    
+
     if (type(r) == 'table') then
         r, g, b, a = unpack(r)
     end
-    
+
     if (not self) then
         print(formatName..' error:|r This frame does not exist!') 
     elseif (self.beautyShadow) then
@@ -202,33 +202,33 @@ local function FuncCreateBorder(self, borderSize, R, G, B, uL1, ...)
         print(formatName..' error:|r This frame does not exist!') 
         return
     end
-    
+
     if (not self:IsObjectType('Frame')) then
         local frame  = 'frame'
         print(formatName..' error:|r The entered object is not a '..frame..'!') 
         return
     end
-    
+
     if (self.beautyBorder) then
         return
     end
-    
+
     local uL2, uR1, uR2, bL1, bL2, bR1, bR2 = ...
     if (uL1) then
         if (not uL2 and not uR1 and not uR2 and not bL1 and not bL2 and not bR1 and not bR2) then
             uL2, uR1, uR2, bL1, bL2, bR1, bR2 = uL1, uL1, uL1, uL1, uL1, uL1, uL1
         end
     end
-    
+
     local space
     if (borderSize >= 10) then
         space = 3
     else
         space = borderSize/3.5
     end
-        
+
     if (not self.beautyBorder) then
-    
+
         self.beautyShadow = {}
         for i = 1, 8 do
             self.beautyShadow[i] = self:CreateTexture(nil, 'BORDER')
@@ -237,7 +237,7 @@ local function FuncCreateBorder(self, borderSize, R, G, B, uL1, ...)
             self.beautyShadow[i]:SetSize(borderSize, borderSize)  
             self.beautyShadow[i]:SetVertexColor(0, 0, 0, 1)
         end
-        
+
         self.beautyBorder = {}
         for i = 1, 8 do
             self.beautyBorder[i] = self:CreateTexture(nil, 'OVERLAY')
@@ -246,7 +246,7 @@ local function FuncCreateBorder(self, borderSize, R, G, B, uL1, ...)
             self.beautyBorder[i]:SetSize(borderSize, borderSize) 
             self.beautyBorder[i]:SetVertexColor(R or 1, G or 1, B or 1)
         end
-        
+
         self.beautyBorder[1]:SetTexCoord(0, 1/3, 0, 1/3) 
         self.beautyBorder[1]:SetPoint('TOPLEFT', self, -(uL1 or 0), uL2 or 0)
 
@@ -274,7 +274,7 @@ local function FuncCreateBorder(self, borderSize, R, G, B, uL1, ...)
         self.beautyBorder[8]:SetTexCoord(2/3, 1, 1/3, 2/3)
         self.beautyBorder[8]:SetPoint('TOPRIGHT', self.beautyBorder[2], 'BOTTOMRIGHT')
         self.beautyBorder[8]:SetPoint('BOTTOMRIGHT', self.beautyBorder[4], 'TOPRIGHT')
-        
+
         self.beautyShadow[1]:SetTexCoord(0, 1/3, 0, 1/3) 
         self.beautyShadow[1]:SetPoint('TOPLEFT', self, -(uL1 or 0)-space, (uL2 or 0)+space)
 
@@ -306,22 +306,22 @@ local function FuncCreateBorder(self, borderSize, R, G, B, uL1, ...)
 end
 
 local function addapi(object)
-	local mt = getmetatable(object).__index
+    local mt = getmetatable(object).__index
 
-	mt.CreateBeautyBorder = FuncCreateBorder
-    
+    mt.CreateBeautyBorder = FuncCreateBorder
+
     mt.SetBeautyBorderSize = SetBeautyBorderSize
     mt.SetBeautyBorderPadding = SetBeautyBorderPadding
-    
+
     mt.SetBeautyBorderColor = SetBeautyBorderColor
     mt.SetBeautyBorderTexture = SetBeautyBorderTexture
 
     mt.SetBeautyShadowColor = SetBeautyShadowColor
     mt.SetBeautyShadowTexture = SetBeautyShadowTexture
-        
+
     mt.HideBeautyBorder = HideBeautyBorder
     mt.ShowBeautyBorder = ShowBeautyBorder
-    
+
     mt.HasBeautyBorder = HasBeautyBorder
     mt.GetBeautyBorderInfo = GetBeautyBorderInfo
 end
@@ -337,10 +337,10 @@ addapi(object)
 object = EnumerateFrames()
 
 while object do
-	if (not handled[object:GetObjectType()]) then
-		addapi(object)
-		handled[object:GetObjectType()] = true
-	end
+    if (not handled[object:GetObjectType()]) then
+        addapi(object)
+        handled[object:GetObjectType()] = true
+    end
 
-	object = EnumerateFrames(object)
+    object = EnumerateFrames(object)
 end

@@ -1,11 +1,11 @@
-    
+
     -- import globals for faster usage
-    
+
 local _G = _G
 local unpack = unpack
 
     -- some global/local stuff
-    
+
 BUFF_MIN_ALPHA = 1
 
 DAY_ONELETTER_ABBR    = '|cffffffff%dd|r'
@@ -13,7 +13,7 @@ HOUR_ONELETTER_ABBR   = '|cffffffff%dh|r'
 MINUTE_ONELETTER_ABBR = '|cffffffff%dm|r'
 SECOND_ONELETTER_ABBR = '|cffffffff%d|r'
 
--- DEBUFF_MAX_DISPLAY = 32
+-- DEBUFF_MAX_DISPLAY = 32 -- show more debuffs
 
 TemporaryEnchantFrame:ClearAllPoints()
 TemporaryEnchantFrame:SetPoint('TOPRIGHT', Minimap, 'TOPLEFT', -15, 0)
@@ -28,7 +28,7 @@ ConsolidatedBuffs:SetPoint('BOTTOM', TempEnchant1, 'TOP', 1, 2)
 ConsolidatedBuffs.SetPoint = function() end
 
 ConsolidatedBuffsIcon:SetAlpha(0)
-	
+
 ConsolidatedBuffsCount:ClearAllPoints()
 ConsolidatedBuffsCount:SetPoint('CENTER', ConsolidatedBuffsIcon)
 ConsolidatedBuffsCount:SetFont('Fonts\\ARIALN.ttf', 16, 'OUTLINE')
@@ -50,7 +50,7 @@ local function UpdateFirstAnchor(self)
                 return
             elseif (BuffFrame.numEnchants == 2) then	
                 self:SetPoint('TOPRIGHT', TempEnchant2, 'TOPLEFT', -nBuff.paddingX, 0)
-				return
+                return
             elseif (BuffFrame.numEnchants == 3) then
                 self:SetPoint('TOPRIGHT', TempEnchant3, 'TOPLEFT', -nBuff.paddingX, 0)
                 return
@@ -70,54 +70,53 @@ end)
 
 hooksecurefunc('BuffFrame_UpdateAllBuffAnchors', function()  
     local previousBuff, aboveBuff
-	-- local numBuffs = 0
     local numBuffs = 0
     local numTotal = BuffFrame.numEnchants 
-    
-	for i = 1, BUFF_ACTUAL_DISPLAY do
-		local buff = _G['BuffButton'..i]
-        
-		if (buff.consolidated) then
-			if (buff.parent == BuffFrame) then
-				buff:SetParent(ConsolidatedBuffsContainer)
-				buff.parent = ConsolidatedBuffsContainer
-			end
-		else
-			numBuffs = numBuffs + 1
-            		numTotal = numTotal + 1
-            
-			if (buff.parent ~= BuffFrame) then
-				buff:SetParent(BuffFrame)
-                		buff.parent = BuffFrame
-			end
-                
-			buff:ClearAllPoints()
+
+    for i = 1, BUFF_ACTUAL_DISPLAY do
+        local buff = _G['BuffButton'..i]
+
+        if (buff.consolidated) then
+            if (buff.parent == BuffFrame) then
+                buff:SetParent(ConsolidatedBuffsContainer)
+                buff.parent = ConsolidatedBuffsContainer
+            end
+        else
+            numBuffs = numBuffs + 1
+            numTotal = numTotal + 1
+
+            if (buff.parent ~= BuffFrame) then
+                buff:SetParent(BuffFrame)
+                buff.parent = BuffFrame
+            end
+
+            buff:ClearAllPoints()
 
             if (numBuffs == 1) then
-				UpdateFirstAnchor(buff)
+                UpdateFirstAnchor(buff)
             elseif (numBuffs > 1 and mod(numTotal, nBuff.buffPerRow) == 1) then
-				if (numTotal == nBuff.buffPerRow + 1) then
-			    		buff:SetPoint('TOP', TempEnchant1, 'BOTTOM', 0, -nBuff.paddingY)
-				else
-			    		buff:SetPoint('TOP', aboveBuff, 'BOTTOM', 0, -nBuff.paddingY)
-				end
+                if (numTotal == nBuff.buffPerRow + 1) then
+                    buff:SetPoint('TOP', TempEnchant1, 'BOTTOM', 0, -nBuff.paddingY)
+                else
+                    buff:SetPoint('TOP', aboveBuff, 'BOTTOM', 0, -nBuff.paddingY)
+                end
 
-				aboveBuff = buff
-			else
-				buff:SetPoint('RIGHT', previousBuff, 'LEFT', -nBuff.paddingX, 0)
+                aboveBuff = buff
+            else
+                buff:SetPoint('RIGHT', previousBuff, 'LEFT', -nBuff.paddingX, 0)
             end
 
             previousBuff = buff
-		end
-	end
+        end
+    end
 end)
 
 hooksecurefunc('DebuffButton_UpdateAnchors', function(self, index)
     local numBuffs = BUFF_ACTUAL_DISPLAY + BuffFrame.numEnchants
-    
-	if (BuffFrame.numConsolidated > 0) then
-		numBuffs = numBuffs - BuffFrame.numConsolidated -- + 1
-	end
+
+    if (BuffFrame.numConsolidated > 0) then
+        numBuffs = numBuffs - BuffFrame.numConsolidated -- + 1
+    end
 
     local debuffSpace = nBuff.buffSize + nBuff.paddingY
     local numRows = ceil(numBuffs/nBuff.buffPerRow)
@@ -131,14 +130,14 @@ hooksecurefunc('DebuffButton_UpdateAnchors', function(self, index)
 
     local buff = _G[self..index]
     buff:ClearAllPoints()
-    
+
     if (index == 1) then
         buff:SetPoint('TOP', TempEnchant1, 'BOTTOM', 0, rowSpacing)
-	elseif (index >= 2 and mod(index, nBuff.buffPerRow) == 1) then
-		buff:SetPoint('TOP', _G[self..(index-nBuff.buffPerRow)], 'BOTTOM', 0, -nBuff.paddingY)
-	else
-		buff:SetPoint('RIGHT', _G[self..(index-1)], 'LEFT', -nBuff.paddingX, 0)
-	end
+    elseif (index >= 2 and mod(index, nBuff.buffPerRow) == 1) then
+        buff:SetPoint('TOP', _G[self..(index-nBuff.buffPerRow)], 'BOTTOM', 0, -nBuff.paddingY)
+    else
+        buff:SetPoint('RIGHT', _G[self..(index-1)], 'LEFT', -nBuff.paddingX, 0)
+    end
 end)
 
 local function UpdateFirstButton()
@@ -157,11 +156,11 @@ for i = 1, NUM_TEMP_ENCHANT_FRAMES do
     button:SetScript('OnShow', function()
         UpdateFirstButton()
     end)
-    
+
     button:SetScript('OnHide', function()
         UpdateFirstButton()
     end)
-    
+
     local icon = _G['TempEnchant'..i..'Icon']
     icon:SetTexCoord(0.03, 0.97, 0.03, 0.97)
 
@@ -198,12 +197,12 @@ hooksecurefunc('AuraButton_Update', function(self, index)
             button:SetScale(nBuff.buffScale)
         end
     end
-        
+
     local icon = _G[self..index..'Icon']
     if (icon) then
         icon:SetTexCoord(0.03, 0.97, 0.03, 0.97)
     end
-        
+
     local duration = _G[self..index..'Duration']
     if (duration) then
         duration:ClearAllPoints()
@@ -221,7 +220,7 @@ hooksecurefunc('AuraButton_Update', function(self, index)
         count:SetShadowOffset(0, 0)
         count:SetDrawLayer('OVERLAY')
     end
-        
+
     local border = _G[self..index..'Border']
     if (border) then
         border:SetTexture(nBuff.borderDebuff)
@@ -229,7 +228,7 @@ hooksecurefunc('AuraButton_Update', function(self, index)
         border:SetPoint('BOTTOMLEFT', button, -1, -1)
         border:SetTexCoord(0, 1, 0, 1)
     end
-    
+
     if (button and not border) then
         if (not button.texture) then
             button.texture = button:CreateTexture('$parentOverlay', 'ARTWORK')
@@ -240,7 +239,7 @@ hooksecurefunc('AuraButton_Update', function(self, index)
             button.texture:SetVertexColor(unpack(nBuff.buffBorderColor))
         end
     end
-    
+
     if (button) then
         if (not button.Shadow) then
             button.Shadow = button:CreateTexture('$parentShadow', 'BACKGROUND')

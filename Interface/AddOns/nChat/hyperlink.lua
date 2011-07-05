@@ -22,24 +22,24 @@ local linktypes = {
 }
 
 local function OnHyperlinkEnter(frame, link, ...)
-	local linktype = link:match('^([^:]+)')
-	if (linktype and linktypes[linktype]) then
-		GameTooltip:SetOwner(ChatFrame1, 'ANCHOR_CURSOR', 0, 20)
-		GameTooltip:SetHyperlink(link)
-		GameTooltip:Show()
+    local linktype = link:match('^([^:]+)')
+    if (linktype and linktypes[linktype]) then
+        GameTooltip:SetOwner(ChatFrame1, 'ANCHOR_CURSOR', 0, 20)
+        GameTooltip:SetHyperlink(link)
+        GameTooltip:Show()
     else
         GameTooltip:Hide()
-	end
+    end
 
-	if (orig1[frame]) then 
+    if (orig1[frame]) then 
         return orig1[frame](frame, link, ...) 
     end
 end
 
 local function OnHyperlinkLeave(frame, ...)
-	GameTooltip:Hide()
-    
-	if (orig2[frame]) then 
+    GameTooltip:Hide()
+
+    if (orig2[frame]) then 
         return orig2[frame](frame, ...) 
     end
 end

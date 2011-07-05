@@ -6,7 +6,7 @@ oUF.Tags['pvptimer'] = function(unit)
     if (not IsPVPTimerRunning() and GetPVPTimer() > 0) then
         return
     end
-    
+
     return ns.FormatTime(math.floor(GetPVPTimer()/1000))
 end
 
@@ -39,7 +39,7 @@ oUF.Tags['name'] = function(unit)
     if (unitRealm) and (unitRealm ~= '') then
         unitName = unitName..' (*)'
     end
-    
+
     for i = 1, 4 do
         if (unit == 'party'..i) then
             colorA = oUF.colors.class[class]
@@ -47,18 +47,18 @@ oUF.Tags['name'] = function(unit)
     end
 
     if (unit == 'player' or not UnitIsFriend('player', unit) and UnitIsPlayer(unit) and UnitClass(unit) and not unit:match('arena(%d)')) then
-		colorA = oUF.colors.class[class]
-	elseif (unit == 'targettarget' or unit == 'focustarget' or unit:match('arena(%d)target')) then
-		r, g, b = UnitSelectionColor(unit)
-	else
-		colorB = {1, 1, 1}
-	end
+        colorA = oUF.colors.class[class]
+    elseif (unit == 'targettarget' or unit == 'focustarget' or unit:match('arena(%d)target')) then
+        r, g, b = UnitSelectionColor(unit)
+    else
+        colorB = {1, 1, 1}
+    end
 
-	if (colorA) then
-		r, g, b = colorA[1], colorA[2], colorA[3]
-	elseif (colorB) then
-		r, g, b = colorB[1], colorB[2], colorB[3]
-	end
+    if (colorA) then
+        r, g, b = colorA[1], colorA[2], colorA[3]
+    elseif (colorB) then
+        r, g, b = colorB[1], colorB[2], colorB[3]
+    end
 
     -- if (unitRealm) and (unitRealm ~= '') then
     return format('|cff%02x%02x%02x%s|r', r*255, g*255, b*255, unitName)     -- no abbrev
@@ -72,22 +72,22 @@ end
 oUF.TagEvents['phase'] = 'UNIT_PHASE'
 oUF.Tags['phase'] = function(unit)
 
-	if (not UnitInPhase(unit)) then
+    if (not UnitInPhase(unit)) then
         return 'OTHER PHASE'
     else
         return ''
-	end
+    end
 end
 --]]
 
 oUF.TagEvents['combopoints'] = 'UNIT_COMBO_POINTS PLAYER_TARGET_CHANGED'
 oUF.Tags['combopoints'] = function(unit)
-	local cp
-	if (UnitHasVehicleUI('player')) then
-		cp = GetComboPoints('vehicle', 'target')
-	else
-		cp = GetComboPoints('player', 'target')
-	end
+    local cp
+    if (UnitHasVehicleUI('player')) then
+        cp = GetComboPoints('vehicle', 'target')
+    else
+        cp = GetComboPoints('player', 'target')
+    end
 
     return cp == 0 and '' or cp
 end

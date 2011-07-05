@@ -13,12 +13,12 @@ ns.config = {
         fontBig = 'Interface\\AddOns\\oUF_NeavRaid\\media\\fontThick.ttf',                      -- Health, dead/ghost/offline etc. font
         fontBigSize = 12,
     },
-    
+
     units = {
         ['raid'] = {
             showSolo = true,
             showParty = true,
-            
+
             nameLength = 4,
 
             width = 42,
@@ -28,7 +28,7 @@ ns.config = {
             layout = {
                 frameSpacing = 7,
                 numGroups = 8,
-                
+
                 initialAnchor = 'TOPLEFT',                                                  -- 'TOPLEFT' 'BOTTOMLEFT' 'TOPRIGHT' 'BOTTOMRIGHT'
                 orientation = 'HORIZONTAL',                                                 -- 'VERTICAL' 'HORIZONTAL'
             },
@@ -44,12 +44,12 @@ ns.config = {
             targetBorderColor = {1, 1, 1},
 
             smoothUpdatesForAllClasses = true,                                              -- Set to true to enable smooth updates for healing classes
-            
+
             iconSize = 22,                                                                  -- The size of the debufficon
             indicatorSize = 7,
 
             horizontalHealthBars = false,
-            
+
             manabar = {
                 show = true,
                 horizontalOrientation = false,

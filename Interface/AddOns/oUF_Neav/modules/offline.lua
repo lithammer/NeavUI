@@ -6,7 +6,7 @@ local Update = function(self, event, unit)
     if (unit ~= self.unit) then 
         return 
     end
-    
+
     local unit = unit or self.unit
 
     if (UnitIsConnected(unit)) then
@@ -34,7 +34,7 @@ local Enable = function(self)
         self:RegisterEvent('PARTY_MEMBER_DISABLE', Path)
         self:RegisterEvent('PARTY_MEMBER_ENABLE', Path)
         self:RegisterEvent('PLAYER_TARGET_CHANGED', Path)
-        
+
         if (officon:IsObjectType('Texture') and not officon:GetTexture()) then
             officon:SetTexture('Interface\\CharacterFrame\\Disconnect-Icon')
         end

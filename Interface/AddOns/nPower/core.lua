@@ -24,7 +24,9 @@ f:RegisterEvent('PLAYER_ENTERING_WORLD')
 f:RegisterEvent('UNIT_COMBO_POINTS')
 f:RegisterEvent('PLAYER_TARGET_CHANGED')
 
-f:RegisterEvent('RUNE_TYPE_UPDATE')
+if (nPower.rune.showRuneCooldown) then
+    f:RegisterEvent('RUNE_TYPE_UPDATE')
+end
 
 -- f:RegisterEvent('UNIT_DISPLAYPOWER')
 -- f:RegisterEvent('UNIT_POWER')
@@ -66,7 +68,7 @@ if (playerClass == 'DEATHKNIGHT' and nPower.rune.showRuneCooldown) then
 
     for i = 1, 6 do
         f.Rune[i] = f:CreateFontString(nil, 'ARTWORK')
-        
+
         if (nPower.rune.runeFontOutline) then
             f.Rune[i]:SetFont(nPower.rune.runeFont, nPower.rune.runeFontSize, 'THINOUTLINE')
             f.Rune[i]:SetShadowOffset(0, 0)
@@ -158,7 +160,7 @@ local function CalcRuneCooldown(self)
     local start, duration, runeReady = GetRuneCooldown(self)
     local time = floor(GetTime() - start)
     local cooldown = ceil(duration - time)
-    
+
     if (runeReady or UnitIsDeadOrGhost('player')) then
         return '#'
     elseif (not UnitIsDeadOrGhost('player') and cooldown) then
@@ -176,7 +178,7 @@ end
 
 local function UpdateBarVisibility()
     local _, powerType = UnitPowerType('player')
-    
+
     if ((not nPower.energy.show and powerType == 'ENERGY') or (not nPower.focus.show and powerType == 'FOCUS') or (not nPower.rage.show and powerType == 'RAGE') or (not nPower.mana.show and powerType == 'MANA') or (not nPower.rune.show and powerType == 'RUNEPOWER') or UnitIsDeadOrGhost('player') or UnitHasVehicleUI('player')) then
         f.Power:SetAlpha(0)
     elseif (InCombatLockdown()) then
@@ -196,7 +198,7 @@ local function UpdateArrow()
         f.Power.Below:SetAlpha(1)
         f.Power.Above:SetAlpha(1)
     end
-    
+
     local newPosition = UnitPower('player') / UnitPowerMax('player') * f.Power:GetWidth() - 7
     f.Power.Below:SetPoint('LEFT', f.Power, 'LEFT', newPosition, -8)
     f.Power.Above:SetPoint('LEFT', f.Power, 'LEFT', newPosition, 8)
@@ -204,7 +206,7 @@ end
 
 local function FormatValue(self)
     if (self >= 10000) then
-		return ('%.1fk'):format(self / 1e3)
+        return ('%.1fk'):format(self / 1e3)
     else
         return self
     end
@@ -225,7 +227,7 @@ end
 local function UpdateBarColor()
     local _, powerType, altR, altG, altB = UnitPowerType('player')
     local unitPower = PowerBarColor[powerType]
-    
+
     if (unitPower) then
         f.Power:SetStatusBarColor(unitPower.r, unitPower.g, unitPower.b)
     else
@@ -248,16 +250,16 @@ f:SetScript('OnEvent', function(self, event, arg1)
             end
         end
     end
-    
+
     if (event == 'RUNE_TYPE_UPDATE' and nPower.rune.showRuneCooldown) then
         f.Rune[arg1].type = GetRuneType(arg1)
     end
-    
+
     --[[
     UpdateBar()
     UpdateBarVisibility()
     --]]
-    
+
     if (event == 'PLAYER_ENTERING_WORLD') then
         if (InCombatLockdown()) then
             securecall('UIFrameFadeIn', f, 0.35, f:GetAlpha(), 1)
@@ -278,7 +280,7 @@ end)
 local updateTimer = 0
 f:SetScript('OnUpdate', function(self, elapsed)
     updateTimer = updateTimer + elapsed
-        
+
     if (updateTimer > 0.1) then
         if (f.Rune) then
             for i = 1, 6 do
@@ -291,15 +293,15 @@ f:SetScript('OnUpdate', function(self, elapsed)
                         f.Rune[i]:Show()
                     end
                 end
-                
+
                 f.Rune[i]:SetText(CalcRuneCooldown(i))
                 f.Rune[i]:SetTextColor(SetRuneColor(i))
             end
         end
-        
+
         UpdateBar()
         UpdateBarVisibility()
-        
-        updateTimer   = 0
+
+        updateTimer = 0
     end
 end)

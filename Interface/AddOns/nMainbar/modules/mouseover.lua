@@ -25,7 +25,7 @@ local function EnableMouseOver(self, bar, min, max, alpha)
         f:EnableMouse()
         f:SetPoint('TOPLEFT', self..min, -5, 5)
         f:SetPoint('BOTTOMRIGHT', self..max, 5, 5)
-        
+
         bar:SetAlpha(minAlpha)
 
         f:SetScript('OnEnter', function()
@@ -37,7 +37,7 @@ local function EnableMouseOver(self, bar, min, max, alpha)
                 bar:SetAlpha(minAlpha)
             end
         end)
-    
+
         button:HookScript('OnEnter', function()
             bar:SetAlpha(alpha)
         end)
