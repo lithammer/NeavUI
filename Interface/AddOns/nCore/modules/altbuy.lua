@@ -40,7 +40,7 @@ end
     -- add a hint to the tooltip
     
 local function IsMerchantButtonOver()
-    return GetMouseFocus():GetName():find('MerchantItem%d')
+    return GetMouseFocus():GetName() and GetMouseFocus():GetName():find('MerchantItem%d')
 end
 
 GameTooltip:HookScript('OnTooltipSetItem', function(self)
