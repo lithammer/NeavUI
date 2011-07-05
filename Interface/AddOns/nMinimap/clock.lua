@@ -9,24 +9,6 @@ local gradientColor = {
     1, 0, 0
 }
 
-    -- damn! blizz must create a global for this
-    
-local function GetCalendarName()
-    if (GetLocale() == 'enUS') then
-        return 'Calendar'
-    elseif (GetLocale() == 'frFR') then
-        return 'Calandre'
-    elseif (GetLocale() == 'esES') then
-        return 'Calendario'
-    elseif (GetLocale() == 'ruRU') then
-        return 'Календарь'
-    elseif (GetLocale() == 'deDE') then
-        return 'Kalender'
-    else
-        return 'Calendar'
-    end
-end
-
 local function FormatValue(i)
     if (i > 1024) then
         return format('%.2f |cffffffffMB|r', i/1024)
@@ -66,14 +48,24 @@ local menuList = {
     },
     {
         text = CHARACTER_BUTTON,
+        icon = 'Interface\\PaperDollInfoFrame\\UI-EquipmentManager-Toggle',
         func = function() 
             securecall(ToggleCharacter, 'PaperDollFrame') 
         end,
         notCheckable = true,
     },
     {
+        text = SPELLBOOK_ABILITIES_BUTTON,
+        icon = 'Interface\\MINIMAP\\TRACKING\\Class',
+        func = function() 
+            securecall(ToggleSpellBook, BOOKTYPE_SPELL)
+        end,
+        notCheckable = true,
+    },
+    {
         text = TALENTS_BUTTON,
-        -- icon = 'Interface\\GossipFrame\\\BattleMasterGossipIcon',
+        -- icon = 'Interface\\GossipFrame\\BattleMasterGossipIcon',
+        icon = 'Interface\\MINIMAP\\TRACKING\\Ammunition',
         func = function() 
             securecall(ToggleTalentFrame) 
         end,
@@ -81,39 +73,23 @@ local menuList = {
     },
     {
         text = ACHIEVEMENT_BUTTON,
+        -- icon = nil, -- :(
         func = function() 
             securecall(ToggleAchievementFrame) 
         end,
         notCheckable = true,
     },
-    --[[
-    {
-        text = GetCalendarName(),
-        func = function() 
-            securecall(ToggleCalendar) 
-        end,
-        notCheckable = true,
-    },
-    --]]
     {
         text = QUESTLOG_BUTTON,
-        -- icon = 'Interface\\GossipFrame\\\ActiveQuestIcon',
+        icon = 'Interface\\GossipFrame\\ActiveQuestIcon',
         func = function() 
             securecall(ToggleFrame, QuestLogFrame) 
         end,
         notCheckable = true,
     },
     {
-        text = SOCIAL_BUTTON,
-        -- icon = 'Interface\\\FriendsFrame\\\UI-Toast-FriendOnlineIcon',
-        func = function() 
-            securecall(ToggleFriendsFrame) 
-        end,
-        notCheckable = true,
-    },
-    {
         text = GUILD,
-        -- icon = 'Interface\\GossipFrame\\\TabardGossipIcon',
+        icon = 'Interface\\GossipFrame\\TabardGossipIcon',
         arg1 = IsInGuild('player'),
         func = function() 
             if (IsInGuild('player')) then
@@ -125,7 +101,16 @@ local menuList = {
         notCheckable = true,
     },
     {
+        text = SOCIAL_BUTTON,
+        icon = 'Interface\\FriendsFrame\\PlusManz-BattleNet',
+        func = function() 
+            securecall(ToggleFriendsFrame, 1) 
+        end,
+        notCheckable = true,
+    },
+    {
         text = PLAYER_V_PLAYER,
+        icon = 'Interface\\MINIMAP\\TRACKING\\BattleMaster',
         func = function() 
             securecall(ToggleFrame, PVPFrame) 
         end,
@@ -133,24 +118,35 @@ local menuList = {
     },
     {
         text = DUNGEONS_BUTTON,
+        -- icon = 'Interface\\LFGFrame\\BattlenetWorking0',
+        -- icon = 'Interface\\GuildFrame\\GuildLogo-NoLogo',
+        icon = 'Interface\\MINIMAP\\TRACKING\\None',
         func = function() 
             securecall(ToggleLFDParentFrame)
         end,
         notCheckable = true,
     },
     {
-        text = GM_EMAIL_NAME,
-        -- notCheckable = true,
+        text = RAID,
+        icon = 'Interface\\TARGETINGFRAME\\UI-TargetingFrame-Skull',
         func = function() 
-            securecall(ToggleHelpFrame) 
+            securecall(ToggleFriendsFrame, 4)
         end,
         notCheckable = true,
     },
     {
-        text = SOCIAL_BUTTON,
-        -- notCheckable = 1,
+        text = ENCOUNTER_JOURNAL,
+        icon = 'Interface\\MINIMAP\\TRACKING\\Profession',
         func = function() 
-            securecall(ToggleFriendsFrame) 
+            securecall(ToggleFrame, EncounterJournal)
+        end,
+        notCheckable = true,
+    },
+    {
+        text = GM_EMAIL_NAME,
+        icon = 'Interface\\TUTORIALFRAME\\TutorialFrame-QuestionMark',
+        func = function() 
+            securecall(ToggleHelpFrame) 
         end,
         notCheckable = true,
     },

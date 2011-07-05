@@ -211,9 +211,3 @@ Minimap:HookScript('OnLeave', function()
         securecall('UIFrameFadeOut', MainZone, 0.235, MainZone:GetAlpha(), 0)
     end
 end)
-
--- Used by some addons that manipulate the minimap to determine the shape, e.g. MiniBlobs and NPCScan.Overlay
--- http://www.wowpedia.org/GetMinimapShape
-function GetMinimapShape()
-	return 'SQUARE'
-end

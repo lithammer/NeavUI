@@ -19,7 +19,7 @@ f:SetBackdropColor(0, 0, 0, 0.6)
 
     -- guild info frame
     
-f.Guild = CreateFrame('Frame', nil, f)
+f.Guild = CreateFrame('Button', nil, f)
 f.Guild:EnableMouse(true)
 f.Guild:SetFrameLevel(3)
 f.Guild:SetAlpha(0)
@@ -40,8 +40,8 @@ f.Guild:SetAllPoints(f.Guild.Text)
 f.Guild.Text:SetTextColor(RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b )
 
     -- friend info frame
-    
-f.Friends = CreateFrame('Frame', nil, f)
+
+f.Friends = CreateFrame('Button', nil, f)
 f.Friends:EnableMouse(true)
 f.Friends:SetFrameStrata('BACKGROUND')
 f.Friends:SetFrameLevel(3)
@@ -88,6 +88,7 @@ local function fadeOut()
 		
 		f:SetAlpha(nMinimap.drawerNoMouseoverAlpha)
 	end
+
     GameTooltip:Hide() 
 end
 
@@ -334,20 +335,27 @@ local function GuildTip(self)
 	GameTooltip:Show()
 end
 
-f.Guild:HookScript('OnEnter', function(self)
-    GuildTip(self)
-end)
-
-f.Guild:SetScript('OnEvent', function(self, event, ...)	
+local function UpdateGuildText()
 	if (IsInGuild()) then
 		BuildGuildTable()
         UpdateGuildXP() 
         
         f.Guild.Text:SetFormattedText(format('%s |cffffffff%d|r', GUILD, (totalGuildOnline == 1 and 0) or totalGuildOnline))
-	else
+        return
+    else
 		f.Guild.Text:SetText('No guild')
 		f.Guild:SetScript('OnMouseDown', nil)
+        return
 	end
+end
+
+f.Guild:HookScript('OnEnter', function(self)
+    GuildTip(self)
+    UpdateGuildText()
+end)
+
+f.Guild:SetScript('OnEvent', function(self, event, ...)	
+    UpdateGuildText()
     
     if (event == 'MODIFIER_STATE_CHANGED') then
         if (IsShiftKeyDown()) then
@@ -356,7 +364,7 @@ f.Guild:SetScript('OnEvent', function(self, event, ...)
                 GuildTip(self)
             end
         else
-             if (self:IsMouseOver() and not DropDownList1:IsShown()) then
+            if (self:IsMouseOver() and not DropDownList1:IsShown()) then
                 GameTooltip:Hide()
                 GuildTip(self)
             end   
@@ -364,22 +372,23 @@ f.Guild:SetScript('OnEvent', function(self, event, ...)
     end
 end)
 
-f.Guild:SetScript('OnMouseDown', function(self, button)
+f.Guild:RegisterForClicks('anyup')
+f.Guild:SetScript('OnClick', function(self, button) 
     if (button == 'LeftButton') then      
         if (not GuildFrame and IsInGuild()) then 
             LoadAddOn('Blizzard_GuildUI') 
         end
-        
+
         GuildFrame_Toggle() 
     else
         GameTooltip:Hide()
     
         UpdateGuildXP() 
-    
+
         local classc, levelc, grouped
         local menuCountWhispers = 0
         local menuCountInvites = 0
-
+    
         menuList[2].menuList = {}
         menuList[3].menuList = {}
 
@@ -402,9 +411,9 @@ f.Guild:SetScript('OnMouseDown', function(self, button)
                         end
                     }
                 end
-                
+
                 menuCountWhispers = menuCountWhispers + 1
-                
+
                 menuList[3].menuList[menuCountWhispers] = {
                     text = format('|cff%02x%02x%02x%d|r |cff%02x%02x%02x%s|r %s', levelc.r*255, levelc.g*255, levelc.b*255, guildTable[i][3], classc.r*255, classc.g*255, classc.b*255, guildTable[i][1], grouped), 
                     arg1 = guildTable[i][1], 
@@ -427,13 +436,13 @@ local function BuildFriendTable(total)
 
 	for i = 1, total do
 		local name, level, class, area, connected, status, note = GetFriendInfo(i)
-        
+
 		for k,v in pairs(LOCALIZED_CLASS_NAMES_MALE) do 
             if (class == v) then 
                 class = k 
             end 
         end
-		
+
 		friendTable[i] = { 
             name, 
             level, 
@@ -443,12 +452,12 @@ local function BuildFriendTable(total)
             status, 
             note 
         }
-        
+
 		if (connected) then 
             totalFriendsOnline = totalFriendsOnline + 1 
         end
 	end
-    
+
 	sort(friendTable, function(a, b)
 		if a[1] and b[1] then
 			return a[1] < b[1]
@@ -461,13 +470,13 @@ local function UpdateFriendTable(total)
 
 	for i = 1, #friendTable do
 		local name, level, class, area, connected, status, note = GetFriendInfo(i)
-        
+
 		for k,v in pairs(LOCALIZED_CLASS_NAMES_MALE) do 
             if class == v then 
                 class = k 
             end 
         end
-		
+
 		index = GetTableIndex(friendTable, 1, name)
 
 		if (index == -1) then
@@ -495,20 +504,20 @@ local function BuildBNTable(total)
 	for i = 1, total do
 		local presenceID, givenName, surname, toonName, toonID, client, isOnline, _, isAFK, isDND, _, noteText = BNGetFriendInfo(i)
 		local _, _, _, realmName, faction, _, race, class, _, zoneName, level = BNGetToonInfo(presenceID)
-		
+
         for k,v in pairs(LOCALIZED_CLASS_NAMES_MALE) do 
             if class == v then 
                 class = k 
             end 
         end
-		
+
 		BNTable[i] = { presenceID, givenName, surname, toonName, toonID, client, isOnline, isAFK, isDND, noteText, realmName, faction, race, class, zoneName, level }
 		
         if (isOnline) then 
             totalBattleNetOnline = totalBattleNetOnline + 1 
         end
 	end
-    
+
 	sort(BNTable, function(a, b)
 		if (a[2] and b[2]) then
 			if a[2] == b[2] then return a[3] < b[3] end
@@ -519,17 +528,17 @@ end
 
 local function UpdateBNTable(total)
 	totalBattleNetOnline = 0
-    
+
 	for i = 1, #BNTable do
 		local presenceID, givenName, surname, toonName, toonID, client, isOnline, _, isAFK, isDND, _, noteText = BNGetFriendInfo(i)
 		local _, _, _, realmName, faction, _, race, class, _, zoneName, level = BNGetToonInfo(presenceID)
-        
+
 		for k,v in pairs(LOCALIZED_CLASS_NAMES_MALE) do 
             if (class == v) then 
                 class = k 
             end 
         end
-    
+
 		index = GetTableIndex(BNTable, 1, presenceID)
 
 		if (index == -1) then
@@ -560,7 +569,8 @@ local function UpdateBNTable(total)
 	end
 end
 
-f.Friends:SetScript('OnMouseDown', function(self, button) 
+f.Friends:RegisterForClicks('anyup')
+f.Friends:SetScript('OnClick', function(self, button) 
     if (button == 'LeftButton') then 
         ToggleFriendsFrame(1) 
     else
