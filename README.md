@@ -2,15 +2,15 @@
 
 ## Overview
 
-#### !Beautycase:
+### !Beautycase:
 
 - Just a addon for create easy and cool border, does nothing by itself, but a lot of the addons in this ui pack need it
 
-#### !Colorz:
+### !Colorz:
 
 - This addon change the default manabar color to be more blue (not so extreme dark blue like the default manabarcolor) and a function for a better coloring of friendly/hostile/enemy units. This addon can cause some errors, just ignore this or remove it.
 
-#### nBuff:
+### nBuff:
 
 - A lightweight buff addon. It modify the standard buffframe.
 
@@ -21,7 +21,7 @@
 - Debuff border are more visible
 - Buff duration inside the buff icons
 
-#### nChat:
+### nChat:
 
 - A lightweight chat addon. It modify the standard chatframe.
 
@@ -38,7 +38,7 @@
 - Optional disable chatfade
 - Optional outline font
 
-#### nCore:
+### nCore:
 
 - A addon with some tweaks I want..
 
@@ -52,7 +52,7 @@
 - Remove the pesky error frame (not enough energy etc.)
 - Make the WatchFrame moveable
 
-#### nMainbar:
+### nMainbar:
 
 - My shorter blizzbar
 
@@ -62,7 +62,7 @@
 - Enable Mouseover bars
 - ... and many more ;)
 
-#### nMinimap:
+### nMinimap:
 
 - A small Minimap addon
 
@@ -76,7 +76,7 @@
 - Minimap Clock: MicroMenu on leftclick
 - Mousewheel zooming
 
-#### nPlates:
+### nPlates:
 
 - A nameplate addon
 
@@ -84,11 +84,11 @@
 - Make some Layout changes
 - Add mobhealth to the nameplates
 
-#### nPower:
+### nPower:
 
 - A simple powerbar with deathknight runes and combopoints
 
-#### nTooltip:
+### nTooltip:
 
 - A simple, fast and lightweight tooltip addon
 
@@ -103,7 +103,7 @@
 - Optional reaction border coloring
 - Raidtarget icons for tooltip unit and its target
 
-#### oUF_Neav:
+### oUF_Neav:
 
 - oUF layout
 
@@ -117,7 +117,7 @@
 - oUF_Smooth support
 
 
-#### oUF_NeavRaid:
+### oUF_NeavRaid:
 
 - oUF layout
 
