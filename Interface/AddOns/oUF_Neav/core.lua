@@ -391,7 +391,7 @@ local function UpdatePower(Power, unit, min, max)
         powerString = ''
     elseif (not UnitHasMana(unit)) then
         powerString = min
-    elseif (config.units[ns.cUnit(unit)].showPowerPercent) then
+    elseif (config.units[ns.cUnit(unit)] and config.units[ns.cUnit(unit)].showPowerPercent) then
         powerString = (min/max * 100 < 100 and format('%d%%', min/max * 100)) or ''
     else
         if (min == max) then
@@ -1228,7 +1228,7 @@ local function CreateUnitLayout(self, unit)
 
         -- mouseover text
 
-    if (config.units[ns.cUnit(unit)].mouseoverText) then
+    if (config.units[ns.cUnit(unit)] and config.units[ns.cUnit(unit)].mouseoverText) then
         EnableMouseOver(self)
     end
 
@@ -1261,7 +1261,7 @@ local function CreateUnitLayout(self, unit)
         self.Debuffs.showDebuffType = true
     end
 
-    self:SetScale(config.units[ns.cUnit(unit)].scale or 1)
+    self:SetScale(config.units[ns.cUnit(unit)] and config.units[ns.cUnit(unit)].scale or 1)
 
     return self
 end
