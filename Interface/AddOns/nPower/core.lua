@@ -58,6 +58,21 @@ if (nPower.energy.showComboPoints) then
     f.ComboPoints[5]:SetPoint('CENTER', 52, 0)
 end
 
+if (playerClass == 'WARLOCK' and nPower.showSoulshards or playerClass == 'PALADIN' and nPower.showHolypower) then
+    f.extraPoints = f:CreateFontString(nil, 'ARTWORK')
+    
+    if (nPower.extraFontOutline) then
+        f.extraPoints:SetFont(nPower.extraFont, nPower.extraFontSize, 'THINOUTLINE')
+        f.extraPoints:SetShadowOffset(0, 0)
+    else
+        f.extraPoints:SetFont(nPower.extraFont, nPower.extraFontSize)
+        f.extraPoints:SetShadowOffset(1, -1)
+    end
+
+    f.extraPoints:SetParent(f)
+    f.extraPoints:SetPoint('CENTER', 0, 0)
+end
+
 if (playerClass == 'DEATHKNIGHT' and nPower.rune.showRuneCooldown) then
     for i = 1, 6 do 
         RuneFrame:UnregisterAllEvents()
@@ -296,6 +311,23 @@ f:SetScript('OnUpdate', function(self, elapsed)
 
                 f.Rune[i]:SetText(CalcRuneCooldown(i))
                 f.Rune[i]:SetTextColor(SetRuneColor(i))
+            end
+        end
+
+        if (f.extraPoints) then
+            if (UnitHasVehicleUI('player')) then
+                if (f.extraPoints:IsShown()) then
+                    f.extraPoints:Hide()
+                end
+            else
+                local nump
+                if (playerClass == 'WARLOCK') then
+                    nump = UnitPower('player', SPELL_POWER_SOUL_SHARDS)
+                elseif (playerClass == 'PALADIN') then
+                    nump = UnitPower('player', SPELL_POWER_HOLY_POWER)
+                end
+                
+                f.extraPoints:SetText(nump == 0 and '' or nump)
             end
         end
 

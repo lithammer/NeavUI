@@ -1,6 +1,6 @@
 
 nPower = {
-    position = {'CENTER', UIParent, 0, -23},
+    position = {'CENTER', UIParent, 0, -100},
     sizeWidth = 200,
         
     activeAlpha = 1,
@@ -14,6 +14,13 @@ nPower = {
     valueFontOutline = true,
     valueFontAdjustmentX = 0,
 
+    showSoulshards = true,
+    showHolypower = true,
+    
+    extraFont = 'Fonts\\ARIALN.ttf',                -- The font for the holypower and soulshard number
+    extraFontSize = 16,                             -- The fontsiz for the holypower and soulshard number
+    extraFontOutline = true,                        
+        
     mana = {
         show = true,
     },
