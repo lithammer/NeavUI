@@ -7,7 +7,7 @@ local floor, fmod = floor, math.fmod
 local day, hour, minute = 86400, 3600, 60
 
 local function IsMine(icon)
-    return icon.owner == 'player' and icon.owner == 'vehicle' and icon.owner == 'pet'
+    return icon.owner == 'player' or icon.owner == 'vehicle' or icon.owner == 'pet'
 end
 
 local function AuraMouseover(button, ...)
