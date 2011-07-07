@@ -2,7 +2,9 @@
 nPower = {
     position = {'CENTER', UIParent, 0, -100},
     sizeWidth = 200,
-        
+    
+    showCombatRegen = true, 
+
     activeAlpha = 1,
     inactiveAlpha = 0.3,
     emptyAlpha = 0,

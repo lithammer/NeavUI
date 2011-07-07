@@ -150,6 +150,23 @@ f.Power.Above = f.Power:CreateTexture(nil, 'BACKGROUND')
 f.Power.Above:SetHeight(14)
 f.Power.Above:SetWidth(14)
 f.Power.Above:SetTexture('Interface\\AddOns\\nPower\\media\\textureArrowAbove')
+f.Power.Above:SetPoint('BOTTOM', f.Power.Below, 'TOP', 0, f.Power:GetHeight()-1)
+
+if (nPower.showCombatRegen) then
+    f.mpreg = f.Power:CreateFontString(nil, 'ARTWORK')
+    f.mpreg:SetFont(nPower.valueFont, 12, 'THINOUTLINE')
+    f.mpreg:SetShadowOffset(0, 0)
+    f.mpreg:SetPoint('TOP', f.Power.Below, 'BOTTOM', 0, 4)
+    f.mpreg:SetParent(f.Power)
+    f.mpreg:Show()
+end
+
+local function GetRealMpFive()
+    local _, activeRegen = GetPowerRegen()
+    local realRegen = activeRegen * 5
+    
+    return math.floor(realRegen)
+end
 
 local function SetComboColor(i)
     local comboPoints = GetComboPoints('player', 'target') or 0
@@ -216,7 +233,7 @@ local function UpdateArrow()
 
     local newPosition = UnitPower('player') / UnitPowerMax('player') * f.Power:GetWidth() - 7
     f.Power.Below:SetPoint('LEFT', f.Power, 'LEFT', newPosition, -8)
-    f.Power.Above:SetPoint('LEFT', f.Power, 'LEFT', newPosition, 8)
+    -- f.Power.Above:SetPoint('LEFT', f.Power, 'LEFT', newPosition, 8)
 end
 
 local function FormatValue(self)
@@ -297,6 +314,10 @@ f:SetScript('OnUpdate', function(self, elapsed)
     updateTimer = updateTimer + elapsed
 
     if (updateTimer > 0.1) then
+        if (f.mpreg) then
+            f.mpreg:SetText(GetRealMpFive())
+        end
+
         if (f.Rune) then
             for i = 1, 6 do
                 if (UnitHasVehicleUI('player')) then
