@@ -6,27 +6,31 @@ local GetTime = GetTime
 local floor, fmod = floor, math.fmod
 local day, hour, minute = 86400, 3600, 60
 
-local function IsMine(icon)
-    return icon.owner == 'player' or icon.owner == 'vehicle' or icon.owner == 'pet'
+local function IsMine(owner)
+    if (owner == 'player' or owner == 'vehicle' or owner == 'pet') then
+        return true
+    else
+        return false
+    end
 end
 
+--[[
 local function AuraMouseover(button, ...)
     local size = ...
 
     button:HookScript('OnEnter', function(self)
         button.icon:SetSize(size + 8, size + 8)
         button:SetFrameLevel(2)
-        -- button.remaining:SetFont(ns.config.font.normal, 13, 'THINOUTLINE')
         button.count:SetFont(ns.config.font.normal, 15, 'THINOUTLINE')
     end)
 
     button:HookScript('OnLeave', function(self)
         button.icon:SetSize(size, size)
         button:SetFrameLevel(1)
-        -- button.remaining:SetFont(ns.config.font.normal, 8, 'THINOUTLINE')
         button.count:SetFont(ns.config.font.normal, 11, 'THINOUTLINE')
     end)
 end
+--]]
 
 local function ExactTime(time)
     return format("%.1f", time), (time * 100 - floor(time * 100))/100
@@ -44,7 +48,7 @@ ns.CreateAuraTimer = function(self, elapsed)
     if (timeLeft <= 0) then
         self.remaining:SetText(nil)
     else
-        if (timeLeft < 8 and IsMine(self)) then
+        if (timeLeft < 8 and IsMine(self.owner)) then
             self.remaining:SetText('|cffff0000'..ExactTime(timeLeft))
 
             if (not self.ignoreSize) then
@@ -70,7 +74,7 @@ ns.PostUpdateIcon = function(icons, unit, icon, index, offset)
     if (ns.config.units.target.colorPlayerDebuffsOnly) then
         if (unit == 'target') then 
             if (icon.debuff) then
-                if (not IsMine(icon)) then
+                if (not IsMine(icon.owner)) then
                     icon.overlay:SetVertexColor(0.45, 0.45, 0.45)
                     icon.icon:SetDesaturated(true)
                     icon:SetAlpha(0.55)
@@ -150,7 +154,9 @@ ns.UpdateAuraIcons = function(auras, button)
         end
     end
 
+    --[[
     if (not button.disableMouseover) then
-        -- AuraMouseover(button, size)
+        AuraMouseover(button, size)
     end
+    --]]
 end
