@@ -331,14 +331,6 @@ local function UpdateThreat(self, _, unit)
     end
 end
 
-local function UpdateHealPredictionSize(self)
-    if (self.HealPrediction) then
-        local h, w = self.Health:GetSize()
-        self.HealPrediction.myBar:SetSize(h, w)
-        self.HealPrediction.otherBar:SetSize(h, w)
-    end
-end
-
 local function UpdatePower(self, _, unit)
     if (self.unit ~= unit) then
         return 
@@ -346,24 +338,26 @@ local function UpdatePower(self, _, unit)
 
     local _, powerToken = UnitPowerType(unit)
 
-    self.Health:ClearAllPoints()
-    -- if (powerToken == 'MANA' and not UnitIsDeadOrGhost(unit) and UnitIsConnected(unit)) then
-    if (powerToken == 'MANA') then
-        if (config.units.raid.manabar.horizontalOrientation) then
-            self.Health:SetPoint('BOTTOMLEFT', self, 0, 3)
-            self.Health:SetPoint('TOPRIGHT', self)
-        else
-            self.Health:SetPoint('BOTTOMLEFT', self)
-            self.Health:SetPoint('TOPRIGHT', self, -3.5, 0)
+    if (powerToken == 'MANA' and UnitHasMana(unit)) then
+        if (not self.Power:IsVisible()) then
+            self.Health:ClearAllPoints()
+            if (config.units.raid.manabar.horizontalOrientation) then
+                self.Health:SetPoint('BOTTOMLEFT', self, 0, 3)
+                self.Health:SetPoint('TOPRIGHT', self)
+            else
+                self.Health:SetPoint('BOTTOMLEFT', self)
+                self.Health:SetPoint('TOPRIGHT', self, -3.5, 0)
+            end
+
+            self.Power:Show()
         end
-
-        self.Power:Show()
     else
-        self.Health:SetAllPoints(self)
-        self.Power:Hide()
+        if (self.Power:IsVisible()) then
+            self.Health:ClearAllPoints()
+            self.Health:SetAllPoints(self)
+            self.Power:Hide()
+        end
     end
-
-    UpdateHealPredictionSize(self)
 end
 
 local function DeficitValue(self)
@@ -407,13 +401,13 @@ end
 
 local function UpdateHealth(Health, unit)
     local self = Health:GetParent()
-
+--[[
     if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
         if (Health:GetParent().Power) then
             UpdatePower(Health:GetParent().Power, _, unit)
         end
     end
-
+--]]
     if (not UnitIsPlayer(unit)) then
         local r, g, b = 0, 0.82, 1
         Health:SetStatusBarColor(r, g, b)
@@ -525,41 +519,50 @@ local function CreateRaidLayout(self, unit)
 
         table.insert(self.__elements, UpdatePower)
         self:RegisterEvent('UNIT_DISPLAYPOWER', UpdatePower)
+        UpdatePower(self, _, unit)
     end
 
         -- heal prediction, new healcomm
 
-    local myBar = CreateFrame('StatusBar', nil, self.Health)
-    myBar:SetStatusBarTexture(config.media.statusbar)
+    local myBar = CreateFrame('StatusBar', nil, self)
+    myBar:SetStatusBarTexture(config.media.statusbar, 'OVERLAY')
     myBar:SetStatusBarColor(0, 1, 0.3, 0.5)
+    myBar.Smooth = true
 
     if (config.units.raid.horizontalHealthBars) then
         myBar:SetOrientation('HORIZONTAL')
-        myBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT', 0, 0)
+		myBar:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
+		myBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
+		myBar:SetWidth(self:GetWidth())
     else
         myBar:SetOrientation('VERTICAL')
-        myBar:SetPoint('BOTTOM', self.Health:GetStatusBarTexture(), 'TOP', 0, 0)
+		myBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'TOPLEFT')
+		myBar:SetPoint('BOTTOMRIGHT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
+		myBar:SetHeight(self:GetHeight())
     end
 
-    local otherBar = CreateFrame('StatusBar', nil, self.Health)
-    otherBar:SetStatusBarTexture(config.media.statusbar)
-    otherBar:SetStatusBarColor(0, 1, 0, 0.25)
+    local otherBar = CreateFrame('StatusBar', nil, self)
+    otherBar:SetStatusBarTexture(config.media.statusbar, 'OVERLAY')
+    otherBar:SetStatusBarColor(0, 1, 0, 0.35)
+    otherBar.Smooth = true
 
     if (config.units.raid.horizontalHealthBars) then
         otherBar:SetOrientation('HORIZONTAL')
-        otherBar:SetPoint('LEFT', myBar:GetStatusBarTexture(), 'RIGHT', 0, 0)
+		otherBar:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
+		otherBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
+		otherBar:SetWidth(self.Health:GetWidth())
     else
         otherBar:SetOrientation('VERTICAL')
-        otherBar:SetPoint('BOTTOM', myBar:GetStatusBarTexture(), 'TOP', 0, 0)
+		otherBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'TOPLEFT')
+		otherBar:SetPoint('BOTTOMRIGHT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
+		otherBar:SetHeight(self.Health:GetHeight())
     end
 
     self.HealPrediction = {
         myBar = myBar,
         otherBar = otherBar,
-        maxOverflow = 1,
+        maxOverflow = 1.2,
     }
-
-    UpdateHealPredictionSize(self)
 
         -- afk /offline timer, using frequentUpdates function from oUF tags
 
