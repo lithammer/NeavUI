@@ -143,7 +143,7 @@ ns.config = {
                     positionOutside = false,
                 },
 
-                position = {'BOTTOM', UIParent, 'BOTTOM', 0, 332},
+                position = {'BOTTOM', UIParent, 'BOTTOM', 0, 380},
             },
         },
 

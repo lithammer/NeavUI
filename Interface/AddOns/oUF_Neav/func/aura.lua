@@ -6,8 +6,8 @@ local GetTime = GetTime
 local floor, fmod = floor, math.fmod
 local day, hour, minute = 86400, 3600, 60
 
-local function IsMine(owner)
-    if (owner == 'player' or owner == 'vehicle' or owner == 'pet') then
+local function IsMine(unit)
+    if (unit == 'player' or unit == 'vehicle' or unit == 'pet') then
         return true
     else
         return false

@@ -29,6 +29,16 @@ local function hook(frame)
     if (frame.Power and frame.Power.Smooth) then
         frame:SmoothBar(frame.Power)
     end
+
+	if (frame.HealPrediction) then
+		if (frame.HealPrediction.myBar and frame.HealPrediction.myBar.Smooth) then
+			frame:SmoothBar(frame.HealPrediction.myBar)
+		end
+		
+		if (frame.HealPrediction.otherBar and frame.HealPrediction.myBar.otherBar) then
+			frame:SmoothBar(frame.HealPrediction.otherBar)
+		end
+	end
 end
 
 for i, frame in ipairs(oUF.objects) do hook(frame) end
