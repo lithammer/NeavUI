@@ -20,7 +20,6 @@ f:EnableMouse(false)
 f:RegisterEvent('PLAYER_REGEN_ENABLED')
 f:RegisterEvent('PLAYER_REGEN_DISABLED')
 f:RegisterEvent('PLAYER_ENTERING_WORLD')
-
 f:RegisterEvent('UNIT_COMBO_POINTS')
 f:RegisterEvent('PLAYER_TARGET_CHANGED')
 
@@ -150,7 +149,7 @@ f.Power.Above = f.Power:CreateTexture(nil, 'BACKGROUND')
 f.Power.Above:SetHeight(14)
 f.Power.Above:SetWidth(14)
 f.Power.Above:SetTexture('Interface\\AddOns\\nPower\\media\\textureArrowAbove')
-f.Power.Above:SetPoint('BOTTOM', f.Power.Below, 'TOP', 0, f.Power:GetHeight()-1)
+f.Power.Above:SetPoint('BOTTOM', f.Power.Below, 'TOP', 0, f.Power:GetHeight())
 
 if (nPower.showCombatRegen) then
     f.mpreg = f.Power:CreateFontString(nil, 'ARTWORK')
@@ -161,11 +160,24 @@ if (nPower.showCombatRegen) then
     f.mpreg:Show()
 end
 
+local function FormatValue(self)
+    if (self >= 10000) then
+        return ('%.1fk'):format(self / 1e3)
+    else
+        return self
+    end
+end
+
 local function GetRealMpFive()
     local _, activeRegen = GetPowerRegen()
     local realRegen = activeRegen * 5
-    
-    return math.floor(realRegen)
+    local _, powerType = UnitPowerType('player')
+
+    if (powerType == 'MANA' or UnitHasVehicleUI('player')) then
+        return math.floor(realRegen)
+    else
+        return ''
+    end
 end
 
 local function SetComboColor(i)
@@ -231,28 +243,19 @@ local function UpdateArrow()
         f.Power.Above:SetAlpha(1)
     end
 
-    local newPosition = UnitPower('player') / UnitPowerMax('player') * f.Power:GetWidth() - 7
-    f.Power.Below:SetPoint('LEFT', f.Power, 'LEFT', newPosition, -8)
-    -- f.Power.Above:SetPoint('LEFT', f.Power, 'LEFT', newPosition, 8)
-end
-
-local function FormatValue(self)
-    if (self >= 10000) then
-        return ('%.1fk'):format(self / 1e3)
-    else
-        return self
-    end
+    local newPosition = UnitPower('player') / UnitPowerMax('player') * f.Power:GetWidth()
+    f.Power.Below:SetPoint('TOP', f.Power, 'BOTTOMLEFT', newPosition, 0)
 end
 
 local function UpdateBarValue()
+    local min = UnitPower('player')
     f.Power:SetMinMaxValues(0, UnitPowerMax('player', f))
-    f.Power:SetValue(UnitPower('player'))
-    
-    local curValue = UnitPower('player')
+    f.Power:SetValue(min)
+
     if (nPower.valueAbbrev) then
-        f.Power.Value:SetText(UnitPower('player') > 0 and FormatValue(curValue) or '')
+        f.Power.Value:SetText(min > 0 and FormatValue(min) or '')
     else
-        f.Power.Value:SetText(UnitPower('player') > 0 and curValue or '')
+        f.Power.Value:SetText(min > 0 and min or '')
     end
 end
 
