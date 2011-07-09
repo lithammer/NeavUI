@@ -1,75 +1,38 @@
 
-    -- local stuff for faster usage
-    
+    -- Just some experimental config stuff
+
+local enableTankMode = true
+local noThreatColor = {0, 1, 0}
+
+local showEliteBorder = true
+local abbrevLongNames = false
+local borderColor = {0.35, 0.35, 0.35}
+
+    -- local stuff
+
 local ColorBeautyBorder = _G.ColorBeautyBorder
 local CreateBeautyBorder = _G.CreateBeautyBorder
 local SetBeautyBorderTexture = _G.SetBeautyBorderTexture
-  
+
 local len = string.len
 local find = string.find
 local gsub = string.gsub
 
+local ton = tonumber
 local select = select
 local tonumber = tonumber
 
-    -- import functions for faster usage
-
 local UnitName = UnitName
--- local UnitIsEnemy = UnitIsEnemy
 local UnitCastingInfo = UnitCastingInfo
 local UnitChannelInfo = UnitChannelInfo
 
-local function RGBHex(r, g, b)
-    if(type(r) == 'table') then
-        if(r.r) then r, g, b = r.r, r.g, r.b else r, g, b = unpack(r) end
-    end
-    return ('|cff%02x%02x%02x'):format(r * 255, g * 255, b * 255)
-end
+local elitePlateTexture = 'Interface\\Tooltips\\EliteNameplateIcon'
+local nameplateFlashTexture = 'Interface\\TargetingFrame\\UI-TargetingFrame-Flash'
 
---[[
-
-    local GetUnitAggroStatus
-	do
-		local shown 
-		local red, green, blue
-		function GetUnitAggroStatus( region)
-			-- High = 1, 0, 0	-- Medium High = 1, .6, 0  -- Medium Low = 1, 1, .47
-			shown = region:IsShown()
-			if not shown then return "LOW", 0 end
-			red, green, blue = region:GetVertexColor()
-			if red > 0 then
-				if green > 0 then
-					if blue > 0 then return "MEDIUM", 1 end
-					return "MEDIUM", 2
-				end
-				return "HIGH", 3
-			end
-		end
-	end
-
-    
-    local function GetUnitCombatStatus(r, g, b) 
-        return (r > .5 and g < .5) 
-    end
-
-    
-    unit.isInCombat = GetUnitCombatStatus(regions.name:GetTextColor())
-        
---]]
-
-
-local function IsTarget(self) 
-    local targetName = UnitName('target')
-
-    if (targetName == self.oldName:GetText() and self:GetAlpha() >= 0.99) then
-        return true
-    else
-        return false
-    end
-end
+    -- Some general functions
 
 local function Round(num, idp)
-    return tonumber(format('%.'..(idp or 0)..'f', num))
+    return ton(format('%.'..(idp or 0)..'f', num))
 end
 
 local function FormatValue(number)
@@ -82,7 +45,62 @@ local function FormatValue(number)
     end
 end
 
-local function UpdateHealtText(self)
+local function RGBHex(r, g, b)
+    if(type(r) == 'table') then
+        if(r.r) then r, g, b = r.r, r.g, r.b else r, g, b = unpack(r) end
+    end
+    return ('|cff%02x%02x%02x'):format(r * 255, g * 255, b * 255)
+end
+
+    -- The plate functions
+
+local function GetUnitReaction(r, g, b)
+    if (g + b == 0) then
+        return true
+    end
+    
+    return false
+end
+
+local function GetUnitCombatStatus(r, g, b)
+    if (r >= 0.98) then
+        return true
+    end
+    
+    return false
+end
+
+local function IsTarget(self) 
+    local targetName = UnitName('target')
+    if (targetName == self.Name:GetText() and self:GetAlpha() >= 0.99) then
+        return true
+    else
+        return false
+    end
+end
+
+local function UpdateThreatColor(self)
+    local playerInfight = InCombatLockdown()
+    local unitInfight = GetUnitCombatStatus(self.Name:GetTextColor())
+    local lowThreat = unitInfight and playerInfight
+    local isEnemy = GetUnitReaction(self.Health:GetStatusBarColor())
+
+    if (lowThreat and not self.Glow:IsVisible() and isEnemy and enableTankMode) then
+        self.NewGlow:Show()
+        self.NewGlow:SetVertexColor(unpack(noThreatColor))
+    elseif (self.Glow:IsVisible()) then
+        self.NewGlow:Show()
+
+        local r, g, b = self.Glow:GetVertexColor()
+        self.NewGlow:SetVertexColor(r, g, b)
+    else
+        if (self.NewGlow:IsVisible()) then
+            self.NewGlow:Hide()
+        end
+    end
+end
+
+local function UpdateHealthText(self)
     local min, max = self.Health:GetMinMaxValues()
     local currentValue = self.Health:GetValue()
     local perc = (currentValue/max)*100	
@@ -90,20 +108,17 @@ local function UpdateHealtText(self)
     if (perc >= 100 and currentValue ~= 1) then
         self.Health.Value:SetFormattedText('%s', FormatValue(currentValue))		
     elseif (perc < 100 and currentValue ~= 1) then
-        self.Health.Value:SetFormattedText('%s - %.0f%%', FormatValue(currentValue), perc)
+        self.Health.Value:SetFormattedText('%s - %.0f%%', FormatValue(currentValue), perc + 0.5)
     else
         self.Health.Value:SetText('')
     end
 end
 
-local function ColorHealthBar(self)
+local function UpdateHealthColor(self)
     local r, g, b = self.Health:GetStatusBarColor()
-
     if (r + g == 0) then
         self.Health:SetStatusBarColor(0, 0.35, 1)
     end
-
-    UpdateHealtText(self)
 end
 
 local function UpdateTime(self, curValue)
@@ -120,77 +135,88 @@ local function UpdateTime(self, curValue)
 end
 
 local function UpdateNameL(self)
-    local oldName = self.oldName:GetText()
-    -- local newName = (len(oldName) > 20) and gsub(oldName, '%s?(.[\128-\191]*)%S+%s', '%1. ') or oldName
-    local newName = oldName
+    local newName = self.Name:GetText()
+    if (abbrevLongNames) then
+        newName = (len(newName) > 20) and gsub(newName, '%s?(.[\128-\191]*)%S+%s', '%1. ') or newName
+    end
 
-    local level, elite = self.Level:GetText(), self.EliteIcon:IsShown()
+    local level, elite = self.Level:GetText(), self.EliteIcon:IsVisible()
 
-    if (self.BossIcon:IsShown()) then
+    if (self.BossIcon:IsVisible()) then
         self.Level:SetFont('Fonts\\ARIALN.ttf', 12)
     else
         self.Level:SetFont('Fonts\\ARIALN.ttf', 10)
     end
 
-    local r, g, b = self.Name:GetTextColor()
-    local nameColor = RGBHex(r, g, b)
+    local nameColor = RGBHex(1, 1, 1)
 
-    if (self.BossIcon:IsShown()) then
+    if (self.BossIcon:IsVisible()) then
         self.Level:SetText('|cffff0000??|r '..nameColor..newName)
         self.Level:Show()
-    elseif (self.EliteIcon:IsVisible() and (not self.EliteIcon:GetTexture() == 'Interface\\Tooltips\\EliteNameplateIcon')) then
+    elseif (self.EliteIcon:IsVisible() and (not self.EliteIcon:GetTexture() == elitePlateTexture)) then
         self.Level:SetText('|cffffff00(r)|r'..level..' '..nameColor..newName)
     else
         self.Level:SetText((elite and '|cffffff00+|r' or '')..level..' '..nameColor..newName)
     end	
 end
 
+local function UpdateTargetBorder(self)
+    if (IsTarget(self)) then
+        -- self.Health:SetBeautyBorderTexture('white')
+        self.Health:SetBeautyShadowColor(1, 1, 1)
+    else
+        -- self.Health:SetBeautyBorderTexture('default')
+        self.Health:SetBeautyShadowColor(0, 0, 0)
+    end
+end
+
 local function ThreatUpdate(self, elapsed)
     self.elapsed = self.elapsed + elapsed
     if (self.elapsed >= 0.1) then
         if (self:IsVisible()) then
-            ColorHealthBar(self)
-
-            if (IsTarget(self)) then
-                self.Health:SetBeautyBorderTexture('white')
-            else
-                self.Health:SetBeautyBorderTexture('default')
-            end
-
-            if (not self.oldGlow:IsShown()) then
-                if (self.Health.bg:IsShown()) then
-                    self.Health.bg:Hide()
-                end
-            else
-                local r, g, b = self.oldGlow:GetVertexColor()
-                self.Health.bg:SetBeautyBorderColor(r, g, b, 1)
-
-                if (not self.Health.bg:IsShown()) then
-                    self.Health.bg:Show()
-                end
-            end
+            UpdateHealthColor(self)
+            UpdateThreatColor(self)
+            UpdateTargetBorder(self)
         end
 
         self.elapsed = 0
     end
 end
 
-local function UpdatePlate(self)
-    UpdateHealtText(self)
-    ColorHealthBar(self)
+local function UpdateEliteTexture(self)
+    local r, g, b = unpack(borderColor)
+    if (self.BossIcon:IsVisible() or self.EliteIcon:IsVisible()) then
+        self.Health.beautyBorder[2]:SetVertexColor(1, 1, 0)
+        self.Health.beautyBorder[4]:SetVertexColor(1, 1, 0)
+        self.Health.beautyBorder[8]:SetVertexColor(1, 1, 0)
+        self.Health.beautyBorder[5]:SetGradientAlpha('HORIZONTAL', r, g, b, 1, 1, 1, 0, 1)
+        self.Health.beautyBorder[6]:SetGradientAlpha('HORIZONTAL', r, g, b, 1, 1, 1, 0, 1)
+    else
+        self.Health.beautyBorder[2]:SetVertexColor(r, g, b)
+        self.Health.beautyBorder[4]:SetVertexColor(r, g, b)
+        self.Health.beautyBorder[8]:SetVertexColor(r, g, b)
+        self.Health.beautyBorder[5]:SetVertexColor(r, g, b)
+        self.Health.beautyBorder[6]:SetVertexColor(r, g, b)
+    end
+end
 
-    --[[
-    self.EliteIcon:SetSize(25, 24)
-    self.EliteIcon:SetTexture('Interface\\AddOns\\nPlates\\media\\eliteIcon')
-    self.EliteIcon:ClearAllPoints()
-    self.EliteIcon:SetPoint('LEFT', self.Health, -14.5, 2)
-    self.EliteIcon:SetVertexColor(0.8, 0.8, 0.8)
-    --]]
+local function UpdatePlate(self)
+    if (self.Level) then
+        UpdateNameL(self)
+    end
+
+    if (showEliteBorder) then
+        UpdateEliteTexture(self)
+    end
+
+    UpdateHealthText(self)
+    UpdateHealthColor(self)
+    UpdateThreatColor(self)
 
     self.Highlight:ClearAllPoints()
     self.Highlight:SetAllPoints(self.Health)
-    
-    if (self.Castbar:IsShown()) then     
+
+    if (self.Castbar:IsVisible()) then     
         self.Castbar:Hide() 
     end
 
@@ -202,10 +228,6 @@ local function UpdatePlate(self)
     self.Level:ClearAllPoints()
     self.Level:SetPoint('CENTER', self.Health, 'CENTER', 0, 9)
     self.Level:SetSize(110, 13)
-
-    if (self.Level) then
-        UpdateNameL(self)
-    end
 end
 
 local function ColorCastBar(self, shield)
@@ -226,13 +248,12 @@ end
 
 local function OnShow(self)
     self.channeling = UnitChannelInfo('target')
-
-    ColorCastBar(self, self.Shield:IsShown())
+    ColorCastBar(self, self.Shield:IsVisible())
 end
 
 local function OnEvent(self, event, unit)
     if (unit == 'target') then
-        if (self:IsShown()) then
+        if (self:IsVisible()) then
             ColorCastBar(self, event == 'UNIT_SPELLCAST_NOT_INTERRUPTIBLE')
         end
     end
@@ -247,7 +268,7 @@ local function SkinPlate(self)
     _, self.Castbar.Overlay, self.Castbar.Shield, self.Castbar.Icon = self.Castbar:GetRegions()
     self.Glow, self.Overlay, self.Highlight, self.Name, self.Level, self.BossIcon, self.RaidIcon, self.EliteIcon = self:GetRegions()
 
-        -- fake hide all unwanted texture
+        -- hide all unwanted texture
 
     self.Glow:SetTexCoord(0, 0, 0, 0)
     self.Overlay:SetTexCoord(0, 0, 0, 0)
@@ -257,11 +278,6 @@ local function SkinPlate(self)
     self.Castbar.Shield:SetTexCoord(0, 0, 0, 0)
     self.Castbar.Overlay:SetTexCoord(0, 0, 0, 0)
 
-        -- use these old frames for some functions
-
-    self.oldName = self.Name
-    self.oldGlow = self.Glow
-
         -- hide original name font string
 
     self.Name:Hide()
@@ -269,8 +285,11 @@ local function SkinPlate(self)
         -- create the healtbar border and background
 
     if (not self.Health.beautyBorder) then
+        local r, g, b = unpack(borderColor)
         self.Health:CreateBeautyBorder(7.33333)
         self.Health:SetBeautyBorderPadding(2.6666667)
+        self.Health:SetBeautyBorderColor(r, g, b)
+        self.Health:SetBeautyBorderTexture('white')
     end
 
     self.Health:SetBackdrop({
@@ -284,18 +303,9 @@ local function SkinPlate(self)
     })
     self.Health:SetBackdropColor(0, 0, 0, 0.55)
 
-    if (not self.Health.bg) then
-        self.Health.bg = CreateFrame('Frame', nil, self.Health)
-        self.Health.bg:SetPoint('TOP', self.Health, 0, 3)
-        self.Health.bg:SetPoint('BOTTOM', self.Health, 0, -3)
-        self.Health.bg:SetPoint('LEFT', self.Health, -3, 0)
-        self.Health.bg:SetPoint('RIGHT', self.Health, 3, 0)
-        self.Health.bg:Hide()
-
-        self.Health.bg:CreateBeautyBorder(7.3333334)
-        self.Health.bg:SetBeautyBorderPadding(2.3333334)
-        self.Health.bg:SetBeautyBorderTexture('white')
-    end
+    self.Health:SetScript('OnValueChanged', function()
+        UpdateHealthText(self)
+    end)
 
     --[[
 	self.NewName = self:CreateFontString(nil, 'OVERLAY')
@@ -312,6 +322,15 @@ local function SkinPlate(self)
         self.Health.Value:SetPoint('CENTER', self.Health, 0, 0)
         self.Health.Value:SetFont('Fonts\\ARIALN.ttf', 9)
         self.Health.Value:SetShadowOffset(1, -1)
+    end
+
+    if (not self.NewGlow) then
+        self.NewGlow = self.Health:CreateTexture(nil, 'BACKGROUND')
+        self.NewGlow:SetTexture('Interface\\AddOns\\nPlates\\media\\threatTexture')
+        self.NewGlow:SetPoint('TOPRIGHT', self.Health, 21, 18)
+        self.NewGlow:SetPoint('BOTTOMLEFT', self.Health, -21, -18)
+        self.NewGlow:SetParent(self.Health)
+        self.NewGlow:Hide()
     end
 
         -- the level text string, we abuse it as namestring too
@@ -417,20 +436,17 @@ end
 
 local function IsNameplate(self)
     local region = self:GetRegions()
-    return region and region:GetObjectType() == 'Texture' and region:GetTexture() == 'Interface\\TargetingFrame\\UI-TargetingFrame-Flash' 
+    return region and region:GetObjectType() == 'Texture' and region:GetTexture() == nameplateFlashTexture
 end
-
-local f = CreateFrame('Frame')
 
 local total = -1
 local namePlate, frames
+local f = CreateFrame('Frame')
 f:SetScript('OnUpdate', function()
     frames = select('#', WorldFrame:GetChildren())
-
     if (frames ~= total) then
         for i = 1, frames do
             namePlate = select(i, WorldFrame:GetChildren())
-
             if (IsNameplate(namePlate)) then
                 SkinPlate(namePlate)
             end
