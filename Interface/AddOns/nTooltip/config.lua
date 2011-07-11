@@ -11,16 +11,19 @@ nTooltip = {
 
     showUnitRole = true,
     showPlayerTitles = false,
-    showPVPIcons = false,                        -- Show pvp icons instead of just a prefix
+    showPVPIcons = false,                       -- Show pvp icons instead of just a prefix
     abbrevRealmNames = false, 
     showMouseoverTarget = true,
     showItemLevel = false,
 
     healthbar = {
         showHealthValue = false,
+        healthFullFormat = '$cur',              -- if the tooltip unit has 100% hp 
+        healthValueFormat = '$cur / $max',      -- Possible: $perc, $cur, $max
+
         fontSize = 13,
         font = 'Fonts\\ARIALN.ttf',
-        showOutline = false,
+        showOutline = true,
         textPos = 'CENTER',                     -- Possible 'TOP' 'BOTTOM' 'CENTER'
 
         reactionColoring = false,               -- Overrides customColor 

@@ -1,10 +1,11 @@
 
-    -- import globals for faster usage
+    -- The local stuff
 
 local _G = _G
 local select = select
+local tonumber = tonumber
 
-    -- import functions for faster usage
+local format = string.format
 
 local UnitName = UnitName
 local UnitLevel = UnitLevel
@@ -15,18 +16,25 @@ local UnitFactionGroup = UnitFactionGroup
 local UnitCreatureType = UnitCreatureType
 local GetQuestDifficultyColor = GetQuestDifficultyColor
 
-    -- font settings
+    -- Some tooltip changes
 
 GameTooltipHeaderText:SetFont('Fonts\\ARIALN.ttf', 17)
 GameTooltipText:SetFont('Fonts\\ARIALN.ttf', 15)
 GameTooltipTextSmall:SetFont('Fonts\\ARIALN.ttf', 15)
 
-    -- healthbar settings
-
 GameTooltipStatusBar:SetHeight(7)
 GameTooltipStatusBar:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
+GameTooltipStatusBar:SetBackdropColor(0, 1, 0, 0.3)
 
-    -- load texture paths locally
+local function FormatValue(number)
+    if (number >= 1e6) then
+        return tonumber(format('%.1f', number/1e6))..'m'
+    elseif (number >= 1e3) then
+        return tonumber(format('%.1f', number/1e3))..'k'
+    else
+        return number
+    end
+end
 
 local function ApplyTooltipStyle(self)
     local bgsize, bsize
@@ -84,8 +92,6 @@ hooksecurefunc('GameTooltip_ShowCompareItem', function(self)
     end
 end)
 
-    -- tooltips like cookies!
-
 for _, tooltip in pairs({
     GameTooltip,
     ItemRefTooltip,
@@ -111,7 +117,7 @@ for _, tooltip in pairs({
     ApplyTooltipStyle(tooltip)
 end
 
-    -- itemquaility border, we use our beautycase functions
+    -- Itemquaility border, we use our beautycase functions
 
 if (nTooltip.itemqualityBorderColor) then
     for _, tooltip in pairs({
@@ -143,7 +149,7 @@ if (nTooltip.itemqualityBorderColor) then
     end
 end
 
-    -- make sure we get a unit
+    -- Make sure we get a correct unit
 
 local function GetRealUnit(self)
     if (GetMouseFocus() and not GetMouseFocus():GetAttribute('unit') and GetMouseFocus() ~= WorldFrame) then
@@ -227,18 +233,19 @@ local function GetUnitRoleString(unit)
     return roleList
 end
 
-    -- tooltip position
+    -- Tooltip position
 
 hooksecurefunc('GameTooltip_SetDefaultAnchor', function(self)
     self:SetPoint(unpack(nTooltip.position))
 end)
 
-    -- set all to the defaults if tooltip hides
+    -- Set all to the defaults if tooltip hides
 
 GameTooltip:HookScript('OnTooltipCleared', function(self)
     GameTooltipStatusBar:ClearAllPoints()
-    GameTooltipStatusBar:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 2, -2)
-    GameTooltipStatusBar:SetPoint('TOPRIGHT', self, 'BOTTOMRIGHT', -2, -2)
+    GameTooltipStatusBar:SetPoint('BOTTOMLEFT', GameTooltip, 'TOPLEFT', 0.5, 3)
+    GameTooltipStatusBar:SetPoint('BOTTOMRIGHT', GameTooltip, 'TOPRIGHT', -1, 3)
+    GameTooltipStatusBar:SetBackdropColor(0, 1, 0, 0.3)
 
     if (GameTooltip.PVPIcon) then
         GameTooltip.PVPIcon:SetTexture(nil)
@@ -250,14 +257,14 @@ GameTooltip:HookScript('OnTooltipCleared', function(self)
     end
 end)
 
-    -- healthbar coloring funtion
+    -- Healthbar coloring funtion
 
 local function HealthBarColor(unit)
     local r, g, b
 
     if (nTooltip.healthbar.customColor.apply and not nTooltip.healthbar.reactionColoring) then
         r, g, b = nTooltip.healthbar.customColor.r, nTooltip.healthbar.customColor.g, nTooltip.healthbar.customColor.b
-    elseif (nTooltip.healthbar.reactionColoring) then
+    elseif (nTooltip.healthbar.reactionColoring and unit) then
         r, g, b = UnitSelectionColor(unit)
     else
         r, g, b = 0, 1, 0
@@ -267,7 +274,7 @@ local function HealthBarColor(unit)
     GameTooltipStatusBar:SetBackdropColor(r, g, b, 0.3)
 end
 
-    -- itemlvl (by Gsuz) - http://www.tukui.org/forums/topic.php?id=10151
+    -- Itemlvl (by Gsuz) - http://www.tukui.org/forums/topic.php?id=10151
 
 local slotName = {
         'Head',
@@ -341,7 +348,7 @@ local function GetUnitPVPIcon(unit)
     end
 end
 
-    -- function to short-display HP value on StatusBar
+    -- Function to short-display HP value on StatusBar
 
 local function ShortValue(value)
     if (value >= 1e7) then
@@ -385,7 +392,7 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
     if (UnitExists(unit) and UnitName(unit) ~= UNKNOWN) then
         local name, realm = UnitName(unit)
 
-            -- hide player titles
+            -- Hide player titles
 
         if (nTooltip.showPlayerTitles) then
             if (UnitPVPName(unit)) then 
@@ -395,7 +402,7 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
 
         GameTooltipTextLeft1:SetText(name)
 
-            -- color guildnames
+            -- Color guildnames
 
         if (GetGuildInfo(unit)) then
             if (GetGuildInfo(unit) == GetGuildInfo('player') and IsInGuild('player')) then
@@ -403,7 +410,7 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             end
         end
 
-            -- tooltip level text
+            -- Tooltip level text
 
         for i = 2, GameTooltip:NumLines() do
             if (_G['GameTooltipTextLeft'..i]:GetText():find('^'..TOOLTIP_UNIT_LEVEL:gsub('%%s', '.+'))) then
@@ -411,19 +418,19 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             end
         end
 
-            -- role text
+            -- Role text
 
         if (nTooltip.showUnitRole) then
             self:AddLine(GetUnitRoleString(unit), 1, 1, 1)
         end
         
-            -- mouse over target with raidicon support
+            -- Mouse over target with raidicon support
 
         if (nTooltip.showMouseoverTarget) then
             AddMouseoverTarget(self, unit)
         end
   
-            -- pvp flag prefix 
+            -- Pvp flag prefix 
 
         for i = 3, GameTooltip:NumLines() do
             if (_G['GameTooltipTextLeft'..i]:GetText():find(PVP_ENABLED)) then
@@ -432,11 +439,11 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             end
         end
 
-            -- raid icon, want to see the raidicon on the left
+            -- Raid icon, want to see the raidicon on the left
 
         GameTooltipTextLeft1:SetText(GetUnitRaidIcon(unit)..GameTooltipTextLeft1:GetText())
 
-            -- afk and dnd prefix
+            -- Afk and dnd prefix
 
         if (UnitIsAFK(unit)) then 
             self:AppendText(' |cff00ff00AFK|r')   
@@ -445,7 +452,7 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             self:AppendText(' |cff00ff00DND|r')
         end
 
-            -- player realm names
+            -- Player realm names
 
         if (realm and realm ~= '') then
             if (nTooltip.abbrevRealmNames)   then
@@ -455,14 +462,14 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             end
         end
 
-            -- move the healthbar inside the tooltip
+            -- Move the healthbar inside the tooltip
 
         self:AddLine(' ')
         GameTooltipStatusBar:ClearAllPoints()
         GameTooltipStatusBar:SetPoint('LEFT', self:GetName()..'TextLeft'..self:NumLines(), 1, -3)
         GameTooltipStatusBar:SetPoint('RIGHT', self, -10, 0)
 
-            -- show player item lvl
+            -- Show player item lvl
 
         if (nTooltip.showItemLevel) then
             if (unit and CanInspect(unit)) then
@@ -474,7 +481,7 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             end
         end
 
-            -- border coloring
+            -- Border coloring
 
         if (nTooltip.reactionBorderColor) then
             local r, g, b = UnitSelectionColor(unit)
@@ -483,7 +490,7 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             self:SetBeautyBorderColor(r, g, b)
         end
 
-            -- dead or ghost recoloring
+            -- Dead or ghost recoloring
 
         if (UnitIsDead(unit) or UnitIsGhost(unit)) then
             GameTooltipStatusBar:SetBackdropColor(0.5, 0.5, 0.5, 0.3)
@@ -495,77 +502,97 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             end
         end
 
-            -- tooltip HP bar & value
-
-        if (not GameTooltipStatusBar.hasHealthText and nTooltip.healthbar.showHealthValue or nTooltip.healthbar.customColor.apply or nTooltip.healthbar.reactionColoring) then
-            GameTooltipStatusBar:SetScript('OnValueChanged', function(self, value)
-                if (not value) then
-                    return
-                end
-
-                local min, max = self:GetMinMaxValues()
-
-                if (value < min) or (value > max) then
-                    return
-                end
-
-                local _, unit = GameTooltip:GetUnit()
-                if (not unit) then
-                    unit = GetMouseFocus() and GetMouseFocus():GetAttribute('unit')
-                end
-
-                    -- custom healthbar coloring
-
+            -- Custom healthbar coloring
+        
+        if (nTooltip.healthbar.reactionColoring or nTooltip.healthbar.customColor.apply) then
+            GameTooltipStatusBar:HookScript('OnValueChanged', function()
                 HealthBarColor(unit)
-
-                if (nTooltip.healthbar.showHealthValue) then
-                    if (not self.text) then
-                        self.text = self:CreateFontString(nil, 'MEDIUM')
-
-                        if (nTooltip.healthbar.textPos == 'TOP') then
-                            self.text:SetPoint('RIGHT', GameTooltipStatusBar, 'TOPRIGHT', -10, 1)
-                            self.text:SetPoint('LEFT', GameTooltipStatusBar, 'TOPLEFT', 10, 1)
-                        elseif (nTooltip.healthbar.textPos == 'BOTTOM') then
-                            self.text:SetPoint('RIGHT', GameTooltipStatusBar, 'BOTTOMRIGHT', -10, 1)
-                            self.text:SetPoint('LEFT', GameTooltipStatusBar, 'BOTTOMLEFT', 10, 1)
-                        else
-                            self.text:SetPoint('RIGHT', GameTooltipStatusBar, 'RIGHT', -10, 1)
-                            self.text:SetPoint('LEFT', GameTooltipStatusBar, 'LEFT', 10, 1)
-                        end
-
-                        if (nTooltip.healthbar.showOutline) then
-                            self.text:SetFont(nTooltip.healthbar.font, nTooltip.healthbar.fontSize, 'THINOUTLINE')
-                            self.text:SetShadowOffset(0, 0)
-                        else
-                            self.text:SetFont(nTooltip.healthbar.font, nTooltip.healthbar.fontSize)
-                            self.text:SetShadowOffset(1, -1)
-                        end
-
-                        self.text:Show()
-                    end
-
-                    if (unit and self.text) then
-                        min = UnitHealth(unit)
-                        max = UnitHealthMax(unit)
-                        local hp = ShortValue(min)..' / '..ShortValue(max)
-
-                        if (UnitIsGhost(unit)) then
-                            self.text:SetText('Ghost')
-                        elseif (min == 0 or UnitIsDead(unit) or UnitIsGhost(unit)) then
-                            self.text:SetText('Dead')
-                        else
-                            self.text:SetText(hp)
-                        end
-                    end
-
-                    self.hasHealthText = true
-                end
             end)
         end
     end
 end)
 
-    -- disable fade
+    -- Tooltip HP bar & value
+
+if (nTooltip.healthbar.showHealthValue) then
+    local function CreateHealthString(self)
+        self.Text = self:CreateFontString(nil, 'OVERLAY')
+        self.Text:SetParent(self)
+        self.Text:SetPoint('CENTER', self, nTooltip.healthbar.textPos, 0, 1)
+        
+        if (nTooltip.healthbar.showOutline) then
+            self.Text:SetFont(nTooltip.healthbar.font, nTooltip.healthbar.fontSize, 'THINOUTLINE')
+            self.Text:SetShadowOffset(0, 0)
+        else
+            self.Text:SetFont(nTooltip.healthbar.font, nTooltip.healthbar.fontSize)
+            self.Text:SetShadowOffset(1, -1)
+        end
+
+        --[[
+        if (nTooltip.healthbar.textPos == 'TOP') then
+            self.Text:SetPoint('RIGHT', self, 'TOPRIGHT', -5, 1)
+            self.Text:SetPoint('LEFT', self, 'TOPLEFT', 5, 1)
+        elseif (nTooltip.healthbar.textPos == 'BOTTOM') then
+            self.Text:SetPoint('RIGHT', self, 'BOTTOMRIGHT', -5, 1)
+            self.Text:SetPoint('LEFT', self, 'BOTTOMLEFT', 5, 1)
+        else
+            self.Text:SetPoint('RIGHT', self, 'RIGHT', -5, 1)
+            self.Text:SetPoint('LEFT', self, 'LEFT', 5, 1)
+        end
+        --]]
+    end
+
+    local function GetHealthTag(text, cur, max, perc)
+        local perc = format('%d', (cur/max)*100)..'%'
+
+        if (max == 1) then
+            return perc
+        end
+
+        text = string.gsub(text, '$cur', format('%s', FormatValue(cur)))
+        text = string.gsub(text, '$max', format('%s', FormatValue(max)))
+        text = string.gsub(text, '$perc', perc)
+
+        return text
+    end
+
+    GameTooltipStatusBar:HookScript('OnValueChanged', function(self, value)
+        if (GameTooltipStatusBar.Text) then
+            GameTooltipStatusBar.Text:SetText('')
+        end
+
+        if (not value) then
+            return
+        end
+
+        local cur = self:GetValue()
+        local min, max = self:GetMinMaxValues()
+        local perc = (cur/max)*100 
+
+            -- Hide the value if the unit is dead or has a false value
+
+        if ((value < min) or (value > max) or (cur == 0) or (cur == 1)) then
+            return
+        end
+
+        if (not self.Text) then
+            CreateHealthString(self)
+        end
+
+        local fullString = GetHealthTag(nTooltip.healthbar.healthFullFormat, cur, max)
+        local normalString = GetHealthTag(nTooltip.healthbar.healthValueFormat, cur, max)
+
+        if (perc >= 100 and currentValue ~= 1) then
+            self.Text:SetText(fullString)		
+        elseif (perc < 100 and currentValue ~= 1) then
+            self.Text:SetText(normalString)	
+        else
+            self.Text:SetText('')
+        end
+    end)
+end
+
+    -- Disable fade
 
 if (nTooltip.disableFade) then
     GameTooltip.UpdateTime = 0
