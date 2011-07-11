@@ -23,10 +23,6 @@ local UnitName = UnitName
 local UnitCastingInfo = UnitCastingInfo
 local UnitChannelInfo = UnitChannelInfo
 
-local ColorBeautyBorder = _G.ColorBeautyBorder
-local CreateBeautyBorder = _G.CreateBeautyBorder
-local SetBeautyBorderTexture = _G.SetBeautyBorderTexture
-
 local borderColor = {0.4, 0.4, 0.4}
 local nameplateFlashTexture = 'Interface\\TargetingFrame\\UI-TargetingFrame-Flash'
 
