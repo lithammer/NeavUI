@@ -1,12 +1,6 @@
 
-    -- import globals for faster usage
-
 local _G = _G
 local unpack = unpack
-
-    -- some global/local stuff
-
-BUFF_MIN_ALPHA = 1
 
 DAY_ONELETTER_ABBR    = '|cffffffff%dd|r'
 HOUR_ONELETTER_ABBR   = '|cffffffff%dh|r'
@@ -14,6 +8,10 @@ MINUTE_ONELETTER_ABBR = '|cffffffff%dm|r'
 SECOND_ONELETTER_ABBR = '|cffffffff%d|r'
 
 -- DEBUFF_MAX_DISPLAY = 32 -- show more debuffs
+-- BUFF_MIN_ALPHA = 1
+
+BuffFrame:SetScript('OnUpdate', nil)
+BuffFrame.BuffAlphaValue = 1
 
 TemporaryEnchantFrame:ClearAllPoints()
 TemporaryEnchantFrame:SetPoint('TOPRIGHT', Minimap, 'TOPLEFT', -15, 0)
@@ -103,7 +101,7 @@ hooksecurefunc('BuffFrame_UpdateAllBuffAnchors', function()
 
                 aboveBuff = buff
             else
-                buff:SetPoint('RIGHT', previousBuff, 'LEFT', -nBuff.paddingX, 0)
+                buff:SetPoint('TOPRIGHT', previousBuff, 'TOPLEFT', -nBuff.paddingX, 0)
             end
 
             previousBuff = buff
@@ -136,7 +134,7 @@ hooksecurefunc('DebuffButton_UpdateAnchors', function(self, index)
     elseif (index >= 2 and mod(index, nBuff.buffPerRow) == 1) then
         buff:SetPoint('TOP', _G[self..(index-nBuff.buffPerRow)], 'BOTTOM', 0, -nBuff.paddingY)
     else
-        buff:SetPoint('RIGHT', _G[self..(index-1)], 'LEFT', -nBuff.paddingX, 0)
+        buff:SetPoint('TOPRIGHT', _G[self..(index-1)], 'TOPLEFT', -nBuff.paddingX, 0)
     end
 end)
 
@@ -162,7 +160,7 @@ for i = 1, NUM_TEMP_ENCHANT_FRAMES do
     end)
 
     local icon = _G['TempEnchant'..i..'Icon']
-    icon:SetTexCoord(0.03, 0.97, 0.03, 0.97)
+    icon:SetTexCoord(0.04, 0.96, 0.04, 0.96)
 
     local duration = _G['TempEnchant'..i..'Duration']
     duration:ClearAllPoints()
@@ -200,7 +198,7 @@ hooksecurefunc('AuraButton_Update', function(self, index)
 
     local icon = _G[self..index..'Icon']
     if (icon) then
-        icon:SetTexCoord(0.03, 0.97, 0.03, 0.97)
+        icon:SetTexCoord(0.04, 0.96, 0.04, 0.96)
     end
 
     local duration = _G[self..index..'Duration']
