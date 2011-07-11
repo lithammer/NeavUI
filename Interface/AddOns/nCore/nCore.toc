@@ -13,7 +13,6 @@ modules\coords.lua
 modules\durability.lua
 modules\errors.lua
 modules\fonts.lua
-modules\macro.lua
 modules\mail.lua
 modules\skins.lua
 modules\spellid.lua
