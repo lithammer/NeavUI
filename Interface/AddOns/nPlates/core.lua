@@ -30,9 +30,14 @@ local glowTexture = 'Interface\\AddOns\\nPlates\\media\\textureNewGlow'
 local overlayTexture = 'Interface\\AddOns\\nPlates\\media\\textureOverlay'
 local whiteOverlay = 'Interface\\AddOns\\!Beautycase\\media\\textureNormalWhite'
 
-local f = CreateFrame('Frame')
+local total = -1
+local namePlate, frames
+
+local f = CreateFrame('Frame', nil, UIParent)
+
 f.elapsed = 0  
 f.elapsedLong = 0  
+
 --[[
 -- f:RegisterEvent('UNIT_TARGET')
 f:RegisterEvent('PLAYER_TARGET_CHANGED')
@@ -539,9 +544,6 @@ local function IsNameplate(self)
     return self:GetName() and self:GetName():find('NamePlate(%d)')
 end
 
-local total = -1
-local namePlate, frames
-local f = CreateFrame('Frame')
 f:SetScript('OnUpdate', function()
     frames = select('#', WorldFrame:GetChildren())
     if (frames ~= total) then
