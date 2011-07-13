@@ -65,13 +65,13 @@ ns.CreateAuraTimer = function(self, elapsed)
 end
 
 ns.PostUpdateIcon = function(icons, unit, icon, index, offset)
-    if (not icon.remaining) then
+    if (not icon.remaining and not config.show.disableCooldown) then
         return
     end
 
     icon:SetAlpha(1)
 
-    if (ns.config.units.target.colorPlayerDebuffsOnly) then
+    if (config.units.target.colorPlayerDebuffsOnly) then
         if (unit == 'target') then 
             if (icon.debuff) then
                 if (not IsMine(icon.owner)) then
