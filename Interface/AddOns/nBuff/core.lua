@@ -14,21 +14,23 @@ local origSecondsToTimeAbbrev = _G.SecondsToTimeAbbrev
 local function SecondsToTimeAbbrevHook(seconds)
     origSecondsToTimeAbbrev(seconds)
 
-	local tempTime
-	if (seconds >= 86400) then
-		tempTime = ceil(seconds / 86400)
-		return CUSTOM_DAY_ONELETTER_ABBR, tempTime
-	end
-	if (seconds >= 3600) then
-		tempTime = ceil(seconds / 3600)
-		return CUSTOM_HOUR_ONELETTER_ABBR, tempTime
-	end
-	if (seconds >= 60) then
-		tempTime = ceil(seconds / 60)
-		return CUSTOM_MINUTE_ONELETTER_ABBR, tempTime
-	end
+    local tempTime
+    if (seconds >= 86400) then
+        tempTime = ceil(seconds / 86400)
+        return CUSTOM_DAY_ONELETTER_ABBR, tempTime
+    end
 
-	return CUSTOM_SECOND_ONELETTER_ABBR, seconds
+    if (seconds >= 3600) then
+        tempTime = ceil(seconds / 3600)
+        return CUSTOM_HOUR_ONELETTER_ABBR, tempTime
+    end
+
+    if (seconds >= 60) then
+        tempTime = ceil(seconds / 60)
+        return CUSTOM_MINUTE_ONELETTER_ABBR, tempTime
+    end
+
+    return CUSTOM_SECOND_ONELETTER_ABBR, seconds
 end
 SecondsToTimeAbbrev = SecondsToTimeAbbrevHook
 
@@ -63,7 +65,7 @@ ConsolidatedBuffsTooltip:SetScale(1.2)
 local function UpdateFirstButton(self)
     if (self and self:IsShown()) then
         self:ClearAllPoints()
-        
+
         if (UnitHasVehicleUI('player')) then
             self:SetPoint('TOPRIGHT', TempEnchant1)
             return
@@ -136,7 +138,6 @@ end)
 
 hooksecurefunc('DebuffButton_UpdateAnchors', function(self, index)
     local numBuffs = BUFF_ACTUAL_DISPLAY + BuffFrame.numEnchants
-
     if (BuffFrame.numConsolidated > 0) then
         numBuffs = numBuffs - BuffFrame.numConsolidated -- + 1
     end
@@ -153,7 +154,6 @@ hooksecurefunc('DebuffButton_UpdateAnchors', function(self, index)
 
     local buff = _G[self..index]
     buff:ClearAllPoints()
-
     if (index == 1) then
         buff:SetPoint('TOP', TempEnchant1, 'BOTTOM', 0, rowSpacing)
     elseif (index >= 2 and mod(index, cfg.buffPerRow) == 1) then
