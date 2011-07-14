@@ -4,3 +4,5 @@
 
 config.lua
 core.lua
+fade.lua
+health.lua
