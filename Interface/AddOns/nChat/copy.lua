@@ -1,4 +1,7 @@
 
+local _, nChat = ...
+local cfg = nChat.Config
+
 local select = select
 local tostring = tostring
 local concat = table.concat

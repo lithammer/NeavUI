@@ -11,7 +11,6 @@ for i = 1, NUM_CHAT_WINDOWS do
                 if (text:sub(1, 4) == '/tt ') then
                     local unitname, realm
                     unitname, realm = UnitName('target')
-
                     if (unitname) then 
                         unitname = gsub(unitname, ' ', '') 
                     end

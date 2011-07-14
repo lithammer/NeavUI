@@ -1,8 +1,4 @@
 
-if (not nChat.enableURLCopy) then
-    return
-end
-
 local _G = _G
 local gsub = string.gsub
 local find = string.find
@@ -11,7 +7,7 @@ local urlStyle = '|cffff00ff|Hurl:%1|h%1|h|r'
 local urlPatterns = {
     '(http://%S+)',                 -- http://xxx.com
     '(www%.%S+)',                   -- www.xxx.com/site/index.php
-    '(%d+%.%d+%.%d+%.%d+:?%d*)',    -- 192.168.1.1 and 192.168.1.1:1110
+    '(%d+%.%d+%.%d+%.%d+:?%d*)',    -- 192.168.1.1 / 192.168.1.1:1110
 }
 
 local messageTypes = {

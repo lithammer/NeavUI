@@ -1,21 +1,12 @@
 
-CHAT_FRAME_TAB_SELECTED_MOUSEOVER_ALPHA = 1
-CHAT_FRAME_TAB_SELECTED_NOMOUSE_ALPHA = 0           -- set to 0 if u want to hide the tabs when no mouse is over them or the chat
-    
-CHAT_FRAME_TAB_NORMAL_MOUSEOVER_ALPHA = 0.5
-CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA = 0             -- set to 0 if u want to hide the tabs when no mouse is over them or the chat
+local _, nChat = ...
 
-CHAT_FRAME_FADE_OUT_TIME = 0.25
-CHAT_FRAME_FADE_TIME = 0.1
-
-nChat = {
-    enableURLCopy = true, 
-    enableHyperlinkTooltip = true, 
-
-    chatOutline = false,                            -- A outline font for all chatframes
+nChat.Config = {
+    disableFade = false,
+    chatOutline = false,
 
     enableBottomButton = false, 
-    disableFade = false,
+    enableHyperlinkTooltip = false, 
     enableBorderColoring = true,
 
     tab = {
@@ -26,3 +17,12 @@ nChat = {
         selectedColor = {0, 0.75, 1},
     },
 }
+
+CHAT_FRAME_TAB_SELECTED_MOUSEOVER_ALPHA = 1
+CHAT_FRAME_TAB_SELECTED_NOMOUSE_ALPHA = 0
+
+CHAT_FRAME_TAB_NORMAL_MOUSEOVER_ALPHA = 0.5
+CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA = 0
+
+CHAT_FRAME_FADE_OUT_TIME = 0.25
+CHAT_FRAME_FADE_TIME = 0.1

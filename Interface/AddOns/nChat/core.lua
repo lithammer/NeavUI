@@ -1,9 +1,14 @@
 
-local _G, type, select = _G, type, select
-local unpack = unpack
-local gsub = string.gsub
+local _, nChat = ...
+local cfg = nChat.Config
 
-    -- more choosable fontsizes
+local _G = _G
+local type = type
+local select = select
+local unpack = unpack
+
+local gsub = string.gsub
+local format = string.format
 
 CHAT_FONT_HEIGHTS = {
     [1] = 8,
@@ -20,7 +25,7 @@ CHAT_FONT_HEIGHTS = {
     [12] = 19,
     [13] = 20,
 }
-
+--[[
 CHAT_FLAG_AFK = '[AFK] '
 CHAT_FLAG_DND = '[DND] '
 CHAT_FLAG_GM = '[GM] '
@@ -48,11 +53,7 @@ CHAT_RAID_LEADER_GET = '[|Hchannel:raid|hL|h] %s:\32'
 
 CHAT_BATTLEGROUND_GET = '[|Hchannel:Battleground|hBG|h] %s:\32'
 CHAT_BATTLEGROUND_LEADER_GET = '[|Hchannel:Battleground|hBL|h] %s:\32'
-
-CHAT_YOU_CHANGED_NOTICE_BN = '# |Hchannel:%d|h%s|h'
-CHAT_YOU_JOINED_NOTICE_BN = '+ |Hchannel:%d|h%s|h'
-CHAT_YOU_LEFT_NOTICE_BN = '- |Hchannel:%d|h%s|h'
-CHAT_SUSPENDED_NOTICE_BN = '- |Hchannel:%d|h%s|h'
+]]
 
 ChatTypeInfo['CHANNEL'].sticky = 1
 ChatTypeInfo['GUILD'].sticky = 1
@@ -64,20 +65,50 @@ ChatTypeInfo['BATTLEGROUND_LEADER'].sticky = 1
 ChatTypeInfo['WHISPER'].sticky = 0
 ChatTypeInfo['BN_WHISPER'].sticky = 0
 
+local channelFormat 
+do
+    local a, b = '.*%[(.*)%].*', '%%[%1%%]'
+    channelFormat = {
+        [1] = {gsub(CHAT_BATTLEGROUND_GET, a, b), '[BG]'},
+        [2] = {gsub(CHAT_BATTLEGROUND_LEADER_GET, a, b), '[BGL]'},
+
+        [3] = {gsub(CHAT_GUILD_GET, a, b), '[G]'},
+        [4] = {gsub(CHAT_OFFICER_GET, a, b), '[O]'},
+        
+        [5] = {gsub(CHAT_PARTY_GET, a, b), '[P]'},
+        [6] = {gsub(CHAT_PARTY_LEADER_GET, a, b), '[PL]'},
+        [7] = {gsub(CHAT_PARTY_GUIDE_GET, a, b), '[PL]'},
+
+        [8] = {gsub(CHAT_RAID_GET, a, b), '[R]'},
+        [9] = {gsub(CHAT_RAID_LEADER_GET, a, b), '[RL]'},
+        [10] = {gsub(CHAT_RAID_WARNING_GET, a, b), '[RW]'},
+
+        [11] = {gsub(CHAT_FLAG_AFK, a, b), '[AFK] '},
+        [12] = {gsub(CHAT_FLAG_DND, a, b), '[DND] '},
+        [13] = {gsub(CHAT_FLAG_GM, a, b), '[GM] '},
+    }
+end
+
 local AddMessage = ChatFrame1.AddMessage
-
-function FCF_AddMessage(self, text, ...)
+local function FCF_AddMessage(self, text, ...)
     if (type(text) == 'string') then
-        -- bnet names-
-        text = text:gsub('(|HBNplayer.-|h)%[(.-)%]|h', '%1%2|h')
-        text = text:gsub('(|Hplayer.-|h)%[(.-)%]|h', '%1%2|h')
-
-        text = text:gsub('%[(%d+)%. (.+)%].+(|Hplayer.+)', '[|Hchannel:channel|h%1|h] %3') 
+        text = gsub(text, '(|HBNplayer.-|h)%[(.-)%]|h', '%1%2|h')
+        text = gsub(text, '(|Hplayer.-|h)%[(.-)%]|h', '%1%2|h')
+        text = gsub(text, '%[(%d0?)%. (.-)%]', '[%1]') 
+        
+        for i = 1, #channelFormat  do
+            text = gsub(text, channelFormat[i][1], channelFormat[i][2])
+        end
     end
+
     return AddMessage(self, text, ...)
 end
 
-    -- modify the editbox
+    -- Modify the editbox
+    
+for k = 6, 11 do
+   select(k, ChatFrame1EditBox:GetRegions()):SetTexture(nil)
+end
 
 ChatFrame1EditBox:SetAltArrowKeyMode(false)
 ChatFrame1EditBox:ClearAllPoints()
@@ -94,20 +125,14 @@ ChatFrame1EditBox:SetBackdrop({
 })
 
 ChatFrame1EditBox:SetBackdropColor(0, 0, 0, 0.5)
-
-for k = 6, 11 do
-   select(k, ChatFrame1EditBox:GetRegions()):SetTexture(nil)
-end
-
 ChatFrame1EditBox:CreateBeautyBorder(11)
 ChatFrame1EditBox:SetBeautyBorderPadding(-2, -1, -2, -1, -2, -1, -2, -1)
 
-if (nChat.enableBorderColoring) then
-    ChatFrame1EditBox:SetBeautyBorderTexture('Interface\\AddOns\\!Beautycase\\media\\textureNormalWhite')
+if (cfg.enableBorderColoring) then
+    ChatFrame1EditBox:SetBeautyBorderTexture('white')
 
     hooksecurefunc('ChatEdit_UpdateHeader', function(editBox)
         local type = editBox:GetAttribute('chatType')
-
         if (not type) then
             return
         end
@@ -117,7 +142,7 @@ if (nChat.enableBorderColoring) then
     end)
 end
 
-    -- hide the menu and friend button
+    -- Hide the menu and friend button
 
 FriendsMicroButton:SetAlpha(0)
 FriendsMicroButton:EnableMouse(false)
@@ -126,7 +151,7 @@ FriendsMicroButton:UnregisterAllEvents()
 ChatFrameMenuButton:SetAlpha(0)
 ChatFrameMenuButton:EnableMouse(false)
 
-    -- tab text colors for the tabs
+    -- Tab text colors for the tabs
 
 hooksecurefunc('FCFTab_UpdateColors', function(self, selected)
     if (selected) then
@@ -136,7 +161,7 @@ hooksecurefunc('FCFTab_UpdateColors', function(self, selected)
     end
 end)
 
-    -- tab text fadeout
+    -- Tab text fadeout
 
 local origFCF_FadeOutChatFrame = _G.FCF_FadeOutChatFrame
 local function FCF_FadeOutChatFrameHook(chatFrame)
@@ -156,7 +181,7 @@ local function FCF_FadeOutChatFrameHook(chatFrame)
 end
 FCF_FadeOutChatFrame = FCF_FadeOutChatFrameHook
 
-    -- improved mousewheel scrolling
+    -- Improve mousewheel scrolling
 
 hooksecurefunc('FloatingChatFrame_OnMouseScroll', function(self, direction)
     if (direction > 0) then
@@ -175,26 +200,25 @@ hooksecurefunc('FloatingChatFrame_OnMouseScroll', function(self, direction)
         end
     end
 
-    if (nChat.enableBottomButton) then
+    if (cfg.enableBottomButton) then
         local buttonBottom = _G[self:GetName() .. 'ButtonFrameBottomButton']
         if (self:AtBottom()) then
-            buttonBottom:SetAlpha(0)
-            buttonBottom:EnableMouse(false)
+            buttonBottom:Hide()
         else
+            buttonBottom:Show()
             buttonBottom:SetAlpha(0.7)
-            buttonBottom:EnableMouse(true)
         end
     end
 end)
 
-    -- reposit toast frame (the popup when a bnet friend login)
+    -- Reposit toast frame (the popup when a bnet friend login)
 
 BNToastFrame:HookScript('OnShow', function(self)
     BNToastFrame:ClearAllPoints()
     BNToastFrame:SetPoint('BOTTOMLEFT', ChatFrame1EditBox, 'TOPLEFT', 0, 15)
 end)
 
-    -- modify the chat tabs
+    -- Modify the chat tabs
 
 function SkinTab(self)
     local chat = _G[self]
@@ -209,17 +233,16 @@ function SkinTab(self)
     tabRight:SetTexture(nil)
 
     local tabText = _G[self..'TabText']
-
-    if (nChat.tab.fontOutline) then
-        tabText:SetFont('Fonts\\ARIALN.ttf', nChat.tab.fontSize, 'THINOUTLINE')
-        tabText:SetShadowOffset(0, 0)
-    else
-        tabText:SetFont('Fonts\\ARIALN.ttf', nChat.tab.fontSize)
-        tabText:SetShadowOffset(1, -1)
-    end
-
     tabText:SetJustifyH('CENTER')
     tabText:SetWidth(60)
+
+    if (cfg.tab.fontOutline) then
+        tabText:SetFont('Fonts\\ARIALN.ttf', cfg.tab.fontSize, 'THINOUTLINE')
+        tabText:SetShadowOffset(0, 0)
+    else
+        tabText:SetFont('Fonts\\ARIALN.ttf', cfg.tab.fontSize)
+        tabText:SetShadowOffset(1, -1)
+    end
 
     local a1, a2, a3, a4, a5 = tabText:GetPoint()
     tabText:SetPoint(a1, a2, a3, a4, 1)
@@ -245,9 +268,9 @@ function SkinTab(self)
     local tabGlow = _G[self..'TabGlow']
     tabGlow:SetTexture(nil)
 
-    local s1, s2, s3 = unpack(nChat.tab.specialColor)
-    local e1, e2, e3 = unpack(nChat.tab.selectedColor)
-    local n1, n2, n3 = unpack(nChat.tab.normalColor)
+    local s1, s2, s3 = unpack(cfg.tab.specialColor)
+    local e1, e2, e3 = unpack(cfg.tab.selectedColor)
+    local n1, n2, n3 = unpack(cfg.tab.normalColor)
 
     hooksecurefunc(tabGlow, 'Show', function()
         tabText:SetTextColor(s1, s2, s3, CHAT_FRAME_TAB_NORMAL_MOUSEOVER_ALPHA)
@@ -258,7 +281,6 @@ function SkinTab(self)
     end)
 
     local tab = _G[self..'Tab']
-
     tab:SetScript('OnEnter', function()
         tabText:SetTextColor(s1, s2, s3, tabText:GetAlpha())
     end)
@@ -277,8 +299,6 @@ function SkinTab(self)
 
         tabText:SetTextColor(r, g, b)
     end)
-
-        -- solve the problem with false tab coloring
 
     hooksecurefunc(tab, 'Show', function()
         if (not tab.wasShown) then
@@ -304,21 +324,21 @@ function SkinTab(self)
     chat.hasSkinnedTabs = true
 end
 
-    -- modify the chat
+    -- Modify the chat
 
 local function ModChat(self)
     local chat = _G[self]
 
-    if (not nChat.chatOutline) then
+    if (not cfg.chatOutline) then
         chat:SetShadowOffset(1, -1)
     end
 
-    if (nChat.disableFade) then
+    if (cfg.disableFade) then
         chat:SetFading(false)
     end
 
     local font, fontsize, fontflags = chat:GetFont()
-    chat:SetFont(font, fontsize, nChat.chatOutline and 'THINOUTLINE' or fontflags)
+    chat:SetFont(font, fontsize, cfg.chatOutline and 'THINOUTLINE' or fontflags)
     chat:SetClampedToScreen(false)
 
     chat:SetClampRectInsets(0, 0, 0, 0)
@@ -341,16 +361,15 @@ local function ModChat(self)
     buttonBottom:SetAlpha(0)
     buttonBottom:EnableMouse(false)
 
-    if (nChat.enableBottomButton) then
+    if (cfg.enableBottomButton) then
         buttonBottom:ClearAllPoints()
         buttonBottom:SetPoint('BOTTOMLEFT', chat, -1, -3)
         buttonBottom:HookScript('OnClick', function(self)
-            self:SetAlpha(0)
-            self:EnableMouse(false)
+            self:Hide()
         end)
     end
 
-        -- hide some pesky textures
+        -- Hide some pesky textures
 
     for _, texture in pairs({
         'ButtonFrameBackground',
@@ -426,14 +445,14 @@ hooksecurefunc('FCF_OpenTemporaryWindow', function()
     end
 end)
 
-    -- skin the normal chat windows
+    -- Skin the normal chat windows
 
 for i = 1, NUM_CHAT_WINDOWS do
     ModChat('ChatFrame'..i)
     SkinTab('ChatFrame'..i)
 end
 
-    -- new position for the minimize button
+    -- New position for the minimize button
 
 for i = 2, NUM_CHAT_WINDOWS do
     local chatMinimize = _G['ChatFrame'..i..'ButtonFrameMinimizeButton']
@@ -441,7 +460,7 @@ for i = 2, NUM_CHAT_WINDOWS do
     chatMinimize:EnableMouse(0)
 end
 
-    -- chat menu, just a middle click on the chatframe 1 tab
+    -- Chat menu, just a middle click on the chatframe 1 tab
 
 hooksecurefunc('ChatFrameMenu_UpdateAnchorPoint', function()
     if (FCF_GetButtonSide(DEFAULT_CHAT_FRAME) == 'right') then
@@ -466,7 +485,7 @@ ChatFrame1Tab:HookScript('OnClick', function(self, button)
     end
 end)
 
-    -- modify the gm chatframe and sound notification on incoming whisper
+    -- Modify the gm chatframe and add a sound notification on incoming whispers
 
 local f = CreateFrame('Frame')
 f:RegisterEvent('ADDON_LOADED')

@@ -1,8 +1,11 @@
 
+local _, nChat = ...
+local cfg = nChat.Config
+
     -- Mouseover Itemlinks in the chat
     -- Code provided by the Tukui crew (Tukui.org)
 
-if (not nChat.enableHyperlinkTooltip) then 
+if (not cfg.enableHyperlinkTooltip) then 
     return 
 end
 
