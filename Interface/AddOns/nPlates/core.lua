@@ -1,21 +1,13 @@
 
-    -- Just some experimental config stuff
+local _, nPlates = ...
+local cfg = nPlates.Config
 
-local enableTankMode = true
-local noThreatColor = {0, 1, 0}
-local colorNameWithThreat = true
-
-local showEliteBorder = true
-local showTotemIcon = true
-local abbrevLongNames = false
-
-    -- local stuff
+    -- Local stuff
 
 local len = string.len
 local find = string.find
 local gsub = string.gsub
 
-local ton = tonumber
 local select = select
 local tonumber = tonumber
 
@@ -24,11 +16,13 @@ local UnitCastingInfo = UnitCastingInfo
 local UnitChannelInfo = UnitChannelInfo
 
 local borderColor = {0.4, 0.4, 0.4}
+local noThreatColor = {0, 1, 0}
+
 local nameplateFlashTexture = 'Interface\\TargetingFrame\\UI-TargetingFrame-Flash'
 
 local glowTexture = 'Interface\\AddOns\\nPlates\\media\\textureNewGlow'
 local overlayTexture = 'Interface\\AddOns\\nPlates\\media\\textureOverlay'
-local whiteOverlay = 'Interface\\AddOns\\!Beautycase\\media\\textureNormalWhite'
+local whiteOverlay = 'Interface\\AddOns\\nPlates\\media\\textureIconOverlay'
 
 local total = -1
 local namePlate, frames
@@ -48,6 +42,8 @@ f:RegisterEvent('PLAYER_REGEN_DISABLED')
 f:RegisterEvent('PLAYER_CONTROL_LOST')
 f:RegisterEvent('PLAYER_CONTROL_GAINED')
 --]]
+
+    -- Totem data and functions
 
 local function TotemName(SpellID)
     local name = GetSpellInfo(SpellID)
@@ -139,14 +135,14 @@ local function IsTarget(self)
     end
 end
 
-local function CanHaveThreat(red, green, blue)
-    if (red < .01 and blue < .01 and green > .99) then 
+local function CanHaveThreat(r, g, b)
+    if (r < .01 and b < .01 and g > .99) then 
         return false
-    elseif (red < .01 and blue > .99 and green < .01) then 
+    elseif (r < .01 and b > .99 and g < .01) then 
         return false
-    elseif (red > .99 and blue < .01 and green > .99) then 
+    elseif (r > .99 and b < .01 and g > .99) then 
         return false
-    elseif (red > .99 and blue < .01 and green < .01) then 
+    elseif (r > .99 and b < .01 and g < .01) then 
         return true
     else 
         return true
@@ -189,12 +185,12 @@ local function UpdateThreatColor(self)
     local lowThreat = unitInfight and playerInfight
     local isEnemy = GetUnitReaction(self.Health:GetStatusBarColor())
 
-    if (lowThreat and not self.Glow:IsVisible() and isEnemy and enableTankMode) then
+    if (lowThreat and not self.Glow:IsVisible() and isEnemy and cfg.enableTankMode) then
         r, g, b = unpack(noThreatColor)
         self.NewGlow:Show()
         self.NewGlow:SetVertexColor(r, g, b)
 
-        if (colorNameWithThreat) then
+        if (cfg.colorNameWithThreat) then
             self.NewName:SetTextColor(r * 0.7, g * 0.7, b * 0.7)
         end
     elseif (self.Glow:IsVisible()) then
@@ -203,14 +199,14 @@ local function UpdateThreatColor(self)
         r, g, b = self.Glow:GetVertexColor()
         self.NewGlow:SetVertexColor(r, g, b)
 
-        if (colorNameWithThreat) then
+        if (cfg.colorNameWithThreat) then
             self.NewName:SetTextColor(r, g, b)
         end
     else
         if (self.NewGlow:IsVisible()) then
             self.NewGlow:Hide()
 
-            if (colorNameWithThreat) then
+            if (cfg.colorNameWithThreat) then
                 self.NewName:SetTextColor(1, 1, 1)
             end
         end
@@ -239,17 +235,26 @@ local function UpdateHealthColor(self)
     end
 end
 
-local function UpdateCastbarTime(self, curValue)
+local function UpdateCastbarValue(self, curValue)
     local _, maxValue = self:GetMinMaxValues()
-    local castName = UnitCastingInfo('target') or UnitChannelInfo('target')
+    local cast = UnitCastingInfo('target')
+    local channel = UnitChannelInfo('target')
 
-    if (self.channeling) then
+    if (self.Shield:IsShown()) then
+        self.Overlay:SetVertexColor(1, 0, 1, 1)
+        self.Overlay:Show()
+    else
+        local r, g, b = unpack(borderColor)
+        self.Overlay:SetVertexColor(r, g, b, 1 )
+    end
+
+    if (channel) then
         self.CastTime:SetFormattedText('%.1fs', curValue)
     else
         self.CastTime:SetFormattedText('%.1fs', maxValue - curValue)
     end
 
-    self.Name:SetText(castName)
+    self.Name:SetText(cast or channel)
 end
 
 local function UpdateNameL(self)
@@ -258,7 +263,7 @@ local function UpdateNameL(self)
     local levelColor = RGBHex(self.Level:GetTextColor())
     local eliteTexture = self.EliteIcon:IsVisible()
 
-    if (abbrevLongNames) then
+    if (cfg.abbrevLongNames) then
         newName = (len(newName) > 20) and gsub(newName, '%s?(.[\128-\191]*)%S+%s', '%1. ') or newName
     end
 
@@ -285,7 +290,7 @@ local function UpdateEliteTexture(self)
     if (self.BossIcon:IsVisible() or self.EliteIcon:IsVisible()) then
         self.Overlay:SetGradientAlpha('HORIZONTAL', r, g, b, 1, 1, 1, 0, 1)
     else
-        self.Overlay:SetVertexColor(r, g, b)
+        self.Overlay:SetVertexColor(r, g, b, 1)
     end
 end
 
@@ -294,11 +299,14 @@ local function UpdatePlate(self)
         UpdateNameL(self)
     end
 
-    if (showEliteBorder) then
+    if (cfg.showEliteBorder) then
         UpdateEliteTexture(self)
+    else
+        local r, g, b = unpack(borderColor)
+        self.Overlay:SetVertexColor(r, g, b, 1)
     end
 
-    if (showTotemIcon) then
+    if (cfg.showTotemIcon) then
         UpdateTotemIcon(self)
     end
 
@@ -317,48 +325,17 @@ local function UpdatePlate(self)
     self.Castbar.IconOverlay:SetVertexColor(r, g, b)
 end
 
-local function ColorCastBar(self, shield)
-    if (shield) then
-        self.Overlay:SetVertexColor(1, 0, 1)
-        self.CastTime:SetTextColor(1, 0, 1)
-    else
-        local r, g, b = unpack(borderColor)
-        self.Overlay:SetVertexColor(r, g, b)
-        self.CastTime:SetTextColor(1, 1, 1)
-    end
-end
-
-local function UpdateCastbarValue(self, curValue)
-    UpdateCastbarTime(self, curValue)
-end
-
-local function UpdateCastbar(self)
-    self.channeling = UnitChannelInfo('target')
-    ColorCastBar(self, self.Shield:IsVisible())
-end
-
-local function UpdateCastbarEvent(self, event, unit)
-    if (unit == 'target') then
-        if (self:IsVisible()) then
-            ColorCastBar(self, event == 'UNIT_SPELLCAST_NOT_INTERRUPTIBLE')
-        end
-    end
-end
-
 local function SkinPlate(self)
     self.Health, self.Castbar = self:GetChildren()
     _, self.Castbar.Overlay, self.Castbar.Shield, self.Castbar.Icon = self.Castbar:GetRegions()
     self.Glow, self.Overlay, self.Highlight, self.Name, self.Level, self.BossIcon, self.RaidIcon, self.EliteIcon = self:GetRegions()
 
-        -- Hide all unwanted texture
+        -- Hide some nameplate objects
 
     self.Glow:SetTexCoord(0, 0, 0, 0)
     self.BossIcon:SetTexCoord(0, 0, 0, 0)
     self.EliteIcon:SetTexCoord(0, 0, 0, 0)
-
     self.Castbar.Shield:SetTexCoord(0, 0, 0, 0)
-
-        -- Hide the font strings
 
     self.Name:SetWidth(0.001)
     self.Level:SetWidth(0.0001)
@@ -408,7 +385,6 @@ local function SkinPlate(self)
         self.NewGlow = self.Health:CreateTexture(nil, 'BACKGROUND')
         self.NewGlow:SetTexture(glowTexture)
         self.NewGlow:SetAllPoints(self.Overlay)
-        --self.NewGlow:SetBlendMode('ADD')
         self.NewGlow:Hide()
     end
 
@@ -424,12 +400,7 @@ local function SkinPlate(self)
     self.Castbar:SetPoint('TOPRIGHT', self.Health, 'BOTTOMRIGHT', 0, -9)
     self.Castbar:SetPoint('BOTTOMLEFT', self.Health, 'BOTTOMLEFT', 0, -20)
 
-    self.Castbar:HookScript('OnShow', UpdateCastbar)
     self.Castbar:HookScript('OnValueChanged', UpdateCastbarValue)
-
-    self.Castbar:RegisterEvent('UNIT_SPELLCAST_INTERRUPTIBLE')
-    self.Castbar:RegisterEvent('UNIT_SPELLCAST_NOT_INTERRUPTIBLE')
-    self.Castbar:HookScript('OnEvent', UpdateCastbarEvent)
 
     self.Castbar.Overlay:SetTexCoord(0, 1, 0, 1)
     self.Castbar.Overlay:SetDrawLayer('BORDER')
@@ -437,7 +408,7 @@ local function SkinPlate(self)
     self.Castbar.Overlay:ClearAllPoints()
     self.Castbar.Overlay:SetPoint('TOPRIGHT', self.Castbar, 35.66666667, 5.66666667)
     self.Castbar.Overlay:SetPoint('BOTTOMLEFT', self.Castbar, -36.66666667, -5.66666667)
-
+    
         -- Castbar casttime font string
 
     if (not self.Castbar.CastTime) then   
