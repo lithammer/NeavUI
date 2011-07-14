@@ -87,6 +87,14 @@ local function UpdateFirstButton(self)
     end
 end
 
+local function CheckFirstButton()
+    if (BuffButton1) then
+        if (not BuffButton1:GetParent() == ConsolidatedBuffsContainer) then
+            UpdateFirstButton(BuffButton1)
+        end
+    end
+end
+
 hooksecurefunc('BuffFrame_UpdatePositions', function()
     if (CONSOLIDATED_BUFF_ROW_HEIGHT ~= 26) then
         CONSOLIDATED_BUFF_ROW_HEIGHT = 26
@@ -163,25 +171,17 @@ hooksecurefunc('DebuffButton_UpdateAnchors', function(self, index)
     end
 end)
 
-local function UpdateFirstButton()
-    if (BuffButton1) then
-        if (not BuffButton1:GetParent() == ConsolidatedBuffsContainer) then
-            UpdateFirstButton(BuffButton1)
-        end
-    end
-end
-
 for i = 1, NUM_TEMP_ENCHANT_FRAMES do
     local button = _G['TempEnchant'..i]
     button:SetScale(cfg.buffScale)
     button:SetSize(cfg.buffSize, cfg.buffSize)
 
     button:SetScript('OnShow', function()
-        UpdateFirstButton()
+        CheckFirstButton()
     end)
 
     button:SetScript('OnHide', function()
-        UpdateFirstButton()
+        CheckFirstButton()
     end)
 
     local icon = _G['TempEnchant'..i..'Icon']
