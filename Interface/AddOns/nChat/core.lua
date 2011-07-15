@@ -358,15 +358,17 @@ local function ModChat(self)
     buttonDown:EnableMouse(false)
 
     local buttonBottom = _G[self..'ButtonFrameBottomButton']
-    buttonBottom:SetAlpha(0)
-    buttonBottom:EnableMouse(false)
 
     if (cfg.enableBottomButton) then
+        buttonBottom:Hide()
         buttonBottom:ClearAllPoints()
         buttonBottom:SetPoint('BOTTOMLEFT', chat, -1, -3)
         buttonBottom:HookScript('OnClick', function(self)
             self:Hide()
         end)
+    else
+        buttonBottom:SetAlpha(0)
+        buttonBottom:EnableMouse(false)
     end
 
         -- Hide some pesky textures
