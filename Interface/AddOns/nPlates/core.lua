@@ -32,9 +32,11 @@ local f = CreateFrame('Frame', nil, UIParent)
 f.elapsed = 0  
 f.elapsedLong = 0  
 
---[[
--- f:RegisterEvent('UNIT_TARGET')
+
 f:RegisterEvent('PLAYER_TARGET_CHANGED')
+
+--[[
+f:RegisterEvent('UNIT_TARGET')
 f:RegisterEvent('UNIT_THREAT_SITUATION_UPDATE')
 f:RegisterEvent('UNIT_THREAT_LIST_UPDATE')
 f:RegisterEvent('PLAYER_REGEN_ENABLED')
@@ -259,29 +261,25 @@ end
 
 local function UpdateNameL(self)
     local newName = self.Name:GetText()
-    local levelText = self.Level:GetText()
-    local levelColor = RGBHex(self.Level:GetTextColor())
-    local eliteTexture = self.EliteIcon:IsVisible()
-
     if (cfg.abbrevLongNames) then
         newName = (len(newName) > 20) and gsub(newName, '%s?(.[\128-\191]*)%S+%s', '%1. ') or newName
     end
-
+    
     self.NewName:SetTextColor(1, 1, 1)
-    if (self.BossIcon:IsVisible()) then
-        self.NewName:SetText('|cffff0000??|r '..newName)
-    elseif (eliteTexture) then
-        self.NewName:SetText('|cffffff00+|r'..levelColor..levelText..'|r '..newName)
-    else
-        self.NewName:SetText(levelColor..levelText..'|r '..newName)
-    end	
-end
+    if (cfg.showLevel) then
+        local levelText = self.Level:GetText()
+        local levelColor = RGBHex(self.Level:GetTextColor())
+        local eliteTexture = self.EliteIcon:IsVisible()
 
-local function UpdateTargetBorder(self)
-    if (IsTarget(self)) then
-        self.Health:SetBeautyShadowColor(1, 1, 1)
+        if (self.BossIcon:IsVisible()) then
+            self.NewName:SetText('|cffff0000??|r '..newName)
+        elseif (eliteTexture) then
+            self.NewName:SetText('|cffffff00+|r'..levelColor..levelText..'|r '..newName)
+        else
+            self.NewName:SetText(levelColor..levelText..'|r '..newName)
+        end
     else
-        self.Health:SetBeautyShadowColor(0, 0, 0)
+        self.NewName:SetText(newName)
     end
 end
 
@@ -373,7 +371,7 @@ local function SkinPlate(self)
     end
 
     if (not self.NewName) then
-        self.NewName = self:CreateFontString(nil, 'OVERLAY')
+        self.NewName = self:CreateFontString(nil, 'ARTWORK')
         self.NewName:SetFont('Fonts\\ARIALN.ttf', 11, 'THINOUTLINE')
         self.NewName:SetShadowOffset(0, 0)
         -- self.NewName:SetPoint('CENTER', self.Health, 'CENTER', 0, 9)
@@ -468,16 +466,35 @@ local function SkinPlate(self)
     self:SetScript('OnHide', function(self)
         self.Highlight:Hide()
     end)
-
+    
     f:HookScript('OnUpdate', function(_, elapsed)
         if (not self:IsVisible()) then
             return
         end
 
         f.elapsed = f.elapsed + elapsed
-        if (f.elapsed >= 0.25) then
+        if (f.elapsed >= 0.1) then
             if ((CanHaveThreat(self.Health:GetStatusBarColor()) and InCombatLockdown()) or self.NewGlow:IsShown()) then
                 UpdateThreatColor(self)
+            end
+
+            if (cfg.showTargetBorder) then
+                if (IsTarget(self)) then
+                    if (not self.TargetHighlight) then
+                        self.TargetHighlight = self.Health:CreateTexture(nil, 'ARTWORK')
+                        self.TargetHighlight:SetAllPoints(self.Overlay)
+                        self.TargetHighlight:SetTexture(overlayTexture)
+                        self.TargetHighlight:Hide()
+                    end
+
+                    if (self.TargetHighlight and not self.TargetHighlight:IsVisible()) then
+                        self.TargetHighlight:Show()
+                    end
+                else
+                    if (self.TargetHighlight and self.TargetHighlight:IsVisible()) then
+                        self.TargetHighlight:Hide()
+                    end
+                end
             end
 
             -- UpdateTargetBorder(self)
