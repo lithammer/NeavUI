@@ -6,7 +6,7 @@ local select = select
 local tostring = tostring
 local concat = table.concat
 
-    -- first, we create the copy frame
+    -- First, we create the copy frame
 
 local f = CreateFrame('Frame', nil, ChatFrame1)
 f:SetHeight(220)
@@ -48,10 +48,9 @@ f.ScrollArea:SetScrollChild(f.EditBox)
 f.CloseButton = CreateFrame('Button', nil, f, 'UIPanelCloseButton')
 f.CloseButton:SetPoint('TOPRIGHT', f, 'TOPRIGHT', 0, -1)
 
-    -- the functions where we get the text of our chatframe
+    -- The functions where we get the text of our chatframe
 
 local lines = {}
-
 local function GetChatLines(...)
     local count = 1
 
@@ -87,7 +86,7 @@ local function copyChat(self, chatTab)
     end
 end
 
-    -- add a copychat-option to the dropdown menu of our chattabs
+    -- Add a copychat-option to the dropdown menu of our chattabs
 
 local info = {
     text = 'ChatCopy',

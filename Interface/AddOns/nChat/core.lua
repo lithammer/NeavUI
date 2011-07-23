@@ -10,7 +10,16 @@ local unpack = unpack
 local gsub = string.gsub
 local format = string.format
 
-CHAT_FONT_HEIGHTS = {
+_G.CHAT_FRAME_TAB_SELECTED_MOUSEOVER_ALPHA = 1
+_G.CHAT_FRAME_TAB_SELECTED_NOMOUSE_ALPHA = 0
+
+_G.CHAT_FRAME_TAB_NORMAL_MOUSEOVER_ALPHA = 0.5
+_G.CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA = 0
+
+_G.CHAT_FRAME_FADE_OUT_TIME = 0.25
+_G.CHAT_FRAME_FADE_TIME = 0.1
+
+_G.CHAT_FONT_HEIGHTS = {
     [1] = 8,
     [2] = 9,
     [3] = 10,
@@ -25,46 +34,38 @@ CHAT_FONT_HEIGHTS = {
     [12] = 19,
     [13] = 20,
 }
+
 --[[
-CHAT_FLAG_AFK = '[AFK] '
-CHAT_FLAG_DND = '[DND] '
-CHAT_FLAG_GM = '[GM] '
+_G.CHAT_SAY_GET = '%s:\32'
+_G.CHAT_YELL_GET = '%s:\32'
 
-CHAT_SAY_GET = '%s:\32'
-CHAT_YELL_GET = '%s:\32'
+_G.CHAT_WHISPER_GET = '[from] %s:\32'
+_G.CHAT_WHISPER_INFORM_GET = '[to] %s:\32'
 
-CHAT_WHISPER_GET = '[from] %s:\32'
-CHAT_WHISPER_INFORM_GET = '[to] %s:\32'
+_G.CHAT_BN_WHISPER_GET = '[from] %s:\32'
+_G.CHAT_BN_WHISPER_INFORM_GET = '[to] %s:\32'
+--]]
 
-CHAT_BN_WHISPER_GET = '[from] %s:\32'
-CHAT_BN_WHISPER_INFORM_GET = '[to] %s:\32'
+_G.CHAT_FLAG_AFK = '[AFK] '
+_G.CHAT_FLAG_DND = '[DND] '
+_G.CHAT_FLAG_GM = '[GM] '
 
-CHAT_GUILD_GET = '[|Hchannel:Guild|hG|h] %s:\32'
-CHAT_OFFICER_GET = '[|Hchannel:o|hO|h] %s:\32'
+_G.CHAT_GUILD_GET = '[|Hchannel:Guild|hG|h] %s:\32'
+_G.CHAT_OFFICER_GET = '[|Hchannel:o|hO|h] %s:\32'
 
-CHAT_PARTY_GET = '[|Hchannel:party|hP|h] %s:\32'
-CHAT_PARTY_LEADER_GET = '[|Hchannel:party|hPL|h] %s:\32'
-CHAT_PARTY_GUIDE_GET = '[|Hchannel:party|hDG|h] %s:\32'
-CHAT_MONSTER_PARTY_GET = '[|Hchannel:raid|hR|h] %s:\32'
+_G.CHAT_PARTY_GET = '[|Hchannel:party|hP|h] %s:\32'
+_G.CHAT_PARTY_LEADER_GET = '[|Hchannel:party|hPL|h] %s:\32'
+_G.CHAT_PARTY_GUIDE_GET = '[|Hchannel:party|hDG|h] %s:\32'
+_G.CHAT_MONSTER_PARTY_GET = '[|Hchannel:raid|hR|h] %s:\32'
 
-CHAT_RAID_GET = '[|Hchannel:raid|hR|h] %s:\32'
-CHAT_RAID_WARNING_GET = '[RW!] %s:\32'
-CHAT_RAID_LEADER_GET = '[|Hchannel:raid|hL|h] %s:\32'
+_G.CHAT_RAID_GET = '[|Hchannel:raid|hR|h] %s:\32'
+_G.CHAT_RAID_WARNING_GET = '[RW!] %s:\32'
+_G.CHAT_RAID_LEADER_GET = '[|Hchannel:raid|hL|h] %s:\32'
 
-CHAT_BATTLEGROUND_GET = '[|Hchannel:Battleground|hBG|h] %s:\32'
-CHAT_BATTLEGROUND_LEADER_GET = '[|Hchannel:Battleground|hBL|h] %s:\32'
-]]
+_G.CHAT_BATTLEGROUND_GET = '[|Hchannel:Battleground|hBG|h] %s:\32'
+_G.CHAT_BATTLEGROUND_LEADER_GET = '[|Hchannel:Battleground|hBL|h] %s:\32'
 
-ChatTypeInfo['CHANNEL'].sticky = 1
-ChatTypeInfo['GUILD'].sticky = 1
-ChatTypeInfo['OFFICER'].sticky = 1
-ChatTypeInfo['PARTY'].sticky = 1
-ChatTypeInfo['RAID'].sticky = 1
-ChatTypeInfo['BATTLEGROUND'].sticky = 1
-ChatTypeInfo['BATTLEGROUND_LEADER'].sticky = 1
-ChatTypeInfo['WHISPER'].sticky = 0
-ChatTypeInfo['BN_WHISPER'].sticky = 0
-
+--[[
 local channelFormat 
 do
     local a, b = '.*%[(.*)%].*', '%%[%1%%]'
@@ -88,6 +89,7 @@ do
         [13] = {gsub(CHAT_FLAG_GM, a, b), '[GM] '},
     }
 end
+]]
 
 local AddMessage = ChatFrame1.AddMessage
 local function FCF_AddMessage(self, text, ...)
@@ -96,9 +98,11 @@ local function FCF_AddMessage(self, text, ...)
         text = gsub(text, '(|Hplayer.-|h)%[(.-)%]|h', '%1%2|h')
         text = gsub(text, '%[(%d0?)%. (.-)%]', '[%1]') 
         
+        --[[
         for i = 1, #channelFormat  do
             text = gsub(text, channelFormat[i][1], channelFormat[i][2])
         end
+        --]]
     end
 
     return AddMessage(self, text, ...)
@@ -117,10 +121,7 @@ ChatFrame1EditBox:SetPoint('BOTTOMRIGHT', ChatFrame1, 'TOPRIGHT', 0, 33)
 ChatFrame1EditBox:SetBackdrop({
     bgFile = 'Interface\\Buttons\\WHITE8x8',
     insets = { 
-        left = 3, 
-        right = 3, 
-        top = 2, 
-        bottom = 2 
+        left = 3, right = 3, top = 2, bottom = 2 
     },
 })
 
@@ -223,19 +224,17 @@ end)
 function SkinTab(self)
     local chat = _G[self]
 
-    local tabLeft = _G[self..'TabLeft']
-    tabLeft:SetTexture(nil)
-
-    local tabMiddle = _G[self..'TabMiddle']
-    tabMiddle:SetTexture(nil)
-
-    local tabRight = _G[self..'TabRight']
-    tabRight:SetTexture(nil)
+    local tab = _G[self..'Tab']
+    for i = 1, select('#', tab:GetRegions()) do
+        local texture = select(i, tab:GetRegions())
+        if (texture and texture:GetObjectType() == 'Texture') then
+            texture:SetTexture(nil)
+        end
+    end
 
     local tabText = _G[self..'TabText']
     tabText:SetJustifyH('CENTER')
     tabText:SetWidth(60)
-
     if (cfg.tab.fontOutline) then
         tabText:SetFont('Fonts\\ARIALN.ttf', cfg.tab.fontSize, 'THINOUTLINE')
         tabText:SetShadowOffset(0, 0)
@@ -247,31 +246,11 @@ function SkinTab(self)
     local a1, a2, a3, a4, a5 = tabText:GetPoint()
     tabText:SetPoint(a1, a2, a3, a4, 1)
 
-    local tabSelLeft = _G[self..'TabSelectedLeft']
-    tabSelLeft:SetTexture(nil)
-
-    local tabSelMiddle = _G[self..'TabSelectedMiddle']
-    tabSelMiddle:SetTexture(nil)
-
-    local tabSelRight = _G[self..'TabSelectedRight']
-    tabSelRight:SetTexture(nil)
-
-    local tabHigLeft = _G[self..'TabHighlightLeft']
-    tabHigLeft:SetTexture(nil)
-
-    local tabHigMiddle = _G[self..'TabHighlightMiddle']
-    tabHigMiddle:SetTexture(nil)
-
-    local tabHigRight = _G[self..'TabHighlightRight']
-    tabHigRight:SetTexture(nil)
-
-    local tabGlow = _G[self..'TabGlow']
-    tabGlow:SetTexture(nil)
-
     local s1, s2, s3 = unpack(cfg.tab.specialColor)
     local e1, e2, e3 = unpack(cfg.tab.selectedColor)
     local n1, n2, n3 = unpack(cfg.tab.normalColor)
 
+    local tabGlow = _G[self..'TabGlow']
     hooksecurefunc(tabGlow, 'Show', function()
         tabText:SetTextColor(s1, s2, s3, CHAT_FRAME_TAB_NORMAL_MOUSEOVER_ALPHA)
     end)
@@ -280,15 +259,14 @@ function SkinTab(self)
         tabText:SetTextColor(n1, n2, n3)
     end)
 
-    local tab = _G[self..'Tab']
     tab:SetScript('OnEnter', function()
         tabText:SetTextColor(s1, s2, s3, tabText:GetAlpha())
     end)
 
     tab:SetScript('OnLeave', function()
-        local r, g, b
         local hasNofication = tabGlow:IsShown()
 
+        local r, g, b
         if (_G[self] == SELECTED_CHAT_FRAME and chat.isDocked) then
             r, g, b = e1, e2, e3
         elseif (hasNofication) then
@@ -302,11 +280,15 @@ function SkinTab(self)
 
     hooksecurefunc(tab, 'Show', function()
         if (not tab.wasShown) then
-            local r, g, b
             local hasNofication = tabGlow:IsShown()
+            
+            if (chat:IsMouseOver()) then
+                tab:SetAlpha(CHAT_FRAME_TAB_NORMAL_MOUSEOVER_ALPHA)
+            else
+                tab:SetAlpha(CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA)
+            end
 
-            tab:SetAlpha(CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA)
-
+            local r, g, b
             if (_G[self] == SELECTED_CHAT_FRAME and chat.isDocked) then
                 r, g, b = e1, e2, e3
             elseif (hasNofication) then
@@ -320,11 +302,7 @@ function SkinTab(self)
             tab.wasShown = true
         end
     end)
-
-    chat.hasSkinnedTabs = true
 end
-
-    -- Modify the chat
 
 local function ModChat(self)
     local chat = _G[self]
@@ -337,6 +315,8 @@ local function ModChat(self)
         chat:SetFading(false)
     end
 
+    SkinTab(self)
+
     local font, fontsize, fontflags = chat:GetFont()
     chat:SetFont(font, fontsize, cfg.chatOutline and 'THINOUTLINE' or fontflags)
     chat:SetClampedToScreen(false)
@@ -344,8 +324,8 @@ local function ModChat(self)
     chat:SetClampRectInsets(0, 0, 0, 0)
     chat:SetMaxResize(UIParent:GetWidth(), UIParent:GetHeight())
     chat:SetMinResize(150, 25)
-
-    if (i ~= 2) then
+    
+    if (self ~= 'ChatFrame2') then
         chat.AddMessage = FCF_AddMessage
     end
 
@@ -358,7 +338,6 @@ local function ModChat(self)
     buttonDown:EnableMouse(false)
 
     local buttonBottom = _G[self..'ButtonFrameBottomButton']
-
     if (cfg.enableBottomButton) then
         buttonBottom:Hide()
         buttonBottom:ClearAllPoints()
@@ -370,8 +349,6 @@ local function ModChat(self)
         buttonBottom:SetAlpha(0)
         buttonBottom:EnableMouse(false)
     end
-
-        -- Hide some pesky textures
 
     for _, texture in pairs({
         'ButtonFrameBackground',
@@ -386,81 +363,33 @@ local function ModChat(self)
     }) do
         _G[self..texture]:SetTexture(nil)
     end
-
-    chat.hasModification = true
 end
 
-    -- wtf?
-    
-local NEW_NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS + 1
+local function SetChatStyle()
+    for _, v in pairs(CHAT_FRAMES) do
+        local chat = _G[v]
+        if (chat and not chat.hasModification) then
+            ModChat(chat:GetName())
 
-hooksecurefunc('FCF_OpenTemporaryWindow', function()
-    local chatFrame, chatTab, conversationIcon
-    for _, chatFrameName in pairs(CHAT_FRAMES) do
-        local frame = _G[chatFrameName]
-        if (frame.isTemporary) then
-            if (not frame.inUse and not frame.isDocked) then
-                chatFrame = frame
-                break
+            local convButton = _G[chat:GetName()..'ConversationButton']
+            if (convButton) then
+                convButton:SetAlpha(0)
+                convButton:EnableMouse(false)
             end
-        end
-    end
 
-    if (not chatFrame) then
-        NEW_NUM_CHAT_WINDOWS = NEW_NUM_CHAT_WINDOWS + 1	
-    end
-end)
-
-hooksecurefunc('FCF_OpenTemporaryWindow', function()
-    for i = NUM_CHAT_WINDOWS, NEW_NUM_CHAT_WINDOWS do
-        if (_G['ChatFrame'..i]) then
-            if (_G['ChatFrame'..i]:IsShown()) then
-                if (not _G['ChatFrame'..i].hasModification) then
-                    ModChat('ChatFrame'..i)
-                end
-
-                if (not _G['ChatFrame'..i].hasSkinnedTabs) then
-                    SkinTab('ChatFrame'..i)
-                end
-
-                -- local chatMinimize = _G['ChatFrame'..i..'ButtonFrameMinimizeButton']
-                -- chatMinimize:ClearAllPoints()
-                -- chatMinimize:SetPoint('TOPRIGHT', _G['ChatFrame'..i], 'TOPLEFT', -2, 0)
-
-                local convButton = _G['ChatFrame'..i..'ConversationButton']
-                if (convButton) then
-                    convButton:SetAlpha(0)
-                    convButton:EnableMouse(false)
-                end
+            local chatMinimize = _G[chat:GetName()..'ButtonFrameMinimizeButton']
+            if (chatMinimize) then
+                chatMinimize:SetAlpha(0)
+                chatMinimize:EnableMouse(0)
             end
+
+            chat.hasModification = true
         end
     end
-
-    for i = NUM_CHAT_WINDOWS, NEW_NUM_CHAT_WINDOWS do
-        local chat = _G['ChatFrame'..i]
-
-        local chatMinimize = _G['ChatFrame'..i..'ButtonFrameMinimizeButton']
-        if (chatMinimize) then
-            chatMinimize:SetAlpha(0)
-            chatMinimize:EnableMouse(0)
-        end
-    end
-end)
-
-    -- Skin the normal chat windows
-
-for i = 1, NUM_CHAT_WINDOWS do
-    ModChat('ChatFrame'..i)
-    SkinTab('ChatFrame'..i)
 end
+hooksecurefunc('FCF_OpenTemporaryWindow', SetChatStyle)
 
-    -- New position for the minimize button
-
-for i = 2, NUM_CHAT_WINDOWS do
-    local chatMinimize = _G['ChatFrame'..i..'ButtonFrameMinimizeButton']
-    chatMinimize:SetAlpha(0)
-    chatMinimize:EnableMouse(0)
-end
+SetChatStyle()
 
     -- Chat menu, just a middle click on the chatframe 1 tab
 
