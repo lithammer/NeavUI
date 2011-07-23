@@ -20,11 +20,24 @@ local tankIcon = '|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES.blp:13:13:0:0
 local healIcon = '|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES.blp:13:13:0:0:64:64:20:39:1:20|t'
 local damagerIcon = '|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES.blp:13:13:0:0:64:64:20:39:22:41|t'
 
+-- _G.TOOLTIP_DEFAULT_BACKGROUND_COLOR = {r = 0, g = 0, b = 0}
+
     -- Some tooltip changes
 
-GameTooltipHeaderText:SetFont('Fonts\\ARIALN.ttf', 17)
-GameTooltipText:SetFont('Fonts\\ARIALN.ttf', 15)
-GameTooltipTextSmall:SetFont('Fonts\\ARIALN.ttf', 15)
+if (cfg.fontOutline) then
+    GameTooltipHeaderText:SetFont('Fonts\\ARIALN.ttf', (cfg.fontSize + 2), 'THINOUTLINE')
+    GameTooltipHeaderText:SetShadowOffset(0, 0)
+
+    GameTooltipText:SetFont('Fonts\\ARIALN.ttf', (cfg.fontSize), 'THINOUTLINE')
+    GameTooltipText:SetShadowOffset(0, 0)
+
+    GameTooltipTextSmall:SetFont('Fonts\\ARIALN.ttf', (cfg.fontSize), 'THINOUTLINE')
+    GameTooltipTextSmall:SetShadowOffset(0, 0)
+else
+    GameTooltipHeaderText:SetFont('Fonts\\ARIALN.ttf', (cfg.fontSize + 2))
+    GameTooltipText:SetFont('Fonts\\ARIALN.ttf', (cfg.fontSize))
+    GameTooltipTextSmall:SetFont('Fonts\\ARIALN.ttf', (cfg.fontSize))
+end
 
 GameTooltipStatusBar:SetHeight(7)
 GameTooltipStatusBar:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
@@ -32,7 +45,6 @@ GameTooltipStatusBar:SetBackdropColor(0, 1, 0, 0.3)
 
 local function ApplyTooltipStyle(self)
     local bgsize, bsize
-
     if (self == ConsolidatedBuffsTooltip) then
         bgsize = 1
         bsize = 8
@@ -46,21 +58,30 @@ local function ApplyTooltipStyle(self)
         bsize = 12
     end
 
+    local edgeTexture
+    if (not IsAddOnLoaded('!Beautycase')) then
+        edgeTexture = 'Interface\\Tooltips\\UI-Tooltip-Border'
+    else
+        edgeTexture = nil
+    end
+
     self:SetBackdrop({
-        bgFile = 'Interface\\Buttons\\WHITE8x8',
+        bgFile = 'Interface\\Buttons\\WHITE8x8',    -- 'Interface\\Tooltips\\UI-Tooltip-Background',
+        edgeFile = edgeTexture,
+        edgeSize = 15,
+
         insets = {
-            left = bgsize, 
-            right = bgsize, 
-            top = bgsize, 
-            bottom = bgsize
+            left = bgsize, right = bgsize, top = bgsize, bottom = bgsize
         }
     })
 
     self:HookScript('OnShow', function(self)
-        self:SetBackdropColor(0, 0, 0, 0.70)
+        self:SetBackdropColor(0, 0, 0, 0.7)
     end)
 
-    self:CreateBeautyBorder(bsize)
+    if (IsAddOnLoaded('!Beautycase')) then
+        self:CreateBeautyBorder(bsize)
+    end
 end
 
 for _, tooltip in pairs({
@@ -99,23 +120,62 @@ if (cfg.itemqualityBorderColor) then
         ShoppingTooltip2,
         ShoppingTooltip3,   
     }) do
-        tooltip:HookScript('OnTooltipSetItem', function(self)
-            local name, item = self:GetItem()
-            if (item) then
-                local quality = select(3, GetItemInfo(item))
-                if (quality) then
-                    local r, g, b = GetItemQualityColor(quality)
-                    self:SetBeautyBorderTexture('white')
-                    self:SetBeautyBorderColor(r, g, b)
+        if (tooltip.beautyBorder) then
+            tooltip:HookScript('OnTooltipSetItem', function(self)
+                local name, item = self:GetItem()
+                if (item) then
+                    local quality = select(3, GetItemInfo(item))
+                    if (quality) then
+                        local r, g, b = GetItemQualityColor(quality)
+                        self:SetBeautyBorderTexture('white')
+                        self:SetBeautyBorderColor(r, g, b)
+                    end
                 end
-            end
-        end)
+            end)
 
-        tooltip:HookScript('OnTooltipCleared', function(self)
-            self:SetBeautyBorderTexture('default')
-            self:SetBeautyBorderColor(1, 1, 1)
-        end)
+            tooltip:HookScript('OnTooltipCleared', function(self)
+                self:SetBeautyBorderTexture('default')
+                self:SetBeautyBorderColor(1, 1, 1)
+            end)
+        end
     end
+end
+
+    -- Itemlvl (by Gsuz) - http://www.tukui.org/forums/topic.php?id=10151
+
+local function GetItemLevel(unit)
+    local total, item = 0, 0
+    for i, v in pairs({
+        'Head',
+        'Neck',
+        'Shoulder',
+        'Back',
+        'Chest',
+        'Wrist',
+        'Hands',
+        'Waist',
+        'Legs',
+        'Feet',
+        'Finger0',
+        'Finger1',
+        'Trinket0',
+        'Trinket1',
+        'MainHand',
+        'SecondaryHand',
+        'Ranged',
+    }) do
+        local slot = GetInventoryItemLink(unit, GetInventorySlotInfo(v..'Slot'))
+        if (slot ~= nil) then
+            item = item + 1
+            total = total + select(4, GetItemInfo(slot))
+        end
+    end
+
+    if (item > 0) then
+        return floor(total / item)
+    end
+
+    return 0
 end
 
     -- Make sure we get a correct unit
@@ -125,8 +185,10 @@ local function GetRealUnit(self)
         return select(2, self:GetUnit())
     elseif (GetMouseFocus() and GetMouseFocus():GetAttribute('unit')) then
         return GetMouseFocus():GetAttribute('unit')
+    elseif (select(2, self:GetUnit())) then
+        return select(2, self:GetUnit()) 
     else
-        return select(2, self:GetUnit())  
+        return 'mouseover'
     end
 end
 
@@ -185,11 +247,11 @@ local function GetUnitRoleString(unit)
     local roleList = nil
 
     if (role == 'TANK') then
-        roleList = '  '..tankIcon..' '..TANK
+        roleList = '   '..tankIcon..' '..TANK
     elseif (role == 'HEALER') then
-        roleList = '  '..healIcon..' '..HEALER
+        roleList = '   '..healIcon..' '..HEALER
     elseif (role == 'DAMAGER') then
-        roleList = '  '..damagerIcon..' '..DAMAGER
+        roleList = '   '..damagerIcon..' '..DAMAGER
     end
 
     return roleList
@@ -199,7 +261,6 @@ end
 
 local function SetHealthBarColor(unit)
     local r, g, b
-
     if (cfg.healthbar.customColor.apply and not cfg.healthbar.reactionColoring) then
         r, g, b = cfg.healthbar.customColor.r, cfg.healthbar.customColor.g, cfg.healthbar.customColor.b
     elseif (cfg.healthbar.reactionColoring and unit) then
@@ -210,43 +271,6 @@ local function SetHealthBarColor(unit)
 
     GameTooltipStatusBar:SetStatusBarColor(r, g, b)
     GameTooltipStatusBar:SetBackdropColor(r, g, b, 0.3)
-end
-
-    -- Itemlvl (by Gsuz) - http://www.tukui.org/forums/topic.php?id=10151
-
-local function GetItemLevel(unit)
-    local total, item = 0, 0
-    for i, v in pairs({
-        'Head',
-        'Neck',
-        'Shoulder',
-        'Back',
-        'Chest',
-        'Wrist',
-        'Hands',
-        'Waist',
-        'Legs',
-        'Feet',
-        'Finger0',
-        'Finger1',
-        'Trinket0',
-        'Trinket1',
-        'MainHand',
-        'SecondaryHand',
-        'Ranged',
-    }) do
-        local slot = GetInventoryItemLink(unit, GetInventorySlotInfo(v..'Slot'))
-        if (slot ~= nil) then
-            item = item + 1
-            total = total + select(4, GetItemInfo(slot))
-        end
-    end
-
-    if (item > 0) then
-        return floor(total / item)
-    end
-
-    return 0
 end
 
 local function GetUnitRaidIcon(unit)
@@ -294,12 +318,12 @@ local function AddMouseoverTarget(self, unit)
 
     if (UnitExists(unit..'target')) then
         if (UnitName('player') == unitTargetName) then   
-            self:AddLine(format('  '..GetUnitRaidIcon(unit..'target')..'|cffff00ff%s|r', string.upper(YOU)), 1, 1, 1)
+            self:AddLine(format('   '..GetUnitRaidIcon(unit..'target')..'|cffff00ff%s|r', string.upper(YOU)), 1, 1, 1)
         else
             if (UnitIsPlayer(unit..'target')) then
-                self:AddLine(format('  '..GetUnitRaidIcon(unit..'target')..'|cff%02x%02x%02x%s|r', unitTargetClassColor.r*255, unitTargetClassColor.g*255, unitTargetClassColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)
+                self:AddLine(format('   '..GetUnitRaidIcon(unit..'target')..'|cff%02x%02x%02x%s|r', unitTargetClassColor.r*255, unitTargetClassColor.g*255, unitTargetClassColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)
             else
-                self:AddLine(format('  '..GetUnitRaidIcon(unit..'target')..'|cff%02x%02x%02x%s|r', unitTargetReactionColor.r*255, unitTargetReactionColor.g*255, unitTargetReactionColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)                 
+                self:AddLine(format('   '..GetUnitRaidIcon(unit..'target')..'|cff%02x%02x%02x%s|r', unitTargetReactionColor.r*255, unitTargetReactionColor.g*255, unitTargetReactionColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)                 
             end
         end
     end
@@ -365,10 +389,9 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             -- Afk and dnd prefix
 
         if (UnitIsAFK(unit)) then 
-            self:AppendText(' |cff00ff00AFK|r')   
-            -- self:AppendText(' |cff00ff00<AFK>|r')  
+            self:AppendText('|cff00ff00 <AFK>|r')   
         elseif (UnitIsDND(unit)) then
-            self:AppendText(' |cff00ff00DND|r')
+            self:AppendText('|cff00ff00 <DND>|r')
         end
 
             -- Player realm names
@@ -402,7 +425,7 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
 
             -- Border coloring
 
-        if (cfg.reactionBorderColor) then
+        if (cfg.reactionBorderColor and self.beautyBorder) then
             local r, g, b = UnitSelectionColor(unit)
             
             self:SetBeautyBorderTexture('white')
@@ -437,7 +460,7 @@ GameTooltip:HookScript('OnTooltipCleared', function(self)
     GameTooltipStatusBar:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT', -1, 3)
     GameTooltipStatusBar:SetBackdropColor(0, 1, 0, 0.3)
 
-    if (cfg.reactionBorderColor) then
+    if (cfg.reactionBorderColor and self.beautyBorder) then
         self:SetBeautyBorderTexture('default')
         self:SetBeautyBorderColor(1, 1, 1)
     end

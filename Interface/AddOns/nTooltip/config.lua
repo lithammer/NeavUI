@@ -2,6 +2,9 @@
 local _, nTooltip = ...
 
 nTooltip.Config = {
+    fontSize = 15,
+    fontOutline = false,
+
     position = {
         'BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT', -27.35, 27.35
     },
@@ -20,7 +23,7 @@ nTooltip.Config = {
     showItemLevel = false,
 
     healthbar = {
-        showHealthValue = true,
+        showHealthValue = false,
 
         healthFormat = '$cur / $max',           -- Possible: $cur, $max, $deficit, $perc, $smartperc, $smartcolorperc, $colorperc
         healthFullFormat = '$cur',              -- if the tooltip unit has 100% hp 
