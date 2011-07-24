@@ -189,17 +189,22 @@ local function UpdateThreatColor(self)
 
     if (lowThreat and not self.Glow:IsVisible() and isEnemy and cfg.enableTankMode) then
         r, g, b = unpack(noThreatColor)
-        self.NewGlow:Show()
         self.NewGlow:SetVertexColor(r, g, b)
+        
+        if (not self.NewGlow:IsVisible()) then
+            self.NewGlow:Show()
+        end
 
         if (cfg.colorNameWithThreat) then
             self.NewName:SetTextColor(r * 0.7, g * 0.7, b * 0.7)
         end
     elseif (self.Glow:IsVisible()) then
-        self.NewGlow:Show()
-
         r, g, b = self.Glow:GetVertexColor()
         self.NewGlow:SetVertexColor(r, g, b)
+
+        if (not self.NewGlow:IsVisible()) then
+            self.NewGlow:Show()
+        end
 
         if (cfg.colorNameWithThreat) then
             self.NewName:SetTextColor(r, g, b)
