@@ -1,32 +1,28 @@
 
 local _, ns = ...
-local config = ns.config
+local config = ns.Config
 
-local function UpdateHealth(Health, unit, min, max)
-    local self = Health:GetParent()
-
+local function UpdateHealth(Health, unit, cur, max)
     if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
         Health:SetStatusBarColor(0.5, 0.5, 0.5)
     else
         Health:SetStatusBarColor(0, 1, 0)
     end
 
-    Health.Value:SetText(ns.HealthString(self, unit))
+    Health.Value:SetText(ns.GetHealthText(unit, cur, max))
 
+    local self = Health:GetParent()
     if (self.Name.Bg) then
         self.Name.Bg:SetVertexColor(UnitSelectionColor(unit))
     end
 end
 
-local function UpdatePower(Power, unit, min, max)
+local function UpdatePower(Power, unit, cur, max)
     if (UnitIsDead(unit)) then
         Power:SetValue(0)
-        Power.Value:SetText('')
-    elseif (min == 0) then
-        Power.Value:SetText('')   
-    else
-        Power.Value:SetText(ns.FormatValue(min))
     end
+
+    Power.Value:SetText(ns.GetPowerText(unit, cur, max))
 end
 
 local function CreateBossLayout(self, unit)
@@ -37,8 +33,6 @@ local function CreateBossLayout(self, unit)
     self:SetScript('OnLeave', UnitFrame_OnLeave)
 
     self:SetFrameStrata('MEDIUM')
-
-    self.IsBossFrame = true
 
         -- healthbar
 
@@ -143,7 +137,7 @@ local function CreateBossLayout(self, unit)
     self.ThreatGlow:SetTexCoord(0.0, 0.945, 0.0, 0.73125)
 
     self.Buffs = CreateFrame('Frame', nil, self)
-    self.Buffs.size = 22
+    self.Buffs.size = 30
     self.Buffs:SetHeight(self.Buffs.size * 3)
     self.Buffs:SetWidth(self.Buffs.size * 5)
     self.Buffs:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 3, -6)
@@ -161,17 +155,17 @@ local function CreateBossLayout(self, unit)
     self:SetSize(132, 46)
     self:SetScale(config.units.boss.scale)
 
-    if (ns.config.units.boss.castbar.show) then  
+    if (config.units.boss.castbar.show) then  
         self.Castbar = CreateFrame('StatusBar', self:GetName()..'Castbar', self)
         self.Castbar:SetStatusBarTexture(config.media.statusbar)
         self.Castbar:SetSize(150, 18)
-        self.Castbar:SetStatusBarColor(unpack(ns.config.units.boss.castbar.color))
+        self.Castbar:SetStatusBarColor(unpack(config.units.boss.castbar.color))
         self.Castbar:SetPoint('BOTTOM', self, 'TOP', 10, 13)
 
         self.Castbar.Bg = self.Castbar:CreateTexture(nil, 'BACKGROUND')
         self.Castbar.Bg:SetTexture('Interface\\Buttons\\WHITE8x8')
         self.Castbar.Bg:SetAllPoints(self.Castbar)
-        self.Castbar.Bg:SetVertexColor(ns.config.units.boss.castbar.color[1]*0.3, ns.config.units.boss.castbar.color[2]*0.3, ns.config.units.boss.castbar.color[3]*0.3, 0.8)
+        self.Castbar.Bg:SetVertexColor(config.units.boss.castbar.color[1]*0.3, config.units.boss.castbar.color[2]*0.3, config.units.boss.castbar.color[3]*0.3, 0.8)
 
         self.Castbar:CreateBeautyBorder(11)
         self.Castbar:SetBeautyBorderPadding(3)
@@ -196,7 +190,7 @@ oUF:Factory(function(self)
         if (i == 1) then
             boss[i]:SetPoint(unpack(config.units.boss.position))
         else
-            boss[i]:SetPoint('TOPLEFT', boss[i-1], 'BOTTOMLEFT', 0, (ns.config.units.boss.castbar.show and -80) or -50)
+            boss[i]:SetPoint('TOPLEFT', boss[i-1], 'BOTTOMLEFT', 0, (config.units.boss.castbar.show and -80) or -50)
         end
     end
 end)

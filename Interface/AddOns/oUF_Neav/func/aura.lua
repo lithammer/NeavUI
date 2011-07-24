@@ -1,6 +1,6 @@
 
 local _, ns = ...
-local config = ns.config
+local config = ns.Config
 
 local GetTime = GetTime
 local floor, fmod = floor, math.fmod
@@ -21,13 +21,13 @@ local function AuraMouseover(button, ...)
     button:HookScript('OnEnter', function(self)
         button.icon:SetSize(size + 8, size + 8)
         button:SetFrameLevel(2)
-        button.count:SetFont(ns.config.font.normal, 15, 'THINOUTLINE')
+        button.count:SetFont(config.font.normal, 15, 'THINOUTLINE')
     end)
 
     button:HookScript('OnLeave', function(self)
         button.icon:SetSize(size, size)
         button:SetFrameLevel(1)
-        button.count:SetFont(ns.config.font.normal, 11, 'THINOUTLINE')
+        button.count:SetFont(config.font.normal, 11, 'THINOUTLINE')
     end)
 end
 --]]
@@ -36,39 +36,35 @@ local function ExactTime(time)
     return format("%.1f", time), (time * 100 - floor(time * 100))/100
 end
 
-ns.CreateAuraTimer = function(self, elapsed)
+ns.UpdateAuraTimer = function(self, elapsed)
     self.elapsed = (self.elapsed or 0) + elapsed
     if (self.elapsed < 0.1) then 
         return 
     end
 
     self.elapsed = 0
-
+    
     local timeLeft = self.expires - GetTime()
     if (timeLeft <= 0) then
         self.remaining:SetText(nil)
     else
-        if (timeLeft < 8 and IsMine(self.owner)) then
-            self.remaining:SetText('|cffff0000'..ExactTime(timeLeft))
+        if (timeLeft <= 5 and IsMine(self.owner)) then
+            self.remaining:SetText('|cffff0000'..ExactTime(timeLeft)..'|r')
 
             if (not self.ignoreSize) then
-                self.remaining:SetFont(ns.config.font.normal, 12, 'THINOUTLINE')
+                self.remaining:SetFont(config.font.normal, 12, 'THINOUTLINE')
             end
         else
             self.remaining:SetText(ns.FormatTime(timeLeft))
 
             if (not self.ignoreSize) then
-                self.remaining:SetFont(ns.config.font.normal, 8, 'THINOUTLINE')
+                self.remaining:SetFont(config.font.normal, 8, 'THINOUTLINE')
             end
         end
     end
 end
 
 ns.PostUpdateIcon = function(icons, unit, icon, index, offset)
-    if (not icon.remaining and not config.show.disableCooldown) then
-        return
-    end
-
     icon:SetAlpha(1)
 
     if (config.units.target.colorPlayerDebuffsOnly) then
@@ -98,7 +94,7 @@ ns.PostUpdateIcon = function(icons, unit, icon, index, offset)
         icon.duration = duration
         icon.expires = expirationTime
         
-        icon:SetScript('OnUpdate', ns.CreateAuraTimer)
+        icon:SetScript('OnUpdate', ns.UpdateAuraTimer)
     end
 end
 
@@ -112,13 +108,13 @@ ns.UpdateAuraIcons = function(auras, button)
     button.icon:SetPoint('CENTER', button)
     button.icon:SetSize(size, size)
 
-    button.overlay:SetTexture(ns.config.media.border)
+    button.overlay:SetTexture(config.media.border)
     button.overlay:SetTexCoord(0, 1, 0, 1)
     button.overlay:ClearAllPoints()
     button.overlay:SetPoint('TOPRIGHT', button.icon, 1.35, 1.35)
     button.overlay:SetPoint('BOTTOMLEFT', button.icon, -1.35, -1.35)
 
-    button.count:SetFont(ns.config.font.normal, 11, 'THINOUTLINE')
+    button.count:SetFont(config.font.normal, 11, 'THINOUTLINE')
     button.count:SetShadowOffset(0, 0)
     button.count:ClearAllPoints()
     button.count:SetPoint('BOTTOMRIGHT', button.icon, 1, 1)
@@ -133,7 +129,7 @@ ns.UpdateAuraIcons = function(auras, button)
         auras.disableCooldown = true
         
         button.remaining = button:CreateFontString(nil, 'OVERLAY')
-        button.remaining:SetFont(ns.config.font.normal, 8, 'THINOUTLINE')
+        button.remaining:SetFont(config.font.normal, 8, 'THINOUTLINE')
         button.remaining:SetShadowOffset(0, 0)
         button.remaining:SetPoint('TOP', button.icon, 0, 2)
     end

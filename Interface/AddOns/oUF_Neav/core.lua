@@ -1,10 +1,8 @@
 
 local _, ns = ...
-local config = ns.config
+local config = ns.Config
 
 local playerClass = select(2, UnitClass('player'))
-
-    -- remove all blizz stuff that doesnt work while other unitframes are active
 
 for _, button in pairs({
     'CombatPanelTargetOfTarget',
@@ -23,50 +21,42 @@ end
 InterfaceOptionsFrameCategoriesButton9:SetScale(0.00001)
 InterfaceOptionsFrameCategoriesButton9:SetAlpha(0)
 
-SetCVar('showArenaEnemyFrames', 0)
+local function CreateDropDown(self)
+    local dropdown = _G[string.format('%sFrameDropDown', string.gsub(self.unit, '(.)', string.upper, 1))]
 
-    -- create the drop downmenu of our unitframes
-    
-local dropdown = CreateFrame('Frame', 'CustomUnitDropDownMenu', UIParent, 'UIDropDownMenuTemplate')
+    if (dropdown) then
+        ToggleDropDownMenu(1, nil, dropdown, 'cursor')
+    elseif (self.unit:match('party')) then
+        ToggleDropDownMenu(1, nil, _G[format('PartyMemberFrame%dDropDown', self.id)], 'cursor')
+    else
+        FriendsDropDown.unit = self.unit
+        FriendsDropDown.id = self.id
+        FriendsDropDown.initialize = RaidFrameDropDown_Initialize
+        ToggleDropDownMenu(1, nil, FriendsDropDown, 'cursor')
+    end
+end
 
-UIDropDownMenu_Initialize(dropdown, function(self)
-    local unit = self:GetParent().unit
-    if (not unit) then 
-        return 
+local function UpdateFlashStatus(self)
+    if (UnitHasVehicleUI('player') or UnitIsDeadOrGhost('player')) then
+        ns.StopFlash(self.StatusFlash)
+        return
     end
 
-    local menu, name, id
-    if (UnitIsUnit(unit, 'player')) then
-        menu = 'SELF'
-    elseif (UnitIsUnit(unit, 'vehicle')) then
-        menu = 'VEHICLE'
-    elseif (UnitIsUnit(unit, 'pet')) then
-        menu = 'PET'
-    elseif (UnitIsPlayer(unit)) then
-        id = UnitInRaid(unit)
+    if (UnitAffectingCombat('player')) then
+        self.StatusFlash:SetVertexColor(1, 0.1, 0.1, 1)
 
-        if (id) then
-            menu = 'RAID_PLAYER'
-            name = GetRaidRosterInfo(id)
-        elseif (UnitInParty(unit)) then
-            menu = 'PARTY'
-        else
-            menu = 'PLAYER'
+        if (not ns.IsFlashing(self.StatusFlash)) then
+            ns.StartFlash(self.StatusFlash, 0.75, 0.75, 0.1, 0.1)
+        end
+    elseif (IsResting() and not UnitAffectingCombat('player')) then
+        self.StatusFlash:SetVertexColor(1, 0.88, 0.25, 1)
+
+        if (not ns.IsFlashing(self.StatusFlash)) then
+            ns.StartFlash(self.StatusFlash, 0.75, 0.75, 0.1, 0.1)
         end
     else
-        menu = 'TARGET'
-        name = RAID_TARGET_ICON
+        ns.StopFlash(self.StatusFlash)
     end
-    
-    if (menu) then
-        UnitPopup_ShowMenu(self, menu, unit, name, id)
-    end
-end, 'MENU')
-
-local function CreateDropDown(self)
-    dropdown:SetParent(self)
-    ToggleDropDownMenu(1, nil, dropdown, 'cursor', 15, -15)
-    --ToggleDropDownMenu(1, nil, dropdown, self, self:GetWidth()*1.2, -5)
 end
 
 local function PlayerToVehicleTexture(self, event, unit)
@@ -165,31 +155,6 @@ local function VehicleToPlayerTexture(self, event, unit)
     self.TabMiddle:SetPoint('BOTTOM', self.Name.Bg, 'TOP', -1, 0)
 end
 
-local function UpdateFlashStatus(self)
-    if (UnitHasVehicleUI('player') or UnitIsDeadOrGhost('player')) then
-        ns.StopFlash(self.StatusFlash)
-        return
-    end
-
-    if (UnitAffectingCombat('player')) then
-        self.StatusFlash:SetVertexColor(1, 0.1, 0.1, 1)
-
-        if (not ns.IsFlashing(self.StatusFlash)) then
-            ns.StartFlash(self.StatusFlash, 0.75, 0.75, 0.1, 0.1)
-        end
-    elseif (IsResting() and not UnitAffectingCombat('player')) then
-        self.StatusFlash:SetVertexColor(1, 0.88, 0.25, 1)
-
-        if (not ns.IsFlashing(self.StatusFlash)) then
-            ns.StartFlash(self.StatusFlash, 0.75, 0.75, 0.1, 0.1)
-        end
-    else
-        ns.StopFlash(self.StatusFlash)
-    end
-end
-
-    -- vehicle check
-
 local function CheckVehicleStatus(self, event, unit)
     if (UnitHasVehicleUI('player')) then
         PlayerToVehicleTexture(self, event, unit)
@@ -208,8 +173,6 @@ local function SetTabAlpha(self, alpha)
     self.TabRight:SetAlpha(alpha)
     self.TabText:SetAlpha(alpha)
 end
-
-    -- function for create a tab-like texture
 
 local function CreateUnitTabTexture(self)
     self.TabMiddle = self:CreateTexture(nil, 'BACKGROUND')
@@ -239,9 +202,7 @@ local function CreateUnitTabTexture(self)
     self.TabText:SetAlpha(0.5)
 end
 
-    -- group indicator above the playerframe
-
-local function UpdatePartyStatus(self)
+local function UpdatePartyTab(self)
     for i = 1, MAX_RAID_MEMBERS do
         if (GetNumRaidMembers() > 0) then
             local unitName, _, groupNumber = GetRaidRosterInfo(i)
@@ -275,7 +236,7 @@ local function UpdatePortraitColor(self, unit, min, max)
     end
 end
 
-    -- update target and focus texture
+    -- Update target and focus texture
 
 local texPath = 'Interface\\TargetingFrame\\UI-TargetingFrame'
 local texTable = {
@@ -285,12 +246,6 @@ local texTable = {
     ['worldboss'] = texPath..'-Elite',
     ['normal'] = texPath,
 }
-
-local function UpdateTarFoFrame(self, _, unit)
-    if (unit == 'target' or unit == 'focus') then
-        self.Texture:SetTexture(texTable[UnitClassification(unit)] or texTable['normal'])
-    end
-end
 
 local function UpdateClassPortraits(self, unit)
     local _, unitClass = UnitClass(unit)
@@ -302,28 +257,19 @@ local function UpdateClassPortraits(self, unit)
     end
 end
 
-    -- generic frame update
-
-local function UpdateFrame(self, unit)
+local function UpdateFrame(self, _, unit)
     if (self.unit ~= unit) then 
         return
     end
 
-    if (self.Portrait.Bg) then
-        self.Portrait.Bg:SetVertexColor(UnitSelectionColor(unit))
-    end
-
     if (unit == 'target' or unit == 'focus') then
-        if (self.Name.Bg) then
-            self.Name.Bg:SetVertexColor(UnitSelectionColor(unit))
-        end
+        self.Texture:SetTexture(texTable[UnitClassification(unit)] or texTable['normal'])
     end
 
     if (unit == 'target') then
         if (self.TabText) then
             local utype = UnitCreatureType(unit)
             local urace = UnitRace(unit)
-
             if (utype or urace) then
                 self.TabText:SetText(UnitIsPlayer(unit) and urace or utype)
                 self.TabMiddle:SetWidth(self.TabText:GetWidth())
@@ -332,37 +278,62 @@ local function UpdateFrame(self, unit)
             end
         end
     end
-
-    if (self.AFKText) then
-        self.AFKText:Hide()
-
-        if (UnitIsAFK(unit)) then
-            self.AFKText:Show()
-        end
-    end
 end
 
 local function EnableMouseOver(self)
     self.Health.Value:Hide()
-    self.Power.Value:Hide()
+
+    if (self.Power and self.Power.Value) then
+        self.Power.Value:Hide()
+    end
+
+    if (self.DruidMana and self.DruidMana.Value) then
+        self.DruidMana.Value:Hide()
+    end
 
     self:HookScript('OnEnter', function(self)
         self.Health.Value:Show()
-        self.Power.Value:Show()
+
+        if (self.Power and self.Power.Value) then
+            self.Power.Value:Show()
+        end
+
+        if (self.DruidMana and self.DruidMana.Value) then
+            self.DruidMana.Value:Show()
+        end
 
         UnitFrame_OnEnter(self)
     end)
 
     self:HookScript('OnLeave', function(self)
         self.Health.Value:Hide()
-        self.Power.Value:Hide()
 
+        if (self.Power and self.Power.Value) then
+            self.Power.Value:Hide()
+        end
+
+        if (self.DruidMana and self.DruidMana.Value) then
+            self.DruidMana.Value:Hide()
+        end
         UnitFrame_OnLeave(self)
     end)
 end
 
-local function UpdateHealth(Health, unit, min, max)
+local function UpdateHealth(Health, unit, cur, max)
     local self = Health:GetParent()
+    if (not self.Portrait.Bg) then
+        UpdatePortraitColor(self, unit, cur, max)
+    end
+    
+    if (self.Portrait.Bg) then
+        self.Portrait.Bg:SetVertexColor(UnitSelectionColor(unit))
+    end
+    
+    if (unit == 'target' or unit == 'focus') then
+        if (self.Name.Bg) then
+            self.Name.Bg:SetVertexColor(UnitSelectionColor(unit))
+        end
+    end
 
     if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
         Health:SetStatusBarColor(0.5, 0.5, 0.5)
@@ -370,40 +341,15 @@ local function UpdateHealth(Health, unit, min, max)
         Health:SetStatusBarColor(0, 1, 0)
     end
 
-    Health.Value:SetText(ns.HealthString(self, unit))
-
-    UpdateFrame(self, unit)
-
-    if (not self.Portrait.Bg) then
-        UpdatePortraitColor(self, unit, min, max)
-    end
+    Health.Value:SetText(ns.GetHealthText(unit, cur, max))
 end
 
-local function UpdatePower(Power, unit, min, max)
-    local self = Power:GetParent()
-
-    local powerString
-
+local function UpdatePower(Power, unit, cur, max)
     if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
         Power:SetValue(0)
-        powerString = ''
-    elseif (min == 0) then
-        powerString = ''
-    elseif (not UnitHasMana(unit)) then
-        powerString = min
-    elseif (config.units[ns.cUnit(unit)] and config.units[ns.cUnit(unit)].showPowerPercent) then
-        powerString = (min/max * 100 < 100 and format('%d%%', min/max * 100)) or ''
-    else
-        if (min == max) then
-            powerString = ns.FormatValue(min)
-        else
-            powerString = ns.FormatValue(min)..'/'..ns.FormatValue(max)
-        end
     end
 
-    -- local altPower = UnitPower(unit, ALTERNATE_POWER_INDEX)
-    -- Power.Value:SetText(powerString..(altPower > 0 and (' ['..altPower..']') or ''))
-    Power.Value:SetText(powerString)
+    Power.Value:SetText(ns.GetPowerText(unit, cur, max))
 end
 
 local focusAnchor = CreateFrame('Frame', 'oUF_Neav_Focus_Anchor', UIParent)
@@ -419,9 +365,7 @@ local function CreateUnitLayout(self, unit)
     self.IsPartyFrame = unit:match('party')
 
     if (self.IsTargetFrame) then
-        self:SetFrameStrata('MEDIUM')
-    else
-        self:SetFrameStrata('LOW')
+        self:SetFrameLevel(30)
     end
 
     self:RegisterForClicks('AnyUp')
@@ -442,19 +386,15 @@ local function CreateUnitLayout(self, unit)
     self:SetScript('OnEnter', UnitFrame_OnEnter)
     self:SetScript('OnLeave', UnitFrame_OnLeave)
 
-        -- create the castbars
+        -- Create the castbars
 
     if (config.show.castbars) then
         ns.CreateCastbars(self, unit)
     end
 
-        -- healthbar
+        -- Texture
 
-    self.Health = CreateFrame('StatusBar', nil, self)
-
-        -- texture
-
-    self.Texture = self.Health:CreateTexture(nil, 'ARTWORK')
+    self.Texture = self:CreateTexture(nil, 'BORDER')
 
     if (self.IsTargetFrame) then
         self.Texture:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\customTargetTargetTexture_2')
@@ -476,10 +416,11 @@ local function CreateUnitLayout(self, unit)
         self.Texture:SetTexture('Interface\\TargetingFrame\\UI-PartyFrame')
     end
 
-        -- healthbar
+        -- Healthbar
 
     self.Health = CreateFrame('StatusBar', nil, self)
-    self.Health:SetStatusBarTexture(config.media.statusbar, 'BORDER')
+    self.Health:SetStatusBarTexture(config.media.statusbar)
+    self.Health:SetFrameLevel(self:GetFrameLevel()-1)
 
     if (unit == 'player') then
         self.Health:SetSize(119, 12)
@@ -504,9 +445,9 @@ local function CreateUnitLayout(self, unit)
     self.Health.frequentUpdates = true
     self.Health.Smooth = true
 
-        -- health text
+        -- Health text
 
-    self.Health.Value = self.Health:CreateFontString(nil, 'ARTWORK')
+    self.Health.Value = self:CreateFontString(nil, 'OVERLAY')
 
     if (self.IsTargetFrame) then
         self.Health.Value:SetFont(config.font.normal, config.font.normalSize - 1)
@@ -518,10 +459,11 @@ local function CreateUnitLayout(self, unit)
 
     self.Health.Value:SetShadowOffset(1, -1)
 
-        -- powerbar
+        -- Powerbar
 
     self.Power = CreateFrame('StatusBar', nil, self)
-    self.Power:SetStatusBarTexture(config.media.statusbar, 'BORDER')
+    self.Power:SetStatusBarTexture(config.media.statusbar)
+    self.Power:SetFrameLevel(self:GetFrameLevel()-1)
 
     if (self.IsTargetFrame) then
         self.Power:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', 0, -1)
@@ -541,10 +483,10 @@ local function CreateUnitLayout(self, unit)
 
     self.Power.colorPower = true
 
-        -- power text
+        -- Power text
 
     if (not self.IsTargetFrame) then
-        self.Power.Value = self.Health:CreateFontString(nil, 'ARTWORK')
+        self.Power.Value = self:CreateFontString(nil, 'OVERLAY')
         self.Power.Value:SetFont(config.font.normal, config.font.normalSize)
         self.Power.Value:SetShadowOffset(1, -1)
         self.Power.Value:SetPoint('CENTER', self.Power, 0, 1)
@@ -552,9 +494,9 @@ local function CreateUnitLayout(self, unit)
         self.Power.PostUpdate = UpdatePower
     end
 
-        -- name
+        -- Name
 
-    self.Name = self.Health:CreateFontString(nil, 'ARTWORK')
+    self.Name = self:CreateFontString(nil, 'ARTWORK')
     self.Name:SetFont(config.font.normalBig, config.font.normalBigSize)
     self.Name:SetShadowOffset(1, -1)
     self.Name:SetJustifyH('CENTER')
@@ -579,20 +521,20 @@ local function CreateUnitLayout(self, unit)
 
     self:Tag(self.Name, '[name]')
 
-        -- level
+        -- Level
 
     if (self.IsMainFrame) then
-        self.Level = self.Health:CreateFontString(nil, 'ARTWORK')
+        self.Level = self:CreateFontString(nil, 'ARTWORK')
         self.Level:SetFont('Interface\\AddOns\\oUF_Neav\\media\\fontNumber.ttf', 17, 'THINOUTLINE')
         self.Level:SetShadowOffset(0, 0)
         self.Level:SetPoint('CENTER', self.Texture, (unit == 'player' and -63) or 63.5, -16)
         self:Tag(self.Level, '[level]')
     end
 
-        -- portrait
+        -- Portrait
 
     if (config.show.threeDPortraits) then    
-        self.Portrait = CreateFrame('PlayerModel', nil, self.Health)
+        self.Portrait = CreateFrame('PlayerModel', nil, self)
         self.Portrait:SetFrameStrata('BACKGROUND')
 
         self.Portrait.Bg = self.Health:CreateTexture(nil, 'BACKGROUND')
@@ -651,59 +593,24 @@ local function CreateUnitLayout(self, unit)
         end
     end
 
-        -- portrait timer
+        -- Portrait timer
 
-    self.Buffs = CreateFrame('Frame', nil, self.Health)
-    self.Buffs:SetAllPoints(self.Portrait)
-    self.Buffs:SetFrameLevel(self.Health:GetFrameLevel() - 1)
-    self.Buffs.num = 1
+    if (config.show.portraitTimer) then
+        self.PortraitTimer = CreateFrame('Frame', nil, self.Health)
 
-    self.Buffs.PostUpdateIcon = function(icons, unit, icon, index, offset)
-        local self = icon:GetParent()
+        self.PortraitTimer.Icon = self.PortraitTimer:CreateTexture(nil, 'BACKGROUND')
+        self.PortraitTimer.Icon:SetAllPoints(self.Portrait.Bg or self.Portrait)
 
-        icon.icon:SetDrawLayer('BORDER')
-        icon.icon:SetAllPoints(self)
-        SetPortraitToTexture(icon.icon, icon.icon:GetTexture())
-
-
-        local _, _, _, _, _, duration, expirationTime = UnitAura(unit, index, icon.filter)
-
-        if (duration and duration > 0) then
-            icon.remaining:Show()
-        else
-            icon.remaining:Hide()
-        end
-
-        icon.duration = duration
-        icon.expires = expirationTime
-        icon.ignoreSize = true
-
-        icon:SetScript('OnUpdate', ns.CreateAuraTimer)
+        self.PortraitTimer.Remaining = self.PortraitTimer:CreateFontString(nil, 'OVERLAY')
+        self.PortraitTimer.Remaining:SetPoint('CENTER', self.PortraitTimer.Icon) 
+        self.PortraitTimer.Remaining:SetFont(config.font.normal, (self.Portrait:GetWidth()/4), 'THINOUTLINE')
+        self.PortraitTimer.Remaining:SetTextColor(1, 1, 1)
     end
 
-    self.Buffs.PostCreateIcon = function(auras, button)
-        button:EnableMouse(false)
-        button.count:Hide()
-        button.overlay:SetTexture(nil)
-
-        auras.disableCooldown = true
-
-        button.remaining = button:CreateFontString(nil, 'OVERLAY')
-        button.remaining:SetFont(ns.config.font.normal, 16, 'THINOUTLINE')
-        button.remaining:SetShadowOffset(0, 0)
-        button.remaining:SetPoint('CENTER', button.icon)
-    end
-
-    self.Buffs.CustomFilter = function(icons, unit, icon, name, rank, texture, count, dtype, duration, timeLeft, caster)
-        if (ns.buffList[name]) then
-            return true
-        end
-    end
-
-        -- pvp icons
+        -- Pvp icons
 
     if (config.show.pvpicons) then
-        self.PvP = self.Health:CreateTexture(nil, 'OVERLAY', self)
+        self.PvP = self:CreateTexture(nil, 'ARTWORK')
 
         if (unit == 'player') then
             self.PvP:SetSize(64, 64)
@@ -719,9 +626,9 @@ local function CreateUnitLayout(self, unit)
         end
     end
 
-        -- masterlooter icon
+        -- Masterlooter icon
 
-    self.MasterLooter = self.Health:CreateTexture(nil, 'OVERLAY', self)
+    self.MasterLooter = self:CreateTexture(nil, 'OVERLAY')
     self.MasterLooter:SetSize(16, 16)
 
     if (unit == 'target' or unit == 'focus') then
@@ -733,9 +640,9 @@ local function CreateUnitLayout(self, unit)
         self.MasterLooter:SetPoint('TOPLEFT', self.Texture, 29, 0)
     end
 
-        -- groupleader icon
+        -- Groupleader icon
 
-    self.Leader = self.Health:CreateTexture(nil, 'OVERLAY', self)
+    self.Leader = self:CreateTexture(nil, 'OVERLAY')
     self.Leader:SetSize(16, 16)
 
     if (unit == 'target' or unit == 'focus') then
@@ -747,61 +654,46 @@ local function CreateUnitLayout(self, unit)
         self.Leader:SetPoint('CENTER', self.Portrait, 'TOPLEFT', 1, -1)
     end
 
-        -- raidicons
+        -- Raidicons
 
-    self.RaidIcon = self.Health:CreateTexture(nil, 'OVERLAY', self)
+    self.RaidIcon = self:CreateTexture(nil, 'OVERLAY')
     self.RaidIcon:SetPoint('CENTER', self.Portrait, 'TOP', 0, -1)
     self.RaidIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
-    local s1 = self.Portrait.Bg and self.Portrait.Bg:GetSize()/2.5 or self.Portrait:GetSize()/2.5
+    local s1 = self.Portrait.Bg and self.Portrait.Bg:GetSize()/3 or self.Portrait:GetSize()/3
     self.RaidIcon:SetSize(s1, s1)
 
-        -- phase text
-
-    --[[
-    if (unit == 'target' or unit == 'focus' or self.IsPartyFrame) then
-        self.PhaseText = self.Health:CreateFontString(nil, 'OVERLAY')
-        self.PhaseText:SetFont(config.font.normal, config.font.normalSize)
-        self.PhaseText:SetShadowOffset(1, -1)
-        self.PhaseText:SetPoint('CENTER', self.Name, 0, 10)
-        self.PhaseText:SetTextColor(1, 0, 0)
-        self:Tag(self.PhaseText, '[phase]')
+        -- Phase icon
+    
+    if (not IsTargetFrame) then
+        self.PhaseIcon = self:CreateTexture(nil, 'OVERLAY')
+        self.PhaseIcon:SetPoint('CENTER', self.Portrait, 'BOTTOM')
+        
+        if (self.IsMainFrame) then
+            self.PhaseIcon:SetSize(26, 26)
+        else
+            self.PhaseIcon:SetSize(18, 18)
+        end
     end
-    --]]
 
-        -- afk text
+        -- Offline icons
 
-    self.AFKText = self.Health:CreateFontString(nil, 'OVERLAY')
-    self.AFKText:SetTextColor(0, 1, 0)
-    self.AFKText:SetFont(config.font.normalBig, self.Portrait.Bg and (self.Portrait.Bg:GetSize() / 3.5) or (self.Portrait:GetSize() / 3.5))
-    self.AFKText:SetShadowOffset(1, -1)
-    self.AFKText:SetJustifyH('CENTER')
-    self.AFKText:SetPoint('BOTTOM', self.Portrait, 'CENTER', 0, 2)
-    self.AFKText:SetText('AFK')
-    self.AFKText:Hide()
-
-    self:RegisterEvent('PLAYER_FLAGS_CHANGED', function()
-        UpdateFrame(self, unit)
-    end)
-
-        -- offline icons
-
-    self.OfflineIcon = self.Health:CreateTexture(nil, 'OVERLAY')
+    self.OfflineIcon = self:CreateTexture(nil, 'OVERLAY')
     self.OfflineIcon:SetPoint('TOPRIGHT', self.Portrait, 7, 7)
     self.OfflineIcon:SetPoint('BOTTOMLEFT', self.Portrait, -7, -7)
 
-        -- ready check icons
+        -- Ready check icons
 
     if (unit == 'player' or self.IsPartyFrame) then
-        self.ReadyCheck = self.Health:CreateTexture(nil, 'OVERLAY')
+        self.ReadyCheck = self:CreateTexture(nil, 'OVERLAY')
         self.ReadyCheck:SetPoint('TOPRIGHT', self.Portrait, -7, -7)
         self.ReadyCheck:SetPoint('BOTTOMLEFT', self.Portrait, 7, 7)
         self.ReadyCheck.delayTime = 2
-        self.ReadyCheck.fadeTime = 0.7
+        self.ReadyCheck.fadeTime = 0.5
     end
 
-        -- threat textures - dont like the oUF threat function, create my own!
+        -- Threat textures
 
-    self.ThreatGlow = self:CreateTexture(nil, 'BACKGROUND')
+    self.ThreatGlow = self.Health:CreateTexture(nil, 'BACKGROUND')
 
     if (unit == 'player') then
         self.ThreatGlow:SetSize(242, 92)
@@ -824,10 +716,10 @@ local function CreateUnitLayout(self, unit)
         self.ThreatGlow:SetTexture('Interface\\TargetingFrame\\UI-PartyFrame-Flash')
     end
 
-        -- lfg role icon
+        -- Lfg role icon
 
     if (self.IsPartyFrame or unit == 'player' or unit == 'target') then
-        self.LFDRole = self.Health:CreateTexture(nil, 'OVERLAY')
+        self.LFDRole = self:CreateTexture(nil, 'OVERLAY')
         self.LFDRole:SetSize(20, 20)
 
         if (unit == 'player') then
@@ -839,19 +731,19 @@ local function CreateUnitLayout(self, unit)
         end
     end
 
-        -- playerframe
+        -- Playerframe
 
     if (unit == 'player') then
         self:SetSize(175, 42)
         
-        self.Name.Bg = self.Health:CreateTexture(nil, 'BACKGROUND')
+        self.Name.Bg = self:CreateTexture(nil, 'BACKGROUND')
         self.Name.Bg:SetHeight(18)
         self.Name.Bg:SetPoint('BOTTOMRIGHT', self.Health, 'TOPRIGHT')
         self.Name.Bg:SetPoint('BOTTOMLEFT', self.Health, 'TOPLEFT') 
         self.Name.Bg:SetTexture('Interface\\Buttons\\WHITE8x8')
         self.Name.Bg:SetVertexColor(0, 0, 0, 0.55)
 
-            -- warlock soulshard bar
+            -- Warlock soulshard bar
 
         if (playerClass == 'WARLOCK') then
             ShardBarFrame:SetParent(oUF_Neav_Player)
@@ -862,7 +754,7 @@ local function CreateUnitLayout(self, unit)
             ShardBarFrame:Show()
         end
 
-            -- holy power bar
+            -- Holy power bar
 
         if (playerClass == 'PALADIN') then
             PaladinPowerBar:SetParent(oUF_Neav_Player)
@@ -873,9 +765,17 @@ local function CreateUnitLayout(self, unit)
             PaladinPowerBar:Show()
         end
 
+            -- Deathknight runebar
+
+        if (playerClass == 'DEATHKNIGHT') then
+            RuneFrame:ClearAllPoints()
+            RuneFrame:SetPoint('TOP', self.Power, 'BOTTOM', 2, -2)
+            RuneFrame:SetParent(self)
+        end
+
         if (playerClass == 'DRUID') then
 
-                -- druid eclipse bar
+                -- Druid eclipse bar
 
             EclipseBarFrame:SetParent(oUF_Neav_Player)
             EclipseBarFrame:SetScale(config.units.player.scale * 0.82)
@@ -884,60 +784,38 @@ local function CreateUnitLayout(self, unit)
             EclipseBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, 4)
             EclipseBarFrame:Show()
 
-                -- druid powerbar
+                -- Druid powerbar
 
             self.DruidMana = CreateFrame('StatusBar', nil, self)
-            self.DruidMana:SetPoint('TOP', self.Power, 'BOTTOM')
+            self.DruidMana:SetPoint('TOP', self.Power, 'BOTTOM', 0, -1)
             self.DruidMana:SetStatusBarTexture(config.media.statusbar, 'BORDER')
-            self.DruidMana:SetSize(100, 10)
+            self.DruidMana:SetSize(100, 9)
             self.DruidMana:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
             self.DruidMana:SetBackdropColor(0, 0, 0, 0.55)
 
-            self.DruidMana.Value = self.Health:CreateFontString(nil, 'OVERLAY')
+            self.DruidMana.Value = self.DruidMana:CreateFontString(nil, 'OVERLAY')
             self.DruidMana.Value:SetFont(config.font.normal, config.font.normalSize)
             self.DruidMana.Value:SetShadowOffset(1, -1)
             self.DruidMana.Value:SetPoint('CENTER', self.DruidMana, 0, 0.5)
-            self.DruidMana.Value:SetParent(self.DruidMana)
 
-            self.DruidMana.Texture = self:CreateTexture(nil, 'OVERLAY')
+            self.DruidMana.Texture = self.DruidMana:CreateTexture(nil, 'ARTWORK')
             self.DruidMana.Texture:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\druidmanaTexture')
             self.DruidMana.Texture:SetSize(104, 28)
             self.DruidMana.Texture:SetPoint('TOP', self.Power, 'BOTTOM', -1, 8)
-            self.DruidMana.Texture:SetParent(self.DruidMana)
-            
-            if (config.units.player.mouseoverText) then
-                self.DruidMana.Value:Hide()
-
-                self:HookScript('OnEnter', function(self)
-                    self.DruidMana.Value:Show()
-                end)
-
-                self:HookScript('OnLeave', function(self)
-                    self.DruidMana.Value:Hide()
-                end)
-            end
         end
 
-            -- deathknight runebar
-
-        if (playerClass == 'DEATHKNIGHT') then
-            RuneFrame:ClearAllPoints()
-            RuneFrame:SetPoint('TOP', self.Power, 'BOTTOM', 2, -2)
-            RuneFrame:SetParent(self)
-        end
-
-            -- raidgroup indicator
+            -- Raidgroup indicator
 
         CreateUnitTabTexture(self)
-        UpdatePartyStatus(self) 
+        UpdatePartyTab(self) 
 
-        self:RegisterEvent('RAID_ROSTER_UPDATE', UpdatePartyStatus)
-        self:RegisterEvent('PARTY_MEMBER_CHANGED', UpdatePartyStatus)
+        self:RegisterEvent('RAID_ROSTER_UPDATE', UpdatePartyTab)
+        self:RegisterEvent('PARTY_MEMBER_CHANGED', UpdatePartyTab)
 
-            -- resting/combat status flashing
+            -- Resting/combat status flashing
 
         if (config.units.player.showStatusFlash) then
-            self.StatusFlash = self.Health:CreateTexture(nil, 'OVERLAY', self)
+            self.StatusFlash = self:CreateTexture(nil, 'OVERLAY')
             self.StatusFlash:SetTexture('Interface\\CharacterFrame\\UI-Player-Status')
             self.StatusFlash:SetTexCoord(0, 0.74609375, 0, 0.53125)
             self.StatusFlash:SetBlendMode('ADD')
@@ -955,10 +833,10 @@ local function CreateUnitLayout(self, unit)
             self:RegisterEvent('PLAYER_REGEN_DISABLED', UpdateFlashStatus)
         end
 
-            -- pvptimer
+            -- Pvptimer
 
         if (self.PvP) then
-            self.PvPTimer = self.Health:CreateFontString(nil, 'OVERLAY')
+            self.PvPTimer = self:CreateFontString(nil, 'OVERLAY')
             self.PvPTimer:SetFont(config.font.normal, config.font.normalSize)
             self.PvPTimer:SetShadowOffset(1, -1)
             self.PvPTimer:SetPoint('BOTTOM', self.PvP, 'TOP', -12, -1)
@@ -1020,28 +898,28 @@ local function CreateUnitLayout(self, unit)
             self.Vengeance.Text:SetPoint('CENTER', self.Vengeance)
         end
 
-            -- combat text
+            -- Combat text
 
         if (config.units.player.showCombatFeedback) then
-            self.CombatFeedbackText = self.Health:CreateFontString(nil, 'ARTWORK')
+            self.CombatFeedbackText = self:CreateFontString(nil, 'OVERLAY')
             self.CombatFeedbackText:SetFont(config.font.normal, 22, 'OUTLINE')
             self.CombatFeedbackText:SetShadowOffset(0, 0)
             self.CombatFeedbackText:SetPoint('CENTER', self.Portrait)
         end
 
-           -- resting icon
+           -- Resting icon
 
-        self.Resting = self.Health:CreateTexture(nil, 'OVERLAY')
+        self.Resting = self:CreateTexture(nil, 'OVERLAY')
         self.Resting:SetPoint('CENTER', self.Level, -0.5, 0)
         self.Resting:SetSize(31, 34)
 
-            -- combat icon
+            -- Combat icon
 
-        self.Combat = self.Health:CreateTexture(nil, 'OVERLAY')
+        self.Combat = self:CreateTexture(nil, 'OVERLAY')
         self.Combat:SetPoint('CENTER', self.Level, 1, 0)
         self.Combat:SetSize(31, 33)
 
-            -- player frame vehicle/normal update
+            -- Player frame vehicle/normal update
 
         CheckVehicleStatus(self, _, unit)
 
@@ -1051,7 +929,7 @@ local function CreateUnitLayout(self, unit)
         self:RegisterEvent('UNIT_EXITED_VEHICLE', CheckVehicleStatus)
     end
 
-        -- petframe
+        -- Petframe
 
     if (unit == 'pet') then
         self:SetSize(175, 42)
@@ -1071,36 +949,36 @@ local function CreateUnitLayout(self, unit)
         end
     end
 
-        -- target + focusframe
+        -- Target + focusframe
 
     if (unit == 'target' or unit == 'focus') then
         self:SetSize(175, 42)
 
-            -- colored name background
+            -- Colored name background
 
-        self.Name.Bg = self.Health:CreateTexture(nil, 'BACKGROUND')
+        self.Name.Bg = self:CreateTexture(nil, 'BACKGROUND')
         self.Name.Bg:SetHeight(18)
         self.Name.Bg:SetTexCoord(0.2, 0.8, 0.3, 0.85)
         self.Name.Bg:SetPoint('BOTTOMRIGHT', self.Health, 'TOPRIGHT')
         self.Name.Bg:SetPoint('BOTTOMLEFT', self.Health, 'TOPLEFT') 
         self.Name.Bg:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\nameBackground')
 
-            -- combat feedback text
+            -- Combat feedback text
 
         if (config.units.target.showCombatFeedback or config.units.focus.showCombatFeedback) then
-            self.CombatFeedbackText = self.Health:CreateFontString(nil, 'ARTWORK')
+            self.CombatFeedbackText = self:CreateFontString(nil, 'ARTWORK')
             self.CombatFeedbackText:SetFont(config.font.normal, 22, 'OUTLINE')
             self.CombatFeedbackText:SetShadowOffset(0, 0)
             self.CombatFeedbackText:SetPoint('CENTER', self.Portrait)
         end
 
-            -- questmob icon
+            -- Questmob icon
 
-        self.QuestIcon = self.Health:CreateTexture(nil, 'OVERLAY')
+        self.QuestIcon = self:CreateTexture(nil, 'ARTWORK')
         self.QuestIcon:SetSize(32, 32)
         self.QuestIcon:SetPoint('CENTER', self.Health, 'TOPRIGHT', 1, 10)
 
-        table.insert(self.__elements, UpdateTarFoFrame)
+        table.insert(self.__elements, UpdateFrame)
     end
 
     if (unit == 'target') then
@@ -1128,7 +1006,7 @@ local function CreateUnitLayout(self, unit)
 
         if (config.units.target.showComboPoints) then
             if (config.units.target.showComboPointsAsNumber) then
-                self.ComboPoints = self.Health:CreateFontString(nil, 'OVERLAY')
+                self.ComboPoints = self:CreateFontString(nil, 'OVERLAY')
                 self.ComboPoints:SetFont(DAMAGE_TEXT_FONT, 26, 'OUTLINE')
                 self.ComboPoints:SetShadowOffset(0, 0)
                 self.ComboPoints:SetPoint('LEFT', self.Portrait, 'RIGHT', 8, 4)
@@ -1138,7 +1016,7 @@ local function CreateUnitLayout(self, unit)
                 self.CPoints = {}
 
                 for i = 1, 5 do
-                    self.CPoints[i] = self.Health:CreateTexture(nil, 'OVERLAY')
+                    self.CPoints[i] = self:CreateTexture(nil, 'OVERLAY')
                     self.CPoints[i]:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\ComboPoint')
                     self.CPoints[i]:SetSize(15, 15)
                 end
@@ -1171,8 +1049,6 @@ local function CreateUnitLayout(self, unit)
         self.TabText:SetText(FOCUS)
         self.TabMiddle:SetPoint('BOTTOM', self.Name.Bg, 'TOP', 0, 1)
         self.TabMiddle:SetWidth(self.TabText:GetWidth())
-
-            -- the drag frame
 
         self.DragFrame = CreateFrame('Frame', nil, self)
         self.DragFrame:SetPoint('TOP', self.TabMiddle)
@@ -1226,13 +1102,13 @@ local function CreateUnitLayout(self, unit)
         end
     end
 
-        -- mouseover text
+        -- Mouseover text
 
     if (config.units[ns.cUnit(unit)] and config.units[ns.cUnit(unit)].mouseoverText) then
         EnableMouseOver(self)
     end
 
-        -- oor and oUF_SpellRange settings
+        -- OOR and oUF_SpellRange settings
 
     if (unit == 'pet' or self.IsPartyFrame) then
         self.Range = {
@@ -1252,9 +1128,9 @@ local function CreateUnitLayout(self, unit)
         self.Auras.PostCreateIcon = ns.UpdateAuraIcons
         self.Auras.PostUpdateIcon = ns.PostUpdateIcon
         self.Auras.showDebuffType = true
-    -- elseif (self.Buffs) then
-        -- self.Buffs.PostCreateIcon = ns.UpdateAuraIcons
-        -- self.Buffs.PostUpdateIcon = ns.PostUpdateIcon
+    elseif (self.Buffs) then
+        self.Buffs.PostCreateIcon = ns.UpdateAuraIcons
+        self.Buffs.PostUpdateIcon = ns.PostUpdateIcon
     elseif (self.Debuffs) then
         self.Debuffs.PostCreateIcon = ns.UpdateAuraIcons
         self.Debuffs.PostUpdateIcon = ns.PostUpdateIcon
@@ -1299,3 +1175,19 @@ oUF:Factory(function(self)
         party:SetPoint(unpack(config.units.party.position))
     end
 end)
+
+--[[
+do
+    UnitPopupMenus['SELF'] = { 'PVP_FLAG', 'LOOT_METHOD', 'LOOT_THRESHOLD', 'OPT_OUT_LOOT_TITLE', 'LOOT_PROMOTE', 'DUNGEON_DIFFICULTY', 'RAID_DIFFICULTY', 'RESET_INSTANCES', 'RAID_TARGET_ICON', 'SELECT_ROLE', 'CONVERT_TO_PARTY', 'CONVERT_TO_RAID', 'LEAVE', 'CANCEL' };
+    UnitPopupMenus['PET'] = { 'PET_PAPERDOLL', 'PET_RENAME', 'PET_ABANDON', 'PET_DISMISS', 'CANCEL' };
+    UnitPopupMenus['PARTY'] = { 'MUTE', 'UNMUTE', 'PARTY_SILENCE', 'PARTY_UNSILENCE', 'RAID_SILENCE', 'RAID_UNSILENCE', 'BATTLEGROUND_SILENCE', 'BATTLEGROUND_UNSILENCE', 'WHISPER', 'PROMOTE', 'PROMOTE_GUIDE', 'LOOT_PROMOTE', 'VOTE_TO_KICK', 'UNINVITE', 'INSPECT', 'ACHIEVEMENTS', 'TRADE', 'FOLLOW', 'DUEL', 'RAID_TARGET_ICON', 'SELECT_ROLE', 'PVP_REPORT_AFK', 'RAF_SUMMON', 'RAF_GRANT_LEVEL', 'CANCEL' }
+    UnitPopupMenus['PLAYER'] = { 'WHISPER', 'INSPECT', 'INVITE', 'ACHIEVEMENTS', 'TRADE', 'FOLLOW', 'DUEL', 'RAID_TARGET_ICON', 'RAF_SUMMON', 'RAF_GRANT_LEVEL', 'CANCEL' }
+    UnitPopupMenus['RAID_PLAYER'] = { 'MUTE', 'UNMUTE', 'RAID_SILENCE', 'RAID_UNSILENCE', 'BATTLEGROUND_SILENCE', 'BATTLEGROUND_UNSILENCE', 'WHISPER', 'INSPECT', 'ACHIEVEMENTS', 'TRADE', 'FOLLOW', 'DUEL', 'RAID_TARGET_ICON', 'SELECT_ROLE', 'RAID_LEADER', 'RAID_PROMOTE', 'RAID_DEMOTE', 'LOOT_PROMOTE', 'RAID_REMOVE', 'PVP_REPORT_AFK', 'RAF_SUMMON', 'RAF_GRANT_LEVEL', 'CANCEL' };
+    UnitPopupMenus['RAID'] = { 'MUTE', 'UNMUTE', 'RAID_SILENCE', 'RAID_UNSILENCE', 'BATTLEGROUND_SILENCE', 'BATTLEGROUND_UNSILENCE', 'RAID_LEADER', 'RAID_PROMOTE', 'RAID_MAINTANK', 'RAID_MAINASSIST', 'RAID_TARGET_ICON', 'LOOT_PROMOTE', 'RAID_DEMOTE', 'RAID_REMOVE', 'PVP_REPORT_AFK', 'CANCEL' };
+    UnitPopupMenus['VEHICLE'] = { 'RAID_TARGET_ICON', 'VEHICLE_LEAVE', 'CANCEL' }
+    UnitPopupMenus['TARGET'] = { 'RAID_TARGET_ICON', 'CANCEL' }
+    UnitPopupMenus['ARENAENEMY'] = { 'CANCEL' }
+    UnitPopupMenus['FOCUS'] = { 'RAID_TARGET_ICON', 'CANCEL' }
+    UnitPopupMenus['BOSS'] = { 'RAID_TARGET_ICON', 'CANCEL' }
+end
+--]]

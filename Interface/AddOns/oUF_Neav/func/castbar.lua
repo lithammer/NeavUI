@@ -1,5 +1,6 @@
 
 local _, ns = ...
+local config = ns.Config
 
 function ns.ColorBorder(self, ...)
     local texture, r, g, b, s = ...
@@ -19,10 +20,10 @@ function ns.CreateCastbarStrings(self, size)
     self.Castbar.Time = self.Castbar:CreateFontString(nil, 'OVERLAY')
 
     if (size) then
-        self.Castbar.Time:SetFont(ns.config.font.normal, 21)
+        self.Castbar.Time:SetFont(config.font.normal, 21)
         self.Castbar.Time:SetPoint('RIGHT', self.Castbar, -2, 0)  
     else
-        self.Castbar.Time:SetFont(ns.config.font.normal, ns.config.font.normalSize)
+        self.Castbar.Time:SetFont(config.font.normal, config.font.normalSize)
         self.Castbar.Time:SetPoint('RIGHT', self.Castbar, -5, 0)  
     end
 
@@ -32,7 +33,7 @@ function ns.CreateCastbarStrings(self, size)
     self.Castbar.Time:SetParent(self.Castbar)
 
     self.Castbar.Text = self.Castbar:CreateFontString(nil, 'OVERLAY')
-    self.Castbar.Text:SetFont(ns.config.font.normal, ns.config.font.normalSize)
+    self.Castbar.Text:SetFont(config.font.normal, config.font.normalSize)
     self.Castbar.Text:SetPoint('LEFT', self.Castbar, 4, 0)  
 
     if (size) then

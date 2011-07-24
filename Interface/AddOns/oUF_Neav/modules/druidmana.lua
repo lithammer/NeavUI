@@ -2,7 +2,7 @@
 local parent, ns = ...
 local oUF = ns.oUF or _G.oUF
 
-local FormatValue = function(self)
+local function FormatValue(self)
     if (self >= 1000000) then
         return ('%.2fm'):format(self / 1e6)
         -- return ('%.3fK'):format(self / 1e6):gsub('%.', 'M ')
@@ -22,7 +22,7 @@ local Update = function(self, event, unit)
     local unit = unit or self.unit
     local druid = self.DruidMana
 
-        -- show druid mana only as bear or cat
+        -- Show druid mana only as bear or cat
 
     if (GetShapeshiftForm() == 1 or GetShapeshiftForm() == 3) then
         if (druid.PreUpdate) then 
@@ -40,7 +40,7 @@ local Update = function(self, event, unit)
             local t = RAID_CLASS_COLORS['DRUID']
             r, g, b = t['r'], t['g'], t['b']
         elseif(druid.colorSmooth) then
-            r, g, b = self.ColorGradient(min / max, unpack(oUF.smoothGradient or oUF.colors.smooth))
+            r, g, b = self.ColorGradient(min/max, unpack(oUF.smoothGradient or oUF.colors.smooth))
         else
             local t = PowerBarColor['MANA']
             r, g, b = t['r'], t['g'], t['b']
@@ -50,7 +50,7 @@ local Update = function(self, event, unit)
             self.DruidMana:SetStatusBarColor(r, g, b)
 
             local bg = druid.bg
-            if(bg) then
+            if (bg) then
                 local mu = bg.multiplier or 1
                 bg:SetVertexColor(r * mu, g * mu, b * mu)
             end
@@ -61,7 +61,7 @@ local Update = function(self, event, unit)
             if (min == max) then
                 value:SetText(FormatValue(min))
             else
-                value:SetText(FormatValue(min)..'/'..ns.FormatValue(max))
+                value:SetText(FormatValue(min)..'/'..FormatValue(max))
             end
         end
 

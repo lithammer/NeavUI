@@ -1,6 +1,5 @@
 
 local _, ns = ...
-local config = ns.config
 
 oUF.Tags['pvptimer'] = function(unit)
     if (not IsPVPTimerRunning() and GetPVPTimer() > 0) then
@@ -67,18 +66,6 @@ oUF.Tags['name'] = function(unit)
     -- end
     -- return format('|cff%02x%02x%02x%s|r', r*255, g*255, b*255, string.gsub(unitName, '%s?(.[\128-\191]*)%S+%s', '%1. '))   -- abbrev all words except the last
 end
-
---[[
-oUF.TagEvents['phase'] = 'UNIT_PHASE'
-oUF.Tags['phase'] = function(unit)
-
-    if (not UnitInPhase(unit)) then
-        return 'OTHER PHASE'
-    else
-        return ''
-    end
-end
---]]
 
 oUF.TagEvents['combopoints'] = 'UNIT_COMBO_POINTS PLAYER_TARGET_CHANGED'
 oUF.Tags['combopoints'] = function(unit)

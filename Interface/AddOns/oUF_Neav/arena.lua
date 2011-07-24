@@ -1,10 +1,12 @@
 
 local _, ns = ...
-local config = ns.config
+local config = ns.Config
 
 if (not config.units.arena.show) then
     return
 end
+
+SetCVar('showArenaEnemyFrames', 0)
 
 local function ColorNameBackground(self)
     local _, class = UnitClass(unit)
@@ -12,9 +14,7 @@ local function ColorNameBackground(self)
     self.Name.Bg:SetVertexColor(classColor.r, classColor.g, classColor.b)
 end
 
-local function UpdateHealth(Health, unit, min, max)
-    local self = Health:GetParent()
-
+local function UpdateHealth(Health, unit, cur, max)
     if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
         Health:SetStatusBarColor(0.5, 0.5, 0.5)
     else
@@ -22,30 +22,21 @@ local function UpdateHealth(Health, unit, min, max)
     end
 
     if (Health.Value) then
-        Health.Value:SetText(ns.HealthString(self, unit))
+        Health.Value:SetText(ns.GetHealthText(unit, cur, max))
     end
 
+    local self = Health:GetParent()
     if (self.Name.Bg) then
         ColorNameBackground(self) 
     end
 end
 
-local function UpdatePower(Power, unit, min, max)
-    local self = Power:GetParent()
-
+local function UpdatePower(Power, unit, cur, max)
     if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
         Power:SetValue(0)
     end
 
-    if (Power.Value) then
-        if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
-            Power.Value:SetText('')
-        elseif (min == 0) then
-            Power.Value:SetText('')   
-        else
-            Power.Value:SetText(ns.FormatValue(min))
-        end
-    end
+    Power.Value:SetText(ns.GetPowerText(unit, cur, max))
 end
 
 local function CreateArenaLayout(self, unit)
@@ -57,13 +48,11 @@ local function CreateArenaLayout(self, unit)
 
     self:SetFrameStrata('MEDIUM')
 
-    if (unit:find('arena%dtarget')) then
+    if (unit:match('arena%dtarget')) then
         self.targetUnit = true
     else
         self.arenaUnit = true
     end
-
-    self.IsArenaFrame = true
 
         -- healthbar
 
@@ -193,19 +182,19 @@ local function CreateArenaLayout(self, unit)
         self.Castbar:SetParent(self)
         self.Castbar:SetHeight(21)
         self.Castbar:SetWidth(200)
-        self.Castbar:SetStatusBarColor(unpack(ns.config.units.arena.castbar.color))
+        self.Castbar:SetStatusBarColor(unpack(config.units.arena.castbar.color))
         self.Castbar:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT', -16, 4)
 
         self.Castbar.Bg = self.Castbar:CreateTexture(nil, 'BACKGROUND')
         self.Castbar.Bg:SetTexture('Interface\\Buttons\\WHITE8x8')
         self.Castbar.Bg:SetAllPoints(self.Castbar)
-        self.Castbar.Bg:SetVertexColor(ns.config.units.arena.castbar.color[1]*0.3, ns.config.units.arena.castbar.color[2]*0.3, ns.config.units.arena.castbar.color[3]*0.3, 0.8)
+        self.Castbar.Bg:SetVertexColor(config.units.arena.castbar.color[1]*0.3, config.units.arena.castbar.color[2]*0.3, config.units.arena.castbar.color[3]*0.3, 0.8)
 
         self.Castbar:CreateBeautyBorder(11)
         self.Castbar:SetBeautyBorderPadding(3)
 
         self.Castbar.Icon = self.Castbar:CreateTexture(nil, 'BACKGROUND')
-        self.Castbar.Icon:SetSize(ns.config.units.arena.castbar.icon.size, ns.config.units.arena.castbar.icon.size)
+        self.Castbar.Icon:SetSize(config.units.arena.castbar.icon.size, config.units.arena.castbar.icon.size)
         self.Castbar.Icon:SetPoint('TOPRIGHT', self.Castbar, 'TOPLEFT', -10, 0.45)
         self.Castbar.Icon:SetTexture(1, 1, 1)
 

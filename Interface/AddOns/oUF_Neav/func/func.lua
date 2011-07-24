@@ -1,10 +1,37 @@
 
 local _, ns = ...
-local config = ns.config
+local config = ns.Config
+
+local floor = floor
+local select = select
+local tonumber = tonumber
+
+local modf = math.modf
+local fmod = math.fmod
+local floot = math.floor
+local gsub = string.gsub
+local format = string.format
 
 local GetTime = GetTime
-local floor, fmod = floor, math.fmod
 local day, hour, minute = 86400, 3600, 60
+
+local function FormatValue(value)
+    if (value >= 1e6) then
+        return tonumber(format('%.1f', value/1e6))..'m'
+    elseif (value >= 1e3) then
+        return tonumber(format('%.1f', value/1e3))..'k'
+    else
+        return value
+    end
+end
+
+local function DeficitValue(value)
+    if (value == 0) then
+        return ''
+    else
+        return '-'..FormatValue(value)
+    end
+end
 
 ns.cUnit = function(unit)
     if (unit:match('party%d')) then
@@ -30,11 +57,11 @@ ns.FormatTime = function(time)
     return format('%d', fmod(time, minute))
 end
 
-ns.sText = function(unit)
+local function GetUnitStatus(unit)
     if (UnitIsDead(unit)) then 
-        return 'Dead'
+        return DEAD
     elseif (UnitIsGhost(unit)) then
-        return'Ghost' 
+        return 'Ghost' 
     elseif (not UnitIsConnected(unit)) then
         return PLAYER_OFFLINE
     else
@@ -42,68 +69,83 @@ ns.sText = function(unit)
     end
 end
 
-ns.DeficitValue = function(self)
-    if (self >= 1000) then
-        return format('-%.1f', self/1000)
-    else
-        return self
+local function GetFormattedText(text, cur, max, alt)
+    local perc = (cur/max)*100
+
+    if (alt) then
+        text = gsub(text, '$alt', ((alt > 0) and format('%s', FormatValue(alt)) or ''))
     end
+
+    local r, g, b = oUF.ColorGradient(cur/max, unpack(oUF.smoothGradient or oUF.colors.smooth))
+    text = gsub(text, '$cur', format('%s', (cur > 0 and FormatValue(cur)) or ''))
+    text = gsub(text, '$max', format('%s', FormatValue(max)))
+    text = gsub(text, '$deficit', format('%s', DeficitValue(max-cur)))
+    text = gsub(text, '$perc', format('%d', perc)..'%%')
+    text = gsub(text, '$smartperc', format('%d', perc))
+    text = gsub(text, '$smartcolorperc', format('|cff%02x%02x%02x%d|r', r*255, g*255, b*255, perc))
+    text = gsub(text, '$colorperc', format('|cff%02x%02x%02x%d', r*255, g*255, b*255, perc)..'%%|r')
+
+    return text
 end
 
-ns.FormatValue = function(self)
-    if (self >= 1000000) then
-        return ('%.2fm'):format(self / 1e6)
-        -- return ('%.3fK'):format(self / 1e6):gsub('%.', 'M ')
-    elseif (self >= 100000) then
-        return ('%.1fk'):format(self / 1e3)
-        -- return ('%.3f'):format(self / 1e3):gsub('%.', 'K ')
-    else
-        return self
-    end
-end
-
-ns.HealthString = function(self, unit)
-    local healthString
-    local max = UnitHealthMax(unit)
-    local min = UnitHealth(unit)
+ns.GetHealthText = function(unit, cur, max)
     local uconf = config.units[ns.cUnit(unit)]
 
-    if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
-        healthString = ns.sText(unit)
-    elseif (uconf) then
-        local showCurr = uconf.showCurrentHealth
-        local showPerc = uconf.showHealthPercent
-        local showHealthPerc = uconf.showHealthAndPercent
-        local deficitValue = uconf.deficitValue
+    if (not cur) then
+        cur = UnitHealth(unit)
+        max = UnitHealthMax(unit)
+    end
 
-        if (showCurr) then
-            healthString = ns.FormatValue(min)
-        elseif (showHealthPerc or self.IsBossFrame or self.IsArenaFrame) then
-            healthString = ns.FormatValue(min)..((min/max * 100 < 100 and format(' - %d%%', min/max * 100)) or '')
-        elseif (showPerc or self.IsTargetFrame) then
-            healthString = (min/max * 100 < 100 and format('%d%%', min/max * 100)) or ''
-        elseif (deficitValue) then
-            if ((min/max * 100) < 95) then
-                healthString = format('|cff%02x%02x%02x%s|r', 0.9*255, 0*255, 0*255, ns.DeficitValue(max-min))
-            else
-                healthString = ''
-            end
-        else
-            if (min == max) then
-                healthString = ns.FormatValue(min)
-            else
-                healthString = ns.FormatValue(min)..'/'..ns.FormatValue(max)
-            end
-        end
+    local healthString
+    if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
+        healthString = GetUnitStatus(unit)
+    elseif ((cur == max) and uconf and uconf.healthTagFull)then
+        healthString = GetFormattedText(uconf.healthTagFull, cur, max)
+    elseif (uconf and uconf.healthTag) then
+        healthString = GetFormattedText(uconf.healthTag, cur, max)
     else
-        if (min == max) then
-            healthString = ns.FormatValue(min)
+        if (cur == max) then
+            healthString = FormatValue(cur)
         else
-            healthString = ns.FormatValue(min)..'/'..ns.FormatValue(max)
+            healthString = FormatValue(cur)..'/'..FormatValue(max)
         end
     end
 
     return healthString
+end
+
+ns.GetPowerText = function(unit, cur, max)
+    local uconf = config.units[ns.cUnit(unit)]
+
+    if (not cur) then
+        max = UnitPower(unit)
+        cur = UnitPowerMax(unit)
+    end
+
+    local alt = UnitPower(unit, ALTERNATE_POWER_INDEX)
+    local powerType = UnitPowerType(unit)
+
+    local powerString
+    if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
+        powerString = ''
+    elseif (max == 0) then
+        powerString = ''
+    elseif (not UnitHasMana(unit) or powerType ~= 0 or UnitHasVehicleUI(unit) and uconf and uconf.powerTagNoMana) then
+        powerString = GetFormattedText(uconf.powerTagNoMana, cur, max, alt)
+    elseif ((cur == max) and uconf and uconf.powerTagFull)then
+        powerString = GetFormattedText(uconf.powerTagFull, cur, max, alt)
+    elseif (uconf and uconf.powerTag) then
+        powerString = GetFormattedText(uconf.powerTag, cur, max, alt)
+        
+    else
+        if (cur == max) then
+            powerString = FormatValue(cur)
+        else
+            powerString = FormatValue(cur)..'/'..FormatValue(max)
+        end
+    end
+
+    return powerString
 end
 
 ns.MultiCheck = function(what, ...)

@@ -4,16 +4,6 @@ local _, ns = ...
 local flashObjects = {}
 local f = CreateFrame('Frame')
 
-ns.IsFlashing = function(frame)
-    for index, value in pairs(flashObjects) do
-        if (value == frame) then
-            return 1
-        end
-    end
-
-    return nil
-end
-
 local function Flash_OnUpdate(self, elapsed)
     local frame
     local index = #flashObjects
@@ -47,17 +37,25 @@ local function Flash_OnUpdate(self, elapsed)
     end
 end
 
+ns.IsFlashing = function(frame)
+    for index, value in pairs(flashObjects) do
+        if (value == frame) then
+            return 1
+        end
+    end
+
+    return nil
+end
+
 ns.StopFlash = function(frame)
     tDeleteItem(flashObjects, frame)
     frame.flashTimer = nil
-
     frame:SetAlpha(0)
 end
 
 ns.StartFlash = function(frame, fadeInTime, fadeOutTime, flashInHoldTime, flashOutHoldTime)
     if (frame) then
         local index = 1
-
         while flashObjects[index] do
             if (flashObjects[index] == frame) then
                 return

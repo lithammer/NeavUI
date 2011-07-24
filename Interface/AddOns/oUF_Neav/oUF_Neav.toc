@@ -5,7 +5,6 @@
 ## OptionalDeps: oUF_AuraWatch, oUF_SpellRange, oUF_CombatFeedback, oUF_Smooth, oUF_Swing, oUF_Vengeance
 
 config.lua
-filter.lua
 
 func\aura.lua
 func\castbar.lua
@@ -14,6 +13,7 @@ func\flash.lua
 
 modules\druidmana.lua
 modules\offline.lua
+modules\portraittimers.lua
 modules\smartthreat.lua
 
 modules\oUF_CombatFeedback\oUF_CombatFeedback.lua

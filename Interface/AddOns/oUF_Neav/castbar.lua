@@ -17,14 +17,14 @@ local function UpdateCastbarColor(self, unit, config)
     end
 end
 
-    -- create the castbars
+    -- Create the castbars
 
 function ns.CreateCastbars(self, unit)
-    local config = ns.config.units[ns.cUnit(unit)].castbar
+    local config = ns.Config.units[ns.cUnit(unit)].castbar
 
-    if (ns.MultiCheck(unit, 'player', 'target', 'focus', 'pet') and config.show) then 
+    if (ns.MultiCheck(unit, 'player', 'target', 'focus', 'pet') and config and config.show) then 
         self.Castbar = CreateFrame('StatusBar', self:GetName()..'Castbar', self)
-        self.Castbar:SetStatusBarTexture(ns.config.media.statusbar)
+        self.Castbar:SetStatusBarTexture(ns.Config.media.statusbar)
         self.Castbar:SetScale(config.scale)
         self.Castbar:SetSize(config.width, config.height)
         self.Castbar:SetStatusBarColor(unpack(config.color))
@@ -55,7 +55,7 @@ function ns.CreateCastbars(self, unit)
 
             if (config.showLatency) then
                 self.Castbar.Latency = self.Castbar:CreateFontString(nil, 'OVERLAY')
-                self.Castbar.Latency:SetFont(ns.config.font.normal, ns.config.font.normalSize - 1)
+                self.Castbar.Latency:SetFont(ns.Config.font.normal, ns.Config.font.normalSize - 1)
                 self.Castbar.Latency:SetShadowOffset(1, -1)
                 self.Castbar.Latency:SetVertexColor(0.6, 0.6, 0.6, 1)
             end
@@ -91,7 +91,7 @@ function ns.CreateCastbars(self, unit)
             end
         end
 
-            -- interrupt indicator
+            -- Interrupt indicator
 
         self.Castbar.PostCastStart = function(self, unit)
             if (unit == 'player') then
@@ -109,13 +109,13 @@ function ns.CreateCastbars(self, unit)
                 UpdateCastbarColor(self, unit, config)
             end
 
-                -- hide some special spells like waterbold or firebold (pets) because it gets really spammy
+                -- Hide some special spells like waterbold or firebold (pets) because it gets really spammy
 
-            if (ns.config.units.pet.castbar.ignoreSpells) then
+            if (ns.Config.units.pet.castbar.ignoreSpells) then
                 if (unit == 'pet') then
                     self:SetAlpha(1)
 
-                    for _, spellID in pairs(ns.config.units.pet.castbar.ignoreList) do
+                    for _, spellID in pairs(ns.Config.units.pet.castbar.ignoreList) do
                         if (UnitCastingInfo('pet') == GetSpellInfo(spellID)) then
                             self:SetAlpha(0)
                         end
@@ -140,7 +140,7 @@ function ns.CreateCastbars(self, unit)
                 UpdateCastbarColor(self, unit, config)
             end
 
-            if (ns.config.units.pet.castbar.ignoreSpells) then
+            if (ns.Config.units.pet.castbar.ignoreSpells) then
                 if (unit == 'pet' and self:GetAlpha() == 0) then
                     self:SetAlpha(1)
                 end
@@ -155,7 +155,7 @@ function ns.CreateCastbars(self, unit)
     end
 end
 
-    -- mirror timers
+    -- Mirror timers
 
 for i = 1, MIRRORTIMER_NUMTIMERS do
     local bar = _G['MirrorTimer'..i]
@@ -172,7 +172,7 @@ for i = 1, MIRRORTIMER_NUMTIMERS do
     end
 
     local statusbar = _G['MirrorTimer'..i..'StatusBar']
-    statusbar:SetStatusBarTexture(ns.config.media.statusbar)
+    statusbar:SetStatusBarTexture(ns.Config.media.statusbar)
     statusbar:SetAllPoints(bar)
 
     local backdrop = select(1, bar:GetRegions())
@@ -184,12 +184,12 @@ for i = 1, MIRRORTIMER_NUMTIMERS do
     border:Hide()
 
     local text = _G['MirrorTimer'..i..'Text']
-    text:SetFont(ns.config.font.normal, ns.config.font.normalSize)
+    text:SetFont(ns.Config.font.normal, ns.Config.font.normalSize)
     text:ClearAllPoints()
     text:SetPoint('CENTER', bar)
 end
 
-    -- battleground timer
+    -- Battleground timer
 
 local f = CreateFrame('Frame')
 f:RegisterEvent('START_TIMER')
@@ -210,13 +210,13 @@ f:SetScript('OnEvent', function(self, event)
                 if (region and region:GetObjectType() == 'FontString') then
                     region:ClearAllPoints()
                     region:SetPoint('CENTER', bar)
-                    region:SetFont(ns.config.font.normal, ns.config.font.normalSize)
+                    region:SetFont(ns.Config.font.normal, ns.Config.font.normalSize)
                 end
             end
 
             bar:CreateBeautyBorder(11)
             bar:SetBeautyBorderPadding(3)
-            bar:SetStatusBarTexture(ns.config.media.statusbar)
+            bar:SetStatusBarTexture(ns.Config.media.statusbar)
 
             local backdrop = select(1, bar:GetRegions())
             backdrop:SetTexture('Interface\\Buttons\\WHITE8x8')
