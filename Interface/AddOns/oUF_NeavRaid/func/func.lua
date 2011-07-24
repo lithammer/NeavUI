@@ -1,6 +1,5 @@
 
 local _, ns = ...
-local config = ns.config
 
 local GetTime = GetTime
 local floor, fmod = floor, math.fmod

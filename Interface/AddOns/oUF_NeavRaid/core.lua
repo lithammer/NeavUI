@@ -1,11 +1,8 @@
 
 local _, ns = ...
-local config = ns.config
+local config = ns.Config
 
 local playerClass = select(2, UnitClass('player'))
-local isHealer = ns.MultiCheck(playerClass, 'SHAMAN', 'PALADIN', 'DRUID', 'PRIEST')
-
-    -- kill the blizzard raid frame stuff
 
 for _, object in pairs({
     CompactPartyFrame,
@@ -27,54 +24,16 @@ InterfaceOptionsFrameCategoriesButton11:SetAlpha(0)
 CompactUnitFrame_UpateVisible = function() end
 CompactUnitFrame_UpdateAll = function() end
 
-    -- create the drop down menu
-
-local dropdown = CreateFrame('Frame', 'oUF_Neav_Raid_DropDown', UIParent, 'UIDropDownMenuTemplate')
-
-local function menu(self)
-    dropdown:SetParent(self)
-    return ToggleDropDownMenu(1, nil, dropdown, 'cursor', 0, 0)
-end
-
-local function init(self)
+local function CreateDropDown(self)
     if (InCombatLockdown()) then
         return
     end
 
-    local unit = self:GetParent().unit
-    local menu, name, id
-
-    if(not unit) then
-        return
-    end
-
-    if(UnitIsUnit(unit, 'player')) then
-        menu = 'SELF'
-    elseif(UnitIsUnit(unit, 'vehicle')) then
-        menu = 'VEHICLE'
-    elseif(UnitIsUnit(unit, 'pet')) then
-        menu = 'PET'
-    elseif(UnitIsPlayer(unit)) then
-        id = UnitInRaid(unit)
-        if(id) then
-            menu = 'RAID_PLAYER'
-            name = GetRaidRosterInfo(id)
-        elseif(UnitInParty(unit)) then
-            menu = 'PARTY'
-        else
-            menu = 'PLAYER'
-        end
-    else
-        menu = 'TARGET'
-        name = RAID_TARGET_ICON
-    end
-
-    if(menu) then
-        UnitPopup_ShowMenu(self, menu, unit, name, id)
-    end
+    _G['CompactRaidFrame'..self.id..'DropDown'].unit = self.unit
+    _G['CompactRaidFrame'..self.id..'DropDown'].id = self.id
+    _G['CompactRaidFrame'..self.id..'DropDown'].initialize = RaidFrameDropDown_Initialize
+    ToggleDropDownMenu(1, nil, _G['CompactRaidFrame'..self.id..'DropDown'], 'cursor')
 end
-
-UIDropDownMenu_Initialize(dropdown, init, 'MENU')
 
     -- oUF_AuraWatch
     -- Class buffs { spell ID, position [, {r, g, b, a}][, anyUnit][, hideCooldown][, hideCount] }
@@ -310,7 +269,6 @@ local function UpdateThreat(self, _, unit)
     end
 
     local threatStatus = UnitThreatSituation(self.unit)
-
     if (threatStatus == 3) then  
         if (self.ThreatText) then
             self.ThreatText:Show()
@@ -368,11 +326,11 @@ local function DeficitValue(self)
     end
 end
 
-local function StatusText(unit)
+local function GetUnitStatus(unit)
     if (UnitIsDead(unit)) then 
-        return 'Dead'
+        return DEAD
     elseif (UnitIsGhost(unit)) then
-        return'Ghost' 
+        return 'Ghost' 
     elseif (not UnitIsConnected(unit)) then
         return PLAYER_OFFLINE
     else
@@ -380,17 +338,13 @@ local function StatusText(unit)
     end
 end
 
-local function HealthString(self, unit)
-    local max = UnitHealthMax(unit)
-    local min = UnitHealth(unit)
-
+local function GetHealthText(unit, cur, max)
     local healthString
-
     if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
-        healthString = StatusText(unit)
+        healthString = GetUnitStatus(unit)
     else
-        if ((min/max * 100) < 95) then
-            healthString = format('|cff%02x%02x%02x%s|r', 0.9*255, 0*255, 0*255, DeficitValue(max-min))
+        if ((cur/max) < config.units.raid.deficitThreshold) then
+            healthString = format('|cff%02x%02x%02x%s|r', 0.9*255, 0*255, 0*255, DeficitValue(max-cur))
         else
             healthString = ''
         end
@@ -399,26 +353,18 @@ local function HealthString(self, unit)
     return healthString
 end
 
-local function UpdateHealth(Health, unit)
-    local self = Health:GetParent()
---[[
-    if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
-        if (Health:GetParent().Power) then
-            UpdatePower(Health:GetParent().Power, _, unit)
-        end
-    end
---]]
+local function UpdateHealth(Health, unit, cur, max)
     if (not UnitIsPlayer(unit)) then
         local r, g, b = 0, 0.82, 1
         Health:SetStatusBarColor(r, g, b)
         Health.bg:SetVertexColor(r * 0.25, g * 0.25, b * 0.25)
     end
 
-    Health.Value:SetText(HealthString(self, unit))
+    Health.Value:SetText(GetHealthText(unit, cur, max))
 end
 
 local function CreateRaidLayout(self, unit)
-    self.menu = menu
+    self.menu = CreateDropDown
     self:RegisterForClicks('AnyUp')
 
     self:SetScript('OnEnter', function(self)
@@ -449,7 +395,7 @@ local function CreateRaidLayout(self, unit)
 
     self:SetBackdropColor(0, 0, 0, 1)
 
-        -- health bar
+        -- Health bar
 
     self.Health = CreateFrame('StatusBar', nil, self)
     self.Health:SetStatusBarTexture(config.media.statusbar, 'ARTWORK')
@@ -462,11 +408,11 @@ local function CreateRaidLayout(self, unit)
     self.Health.colorClass = true
     self.Health.colorDisconnected = true   
 
-    if (not isHealer or config.units.raid.smoothUpdatesForAllClasses) then
+    if (config.units.raid.smoothUpdates) then
         self.Health.Smooth = true
     end
 
-        -- health background
+        -- Health background
 
     self.Health.bg = self.Health:CreateTexture(nil, 'BORDER')
     self.Health.bg:SetAllPoints(self.Health)
@@ -474,14 +420,14 @@ local function CreateRaidLayout(self, unit)
 
     self.Health.bg.multiplier = 0.3
 
-        -- health text
+        -- Health text
 
     self.Health.Value = self.Health:CreateFontString(nil, 'OVERLAY')
     self.Health.Value:SetPoint('TOP', self.Health, 'CENTER', 0, 2)
     self.Health.Value:SetFont(config.font.fontSmall, config.font.fontSmallSize)
     self.Health.Value:SetShadowOffset(1, -1)
 
-        -- name text
+        -- Name text
 
     self.Name = self.Health:CreateFontString(nil, 'OVERLAY')
     self.Name:SetPoint('BOTTOM', self.Health, 'CENTER', 0, 3)
@@ -490,7 +436,7 @@ local function CreateRaidLayout(self, unit)
     self.Name:SetTextColor(1, 1, 1)
     self:Tag(self.Name, '[name:raid]')
 
-        -- power bar
+        -- Power bar
 
     if (config.units.raid.manabar.show) then
         self.Power = CreateFrame('StatusBar', nil, self)
@@ -522,40 +468,46 @@ local function CreateRaidLayout(self, unit)
         UpdatePower(self, _, unit)
     end
 
-        -- heal prediction, new healcomm
+        -- Heal prediction, new healcomm
 
     local myBar = CreateFrame('StatusBar', nil, self)
     myBar:SetStatusBarTexture(config.media.statusbar, 'OVERLAY')
     myBar:SetStatusBarColor(0, 1, 0.3, 0.5)
-    myBar.Smooth = true
+
+    if (config.units.raid.smoothUpdates) then
+        myBar.Smooth = true
+    end
 
     if (config.units.raid.horizontalHealthBars) then
         myBar:SetOrientation('HORIZONTAL')
-		myBar:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
-		myBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
-		myBar:SetWidth(self:GetWidth())
+        myBar:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
+        myBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
+        myBar:SetWidth(self:GetWidth())
     else
         myBar:SetOrientation('VERTICAL')
-		myBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'TOPLEFT')
-		myBar:SetPoint('BOTTOMRIGHT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
-		myBar:SetHeight(self:GetHeight())
+        myBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'TOPLEFT')
+        myBar:SetPoint('BOTTOMRIGHT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
+        myBar:SetHeight(self:GetHeight())
     end
 
     local otherBar = CreateFrame('StatusBar', nil, self)
     otherBar:SetStatusBarTexture(config.media.statusbar, 'OVERLAY')
     otherBar:SetStatusBarColor(0, 1, 0, 0.35)
-    otherBar.Smooth = true
+
+    if (config.units.raid.smoothUpdates) then
+        otherBar.Smooth = true
+    end
 
     if (config.units.raid.horizontalHealthBars) then
         otherBar:SetOrientation('HORIZONTAL')
-		otherBar:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
-		otherBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
-		otherBar:SetWidth(self.Health:GetWidth())
+        otherBar:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
+        otherBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
+        otherBar:SetWidth(self.Health:GetWidth())
     else
         otherBar:SetOrientation('VERTICAL')
-		otherBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'TOPLEFT')
-		otherBar:SetPoint('BOTTOMRIGHT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
-		otherBar:SetHeight(self.Health:GetHeight())
+        otherBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'TOPLEFT')
+        otherBar:SetPoint('BOTTOMRIGHT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
+        otherBar:SetHeight(self.Health:GetHeight())
     end
 
     self.HealPrediction = {
@@ -564,19 +516,20 @@ local function CreateRaidLayout(self, unit)
         maxOverflow = 1.2,
     }
 
-        -- afk /offline timer, using frequentUpdates function from oUF tags
+        -- Afk /offline timer, using frequentUpdates function from oUF tags
 
     if (config.units.raid.showNotHereTimer) then
         self.NotHere = self.Health:CreateFontString(nil, 'OVERLAY')
         self.NotHere:SetPoint('CENTER', self, 'BOTTOM')
-        self.NotHere:SetFont(config.font.fontSmall, 11)
-        self.NotHere:SetShadowOffset(1, -1)
+        -- self.NotHere:SetFont(config.font.fontSmall, 11)
+        self.NotHere:SetFont(config.font.fontSmall, 11, 'THINOUTLINE')
+        self.NotHere:SetShadowOffset(0, 0)
         self.NotHere:SetTextColor(0, 1, 0)
         self.NotHere.frequentUpdates = 1
         self:Tag(self.NotHere, '[status:raid]')
     end
 
-        -- mouseover darklight
+        -- Mouseover darklight
 
     if (config.units.raid.showMouseoverHighlight) then    
         self.Mouseover = self.Health:CreateTexture(nil, 'OVERLAY')
@@ -586,7 +539,7 @@ local function CreateRaidLayout(self, unit)
         self.Mouseover:SetAlpha(0)
     end
 
-        -- threat glow
+        -- Threat glow
 
     self.ThreatGlow = CreateFrame('Frame', nil, self)
     self.ThreatGlow:SetPoint('TOPLEFT', self, 'TOPLEFT', -4, 4)
@@ -596,13 +549,13 @@ local function CreateRaidLayout(self, unit)
     self.ThreatGlow:SetFrameLevel(self:GetFrameLevel() - 1)
     self.ThreatGlow.ignore = true
 
-        -- threat text
+        -- Threat text
 
     if (config.units.raid.showThreatText) then
         self.ThreatText = self.Health:CreateFontString(nil, 'OVERLAY')
         self.ThreatText:SetPoint('CENTER', self, 'BOTTOM')
         self.ThreatText:SetFont(config.font.fontSmall, 11, 'THINOUTLINE')
-        self.ThreatText:SetShadowColor(0, 0, 0, 0)
+        self.ThreatText:SetShadowOffset(0, 0)
         self.ThreatText:SetTextColor(1, 0, 0)
         self.ThreatText:SetText('AGGRO')
     end
@@ -611,13 +564,13 @@ local function CreateRaidLayout(self, unit)
     self:RegisterEvent('UNIT_THREAT_LIST_UPDATE', UpdateThreat)
     self:RegisterEvent('UNIT_THREAT_SITUATION_UPDATE', UpdateThreat)
 
-        -- masterlooter icons
+        -- Masterlooter icons
 
     self.MasterLooter = self.Health:CreateTexture(nil, 'OVERLAY', self)
     self.MasterLooter:SetSize(11, 11)
     self.MasterLooter:SetPoint('RIGHT', self, 'TOPRIGHT', -1, 1)
 
-        -- main tank icon
+        -- Main tank icon
 
     if (config.units.raid.showMainTankIcon) then
         self.MainTank = self.Health:CreateTexture(nil, 'OVERLAY')
@@ -625,19 +578,19 @@ local function CreateRaidLayout(self, unit)
         self.MainTank:SetPoint('CENTER', self, 'TOP', 0, 1)
     end
 
-        -- leader icons
+        -- Leader icons
 
     self.Leader = self.Health:CreateTexture(nil, 'OVERLAY', self)
     self.Leader:SetSize(12, 12)
     self.Leader:SetPoint('LEFT', self.Health, 'TOPLEFT', 1, 0)
 
-        -- raid icons
+        -- Raid icons
 
     self.RaidIcon = self.Health:CreateTexture(nil, 'OVERLAY')
     self.RaidIcon:SetSize(16, 16)
     self.RaidIcon:SetPoint('CENTER', self, 'TOP')
 
-        -- readycheck icons
+        -- Readycheck icons
 
     self.ReadyCheck = self.Health:CreateTexture(nil, 'OVERLAY')
     self.ReadyCheck:SetPoint('CENTER')
@@ -645,17 +598,17 @@ local function CreateRaidLayout(self, unit)
     self.ReadyCheck.delayTime = 2
     self.ReadyCheck.fadeTime = 1
 
-        -- debuff icons, using freebAuras from oUF_Freebgrid
+        -- Debuff icons, using freebAuras from oUF_Freebgrid
 
     self.FreebAuras = CreateFrame('Frame', nil, self)
     self.FreebAuras:SetSize(config.units.raid.iconSize, config.units.raid.iconSize)
     self.FreebAuras:SetPoint('CENTER', self.Health)
 
-        -- create indicators
+        -- Create indicators
 
     CreateIndicators(self, unit)
 
-        -- role indicator
+        -- Role indicator
 
     --[[
     self.LFDRole = self.Health:CreateTexture(nil, 'OVERLAY')
@@ -672,13 +625,13 @@ local function CreateRaidLayout(self, unit)
         self:Tag(self.LFDRoleText, '[role:raid]')
     end
 
-        -- ressurection icon....ehm text!
+        -- Ressurection icon....ehm text!
 
     if (config.units.raid.showResurrectText) then
         self.ResurrectIcon = self.Health:CreateFontString(nil, 'OVERLAY')
         self.ResurrectIcon:SetPoint('CENTER', self, 'BOTTOM', 0, 1)
         self.ResurrectIcon:SetFont(config.font.fontSmall, 11, 'THINOUTLINE')
-        self.ResurrectIcon:SetShadowColor(0, 0, 0, 0)
+        self.ResurrectIcon:SetShadowOffset(0, 0)
         self.ResurrectIcon:SetTextColor(0.1, 1, 0.1)
         self.ResurrectIcon:SetText('RES') -- RESURRECT
 
@@ -701,7 +654,7 @@ local function CreateRaidLayout(self, unit)
         end
     end
 
-        -- playertarget border
+        -- Playertarget border
 
     if (config.units.raid.showTargetBorder) then
         self.TargetBorder = self.Health:CreateTexture(nil, 'OVERLAY', self)
@@ -721,7 +674,7 @@ local function CreateRaidLayout(self, unit)
         end)
     end
 
-        -- range check
+        -- Range check
 
     self.Range = {
         insideAlpha = 1,
@@ -781,7 +734,7 @@ oUF:RegisterStyle('oUF_Neav_Raid', CreateRaidLayout)
 oUF:Factory(function(self)
     self:SetActiveStyle('oUF_Neav_Raid')
 
-    local rlayout = ns.config.units.raid.layout
+    local rlayout = config.units.raid.layout
     local relpoint, anchpoint, offset
 
     if (rlayout.orientation == 'HORIZONTAL') then
@@ -820,7 +773,7 @@ oUF:Factory(function(self)
             'oUF-initialConfigFunction', ([[
             self:SetWidth(%d)
             self:SetHeight(%d)
-            ]]):format(ns.config.units.raid.width, ns.config.units.raid.height),
+            ]]):format(config.units.raid.width, config.units.raid.height),
 
             'showRaid', true,
             'showParty', config.units.raid.showParty,
@@ -869,6 +822,6 @@ oUF:Factory(function(self)
             end
         end
 
-        raid[i]:SetScale(ns.config.units.raid.scale) 
+        raid[i]:SetScale(config.units.raid.scale) 
     end
 end)

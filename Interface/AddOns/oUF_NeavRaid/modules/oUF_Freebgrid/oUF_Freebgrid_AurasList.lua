@@ -27,7 +27,8 @@ local L = {
     ['Blackwing Descent'] = 754,
     ['The Bastion of Twilight'] = 758,
     ['Throne of the Four Winds'] = 773,
-
+    ['Firelands'] = 800,
+    
     -- ['Ulduar'] = 529,
     ['ToC'] = 543,
     ['Naxxramas'] = 535,
@@ -77,6 +78,11 @@ ns.auras = {
         -- Raid Debuffs
 
     instances = {
+        [L['Firelands']] = {
+            [GetSpellInfo(99256)] = 11, -- Baloroc shard debuff
+            [GetSpellInfo(99252)] = 11, -- Baloroc shard debuff
+        },
+
         [L['Baradin Hold']] = {
             [GetSpellInfo(88954)] = 6, -- Consuming Darkness
         },

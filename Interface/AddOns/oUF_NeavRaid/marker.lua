@@ -48,10 +48,10 @@ SlashCmdList['WORLDMARKERS'] = function()
 	end
 end
 
-SLASH_WORLDMARKERS1 = '/wm'
+SLASH_WORLDMARKERS1 = '/wmarkers'
 SLASH_WORLDMARKERS2 = '/worldmarkers'
 SLASH_WORLDMARKERS3 = '/raidmarkers'
-SLASH_WORLDMARKERS4 = '/rm'
+SLASH_WORLDMARKERS4 = '/rmarkers'
 
     -- InitiateRolePoll()
 
