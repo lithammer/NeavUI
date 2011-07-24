@@ -345,7 +345,6 @@ local function SkinPlate(self)
     self.Overlay:SetPoint('TOPRIGHT', self.Health, 35.66666667, 5.66666667)
     self.Overlay:SetPoint('BOTTOMLEFT', self.Health, -36.66666667, -5.66666667)
     self.Overlay:SetDrawLayer('BORDER')
-    self.Overlay:SetParent(self.Health)
     self.Overlay:SetTexture(overlayTexture)
 
         -- Healtbar and background
@@ -487,7 +486,7 @@ local function SkinPlate(self)
                         self.TargetHighlight:Hide()
                     end
 
-                    if (self.TargetHighlight and not self.TargetHighlight:IsVisible()) then
+                    if (not self.TargetHighlight:IsVisible()) then
                         self.TargetHighlight:Show()
                     end
                 else
