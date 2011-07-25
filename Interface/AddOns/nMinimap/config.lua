@@ -1,5 +1,7 @@
 
-nMinimap = {
+local _, nMinimap = ...
+
+nMinimap.Config = {
     drawerMouseoverAlpha = 1,
     drawerNoMouseoverAlpha = 0.55,
     positionDrawerBelow = false,            -- Position the guild/friends drawer below the minimap instead of above

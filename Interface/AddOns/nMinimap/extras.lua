@@ -1,4 +1,7 @@
 
+local _, nMinimap = ...
+local cfg = nMinimap.Config
+
 local select = select
 local tostring = tostring
 
@@ -12,7 +15,7 @@ local f = CreateFrame('Frame', nil, Minimap)
 f:SetFrameStrata('BACKGROUND')
 f:SetFrameLevel(Minimap:GetFrameLevel() - 1)
 f:SetHeight(30)
-f:SetAlpha(nMinimap.drawerNoMouseoverAlpha)
+f:SetAlpha(cfg.drawerNoMouseoverAlpha)
 f:CreateBeautyBorder(11)
 f:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
 f:SetBackdropColor(0, 0, 0, 0.6)
@@ -63,7 +66,7 @@ f.Friends.Text:SetShadowOffset(1, -1)
 f.Friends:SetAllPoints(f.Friends.Text)
 f.Friends.Text:SetTextColor(RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b )
 
-if (nMinimap.positionDrawerBelow) then
+if (cfg.positionDrawerBelow) then
     f.Guild.Text:SetPoint('TOPLEFT', Minimap, 'BOTTOMLEFT', 18, -3)
     f.Friends.Text:SetPoint('TOPRIGHT', Minimap, 'BOTTOMRIGHT', -18, -3)	
 else
@@ -74,11 +77,11 @@ end
     -- fade fade functions
     
 local function fadeOut()
-    if (not nMinimap.alwaysShowDrawer) then
+    if (not cfg.alwaysShowDrawer) then
         securecall('UIFrameFadeOut', f.Guild, 0.1, f.Guild:GetAlpha(), 0)
         securecall('UIFrameFadeOut', f.Friends, 0.1, f.Friends:GetAlpha(), 0)
 
-        if (nMinimap.positionDrawerBelow) then
+        if (cfg.positionDrawerBelow) then
             f:SetPoint('TOPLEFT', Minimap, 'BOTTOMLEFT', 10, 23)
             f:SetPoint('TOPRIGHT', Minimap, 'BOTTOMRIGHT', -10, 23)
         else
@@ -86,17 +89,17 @@ local function fadeOut()
             f:SetPoint('BOTTOMRIGHT', Minimap, 'TOPRIGHT', -10, -23)
         end
 
-        f:SetAlpha(nMinimap.drawerNoMouseoverAlpha)
+        f:SetAlpha(cfg.drawerNoMouseoverAlpha)
     end
 
     GameTooltip:Hide() 
 end
 
 local function fadeIn()
-    securecall('UIFrameFadeIn', f.Guild, 0.135, f.Guild:GetAlpha(), nMinimap.drawerMouseoverAlpha)
-    securecall('UIFrameFadeIn', f.Friends, 0.135, f.Friends:GetAlpha(), nMinimap.drawerMouseoverAlpha)
+    securecall('UIFrameFadeIn', f.Guild, 0.135, f.Guild:GetAlpha(), cfg.drawerMouseoverAlpha)
+    securecall('UIFrameFadeIn', f.Friends, 0.135, f.Friends:GetAlpha(), cfg.drawerMouseoverAlpha)
 
-    if (nMinimap.positionDrawerBelow) then
+    if (cfg.positionDrawerBelow) then
         f:SetPoint('TOPLEFT', Minimap, 'BOTTOMLEFT', 10, 10)
         f:SetPoint('TOPRIGHT', Minimap, 'BOTTOMRIGHT', -10, 10)
     else
@@ -104,7 +107,7 @@ local function fadeIn()
         f:SetPoint('BOTTOMRIGHT', Minimap, 'TOPRIGHT', -10, -10)
     end
 
-    f:SetAlpha(nMinimap.drawerMouseoverAlpha)
+    f:SetAlpha(cfg.drawerMouseoverAlpha)
 end
 
 f:SetScript('OnEnter', function()
@@ -123,7 +126,7 @@ f.Friends:SetScript('OnLeave', function()
     fadeOut()
 end)
 
-if (nMinimap.showDrawerOnMinimapMouseOver) then
+if (cfg.showDrawerOnMinimapMouseOver) then
     Minimap:HookScript('OnEnter', function()
         fadeIn()
     end)
@@ -135,7 +138,7 @@ end
 
     -- make sure that the frame is faded out on login
 
-if (nMinimap.alwaysShowDrawer) then
+if (cfg.alwaysShowDrawer) then
     fadeIn()
 else
     fadeOut()

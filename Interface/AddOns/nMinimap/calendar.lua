@@ -1,4 +1,8 @@
 
+if (not IsAddOnLoaded('Blizzard_TimeManager')) then
+    LoadAddOn('Blizzard_TimeManager')
+end
+
 for i = 1, select('#', GameTimeFrame:GetRegions()) do
     local texture = select(i, GameTimeFrame:GetRegions())
     if (texture and texture:GetObjectType() == 'Texture') then
@@ -14,10 +18,6 @@ GameTimeFrame:SetPoint('TOPRIGHT', Minimap, -3.5, -3.5)
 GameTimeFrame:GetFontString():SetFont('Fonts\\ARIALN.ttf', 15, 'OUTLINE')
 GameTimeFrame:GetFontString():SetShadowOffset(0, 0)
 GameTimeFrame:GetFontString():SetPoint('TOPRIGHT', GameTimeFrame)
-
-if (not IsAddOnLoaded('Blizzard_TimeManager')) then
-    LoadAddOn('Blizzard_TimeManager')
-end
 
 for _, texture in pairs({
     GameTimeCalendarEventAlarmTexture,

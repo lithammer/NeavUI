@@ -1,5 +1,8 @@
 
-    -- a 'new' mail notification
+local _, nMinimap = ...
+local cfg = nMinimap.Config
+
+    -- A 'new' mail notification
 
 MiniMapMailFrame:SetSize(14, 14)
 MiniMapMailFrame:ClearAllPoints()
@@ -20,7 +23,7 @@ MiniMapMailFrame.Text:SetPoint('BOTTOMRIGHT', MiniMapMailFrame)
 MiniMapMailFrame.Text:SetTextColor(1, 0, 1)
 MiniMapMailFrame.Text:SetText('N')
 
-   -- modify the lfg frame
+   -- Modify the lfg frame
 
 MiniMapLFGFrame:ClearAllPoints()
 MiniMapLFGFrame:SetPoint('TOPLEFT', Minimap, 4, -4)
@@ -41,7 +44,7 @@ MiniMapLFGFrame.Text:SetPoint('TOP', MiniMapLFGFrame)
 MiniMapLFGFrame.Text:SetTextColor(1, 0.4, 0)
 MiniMapLFGFrame.Text:SetText('L')
 
-   -- modify the battlefield frame
+   -- Modify the battlefield frame
 
 MiniMapBattlefieldFrame:ClearAllPoints()
 MiniMapBattlefieldFrame:SetPoint('BOTTOMLEFT', Minimap, 5, 5)
@@ -60,7 +63,7 @@ MiniMapBattlefieldFrame.Text:SetPoint('BOTTOMLEFT', MiniMapBattlefieldFrame)
 MiniMapBattlefieldFrame.Text:SetTextColor(0, 0.75, 1)
 MiniMapBattlefieldFrame.Text:SetText('P')
 
-    -- hide all unwanted things
+    -- Hide all unwanted things
 
 MinimapZoomIn:Hide()
 MinimapZoomIn:UnregisterAllEvents()
@@ -81,7 +84,7 @@ MinimapZoneText:Hide()
 MinimapZoneTextButton:Hide()
 MinimapZoneTextButton:UnregisterAllEvents()
 
-    -- hide the tracking button
+    -- Hide the tracking button
 
 MiniMapTracking:UnregisterAllEvents()
 MiniMapTracking:Hide()
@@ -91,17 +94,17 @@ MiniMapTracking:Hide()
 DurabilityFrame:Hide()
 DurabilityFrame:UnregisterAllEvents()
 
-    -- bigger minimap
+    -- Bigger minimap
 
 MinimapCluster:SetScale(1.1)
 MinimapCluster:EnableMouse(false)
 
-    -- new position
+    -- New position
 
 Minimap:ClearAllPoints()
 Minimap:SetPoint('TOPRIGHT', UIParent, -26, -26)
 
-    -- square minimap and create a border
+    -- Square minimap and create a border
 
 function GetMinimapShape()
     return 'SQUARE'
@@ -112,7 +115,7 @@ Minimap:SetMaskTexture('Interface\\ChatFrame\\ChatFrameBackground')
 Minimap:CreateBeautyBorder(11)
 Minimap:SetBeautyBorderPadding(1)
 
-    -- enable mousewheel zooming
+    -- Enable mousewheel zooming
 
 Minimap:EnableMouseWheel(true)
 Minimap:SetScript('OnMouseWheel', function(self, delta)
@@ -123,7 +126,7 @@ Minimap:SetScript('OnMouseWheel', function(self, delta)
     end
 end)
 
-    -- modify the minimap tracking
+    -- Modify the minimap tracking
 
 Minimap:SetScript('OnMouseUp', function(self, button)
     if (button == 'RightButton') then
@@ -133,7 +136,7 @@ Minimap:SetScript('OnMouseUp', function(self, button)
     end
 end)
 
-    -- skin the ticket status frame
+    -- Skin the ticket status frame
 
 TicketStatusFrame:ClearAllPoints()
 TicketStatusFrame:SetPoint('BOTTOMRIGHT', UIParent, 0, 0)
@@ -170,7 +173,7 @@ local function GetZoneColor()
     end
 end
 
-    -- mouseover zone text
+    -- Mouseover zone text
 
 local MainZone = Minimap:CreateFontString(nil, 'OVERLAY')
 MainZone:SetParent(Minimap)
@@ -191,19 +194,19 @@ SubZone:SetSize(130, 26)
 SubZone:SetJustifyV('TOP')
 
 Minimap:HookScript('OnEnter', function()
-    if (nMinimap.showMouseoverZoneText and SubZone and not IsShiftKeyDown()) then
+    if (cfg.showMouseoverZoneText and SubZone and not IsShiftKeyDown()) then
         SubZone:SetTextColor(GetZoneColor())
         SubZone:SetText(GetSubZoneText())
-        securecall('UIFrameFadeIn', SubZone, 0.235, SubZone:GetAlpha(), nMinimap.alphaMouseoverZoneText)
+        securecall('UIFrameFadeIn', SubZone, 0.235, SubZone:GetAlpha(), cfg.alphaMouseoverZoneText)
 
         MainZone:SetTextColor(GetZoneColor())
         MainZone:SetText(GetRealZoneText())
-        securecall('UIFrameFadeIn', MainZone, 0.235, MainZone:GetAlpha(), nMinimap.alphaMouseoverZoneText)
+        securecall('UIFrameFadeIn', MainZone, 0.235, MainZone:GetAlpha(), cfg.alphaMouseoverZoneText)
    end
 end)
 
 Minimap:HookScript('OnLeave', function()
-    if (nMinimap.showMouseoverZoneText and SubZone) then
+    if (cfg.showMouseoverZoneText and SubZone) then
         securecall('UIFrameFadeOut', SubZone, 0.235, SubZone:GetAlpha(), 0)
         securecall('UIFrameFadeOut', MainZone, 0.235, MainZone:GetAlpha(), 0)
     end

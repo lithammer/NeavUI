@@ -1,4 +1,7 @@
 
+local _, nMinimap = ...
+local cfg = nMinimap.Config
+
 local isGuildGroup = isGuildGroup
 
 local function HideDiffFrame()
