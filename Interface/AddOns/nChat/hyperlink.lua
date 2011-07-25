@@ -47,11 +47,18 @@ local function OnHyperlinkLeave(frame, ...)
     end
 end
 
-for i = 1, NUM_CHAT_WINDOWS do
-    local frame = _G['ChatFrame'..i]
-    orig1[frame] = frame:GetScript('OnHyperlinkEnter')
-    frame:SetScript('OnHyperlinkEnter', OnHyperlinkEnter)
+local function EnableItemLinkTooltip()
+    for _, v in pairs(CHAT_FRAMES) do
+        local chat = _G[v]
+        if (chat and not chat.URLCopy) then
+            orig1[chat] = chat:GetScript('OnHyperlinkEnter')
+            chat:SetScript('OnHyperlinkEnter', OnHyperlinkEnter)
 
-    orig2[frame] = frame:GetScript('OnHyperlinkLeave')
-    frame:SetScript('OnHyperlinkLeave', OnHyperlinkLeave)
+            orig2[chat] = chat:GetScript('OnHyperlinkLeave')
+            chat:SetScript('OnHyperlinkLeave', OnHyperlinkLeave)
+            chat.URLCopy = true
+        end
+    end
 end
+hooksecurefunc('FCF_OpenTemporaryWindow', EnableItemLinkTooltip)
+EnableItemLinkTooltip()

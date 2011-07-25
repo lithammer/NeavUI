@@ -212,7 +212,7 @@ hooksecurefunc('FloatingChatFrame_OnMouseScroll', function(self, direction)
     end
 end)
 
-    -- Reposit toast frame (the popup when a bnet friend login)
+    -- Reposit toast frame
 
 BNToastFrame:HookScript('OnShow', function(self)
     BNToastFrame:ClearAllPoints()
@@ -388,7 +388,6 @@ local function SetChatStyle()
     end
 end
 hooksecurefunc('FCF_OpenTemporaryWindow', SetChatStyle)
-
 SetChatStyle()
 
     -- Chat menu, just a middle click on the chatframe 1 tab
@@ -405,7 +404,7 @@ end)
 
 ChatFrame1Tab:RegisterForClicks('AnyUp')
 ChatFrame1Tab:HookScript('OnClick', function(self, button)
-    if (button == 'MiddleButton') then
+    if (button == 'MiddleButton' or button == 'Button4' or button == 'Button5') then
         if (ChatMenu:IsShown()) then
             ChatMenu:Hide()
         else
