@@ -18,6 +18,7 @@ modules\possessbar.lua
 modules\repbar.lua
 modules\slash.lua
 modules\stancebar.lua
+modules\picomenu.lua
 
 modules\short\short.lua
 modules\short\extras.lua

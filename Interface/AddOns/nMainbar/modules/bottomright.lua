@@ -1,7 +1,10 @@
 
-MultiBarBottomRight:SetAlpha(nMainbar.multiBarBottomRight.alpha)
+local _, nMainbar = ...
+local cfg = nMainbar.Config
 
-if (nMainbar.multiBarBottomRight.orderVertical) then
+MultiBarBottomRight:SetAlpha(cfg.multiBarBottomRight.alpha)
+
+if (cfg.multiBarBottomRight.orderVertical) then
     for i = 2, 12 do
         button = _G['MultiBarBottomRightButton'..i]
         button:ClearAllPoints()
@@ -11,7 +14,7 @@ if (nMainbar.multiBarBottomRight.orderVertical) then
     MultiBarBottomRightButton1:HookScript('OnShow', function(self)
         self:ClearAllPoints()
         
-        if (nMainbar.multiBarBottomRight.verticalPosition == 'RIGHT') then
+        if (cfg.multiBarBottomRight.verticalPosition == 'RIGHT') then
             self:SetPoint('TOPRIGHT', MultiBarLeftButton1, 'TOPLEFT', -6, 0)
         else
             self:SetPoint('TOPLEFT', UIParent, 'LEFT', 6, (MultiBarBottomRight:GetWidth() / 2))

@@ -1,5 +1,8 @@
 
-if (not nMainbar.MainMenuBar.skinButton) then
+local _, nMainbar = ...
+local cfg = nMainbar.Config
+
+if (not cfg.MainMenuBar.skinButton) then
     return
 end
 
@@ -18,9 +21,9 @@ end
 local function UpdateVehicleButton()
     for i = 1, VEHICLE_MAX_ACTIONBUTTONS do
         local hotkey = _G['VehicleMenuBarActionButton'..i..'HotKey']
-        if (nMainbar.button.showVehicleKeybinds) then
-            hotkey:SetFont(nMainbar.button.hotkeyFont, nMainbar.button.hotkeyFontsize + 3, 'OUTLINE')
-            hotkey:SetVertexColor(nMainbar.color.HotKeyText[1], nMainbar.color.HotKeyText[2], nMainbar.color.HotKeyText[3])
+        if (cfg.button.showVehicleKeybinds) then
+            hotkey:SetFont(cfg.button.hotkeyFont, cfg.button.hotkeyFontsize + 3, 'OUTLINE')
+            hotkey:SetVertexColor(cfg.color.HotKeyText[1], cfg.color.HotKeyText[2], cfg.color.HotKeyText[3])
         else
             hotkey:Hide()
         end
@@ -54,7 +57,7 @@ hooksecurefunc('PetActionBar_Update', function()
                 normal:ClearAllPoints()
                 normal:SetPoint('TOPRIGHT', button, 1.5, 1.5)
                 normal:SetPoint('BOTTOMLEFT', button, -1.5, -1.5)
-                normal:SetVertexColor(nMainbar.color.Normal[1], nMainbar.color.Normal[2], nMainbar.color.Normal[3], 1)
+                normal:SetVertexColor(cfg.color.Normal[1], cfg.color.Normal[2], cfg.color.Normal[3], 1)
 
                 local flash = _G[name..i..'Flash']
                 flash:SetTexture(flashtex)
@@ -119,7 +122,7 @@ hooksecurefunc('ActionButton_Update', function(self)
         normal:ClearAllPoints()
         normal:SetPoint('TOPRIGHT', button, 1, 1)
         normal:SetPoint('BOTTOMLEFT', button, -1, -1)
-        normal:SetVertexColor(nMainbar.color.Normal[1], nMainbar.color.Normal[2], nMainbar.color.Normal[3], 1)
+        normal:SetVertexColor(cfg.color.Normal[1], cfg.color.Normal[2], cfg.color.Normal[3], 1)
         normal:SetDrawLayer('ARTWORK')
 
         local icon = _G[self:GetName()..'Icon']
@@ -146,21 +149,21 @@ hooksecurefunc('ActionButton_Update', function(self)
         border:SetAllPoints(normal)
         border:SetDrawLayer('OVERLAY')
         border:SetTexture(path..'textureHighlight')
-        border:SetVertexColor(unpack(nMainbar.color.IsEquipped))
+        border:SetVertexColor(unpack(cfg.color.IsEquipped))
 
         local count = _G[self:GetName()..'Count']
         count:SetPoint('BOTTOMRIGHT', button, 0, 1)
-        count:SetFont(nMainbar.button.countFont, nMainbar.button.countFontsize, 'OUTLINE')
-        count:SetVertexColor(nMainbar.color.CountText[1], nMainbar.color.CountText[2], nMainbar.color.CountText[3], 1)
+        count:SetFont(cfg.button.countFont, cfg.button.countFontsize, 'OUTLINE')
+        count:SetVertexColor(cfg.color.CountText[1], cfg.color.CountText[2], cfg.color.CountText[3], 1)
 
         local macroname = _G[self:GetName()..'Name']
-        if (not nMainbar.button.showMacronames) then
+        if (not cfg.button.showMacronames) then
             macroname:SetAlpha(0)
         else
             macroname:SetDrawLayer('OVERLAY')
             macroname:SetWidth(button:GetWidth() + 5)
-            macroname:SetFont(nMainbar.button.macronameFont, nMainbar.button.macronameFontsize, 'OUTLINE')
-            macroname:SetVertexColor(unpack(nMainbar.color.MacroText))
+            macroname:SetFont(cfg.button.macronameFont, cfg.button.macronameFontsize, 'OUTLINE')
+            macroname:SetVertexColor(unpack(cfg.color.MacroText))
         end
 
         if (not button.Background) then
@@ -189,7 +192,7 @@ hooksecurefunc('ActionButton_Update', function(self)
 end)   
 
 hooksecurefunc('ActionButton_ShowGrid', function(self)
-    _G[self:GetName()..'NormalTexture']:SetVertexColor(nMainbar.color.Normal[1], nMainbar.color.Normal[2], nMainbar.color.Normal[3], 1) 
+    _G[self:GetName()..'NormalTexture']:SetVertexColor(cfg.color.Normal[1], cfg.color.Normal[2], cfg.color.Normal[3], 1) 
 
     if (IsEquippedAction(self.action)) then
         _G[self:GetName()..'Border']:SetAlpha(1)
@@ -199,15 +202,15 @@ hooksecurefunc('ActionButton_ShowGrid', function(self)
 end)
 
 hooksecurefunc('ActionButton_UpdateUsable', function(self)
-    _G[self:GetName()..'NormalTexture']:SetVertexColor(nMainbar.color.Normal[1], nMainbar.color.Normal[2], nMainbar.color.Normal[3], 1) 
+    _G[self:GetName()..'NormalTexture']:SetVertexColor(cfg.color.Normal[1], cfg.color.Normal[2], cfg.color.Normal[3], 1) 
 
     local isUsable, notEnoughMana = IsUsableAction(self.action)
     if (isUsable) then
         _G[self:GetName()..'Icon']:SetVertexColor(1, 1, 1)
     elseif (notEnoughMana) then
-        _G[self:GetName()..'Icon']:SetVertexColor(unpack(nMainbar.color.OutOfMana))
+        _G[self:GetName()..'Icon']:SetVertexColor(unpack(cfg.color.OutOfMana))
     else
-        _G[self:GetName()..'Icon']:SetVertexColor(unpack(nMainbar.color.NotUsable))
+        _G[self:GetName()..'Icon']:SetVertexColor(unpack(cfg.color.NotUsable))
     end
 end)
 
@@ -215,12 +218,12 @@ hooksecurefunc('ActionButton_UpdateHotkeys', function(self)
     local hotkey = _G[self:GetName()..'HotKey']
 
     if (not IsSpecificButton(self, 'VehicleMenuBarActionButton')) then
-        if (nMainbar.button.showKeybinds) then
+        if (cfg.button.showKeybinds) then
             hotkey:ClearAllPoints()
             hotkey:SetPoint('TOPRIGHT', self, 0, -3)
             hotkey:SetDrawLayer('OVERLAY')
-            hotkey:SetFont(nMainbar.button.hotkeyFont, nMainbar.button.hotkeyFontsize, 'OUTLINE')
-            hotkey:SetVertexColor(nMainbar.color.HotKeyText[1], nMainbar.color.HotKeyText[2], nMainbar.color.HotKeyText[3])
+            hotkey:SetFont(cfg.button.hotkeyFont, cfg.button.hotkeyFontsize, 'OUTLINE')
+            hotkey:SetVertexColor(cfg.color.HotKeyText[1], cfg.color.HotKeyText[2], cfg.color.HotKeyText[3])
         else
             hotkey:Hide()    
         end
@@ -260,7 +263,7 @@ function ActionButton_OnUpdate(self, elapsed)
             local isInRange = false
 
             if (ActionHasRange(self.action) and IsActionInRange(self.action) == 0) then
-                _G[self:GetName()..'Icon']:SetVertexColor(unpack(nMainbar.color.OutOfRange))
+                _G[self:GetName()..'Icon']:SetVertexColor(unpack(cfg.color.OutOfRange))
                 isInRange = true
             end
 

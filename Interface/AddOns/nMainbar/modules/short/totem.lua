@@ -1,5 +1,8 @@
 
-if (not nMainbar.MainMenuBar.shortBar and not nMainbar.MainMenuBar.moveableExtraBars) then
+local _, nMainbar = ...
+local cfg = nMainbar.Config
+
+if (not cfg.MainMenuBar.shortBar and not cfg.MainMenuBar.moveableExtraBars) then
     return
 end
 
@@ -29,8 +32,8 @@ for i = 1, 12 do
         _G['MultiCastRecallSpellButton'],
         _G['MultiCastSummonSpellButton'],
     }) do
-        button:SetScale(nMainbar.totemManager.scale)
-        button:SetAlpha(nMainbar.totemManager.alpha)
+        button:SetScale(cfg.totemManager.scale)
+        button:SetAlpha(cfg.totemManager.alpha)
 
         button:RegisterForDrag('LeftButton')
         button:HookScript('OnDragStart', function()
@@ -54,7 +57,7 @@ MultiCastActionButton5:SetPoint('CENTER', MultiCastSlotButton1)
 MultiCastActionButton9:ClearAllPoints()
 MultiCastActionButton9:SetPoint('CENTER', MultiCastSlotButton1)
 
-MultiCastFlyoutFrame:SetScale(nMainbar.totemManager.scale * 1.1)
+MultiCastFlyoutFrame:SetScale(cfg.totemManager.scale * 1.1)
 
 hooksecurefunc('MultiCastFlyoutFrame_LoadSlotSpells', function(self, slot, ...)
     local numSpells = select('#', ...)
@@ -70,7 +73,7 @@ hooksecurefunc('MultiCastFlyoutFrame_LoadSlotSpells', function(self, slot, ...)
     end
 end)
 
-if (not nMainbar.totemManager.hideRecallButton) then
+if (not cfg.totemManager.hideRecallButton) then
     hooksecurefunc(MultiCastRecallSpellButton, 'Show', function(self)
         self:Hide()
     end)

@@ -1,12 +1,15 @@
 
+local _, nMainbar = ...
+local cfg = nMainbar.Config
+
 PetActionBarFrame:SetFrameStrata('HIGH')
 
-PetActionBarFrame:SetScale(nMainbar.petBar.scale)
-PetActionBarFrame:SetAlpha(nMainbar.petBar.alpha)
+PetActionBarFrame:SetScale(cfg.petBar.scale)
+PetActionBarFrame:SetAlpha(cfg.petBar.alpha)
 
    -- horizontal/vertical bars
 
-if (nMainbar.petBar.vertical) then
+if (cfg.petBar.vertical) then
     for i = 2, 10 do
         button = _G['PetActionButton'..i]
         button:ClearAllPoints()

@@ -1,4 +1,7 @@
 
+local _, nMainbar = ...
+local cfg = nMainbar.Config
+
 local function GetNumShapeSlots()
     local _, class = UnitClass('Player')
     
@@ -50,26 +53,26 @@ local function EnableMouseOver(self, bar, min, max, alpha)
     end
 end
 
-if (nMainbar.multiBarLeft.mouseover) then
-    EnableMouseOver('MultiBarLeftButton', MultiBarLeft, 1, 12, nMainbar.multiBarLeft.alpha)
+if (cfg.multiBarLeft.mouseover) then
+    EnableMouseOver('MultiBarLeftButton', MultiBarLeft, 1, 12, cfg.multiBarLeft.alpha)
 end
 
-if (nMainbar.multiBarRight.mouseover) then
-    EnableMouseOver('MultiBarRightButton', MultiBarRight, 1, 12, nMainbar.multiBarRight.alpha)
+if (cfg.multiBarRight.mouseover) then
+    EnableMouseOver('MultiBarRightButton', MultiBarRight, 1, 12, cfg.multiBarRight.alpha)
 end
 
-if (nMainbar.multiBarBottomLeft.mouseover) then
-    EnableMouseOver('MultiBarBottomLeftButton', MultiBarBottomLeft, 1, 12, nMainbar.multiBarBottomLeft.alpha)
+if (cfg.multiBarBottomLeft.mouseover) then
+    EnableMouseOver('MultiBarBottomLeftButton', MultiBarBottomLeft, 1, 12, cfg.multiBarBottomLeft.alpha)
 end
 
-if (nMainbar.multiBarBottomRight.mouseover) then
-    EnableMouseOver('MultiBarBottomRightButton', MultiBarBottomRight, 1, 12, nMainbar.multiBarBottomRight.alpha)
+if (cfg.multiBarBottomRight.mouseover) then
+    EnableMouseOver('MultiBarBottomRightButton', MultiBarBottomRight, 1, 12, cfg.multiBarBottomRight.alpha)
 end
 
-if (nMainbar.petBar.mouseover) then
-    EnableMouseOver('PetActionButton', PetActionBarFrame, 1, 10, nMainbar.petBar.alpha)
+if (cfg.petBar.mouseover) then
+    EnableMouseOver('PetActionButton', PetActionBarFrame, 1, 10, cfg.petBar.alpha)
 end
 
-if (nMainbar.stanceBar.mouseover) then
-    EnableMouseOver('ShapeshiftButton', ShapeshiftBarFrame, 1, GetNumShapeSlots(), nMainbar.stanceBar.alpha)
+if (cfg.stanceBar.mouseover) then
+    EnableMouseOver('ShapeshiftButton', ShapeshiftBarFrame, 1, GetNumShapeSlots(), cfg.stanceBar.alpha)
 end

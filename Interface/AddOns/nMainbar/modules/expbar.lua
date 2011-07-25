@@ -1,10 +1,13 @@
 
+local _, nMainbar = ...
+local cfg = nMainbar.Config
+
     -- experience bar mouseover text
 
-MainMenuBarExpText:SetFont(nMainbar.expBar.font, nMainbar.expBar.fontsize, 'THINOUTLINE')
+MainMenuBarExpText:SetFont(cfg.expBar.font, cfg.expBar.fontsize, 'THINOUTLINE')
 MainMenuBarExpText:SetShadowOffset(0, 0)
 
-if (nMainbar.expBar.mouseover) then
+if (cfg.expBar.mouseover) then
     MainMenuBarExpText:SetAlpha(0)
     
     MainMenuExpBar:HookScript('OnEnter', function()

@@ -1,10 +1,13 @@
+
+local _, nMainbar = ...
+local cfg = nMainbar.Config
  
     -- reputation bar mouseover text
 
-ReputationWatchStatusBarText:SetFont(nMainbar.repBar.font, nMainbar.repBar.fontsize, 'THINOUTLINE')
+ReputationWatchStatusBarText:SetFont(cfg.repBar.font, cfg.repBar.fontsize, 'THINOUTLINE')
 ReputationWatchStatusBarText:SetShadowOffset(0, 0)
 
-if (nMainbar.repBar.mouseover) then
+if (cfg.repBar.mouseover) then
     ReputationWatchStatusBarText:SetAlpha(0)
 
     ReputationWatchBar:HookScript('OnEnter', function()

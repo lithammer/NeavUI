@@ -1,5 +1,9 @@
 
-nMainbar = {
+local _, nMainbar = ...
+
+nMainbar.Config = {
+    showPicomenu = true,
+
     button = { 
         showVehicleKeybinds = true,
         showKeybinds = false,
@@ -48,7 +52,7 @@ nMainbar = {
         shortBar = true,
         skinButton = true,
         
-        moveableExtraBars = false,  -- make the pet, possess, shapeshift and totembar moveable, even when the mainmenubar is not "short"
+        moveableExtraBars = false,      -- Make the pet, possess, shapeshift and totembar moveable, even when the mainmenubar is not "short"
     },
 
     vehicleBar = {

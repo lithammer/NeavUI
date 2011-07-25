@@ -1,8 +1,11 @@
 
-MultiBarRight:SetAlpha(nMainbar.multiBarRight.alpha)
-MultiBarRight:SetScale(nMainbar.MainMenuBar.scale)
+local _, nMainbar = ...
+local cfg = nMainbar.Config
 
-if (nMainbar.multiBarRight.orderHorizontal) then
+MultiBarRight:SetAlpha(cfg.multiBarRight.alpha)
+MultiBarRight:SetScale(cfg.MainMenuBar.scale)
+
+if (cfg.multiBarRight.orderHorizontal) then
     for i = 2, 12 do
         button = _G['MultiBarRightButton'..i]
         button:ClearAllPoints()

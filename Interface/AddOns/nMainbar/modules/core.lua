@@ -1,8 +1,11 @@
 
-if (nMainbar.MainMenuBar.hideGryphons) then
+local _, nMainbar = ...
+local cfg = nMainbar.Config
+
+if (cfg.MainMenuBar.hideGryphons) then
     MainMenuBarLeftEndCap:SetTexCoord(0, 0, 0, 0)
     MainMenuBarRightEndCap:SetTexCoord(0, 0, 0, 0)
 end
 
-MainMenuBar:SetScale(nMainbar.MainMenuBar.scale)
-VehicleMenuBar:SetScale(nMainbar.vehicleBar.scale)
+MainMenuBar:SetScale(cfg.MainMenuBar.scale)
+VehicleMenuBar:SetScale(cfg.vehicleBar.scale)

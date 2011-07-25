@@ -1,5 +1,8 @@
 
-if (not nMainbar.MainMenuBar.shortBar) then
+local _, nMainbar = ...
+local cfg = nMainbar.Config
+
+if (not cfg.MainMenuBar.shortBar) then
     return
 end
 
