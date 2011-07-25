@@ -19,116 +19,22 @@ local slotInfo = {
     [11] = {18, 'Ranged'}
 }
 
-    -- move some buttons
-
-local leftRotate = CharacterModelFrameRotateLeftButton 
-leftRotate:ClearAllPoints() 
-leftRotate:SetPoint('BOTTOMLEFT', CharacterModelFrame, 7, 0) 
-
-local rightRotate = CharacterModelFrameRotateRightButton 
-rightRotate:ClearAllPoints() 
-rightRotate:SetPoint('BOTTOMRIGHT', CharacterModelFrame, -7, 0)
-
-    -- bigger text
-
 local charString = CharacterLevelText 
 charString:SetFont('Fonts\\ARIALN.ttf', 14)
 
-    -- create all frames and font strings
-
-local f = CreateFrame('Frame')
-f:SetSize(150, 32)
-f:SetFrameStrata('DIALOG')
+local f = CreateFrame('Button', 'PaperDollFrameDurabilityTab', PaperDollSidebarTab1, 'CharacterFrameTabButtonTemplate')
+f:SetPoint('TOP', PaperDollFrame, 'BOTTOM', 170, 2)
+f:Disable()
 f:EnableMouse(false)
-f:SetScale(0.94)
-f:SetPoint('TOP', PaperDollFrame, 'BOTTOM', 170, 0)
-f:SetParent(PaperDollSidebarTab1)
+f:SetFrameStrata('BACKGROUND')
+
 f:RegisterEvent('PLAYER_ENTERING_WORLD')
 f:RegisterEvent('UPDATE_INVENTORY_DURABILITY')
 f:RegisterEvent('MERCHANT_SHOW')
 
-    -- create the tab-like textures
-
-f.TabLeft = f:CreateTexture(nil, 'BACKGROUND', self)
-f.TabLeft:SetTexture('Interface\\PaperDollInfoFrame\\UI-Character-InActiveTab')
-f.TabLeft:SetSize(21, 32)     
-f.TabLeft:SetTexCoord(0, 0.15625, 0, 1)
-f.TabLeft:SetPoint('BOTTOMLEFT', f)
-
-f.TabRight = f:CreateTexture(nil, 'BACKGROUND', self)
-f.TabRight:SetTexture('Interface\\PaperDollInfoFrame\\UI-Character-InActiveTab')
-f.TabRight:SetSize(21, 32)     
-f.TabRight:SetTexCoord(0.84375, 1, 0, 1)
-f.TabRight:SetPoint('BOTTOMRIGHT', f)
-
-f.TabMiddle = f:CreateTexture(nil, 'BACKGROUND', self)
-f.TabMiddle:SetTexture('Interface\\PaperDollInfoFrame\\UI-Character-InActiveTab')
-f.TabMiddle:SetSize(88, 32)     
-f.TabMiddle:SetTexCoord(0.15625, 0.84375, 0, 1)
-f.TabMiddle:SetPoint('LEFT', f.TabLeft, 'RIGHT')
-f.TabMiddle:SetPoint('RIGHT', f.TabRight, 'LEFT')
-
-        -- create the durability font string
-
-f.Text = f:CreateFontString(nil, 'OVERLAY')
-f.Text:SetFont('Fonts\\ARIALN.ttf', 13)
-f.Text:SetPoint('CENTER', f, 0, 3)
-f.Text:SetShadowColor(0, 0, 0, 0)
-f.Text:SetShadowOffset(1, -1)
-f.Text:SetParent(f)
-f.Text:SetJustifyH('CENTER')
-
-    -- create the head toggle button
-
-f.Head = CreateFrame('Button', nil, CharacterHeadSlot)
-f.Head:SetFrameStrata('HIGH')
-f.Head:SetToplevel(true)
-f.Head:SetSize(16, 32)
-f.Head:SetPoint('LEFT', CharacterHeadSlot, 'CENTER', 9, 0)
-
-f.Head:SetScript('OnClick', function() 
-    ShowHelm(not ShowingHelm()) 
-end)
-
-f.Head:SetScript('OnEnter', function(self) 
-    GameTooltip:SetOwner(self, 'ANCHOR_TOPLEFT', 13, -10)
-    GameTooltip:AddLine(SHOW_HELM)
-    GameTooltip:Show()
-end)
-
-f.Head:SetScript('OnLeave', function() 
-    GameTooltip:Hide()
-end)
-
-f.Head:SetNormalTexture('Interface\\AddOns\\nCore\\media\\textureNormal')
-f.Head:SetHighlightTexture('Interface\\AddOns\\nCore\\media\\textureHighlight')
-f.Head:SetPushedTexture('Interface\\AddOns\\nCore\\media\\texturePushed')
-
-    -- create the cloak toggle button
-    
-f.Cloak = CreateFrame('Button', nil, CharacterBackSlot)
-f.Cloak:SetFrameStrata('HIGH')
-f.Cloak:SetToplevel(true)
-f.Cloak:SetSize(16, 32)
-f.Cloak:SetPoint('LEFT', CharacterBackSlot, 'CENTER', 9, 0)
-
-f.Cloak:SetScript('OnClick', function() 
-    ShowCloak(not ShowingCloak()) 
-end)
-
-f.Cloak:SetScript('OnEnter', function(self) 
-    GameTooltip:SetOwner(self, 'ANCHOR_TOPLEFT', 13, -10)
-    GameTooltip:AddLine(SHOW_CLOAK)
-    GameTooltip:Show()
-end)
-
-f.Cloak:SetScript('OnLeave', function() 
-    GameTooltip:Hide()
-end)
-
-f.Cloak:SetNormalTexture('Interface\\AddOns\\nCore\\media\\textureNormal')
-f.Cloak:SetHighlightTexture('Interface\\AddOns\\nCore\\media\\textureHighlight')
-f.Cloak:SetPushedTexture('Interface\\AddOns\\nCore\\media\\texturePushed')
+_G[f:GetName()..'LeftDisabled']:SetTexture(nil)
+_G[f:GetName()..'RightDisabled']:SetTexture(nil)
+_G[f:GetName()..'MiddleDisabled']:SetTexture(nil)
 
 local function ColorGradient(perc, ...)
     if (perc >= 1) then
@@ -187,8 +93,6 @@ f:SetScript('OnEvent', function(event)
             r, g, b = 0, 1, 0
         end
 
-        f.Text:SetTextColor(r, g, b)
-        f.Text:SetText(string.format('%d%%', (overAll/total)*100)..' |cffffffff'..DURABILITY..'|r')
-        f:SetWidth(f.Text:GetWidth() + 44)
+        f:SetText(format('|cff%02x%02x%02x%d%%|r', r*255, g*255, b*255, (overAll/total)*100)..' '..DURABILITY)
     end
 end)
