@@ -73,6 +73,7 @@ ns.auras = {
         [GetSpellInfo(61336)] = 15, -- Survival Instincts
         [GetSpellInfo(31850)] = 15, -- Ardent Defender
         [GetSpellInfo(498)] = 15, -- Divine Protection
+        [GetSpellInfo(33206)] = 15, -- Pain Suppression
     },
 
         -- Raid Debuffs
