@@ -225,10 +225,10 @@ local function UpdateHealthText(self)
     local currentValue = self.Health:GetValue()
     local perc = (currentValue/max)*100	
 
-    if (perc >= 100 and currentValue ~= 1) then
+    if (perc >= 100 and currentValue > 5 and cfg.showFullHP) then
         self.Health.Value:SetFormattedText('%s', FormatValue(currentValue))		
-    elseif (perc < 100 and currentValue ~= 1) then
-        self.Health.Value:SetFormattedText('%s - %.0f%%', FormatValue(currentValue), perc + 0.5)
+    elseif (perc < 100 and currentValue > 5) then
+        self.Health.Value:SetFormattedText('%s - %.0f%%', FormatValue(currentValue), perc-0.5)
     else
         self.Health.Value:SetText('')
     end
