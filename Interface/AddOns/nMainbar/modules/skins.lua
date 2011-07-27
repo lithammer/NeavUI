@@ -42,25 +42,22 @@ hooksecurefunc('PetActionBar_Update', function()
                 button:SetNormalTexture(path..'textureNormal')
 
                 local icon = _G[name..i..'Icon']
-                icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-                icon:SetPoint('TOPRIGHT', button, 1, 1)
-                icon:SetPoint('BOTTOMLEFT', button, -1, -1)
-
-                if (not InCombatLockdown()) then
-                    local cooldown = _G[name..i..'Cooldown']
-                    cooldown:ClearAllPoints()
-                    cooldown:SetPoint('BOTTOMLEFT', icon, -1, -1)
-                    cooldown:SetPoint('TOPRIGHT', icon, 1, 1)
+                if (not button.Shadow) then
+                    icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
+                    icon:SetPoint('TOPRIGHT', button, 1, 1)
+                    icon:SetPoint('BOTTOMLEFT', button, -1, -1)
                 end
 
                 local normal = _G[name..i..'NormalTexture2'] or _G[name..i..'NormalTexture']
-                normal:ClearAllPoints()
-                normal:SetPoint('TOPRIGHT', button, 1.5, 1.5)
-                normal:SetPoint('BOTTOMLEFT', button, -1.5, -1.5)
-                normal:SetVertexColor(cfg.color.Normal[1], cfg.color.Normal[2], cfg.color.Normal[3], 1)
+                if (not button.Shadow) then
+                    normal:ClearAllPoints()
+                    normal:SetPoint('TOPRIGHT', button, 1.5, 1.5)
+                    normal:SetPoint('BOTTOMLEFT', button, -1.5, -1.5)
+                    normal:SetVertexColor(cfg.color.Normal[1], cfg.color.Normal[2], cfg.color.Normal[3], 1)
 
-                local flash = _G[name..i..'Flash']
-                flash:SetTexture(flashtex)
+                    local flash = _G[name..i..'Flash']
+                    flash:SetTexture(flashtex)
+                end
 
                 if (not InCombatLockdown()) then
                     local cooldown = _G[name..i..'Cooldown']
@@ -69,19 +66,19 @@ hooksecurefunc('PetActionBar_Update', function()
                     cooldown:SetPoint('BOTTOMLEFT', icon, 1.66, 2.33)
                     -- cooldown:SetDrawEdge(true)
                 end
-
-                button:SetCheckedTexture(path..'textureChecked')
-                button:GetCheckedTexture():SetAllPoints(normal)
-                button:GetCheckedTexture():SetDrawLayer('OVERLAY')
-
-                button:SetPushedTexture(path..'texturePushed')
-                button:GetPushedTexture():SetAllPoints(normal)
-                button:GetPushedTexture():SetDrawLayer('OVERLAY')
-
-                button:SetHighlightTexture(path..'textureHighlight')
-                button:GetHighlightTexture():SetAllPoints(normal)
-
+                
                 if (not button.Shadow) then
+                    button:SetCheckedTexture(path..'textureChecked')
+                    button:GetCheckedTexture():SetAllPoints(normal)
+                    button:GetCheckedTexture():SetDrawLayer('OVERLAY')
+
+                    button:SetPushedTexture(path..'texturePushed')
+                    button:GetPushedTexture():SetAllPoints(normal)
+                    button:GetPushedTexture():SetDrawLayer('OVERLAY')
+
+                    button:SetHighlightTexture(path..'textureHighlight')
+                    button:GetHighlightTexture():SetAllPoints(normal)
+
                     button.Shadow = button:CreateTexture(nil, 'BACKGROUND')
                     button.Shadow:SetParent(button)  
                     button.Shadow:SetPoint('TOPRIGHT', normal, 4, 4)
@@ -119,15 +116,19 @@ hooksecurefunc('ActionButton_Update', function(self)
         button:SetNormalTexture(path..'textureNormal')
 
         local normal = _G[self:GetName()..'NormalTexture']
-        normal:ClearAllPoints()
-        normal:SetPoint('TOPRIGHT', button, 1, 1)
-        normal:SetPoint('BOTTOMLEFT', button, -1, -1)
-        normal:SetVertexColor(cfg.color.Normal[1], cfg.color.Normal[2], cfg.color.Normal[3], 1)
-        normal:SetDrawLayer('ARTWORK')
-
+        if (not button.Shadow) then
+            normal:ClearAllPoints()
+            normal:SetPoint('TOPRIGHT', button, 1, 1)
+            normal:SetPoint('BOTTOMLEFT', button, -1, -1)
+            normal:SetVertexColor(cfg.color.Normal[1], cfg.color.Normal[2], cfg.color.Normal[3], 1)
+            normal:SetDrawLayer('ARTWORK')
+        end
+        
         local icon = _G[self:GetName()..'Icon']
-        icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-        icon:SetDrawLayer('BORDER')
+        if (not button.Shadow) then
+            icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
+            icon:SetDrawLayer('BORDER')
+        end
 
         if (not InCombatLockdown()) then
             local cooldown = _G[self:GetName()..'Cooldown']
@@ -136,45 +137,43 @@ hooksecurefunc('ActionButton_Update', function(self)
             cooldown:SetPoint('BOTTOMLEFT', icon, 2, 2)
         end
 
-        button:SetCheckedTexture(path..'textureChecked')
-        button:GetCheckedTexture():SetAllPoints(normal)
+        if (not button.Shadow) then
+            button:SetCheckedTexture(path..'textureChecked')
+            button:GetCheckedTexture():SetAllPoints(normal)
 
-        button:SetPushedTexture(path..'texturePushed')
-        button:GetPushedTexture():SetAllPoints(normal)
+            button:SetPushedTexture(path..'texturePushed')
+            button:GetPushedTexture():SetAllPoints(normal)
 
-        button:SetHighlightTexture(path..'textureHighlight')
-        button:GetHighlightTexture():SetAllPoints(normal)
+            button:SetHighlightTexture(path..'textureHighlight')
+            button:GetHighlightTexture():SetAllPoints(normal)
 
-        local border = _G[self:GetName()..'Border']
-        border:SetAllPoints(normal)
-        border:SetDrawLayer('OVERLAY')
-        border:SetTexture(path..'textureHighlight')
-        border:SetVertexColor(unpack(cfg.color.IsEquipped))
+            local border = _G[self:GetName()..'Border']
+            border:SetAllPoints(normal)
+            border:SetDrawLayer('OVERLAY')
+            border:SetTexture(path..'textureHighlight')
+            border:SetVertexColor(unpack(cfg.color.IsEquipped))
 
-        local count = _G[self:GetName()..'Count']
-        count:SetPoint('BOTTOMRIGHT', button, 0, 1)
-        count:SetFont(cfg.button.countFont, cfg.button.countFontsize, 'OUTLINE')
-        count:SetVertexColor(cfg.color.CountText[1], cfg.color.CountText[2], cfg.color.CountText[3], 1)
+            local count = _G[self:GetName()..'Count']
+            count:SetPoint('BOTTOMRIGHT', button, 0, 1)
+            count:SetFont(cfg.button.countFont, cfg.button.countFontsize, 'OUTLINE')
+            count:SetVertexColor(cfg.color.CountText[1], cfg.color.CountText[2], cfg.color.CountText[3], 1)
 
-        local macroname = _G[self:GetName()..'Name']
-        if (not cfg.button.showMacronames) then
-            macroname:SetAlpha(0)
-        else
-            macroname:SetDrawLayer('OVERLAY')
-            macroname:SetWidth(button:GetWidth() + 5)
-            macroname:SetFont(cfg.button.macronameFont, cfg.button.macronameFontsize, 'OUTLINE')
-            macroname:SetVertexColor(unpack(cfg.color.MacroText))
-        end
+            local macroname = _G[self:GetName()..'Name']
+            if (not cfg.button.showMacronames) then
+                macroname:SetAlpha(0)
+            else
+                macroname:SetDrawLayer('OVERLAY')
+                macroname:SetWidth(button:GetWidth() + 5)
+                macroname:SetFont(cfg.button.macronameFont, cfg.button.macronameFontsize, 'OUTLINE')
+                macroname:SetVertexColor(unpack(cfg.color.MacroText))
+            end
 
-        if (not button.Background) then
             button.Background = button:CreateTexture(nil, 'BACKGROUND')
             button.Background:SetParent(button)  
             button.Background:SetTexture(path..'textureBackground')
             button.Background:SetPoint('TOPRIGHT', button, 2, 2)
             button.Background:SetPoint('BOTTOMLEFT', button, -2, -2)
-        end
 
-        if (not button.Shadow) then
             button.Shadow = button:CreateTexture(nil, 'BACKGROUND')
             button.Shadow:SetParent(button)  
             button.Shadow:SetPoint('TOPRIGHT', normal, 4.5, 4.5)
@@ -202,6 +201,10 @@ hooksecurefunc('ActionButton_ShowGrid', function(self)
 end)
 
 hooksecurefunc('ActionButton_UpdateUsable', function(self)
+    if (IsAddOnLoaded('RedRange') or IsAddOnLoaded('GreenRange') or IsAddOnLoaded('tullaRange') or IsAddOnLoaded('RangeColors')) then
+        return
+    end    
+
     _G[self:GetName()..'NormalTexture']:SetVertexColor(cfg.color.Normal[1], cfg.color.Normal[2], cfg.color.Normal[3], 1) 
 
     local isUsable, notEnoughMana = IsUsableAction(self.action)
@@ -233,6 +236,10 @@ hooksecurefunc('ActionButton_UpdateHotkeys', function(self)
 end)
 
 function ActionButton_OnUpdate(self, elapsed)
+    if (IsAddOnLoaded('RedRange') or IsAddOnLoaded('GreenRange') or IsAddOnLoaded('tullaRange') or IsAddOnLoaded('RangeColors')) then
+        return
+    end     
+
     if (ActionButton_IsFlashing(self)) then
         local flashtime = self.flashtime
         flashtime = flashtime - elapsed
@@ -259,9 +266,8 @@ function ActionButton_OnUpdate(self, elapsed)
     local rangeTimer = self.rangeTimer
     if (rangeTimer) then
         rangeTimer = rangeTimer - elapsed
-        if (rangeTimer <= 0) then
+        if (rangeTimer <= 0.1) then
             local isInRange = false
-
             if (ActionHasRange(self.action) and IsActionInRange(self.action) == 0) then
                 _G[self:GetName()..'Icon']:SetVertexColor(unpack(cfg.color.OutOfRange))
                 isInRange = true
@@ -278,3 +284,24 @@ function ActionButton_OnUpdate(self, elapsed)
         self.rangeTimer = rangeTimer
     end
 end
+
+local f = CreateFrame('Frame', MainMenuBar)
+f:RegisterEvent('ADDON_LOADED')
+f:SetScript('OnEvent', function()
+    if (IsAddOnLoaded('tullaRange')) then
+        if (not tullaRange) then
+            return
+        end
+
+        function tullaRange.SetButtonColor(button, colorType)
+            if (button.tullaRangeColor ~= colorType) then
+                button.tullaRangeColor = colorType
+
+                local r, g, b = tullaRange:GetColor(colorType)
+
+                local icon =  _G[button:GetName()..'Icon']
+                icon:SetVertexColor(r, g, b)
+            end
+        end
+    end
+end)

@@ -357,7 +357,7 @@ f:GetNormalTexture():SetSize(30, 30)
 f:SetHighlightTexture('Interface\\AddOns\\nMainbar\\media\\picomenu\\picomenuHighlight')
 f:GetHighlightTexture():SetAllPoints(f:GetNormalTexture())
 
-f:SetScript('OnEvent', function(self, event, arg1)
+f:SetScript('OnEvent', function()
     UpdateAddOnTable(arg1)
 end)
 
