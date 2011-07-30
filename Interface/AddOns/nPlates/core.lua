@@ -15,7 +15,7 @@ local UnitName = UnitName
 local UnitCastingInfo = UnitCastingInfo
 local UnitChannelInfo = UnitChannelInfo
 
-local borderColor = {0.4, 0.4, 0.4}
+local borderColor = {0.47, 0.47, 0.47}
 local noThreatColor = {0, 1, 0}
 
 local nameplateFlashTexture = 'Interface\\TargetingFrame\\UI-TargetingFrame-Flash'
@@ -485,7 +485,7 @@ local function SkinPlate(self)
             if (cfg.showTargetBorder) then
                 if (IsTarget(self)) then
                     if (not self.TargetHighlight) then
-                        self.TargetHighlight = self.Health:CreateTexture(nil, 'ARTWORK')
+                        self.TargetHighlight = self:CreateTexture(nil, 'ARTWORK')
                         self.TargetHighlight:SetAllPoints(self.Overlay)
                         self.TargetHighlight:SetTexture(overlayTexture)
                         self.TargetHighlight:Hide()
