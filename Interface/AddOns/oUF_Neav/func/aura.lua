@@ -86,9 +86,13 @@ ns.PostUpdateIcon = function(icons, unit, icon, index, offset)
         local _, _, _, _, _, duration, expirationTime = UnitAura(unit, index, icon.filter)
 
         if (duration and duration > 0) then
-            icon.remaining:Show()
+            if (not icon.remaining:IsShown()) then
+                icon.remaining:Show()
+            end
         else
-            icon.remaining:Hide()
+            if (icon.remaining:IsShown()) then
+                icon.remaining:Hide()
+            end
         end
 
         icon.duration = duration
@@ -99,60 +103,58 @@ ns.PostUpdateIcon = function(icons, unit, icon, index, offset)
 end
 
 ns.UpdateAuraIcons = function(auras, button)
-    local size = button:GetSize()
-
-    button:SetFrameLevel(1)
-
-    button.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
-    button.icon:ClearAllPoints()
-    button.icon:SetPoint('CENTER', button)
-    button.icon:SetSize(size, size)
-
-    button.overlay:SetTexture(config.media.border)
-    button.overlay:SetTexCoord(0, 1, 0, 1)
-    button.overlay:ClearAllPoints()
-    button.overlay:SetPoint('TOPRIGHT', button.icon, 1.35, 1.35)
-    button.overlay:SetPoint('BOTTOMLEFT', button.icon, -1.35, -1.35)
-
-    button.count:SetFont(config.font.normal, 11, 'THINOUTLINE')
-    button.count:SetShadowOffset(0, 0)
-    button.count:ClearAllPoints()
-    button.count:SetPoint('BOTTOMRIGHT', button.icon, 1, 1)
-
-    if (config.show.disableCooldown) then
-        button.cd:SetReverse()
-        button.cd:SetDrawEdge(true)
-        button.cd:ClearAllPoints()
-        button.cd:SetPoint('TOPRIGHT', button.icon, 'TOPRIGHT', -1, -1)
-        button.cd:SetPoint('BOTTOMLEFT', button.icon, 'BOTTOMLEFT', 1, 1)
-    else
-        auras.disableCooldown = true
-        
-        button.remaining = button:CreateFontString(nil, 'OVERLAY')
-        button.remaining:SetFont(config.font.normal, 8, 'THINOUTLINE')
-        button.remaining:SetShadowOffset(0, 0)
-        button.remaining:SetPoint('TOP', button.icon, 0, 2)
-    end
-
     if (not button.Shadow) then
-        button.Shadow = button:CreateTexture(nil, 'BACKGROUND')
-        button.Shadow:SetPoint('TOPLEFT', button.icon, 'TOPLEFT', -4, 4)
-        button.Shadow:SetPoint('BOTTOMRIGHT', button.icon, 'BOTTOMRIGHT', 4, -4)
-        button.Shadow:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\borderBackground')
-        button.Shadow:SetVertexColor(0, 0, 0, 1)
-    end
+        local size = button:GetSize()
 
-    button.overlay.Hide = function(self)
-        if (auras.customColor) then
-            self:SetVertexColor(unpack(auras.customColor))
+        button:SetFrameLevel(1)
+
+        button.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+        button.icon:ClearAllPoints()
+        button.icon:SetPoint('CENTER', button)
+        button.icon:SetSize(size, size)
+
+        button.overlay:SetTexture(config.media.border)
+        button.overlay:SetTexCoord(0, 1, 0, 1)
+        button.overlay:ClearAllPoints()
+        button.overlay:SetPoint('TOPRIGHT', button.icon, 1.35, 1.35)
+        button.overlay:SetPoint('BOTTOMLEFT', button.icon, -1.35, -1.35)
+
+        button.count:SetFont(config.font.normal, 11, 'THINOUTLINE')
+        button.count:SetShadowOffset(0, 0)
+        button.count:ClearAllPoints()
+        button.count:SetPoint('BOTTOMRIGHT', button.icon, 1, 1)
+
+        if (config.show.disableCooldown) then
+            button.cd:SetReverse()
+            button.cd:SetDrawEdge(true)
+            button.cd:ClearAllPoints()
+            button.cd:SetPoint('TOPRIGHT', button.icon, 'TOPRIGHT', -1, -1)
+            button.cd:SetPoint('BOTTOMLEFT', button.icon, 'BOTTOMLEFT', 1, 1)
         else
+            auras.disableCooldown = true
+            
+            button.remaining = button:CreateFontString(nil, 'OVERLAY')
+            button.remaining:SetFont(config.font.normal, 8, 'THINOUTLINE')
+            button.remaining:SetShadowOffset(0, 0)
+            button.remaining:SetPoint('TOP', button.icon, 0, 2)
+        end
+
+        if (not button.Shadow) then
+            button.Shadow = button:CreateTexture(nil, 'BACKGROUND')
+            button.Shadow:SetPoint('TOPLEFT', button.icon, 'TOPLEFT', -4, 4)
+            button.Shadow:SetPoint('BOTTOMRIGHT', button.icon, 'BOTTOMRIGHT', 4, -4)
+            button.Shadow:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\borderBackground')
+            button.Shadow:SetVertexColor(0, 0, 0, 1)
+        end
+
+        button.overlay.Hide = function(self)
             self:SetVertexColor(0.45, 0.45, 0.45, 1)
         end
-    end
 
-    --[[
-    if (not button.disableMouseover) then
-        AuraMouseover(button, size)
+        --[[
+        if (not button.disableMouseover) then
+            AuraMouseover(button, size)
+        end
+        --]]
     end
-    --]]
 end

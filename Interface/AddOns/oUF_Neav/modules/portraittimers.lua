@@ -189,6 +189,10 @@ local Update = function(self, event, unit)
 
             pt:Show()
 
+            if (self.CombatFeedbackText) then
+                self.CombatFeedbackText.maxAlpha = 0
+            end
+
             return
         elseif (UnitDebuff(unit, spell)) then
             local name, _, texture, _, _, duration, expires = UnitDebuff(unit, spell)
@@ -196,10 +200,18 @@ local Update = function(self, event, unit)
 
             pt:Show()
 
+            if (self.CombatFeedbackText) then
+                self.CombatFeedbackText.maxAlpha = 0
+            end
+
             return
         else
             if (pt:IsShown()) then
                 pt:Hide()
+            end
+
+            if (self.CombatFeedbackText) then
+                self.CombatFeedbackText.maxAlpha = 1
             end
         end
     end

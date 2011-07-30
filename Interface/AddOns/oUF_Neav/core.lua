@@ -18,6 +18,12 @@ for _, button in pairs({
     _G['InterfaceOptions'..button]:EnableMouse(false)
 end
 
+function PetFrame_Update() end
+function PlayerFrame_AnimateOut() end
+function PlayerFrame_AnimFinished() end
+function PlayerFrame_ToPlayerArt() end
+function PlayerFrame_ToVehicleArt() end
+
 InterfaceOptionsFrameCategoriesButton9:SetScale(0.00001)
 InterfaceOptionsFrameCategoriesButton9:SetAlpha(0)
 
@@ -603,7 +609,7 @@ local function CreateUnitLayout(self, unit)
 
         self.PortraitTimer.Remaining = self.PortraitTimer:CreateFontString(nil, 'OVERLAY')
         self.PortraitTimer.Remaining:SetPoint('CENTER', self.PortraitTimer.Icon) 
-        self.PortraitTimer.Remaining:SetFont(config.font.normal, (self.Portrait:GetWidth()/4), 'THINOUTLINE')
+        self.PortraitTimer.Remaining:SetFont(config.font.normal, (self.Portrait:GetWidth()/3.5), 'THINOUTLINE')
         self.PortraitTimer.Remaining:SetTextColor(1, 1, 1)
     end
 
