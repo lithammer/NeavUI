@@ -44,7 +44,7 @@ BuffFrame:SetScript('OnUpdate', nil)
 -- TemporaryEnchantFrame ...
 TempEnchant1:ClearAllPoints()
 TempEnchant1:SetPoint('TOPRIGHT', Minimap, 'TOPLEFT', -15, 0)
--- TemporaryEnchantFrame.SetPoint = function() end
+-- TempEnchant1.SetPoint = function() end
 
 TempEnchant2:ClearAllPoints()
 TempEnchant2:SetPoint('TOPRIGHT', TempEnchant1, 'TOPLEFT', -cfg.paddingX, 0)
