@@ -208,9 +208,13 @@ hooksecurefunc('ActionButton_ShowGrid', function(self)
 	end
 
     if (IsEquippedAction(self.action)) then
-        _G[self:GetName()..'Border']:SetAlpha(1)
+		if (_G[self:GetName()..'Border']) then
+			_G[self:GetName()..'Border']:SetAlpha(1)
+		end
     else
-        _G[self:GetName()..'Border']:SetAlpha(0)
+		if (_G[self:GetName()..'Border']) then
+			_G[self:GetName()..'Border']:SetAlpha(0)
+		end
     end
 end)
 
