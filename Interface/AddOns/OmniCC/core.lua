@@ -115,7 +115,7 @@ local function Timer_Create(self)
     timer:SetScript('OnUpdate', Timer_OnUpdate)
 
     local text = timer:CreateFontString(nil, 'BACKGROUND ')
-    text:SetPoint('CENTER', 0, 0)
+    text:SetPoint('TOPLEFT', 1, -1)
     text:SetJustifyH("CENTER")
     timer.text = text
 
@@ -129,11 +129,11 @@ local function Timer_Create(self)
     return timer
 end
 
-    -- hook the SetCooldown method of all cooldown frames
-    -- ActionButton1Cooldown is used here since its likely to always exist 
-    -- and I'd rather not create my own cooldown frame to preserve a tiny bit of memory
-
-hooksecurefunc(getmetatable(ActionButton1Cooldown).__index, 'SetCooldown', function(self, start, duration)
+--[[
+  In WoW 4.3 and later, action buttons can completely bypass lua for updating cooldown timers
+  This set of code is there to check and force OmniCC to update timers on standard action buttons (henceforth defined as anything that reuses's blizzard's ActionButton.lua code
+--]]
+local function Timer_Start(self, start, duration)
     if (self.noOCC) then 
         return 
     end
@@ -155,4 +155,61 @@ hooksecurefunc(getmetatable(ActionButton1Cooldown).__index, 'SetCooldown', funct
             Timer_Stop(timer)
         end
     end
+end
+
+hooksecurefunc(getmetatable(ActionButton1Cooldown).__index, 'SetCooldown', Timer_Start)
+
+local active = {}
+local hooked = {}
+
+local function Cooldown_OnShow(self)
+	active[self] = true
+end
+
+local function Cooldown_OnHide(self)
+	active[self] = nil
+end
+
+local function Cooldown_ShouldUpdateTimer(self, start, duration)
+	local timer = self.timer
+	if not timer then
+		return true
+	end
+	return timer.start ~= start
+end
+
+local function Cooldown_Update(self)
+	local button = self:GetParent()
+	local start, duration, enable = GetActionCooldown(button.action)
+
+	if Cooldown_ShouldUpdateTimer(self, start, duration) then
+		Timer_Start(self, start, duration)
+	end
+end
+
+local EventWatcher = CreateFrame('Frame')
+EventWatcher:Hide()
+EventWatcher:SetScript('OnEvent', function(self, event)
+	for cooldown in pairs(active) do
+		Cooldown_Update(cooldown)
+	end
 end)
+EventWatcher:RegisterEvent('ACTIONBAR_UPDATE_COOLDOWN')
+
+local function ActionButton_Register(frame)
+	local cooldown = frame.cooldown
+	if not hooked[cooldown] then
+		cooldown:HookScript('OnShow', Cooldown_OnShow)
+		cooldown:HookScript('OnHide', Cooldown_OnHide)
+		hooked[cooldown] = true
+	end
+end
+
+if _G['ActionBarButtonEventsFrame'].frames then
+	for i, frame in pairs(_G['ActionBarButtonEventsFrame'].frames) do
+		ActionButton_Register(frame)
+	end
+end
+
+hooksecurefunc('ActionBarButtonEventsFrame_RegisterFrame', ActionButton_Register)
+
