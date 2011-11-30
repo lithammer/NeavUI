@@ -3,6 +3,8 @@
 --  - Prevent unnecessary double updates.
 --  - Write a description.
 
+local WoW43 = select(4, GetBuildInfo()) == 40300
+
 local hook
 
 local getID = function(loc)
@@ -36,7 +38,12 @@ end
 
 local enable = function(self)
 	if(not hook) then
-		hooksecurefunc('PaperDollFrameItemFlyout_DisplayButton', pipe)
+		if(WoW43) then
+			hooksecurefunc('EquipmentFlyout_DisplayButton', pipe)
+		else
+			hooksecurefunc('PaperDollFrameItemFlyout_DisplayButton', pipe)
+		end
+
 		hook = true
 	end
 end

@@ -1,13 +1,23 @@
-## Interface: 40200
+## Interface: 40300
 ## Title: oGlow
 ## Author: Haste
-## Version: 2.0.1
+## Version: 2.1.1
 ## SavedVariables: oGlowDB
 ## X-eMail: troeks@gmail.com
 ## Notes: Make your shiny items... glow in the dark!
 
+init.lua
+event.lua
+pipe.lua
+filter.lua
+display.lua
+colors.lua
 oglow.lua
-ui.lua
+
+ui\helpers.lua
+ui\pipes.lua
+ui\quality.lua
+ui\colors.lua
 
 pipes\bags.lua
 pipes\char.lua
