@@ -207,15 +207,13 @@ hooksecurefunc('ActionButton_ShowGrid', function(self)
 		_G[self:GetName()..'NormalTexture']:SetVertexColor(cfg.color.Normal[1], cfg.color.Normal[2], cfg.color.Normal[3], 1)
 	end
 
-    if (IsEquippedAction(self.action)) then
-		if (_G[self:GetName()..'Border']) then
+	if (_G[self:GetName()..'Border']) then
+		if (IsEquippedAction(self.action)) then
 			_G[self:GetName()..'Border']:SetAlpha(1)
-		end
-    else
-		if (_G[self:GetName()..'Border']) then
+		else
 			_G[self:GetName()..'Border']:SetAlpha(0)
 		end
-    end
+	end
 end)
 
 hooksecurefunc('ActionButton_UpdateUsable', function(self)
