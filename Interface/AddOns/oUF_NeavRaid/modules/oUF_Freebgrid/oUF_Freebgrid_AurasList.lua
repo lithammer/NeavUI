@@ -28,6 +28,7 @@ local L = {
     ['The Bastion of Twilight'] = 758,
     ['Throne of the Four Winds'] = 773,
     ['Firelands'] = 800,
+    ['Dragon Soul'] = 824,
     
     -- ['Ulduar'] = 529,
     ['ToC'] = 543,
@@ -79,6 +80,10 @@ ns.auras = {
         -- Raid Debuffs
 
     instances = {
+        [L['Dragon Soul']] = {
+            [GetSpellInfo(109075)] = 7, -- Fading Light, Ultraxion
+        },
+
         [L['Firelands']] = {
             [GetSpellInfo(99256)] = 11, -- Baloroc shard debuff
             [GetSpellInfo(99252)] = 11, -- Baloroc shard debuff
