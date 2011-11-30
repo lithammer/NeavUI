@@ -98,6 +98,14 @@ local menuList = {
         notCheckable = true,
     },
     {
+        text = RAID_FINDER,
+        icon = 'Interface\\MINIMAP\\TRACKING\\None',
+        func = function() 
+			securecall(ToggleFrame, RaidParentFrame)
+        end,
+        notCheckable = true,
+    },
+    {
         text = RAID,
         icon = 'Interface\\TARGETINGFRAME\\UI-TargetingFrame-Skull',
         func = function() 
@@ -109,7 +117,7 @@ local menuList = {
         text = ENCOUNTER_JOURNAL,
         icon = 'Interface\\MINIMAP\\TRACKING\\Profession',
         func = function() 
-            securecall(ToggleFrame, EncounterJournal)
+			securecall(ToggleEncounterJournal)
         end,
         notCheckable = true,
     },
@@ -375,7 +383,7 @@ f:SetScript('OnMouseUp', function(self, button)
             if (DropDownList1:IsShown()) then
                 DropDownList1:Hide()
             else
-                securecall(EasyMenu, menuList, menuFrame, self, 25, 25, 'MENU', 0.01)
+                securecall(EasyMenu, menuList, menuFrame, self, 25, 25, 'MENU', 20)
             end
         end
     else
