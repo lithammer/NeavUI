@@ -1,13 +1,13 @@
 
 local f = CreateFrame('Frame')
 
-local leftRotate = CharacterModelFrameRotateLeftButton 
-leftRotate:ClearAllPoints() 
-leftRotate:SetPoint('BOTTOMLEFT', CharacterModelFrame, 7, 0) 
-
-local rightRotate = CharacterModelFrameRotateRightButton 
-rightRotate:ClearAllPoints() 
-rightRotate:SetPoint('BOTTOMRIGHT', CharacterModelFrame, -7, 0)
+--local leftRotate = CharacterModelFrameControlFrameRotateLeftButton 
+--leftRotate:ClearAllPoints() 
+--leftRotate:SetPoint('BOTTOMLEFT', CharacterModelFrame, 7, 0) 
+--
+--local rightRotate = CharacterModelFrameControlFrameRotateRightButton 
+--rightRotate:ClearAllPoints() 
+--rightRotate:SetPoint('BOTTOMRIGHT', CharacterModelFrame, -7, 0)
 
 f.Head = CreateFrame('Button', nil, CharacterHeadSlot)
 f.Head:SetFrameStrata('HIGH')
