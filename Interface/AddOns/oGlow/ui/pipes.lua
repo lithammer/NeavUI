@@ -37,7 +37,6 @@ function frame:CreateOptions()
 	local subtitle = ns.createFontString(self)
 	subtitle:SetPoint('TOPLEFT', title, 'BOTTOMLEFT', 0, -8)
 	subtitle:SetPoint('RIGHT', self, -32, 0)
-	subtitle:SetJustifyH'LEFT'
 	subtitle:SetText'Now with 30% less toxic radiation!'
 
 	local scroll = CreateFrame("ScrollFrame", nil, self)

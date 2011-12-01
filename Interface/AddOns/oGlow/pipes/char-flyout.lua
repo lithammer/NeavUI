@@ -3,8 +3,6 @@
 --  - Prevent unnecessary double updates.
 --  - Write a description.
 
-local WoW43 = select(4, GetBuildInfo()) == 40300
-
 local hook
 
 local getID = function(loc)
@@ -21,7 +19,7 @@ end
 local pipe = function(self)
 	if(oGlow:IsPipeEnabled'char-flyout') then
 		local location, id = self.location
-		if(location and location < PDFITEMFLYOUT_FIRST_SPECIAL_LOCATION) then
+		if(location and location < EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION) then
 			id = getID(location)
 		end
 
@@ -38,12 +36,7 @@ end
 
 local enable = function(self)
 	if(not hook) then
-		if(WoW43) then
-			hooksecurefunc('EquipmentFlyout_DisplayButton', pipe)
-		else
-			hooksecurefunc('PaperDollFrameItemFlyout_DisplayButton', pipe)
-		end
-
+		hooksecurefunc('EquipmentFlyout_DisplayButton', pipe)
 		hook = true
 	end
 end
