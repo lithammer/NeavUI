@@ -221,7 +221,9 @@ hooksecurefunc('ActionButton_UpdateUsable', function(self)
         return
     end    
 
-    _G[self:GetName()..'NormalTexture']:SetVertexColor(cfg.color.Normal[1], cfg.color.Normal[2], cfg.color.Normal[3], 1) 
+	if (_G[self:GetName()..'NormalTexture']) then
+		_G[self:GetName()..'NormalTexture']:SetVertexColor(cfg.color.Normal[1], cfg.color.Normal[2], cfg.color.Normal[3], 1)
+	end
 
     local isUsable, notEnoughMana = IsUsableAction(self.action)
     if (isUsable) then
