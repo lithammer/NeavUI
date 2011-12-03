@@ -50,11 +50,19 @@ if (nPower.energy.showComboPoints) then
         f.ComboPoints[i]:SetAlpha(0)
     end
 
-    f.ComboPoints[1]:SetPoint('CENTER', -52, 0)
-    f.ComboPoints[2]:SetPoint('CENTER', -26, 0)
-    f.ComboPoints[3]:SetPoint('CENTER', 0, 0)
-    f.ComboPoints[4]:SetPoint('CENTER', 26, 0)
-    f.ComboPoints[5]:SetPoint('CENTER', 52, 0)
+    if(nPower.energy.comboPointsBottom) then
+        f.ComboPoints[1]:SetPoint('CENTER', -52, -35)
+        f.ComboPoints[2]:SetPoint('CENTER', -26, -35)
+        f.ComboPoints[3]:SetPoint('CENTER', 0, -35)
+        f.ComboPoints[4]:SetPoint('CENTER', 26, -35)
+        f.ComboPoints[5]:SetPoint('CENTER', 52, -35)
+    else
+        f.ComboPoints[1]:SetPoint('CENTER', -52, 0)
+        f.ComboPoints[2]:SetPoint('CENTER', -26, 0)
+        f.ComboPoints[3]:SetPoint('CENTER', 0, 0)
+        f.ComboPoints[4]:SetPoint('CENTER', 26, 0)
+        f.ComboPoints[5]:SetPoint('CENTER', 52, 0)
+    end
 end
 
 if (playerClass == 'WARLOCK' and nPower.showSoulshards or playerClass == 'PALADIN' and nPower.showHolypower) then
