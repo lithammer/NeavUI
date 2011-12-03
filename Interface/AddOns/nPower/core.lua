@@ -50,7 +50,7 @@ if (nPower.energy.showComboPoints) then
         f.ComboPoints[i]:SetAlpha(0)
     end
 
-	local yOffset = nPower.energy.comboPointsBelow and 35 or 0
+	local yOffset = nPower.energy.comboPointsBelow and -35 or 0
     f.ComboPoints[1]:SetPoint('CENTER', -52, yOffset)
     f.ComboPoints[2]:SetPoint('CENTER', -26, yOffset)
     f.ComboPoints[3]:SetPoint('CENTER', 0, yOffset)
