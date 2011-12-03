@@ -14,21 +14,6 @@ f:SetScript('OnEvent', function(_, event, ...)
     end
 end)
 
--- Blizzard introduced a bug in 4.3 that always enables
--- the profanity filter.
-local p = CreateFrame('Frame')
-p:RegisterEvent('CVAR_UPDATE')
-p:RegisterEvent('PLAYER_ENTERING_WORLD')
-p:SetScript('OnEvent', function(self, event, cvar)
-	SetCVar('profanityFilter', 0)
-end)
-
--- Disable the profanity filter interface option
-InterfaceOptionsSocialPanelProfanityFilter:SetAlpha(0.35)
-InterfaceOptionsSocialPanelProfanityFilter:Disable()
-InterfaceOptionsSocialPanelProfanityFilter:EnableMouse(false)
-
-
 SlashCmdList['FRAMENAME'] = function()
     local name = GetMouseFocus():GetName()
 
