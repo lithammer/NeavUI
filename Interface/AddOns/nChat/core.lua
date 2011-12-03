@@ -68,12 +68,7 @@ _G.CHAT_BATTLEGROUND_LEADER_GET = '[|Hchannel:Battleground|hBL|h] %s:\32'
 
 -- Blizzard introduced a bug in 4.3 that always enables
 -- the profanity filter.
-local p = CreateFrame('Frame')
-p:RegisterEvent('CVAR_UPDATE')
-p:RegisterEvent('PLAYER_ENTERING_WORLD')
-p:SetScript('OnEvent', function(self, event, cvar)
-	SetCVar('profanityFilter', 0)
-end)
+BNSetMatureLanguageFilter(false)
 
 -- Disable the profanity filter interface option
 InterfaceOptionsSocialPanelProfanityFilter:SetAlpha(0.35)
