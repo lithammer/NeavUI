@@ -30,6 +30,7 @@ nPower = {
     energy = {
         show = true,
         showComboPoints = true,
+        comboPointsBottom = true,
         
         comboColor = {
             [1] = {r = 1.0, g = 1.0, b = 1.0},
