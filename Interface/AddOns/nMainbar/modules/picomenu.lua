@@ -384,7 +384,7 @@ f:SetScript('OnMouseUp', function(self, button)
             if (DropDownList1:IsShown()) then
                 DropDownList1:Hide()
             else
-                EasyMenu(menuList, menuFrame, self, 27, 190, 'MENU', 8)
+                securecall(EasyMenu, menuList, menuFrame, self, 27, 190, 'MENU', 8)
                 -- DropDownList1:ClearAllPoints()
                 -- DropDownList1:SetPoint('BOTTOMLEFT', self, 'TOPRIGHT')
             end
@@ -407,3 +407,8 @@ end)
 f:SetScript('OnLeave', function() 
     GameTooltip:Hide()
 end)
+
+HelpOpenTicketButton:ClearAllPoints()
+HelpOpenTicketButton:SetPoint('TOPLEFT', f, 'BOTTOMRIGHT', -26, 26)
+HelpOpenTicketButton:SetScale(0.6)
+HelpOpenTicketButton:SetParent(f)
