@@ -12,6 +12,7 @@ local x, x2, n = nil, false
 local v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11
 
 local menuFrame = CreateFrame('Frame', 'picomenuDropDownMenu', MainMenuBar, 'UIDropDownMenuTemplate')
+
 local menuList = {
     {
         text = MAINMENU_BUTTON,
@@ -101,7 +102,7 @@ local menuList = {
         text = RAID_FINDER,
         icon = 'Interface\\MINIMAP\\TRACKING\\None',
         func = function() 
-			securecall(ToggleFrame, RaidParentFrame)
+            securecall(ToggleFrame, RaidParentFrame)
         end,
         notCheckable = true,
     },
@@ -117,7 +118,7 @@ local menuList = {
         text = ENCOUNTER_JOURNAL,
         icon = 'Interface\\MINIMAP\\TRACKING\\Profession',
         func = function() 
-			securecall(ToggleEncounterJournal)
+            securecall(ToggleEncounterJournal)
         end,
         notCheckable = true,
     },
@@ -383,7 +384,9 @@ f:SetScript('OnMouseUp', function(self, button)
             if (DropDownList1:IsShown()) then
                 DropDownList1:Hide()
             else
-                securecall(EasyMenu, menuList, menuFrame, self, 25, 25, 'MENU', 20)
+                EasyMenu(menuList, menuFrame, self, 27, 190, 'MENU', 8)
+                -- DropDownList1:ClearAllPoints()
+                -- DropDownList1:SetPoint('BOTTOMLEFT', self, 'TOPRIGHT')
             end
         end
     else
