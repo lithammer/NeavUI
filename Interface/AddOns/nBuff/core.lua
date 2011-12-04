@@ -71,14 +71,8 @@ local function UpdateFirstButton(self)
             self:SetPoint('TOPRIGHT', TempEnchant1)
             return
         else
-            if (BuffFrame.numEnchants == 1) then
-                self:SetPoint('TOPRIGHT', TempEnchant1, 'TOPLEFT', -cfg.paddingX, 0)
-                return
-            elseif (BuffFrame.numEnchants == 2) then	
-                self:SetPoint('TOPRIGHT', TempEnchant2, 'TOPLEFT', -cfg.paddingX, 0)
-                return
-            elseif (BuffFrame.numEnchants == 3) then
-                self:SetPoint('TOPRIGHT', TempEnchant3, 'TOPLEFT', -cfg.paddingX, 0)
+            if (BuffFrame.numEnchants > 0) then
+                self:SetPoint('TOPRIGHT', _G['TempEnchant'..BuffFrame.numEnchants], 'TOPLEFT', -cfg.paddingX, 0)
                 return
             else
                 self:SetPoint('TOPRIGHT', TempEnchant1)
