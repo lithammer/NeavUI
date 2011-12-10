@@ -27,6 +27,89 @@ function PlayerFrame_ToVehicleArt() end
 InterfaceOptionsFrameCategoriesButton9:SetScale(0.00001)
 InterfaceOptionsFrameCategoriesButton9:SetAlpha(0)
 
+local __pa = CreateFrame('Frame', 'oUF_Neav_Player_Anchor', UIParent)
+__pa:SetSize(1, 1)
+__pa:SetPoint(unpack(config.units.player.position))
+__pa:SetMovable(true)
+__pa:SetUserPlaced(true)
+__pa:SetClampedToScreen(true)
+
+local __ta = CreateFrame('Frame', 'oUF_Neav_Target_Anchor', UIParent)
+__ta:SetSize(1, 1)
+__ta:SetPoint(unpack(config.units.target.position))
+__ta:SetMovable(true)
+__ta:SetUserPlaced(true)
+__ta:SetClampedToScreen(true)
+
+local __fa = CreateFrame('Frame', 'oUF_Neav_Focus_Anchor', UIParent)
+__fa:SetSize(1, 1)
+__fa:SetPoint('LEFT', 30, 0)
+__fa:SetMovable(true)
+__fa:SetUserPlaced(true)
+__fa:SetClampedToScreen(true)
+
+PLAYER_FRAME_UNLOCKED = false
+function PlayerFrame_SetLocked(locked)
+    PLAYER_FRAME_UNLOCKED = not locked
+    if (locked) then
+        if (oUF_Neav_Player) then
+            oUF_Neav_Player:RegisterForDrag() 
+        end
+    else
+        if (oUF_Neav_Player) then
+            oUF_Neav_Player:RegisterForDrag('LeftButton') 
+        end
+    end
+end
+
+function PlayerFrame_ResetUserPlacedPosition()
+    if (oUF_Neav_Player) then
+        __pa:ClearAllPoints()
+        __pa:SetPoint(unpack(config.units.player.position))
+        PlayerFrame_SetLocked(true)
+    end
+end
+
+TARGET_FRAME_UNLOCKED = false
+function TargetFrame_SetLocked(locked)
+    TARGET_FRAME_UNLOCKED = not locked
+    if (locked) then
+        if (oUF_Neav_Target) then
+            oUF_Neav_Target:RegisterForDrag() 
+        end
+    else
+        if (oUF_Neav_Target) then
+            oUF_Neav_Target:RegisterForDrag('LeftButton') 
+        end
+    end
+end
+
+function TargetFrame_ResetUserPlacedPosition()
+    if (oUF_Neav_Target) then
+        __ta:ClearAllPoints()
+        __ta:SetPoint(unpack(config.units.target.position))
+        TargetFrame_SetLocked(true)
+    end
+end
+
+UnitPopupMenus['MOVE_PLAYER_FRAME'] = { 
+    'UNLOCK_PLAYER_FRAME', 
+    'LOCK_PLAYER_FRAME', 
+    'RESET_PLAYER_FRAME_POSITION'
+}
+UnitPopupMenus['MOVE_TARGET_FRAME'] = { 
+    'UNLOCK_TARGET_FRAME', 
+    'LOCK_TARGET_FRAME', 
+    'RESET_TARGET_FRAME_POSITION'
+    }
+
+UnitPopupMenus['FOCUS'] = { 
+    'LOCK_FOCUS_FRAME', 
+    'UNLOCK_FOCUS_FRAME', 
+    'RAID_TARGET_ICON', 
+    'CANCEL' 
+}
+
 local function CreateDropDown(self)
     local dropdown = _G[string.format('%sFrameDropDown', string.gsub(self.unit, '(.)', string.upper, 1))]
 
@@ -357,13 +440,6 @@ local function UpdatePower(Power, unit, cur, max)
 
     Power.Value:SetText(ns.GetPowerText(unit, cur, max))
 end
-
-local focusAnchor = CreateFrame('Frame', 'oUF_Neav_Focus_Anchor', UIParent)
-focusAnchor:SetSize(1, 1)
-focusAnchor:SetPoint('CENTER')
-focusAnchor:SetMovable(true)
-focusAnchor:SetClampedToScreen(true)
-focusAnchor:SetUserPlaced(true)
 
 local function CreateUnitLayout(self, unit)
     self.IsMainFrame = ns.MultiCheck(unit, 'player', 'target', 'focus')
@@ -798,12 +874,15 @@ local function CreateUnitLayout(self, unit)
             self.DruidMana:SetSize(100, 9)
             self.DruidMana:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
             self.DruidMana:SetBackdropColor(0, 0, 0, 0.55)
+            self.DruidMana.colorPower = true
 
             self.DruidMana.Value = self.DruidMana:CreateFontString(nil, 'OVERLAY')
             self.DruidMana.Value:SetFont(config.font.normal, config.font.normalSize)
             self.DruidMana.Value:SetShadowOffset(1, -1)
             self.DruidMana.Value:SetPoint('CENTER', self.DruidMana, 0, 0.5)
 
+            self:Tag(self.DruidMana.Value, '[druidmana]')
+            
             self.DruidMana.Texture = self.DruidMana:CreateTexture(nil, 'ARTWORK')
             self.DruidMana.Texture:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\druidmanaTexture')
             self.DruidMana.Texture:SetSize(104, 28)
@@ -908,7 +987,7 @@ local function CreateUnitLayout(self, unit)
 
         if (config.units.player.showCombatFeedback) then
             self.CombatFeedbackText = self:CreateFontString(nil, 'OVERLAY')
-            self.CombatFeedbackText:SetFont(config.font.normal, 22, 'OUTLINE')
+            self.CombatFeedbackText:SetFont(config.font.normal, 18, 'OUTLINE')
             self.CombatFeedbackText:SetShadowOffset(0, 0)
             self.CombatFeedbackText:SetPoint('CENTER', self.Portrait)
         end
@@ -973,7 +1052,7 @@ local function CreateUnitLayout(self, unit)
 
         if (config.units.target.showCombatFeedback or config.units.focus.showCombatFeedback) then
             self.CombatFeedbackText = self:CreateFontString(nil, 'ARTWORK')
-            self.CombatFeedbackText:SetFont(config.font.normal, 22, 'OUTLINE')
+            self.CombatFeedbackText:SetFont(config.font.normal, 18, 'OUTLINE')
             self.CombatFeedbackText:SetShadowOffset(0, 0)
             self.CombatFeedbackText:SetPoint('CENTER', self.Portrait)
         end
@@ -992,6 +1071,8 @@ local function CreateUnitLayout(self, unit)
             CreateUnitTabTexture(self)
             self.TabMiddle:SetPoint('BOTTOM', self.Name.Bg, 'TOP', 0, 1)
         end
+
+        ns.CreateFocusButton(self,unit)
 
         if (not config.units[ns.cUnit(unit)].disableAura) then
             self.Auras = CreateFrame('Frame', nil, self)
@@ -1053,24 +1134,22 @@ local function CreateUnitLayout(self, unit)
         CreateUnitTabTexture(self)
 
         self.TabText:SetText(FOCUS)
+        self.TabText:SetPoint('BOTTOM', self.TabMiddle, -4, 2)
+
         self.TabMiddle:SetPoint('BOTTOM', self.Name.Bg, 'TOP', 0, 1)
-        self.TabMiddle:SetWidth(self.TabText:GetWidth())
+        self.TabMiddle:SetWidth(self.TabText:GetWidth() + 4)
 
-        self.DragFrame = CreateFrame('Frame', nil, self)
-        self.DragFrame:SetPoint('TOP', self.TabMiddle)
-        self.DragFrame:SetPoint('BOTTOM', self.TabMiddle)
-        self.DragFrame:SetPoint('LEFT', self.TabMiddle, -15, 0)
-        self.DragFrame:SetPoint('RIGHT', self.TabMiddle, 15, 0)
-        self.DragFrame:RegisterForDrag('LeftButton')
-        self.DragFrame:EnableMouse(true)
-
-        self.DragFrame:SetScript('OnDragStart', function() 
-            focusAnchor:StartMoving()   
-        end)
-
-        self.DragFrame:SetScript('OnDragStop', function() 
-            focusAnchor:StopMovingOrSizing()
-        end)
+        self.FClose = CreateFrame('Button', nil, self, 'SecureActionButtonTemplate')
+        self.FClose:EnableMouse(true)
+        self.FClose:RegisterForClicks('AnyUp')
+        self.FClose:SetAttribute('type', 'macro')
+        self.FClose:SetAttribute('macrotext', '/clearfocus')
+        self.FClose:SetSize(20, 20)
+        self.FClose:SetPoint('TOPLEFT', self, (55 + (self.TabMiddle:GetWidth()/2)), 17)
+        self.FClose:SetNormalTexture('Interface\\Buttons\\UI-Panel-MinimizeButton-Up')
+        self.FClose:SetPushedTexture('Interface\\Buttons\\UI-Panel-MinimizeButton-Down')
+        self.FClose:SetHighlightTexture('Interface\\Buttons\\UI-Panel-MinimizeButton-Highlight')
+        self.FClose:GetHighlightTexture():SetBlendMode('ADD')
     end
 
     if (self.IsTargetFrame) then
@@ -1151,21 +1230,64 @@ end
 oUF:RegisterStyle('oUF_Neav', CreateUnitLayout)
 oUF:Factory(function(self)
     local player = self:Spawn('player', 'oUF_Neav_Player')
-    player:SetPoint(unpack(config.units.player.position))
+    player:SetPoint('TOPLEFT', __pa)
+
+    player:SetScript('OnDragStart', function()
+        __pa:StartMoving()
+    end)
+
+    player:SetScript('OnDragStop', function()
+        __pa:StopMovingOrSizing()
+    end)
+
+    player:SetScript('OnReceiveDrag', function()
+        if (CursorHasItem()) then
+            AutoEquipCursorItem()
+        end
+    end)
 
     local pet = self:Spawn('pet', 'oUF_Neav_Pet')
     pet:SetPoint('TOPLEFT', player, 'BOTTOMLEFT', unpack(config.units.pet.position))
 
     local target = self:Spawn('target', 'oUF_Neav_Target')
-    target:SetPoint(unpack(config.units.target.position))
+    target:SetPoint('TOPLEFT', __ta)
+    
+    target:SetScript('OnDragStart', function()
+        __ta:StartMoving()
+    end)
+
+    target:SetScript('OnDragStop', function()
+        __ta:StopMovingOrSizing()
+    end)
+
+    target:SetScript('OnReceiveDrag', function()
+        if (CursorHasItem()) then
+            AutoEquipCursorItem()
+        end
+    end)
 
     local targettarget = self:Spawn('targettarget', 'oUF_Neav_TargetTarget')
     targettarget:SetPoint('TOPLEFT', target, 'BOTTOMRIGHT', -78, -15)
 
     local focus = self:Spawn('focus', 'oUF_Neav_Focus')
-    focus:SetPoint('CENTER', focusAnchor, 3, 0)
-    focus:SetClampedToScreen(true)
-    
+    focus:SetPoint('TOPLEFT', __fa)
+    focus:RegisterForDrag('LeftButton') 
+
+    focus:SetScript('OnDragStart', function()
+        FOCUS_FRAME_MOVING = false
+        if (not FOCUS_FRAME_LOCKED) then
+            __fa:StartMoving()
+            FOCUS_FRAME_MOVING = true
+        end
+    end)
+
+    focus:SetScript('OnDragStop', function()
+        if (not FOCUS_FRAME_LOCKED and FOCUS_FRAME_MOVING) then
+            __fa:StopMovingOrSizing()
+            FOCUS_FRAME_MOVING = false
+        end
+    end)
+
     local focustarget = self:Spawn('focustarget', 'oUF_Neav_FocusTarget')
     focustarget:SetPoint('TOPLEFT', focus, 'BOTTOMRIGHT', -78, -15)
 
@@ -1181,19 +1303,3 @@ oUF:Factory(function(self)
         party:SetPoint(unpack(config.units.party.position))
     end
 end)
-
---[[
-do
-    UnitPopupMenus['SELF'] = { 'PVP_FLAG', 'LOOT_METHOD', 'LOOT_THRESHOLD', 'OPT_OUT_LOOT_TITLE', 'LOOT_PROMOTE', 'DUNGEON_DIFFICULTY', 'RAID_DIFFICULTY', 'RESET_INSTANCES', 'RAID_TARGET_ICON', 'SELECT_ROLE', 'CONVERT_TO_PARTY', 'CONVERT_TO_RAID', 'LEAVE', 'CANCEL' };
-    UnitPopupMenus['PET'] = { 'PET_PAPERDOLL', 'PET_RENAME', 'PET_ABANDON', 'PET_DISMISS', 'CANCEL' };
-    UnitPopupMenus['PARTY'] = { 'MUTE', 'UNMUTE', 'PARTY_SILENCE', 'PARTY_UNSILENCE', 'RAID_SILENCE', 'RAID_UNSILENCE', 'BATTLEGROUND_SILENCE', 'BATTLEGROUND_UNSILENCE', 'WHISPER', 'PROMOTE', 'PROMOTE_GUIDE', 'LOOT_PROMOTE', 'VOTE_TO_KICK', 'UNINVITE', 'INSPECT', 'ACHIEVEMENTS', 'TRADE', 'FOLLOW', 'DUEL', 'RAID_TARGET_ICON', 'SELECT_ROLE', 'PVP_REPORT_AFK', 'RAF_SUMMON', 'RAF_GRANT_LEVEL', 'CANCEL' }
-    UnitPopupMenus['PLAYER'] = { 'WHISPER', 'INSPECT', 'INVITE', 'ACHIEVEMENTS', 'TRADE', 'FOLLOW', 'DUEL', 'RAID_TARGET_ICON', 'RAF_SUMMON', 'RAF_GRANT_LEVEL', 'CANCEL' }
-    UnitPopupMenus['RAID_PLAYER'] = { 'MUTE', 'UNMUTE', 'RAID_SILENCE', 'RAID_UNSILENCE', 'BATTLEGROUND_SILENCE', 'BATTLEGROUND_UNSILENCE', 'WHISPER', 'INSPECT', 'ACHIEVEMENTS', 'TRADE', 'FOLLOW', 'DUEL', 'RAID_TARGET_ICON', 'SELECT_ROLE', 'RAID_LEADER', 'RAID_PROMOTE', 'RAID_DEMOTE', 'LOOT_PROMOTE', 'RAID_REMOVE', 'PVP_REPORT_AFK', 'RAF_SUMMON', 'RAF_GRANT_LEVEL', 'CANCEL' };
-    UnitPopupMenus['RAID'] = { 'MUTE', 'UNMUTE', 'RAID_SILENCE', 'RAID_UNSILENCE', 'BATTLEGROUND_SILENCE', 'BATTLEGROUND_UNSILENCE', 'RAID_LEADER', 'RAID_PROMOTE', 'RAID_MAINTANK', 'RAID_MAINASSIST', 'RAID_TARGET_ICON', 'LOOT_PROMOTE', 'RAID_DEMOTE', 'RAID_REMOVE', 'PVP_REPORT_AFK', 'CANCEL' };
-    UnitPopupMenus['VEHICLE'] = { 'RAID_TARGET_ICON', 'VEHICLE_LEAVE', 'CANCEL' }
-    UnitPopupMenus['TARGET'] = { 'RAID_TARGET_ICON', 'CANCEL' }
-    UnitPopupMenus['ARENAENEMY'] = { 'CANCEL' }
-    UnitPopupMenus['FOCUS'] = { 'RAID_TARGET_ICON', 'CANCEL' }
-    UnitPopupMenus['BOSS'] = { 'RAID_TARGET_ICON', 'CANCEL' }
-end
---]]

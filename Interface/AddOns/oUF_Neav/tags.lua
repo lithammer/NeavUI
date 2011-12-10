@@ -1,6 +1,26 @@
 
 local _, ns = ...
 
+local function FormatValue(value)
+    if (value >= 1e6) then
+        return tonumber(format('%.1f', value/1e6))..'m'
+    elseif (value >= 1e3) then
+        return tonumber(format('%.1f', value/1e3))..'k'
+    else
+        return value
+    end
+end
+
+oUF.TagEvents['druidmana'] = 'UNIT_POWER UNIT_DISPLAYPOWER UNIT_MAXPOWER'
+oUF.Tags['druidmana'] = function(unit)
+    local min, max = UnitPower(unit, SPELL_POWER_MANA), UnitPowerMax(unit, SPELL_POWER_MANA)
+    if (min == max) then
+        return FormatValue(min)
+    else
+        return FormatValue(min)..'/'..FormatValue(max)
+    end
+end
+
 oUF.Tags['pvptimer'] = function(unit)
     if (not IsPVPTimerRunning() and GetPVPTimer() > 0) then
         return
