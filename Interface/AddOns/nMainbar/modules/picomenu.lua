@@ -6,7 +6,7 @@ if (not cfg.showPicomenu) then
     return
 end
 
-INTERFACE_ACTION_BLOCKED = ''
+-- INTERFACE_ACTION_BLOCKED = ''
 
 local x, x2, n = nil, false
 local v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11
@@ -41,7 +41,15 @@ local menuList = {
         icon = 'Interface\\MINIMAP\\TRACKING\\Ammunition',
         -- icon = 'Interface\\AddOns\\nMainbar\\media\\picomenu\\picomenuTalents',
         func = function() 
-            securecall(ToggleTalentFrame) 
+			if (not PlayerTalentFrame) then 
+                LoadAddOn('Blizzard_TalentUI') 
+            end
+
+			if (not GlyphFrame) then 
+                LoadAddOn('Blizzard_GlyphUI') 
+            end 
+
+			PlayerTalentFrame_Toggle()
         end,
         notCheckable = true,
     },
@@ -124,7 +132,7 @@ local menuList = {
     },
     {
         text = GM_EMAIL_NAME,
-        icon = 'Interface\\TUTORIALFRAME\\TutorialFrame-QuestionMark',
+        icon = 'Interface\\CHATFRAME\\UI-ChatIcon-Blizz',
         func = function() 
             securecall(ToggleHelpFrame) 
         end,

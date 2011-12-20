@@ -3,6 +3,7 @@
 ## Notes: Yet another Blizzbar mod
 
 config.lua
+config_custom.lua
 
 modules\core.lua
 modules\bottomLeft.lua

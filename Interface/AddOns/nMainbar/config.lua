@@ -12,7 +12,7 @@ nMainbar.Config = {
         countFontsize = 19,
         countFont = 'Interface\\AddOns\\nMainbar\\media\\font.ttf',
         
-        macronameFontsize = 18,
+        macronameFontsize = 17,
         macronameFont = 'Interface\\AddOns\\nMainbar\\media\\font.ttf',
         
         hotkeyFontsize = 18,
@@ -79,13 +79,13 @@ nMainbar.Config = {
     },
 
     multiBarLeft = {
-        mouseover = true,
+        mouseover = false,
         alpha = 1,
         orderHorizontal = false,
     },
 
     multiBarRight = {
-        mouseover = true,
+        mouseover = false,
         alpha = 1,
         orderHorizontal = false,
     },
