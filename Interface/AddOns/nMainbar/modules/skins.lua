@@ -158,6 +158,8 @@ hooksecurefunc('ActionButton_Update', function(self)
 
             local icon = _G[self:GetName()..'Icon']
             icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
+            -- icon:SetPoint('TOPRIGHT', button, -1, -1)
+            -- icon:SetPoint('BOTTOMLEFT', button, 1, 1)
             -- icon:SetDrawLayer('BORDER')
 
             local border = _G[self:GetName()..'Border']
@@ -190,16 +192,16 @@ hooksecurefunc('ActionButton_Update', function(self)
             local buttonBg = _G[self:GetName()..'FloatingBG']
             if (buttonBg) then
                 buttonBg:ClearAllPoints()
-                buttonBg:SetPoint('TOPRIGHT', button, 4.5, 4.5)
-                buttonBg:SetPoint('BOTTOMLEFT', button, -4.5, -4.5)
+                buttonBg:SetPoint('TOPRIGHT', button, 5, 5)
+                buttonBg:SetPoint('BOTTOMLEFT', button, -5, -5)
                 buttonBg:SetTexture(path..'textureShadow')
                 buttonBg:SetVertexColor(0, 0, 0, 1)
             end
 
             button.Background = button:CreateTexture(nil, 'BACKGROUND', nil, -8)
             button.Background:SetTexture(path..'textureBackground')
-            button.Background:SetPoint('TOPRIGHT', button, 2, 2)
-            button.Background:SetPoint('BOTTOMLEFT', button, -2, -2)
+            button.Background:SetPoint('TOPRIGHT', button, 14, 12)
+            button.Background:SetPoint('BOTTOMLEFT', button, -14, -16)
         end
 
         if (not InCombatLockdown()) then

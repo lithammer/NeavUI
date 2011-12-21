@@ -74,11 +74,7 @@ local menuList = {
         icon = 'Interface\\GossipFrame\\TabardGossipIcon',
         arg1 = IsInGuild('player'),
         func = function() 
-            if (IsInGuild('player')) then
-                securecall(ToggleGuildFrame)
-            else
-                return
-            end
+            ToggleGuildFrame()
         end,
         notCheckable = true,
     },
