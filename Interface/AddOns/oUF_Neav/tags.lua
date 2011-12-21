@@ -22,8 +22,8 @@ oUF.Tags['druidmana'] = function(unit)
 end
 
 oUF.Tags['pvptimer'] = function(unit)
-    if (not IsPVPTimerRunning() and GetPVPTimer() > 0) then
-        return
+    if (not IsPVPTimerRunning() and GetPVPTimer() >= 0) then
+        return ''
     end
 
     return ns.FormatTime(math.floor(GetPVPTimer()/1000))

@@ -27,7 +27,7 @@ local function Flash_OnUpdate(self, elapsed)
             alpha = 0
         end
 
-        frame:SetAlpha(alpha)
+        frame:SetAlpha(alpha + (frame.minAlpha and frame.minAlpha or 0))
 
         index = index - 1
     end

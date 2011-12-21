@@ -15,69 +15,6 @@ local format = string.format
 local GetTime = GetTime
 local day, hour, minute = 86400, 3600, 60
 
-ns.CreateFocusButton = function(self)
-    local FTarget = CreateFrame('BUTTON', nil, self, 'SecureActionButtonTemplate')
-    FTarget:EnableMouse(true)
-    FTarget:RegisterForClicks('AnyUp')
-    FTarget:SetAttribute('type', 'macro')
-    FTarget:SetAttribute('macrotext', '/focus')
-    FTarget:SetSize(64, 48)
-    FTarget:SetPoint('CENTER', self, 70, -1)
-
-    FTarget.Text = FTarget:CreateFontString(nil, 'OVERLAY')
-    FTarget.Text:SetTextColor(0, 0.65, 1)
-    FTarget.Text:SetFont(config.font.normal, 15, 'OUTLINE')
-    FTarget.Text:SetShadowOffset(0, 0)
-    FTarget.Text:SetPoint('LEFT')
-    FTarget.Text:SetJustifyH('LEFT')
-
-    do
-        local text = FTarget.Text
-        local stage_table = {
-            '',
-            'F  ',
-            'FO ',
-            'FOC',
-            'FOCU',
-            'FOCUS',
-        }
-
-        local curent_stage = 1
-
-        local printer = CreateFrame('Frame', nil, FTarget)
-        printer:Hide()
-        printer:SetScript('OnUpdate',function(self, et)
-            curent_stage = curent_stage + self.dir
-
-            if (curent_stage == 7) then
-                curent_stage = 6
-                self:Hide() return
-            elseif (curent_stage == 0) then
-                curent_stage = 1
-                self:Hide() return
-            end
-
-            text:SetText(stage_table[curent_stage])
-        end)
-
-        FTarget.printer = printer
-    end
-
-    FTarget:SetScript('OnLeave', function(self) 
-        self.printer:Hide()
-        self.printer.dir = -1
-        self.printer:Show()
-    end)
-
-    FTarget:SetScript('OnEnter', function(self) 
-        self.printer:Hide()
-        self.printer.dir = 1
-        self.printer:Show()
-    end)
-
-    self.FTarget = FTarget
-end
-
 local function FormatValue(value)
     if (value >= 1e6) then
         return tonumber(format('%.1f', value/1e6))..'m'

@@ -12,6 +12,7 @@ func\castbar.lua
 func\func.lua
 func\flash.lua
 
+##modules\druidmana.lua
 modules\offline.lua
 modules\portraittimers.lua
 modules\smartthreat.lua
@@ -19,6 +20,7 @@ modules\smartthreat.lua
 modules\oUF_CombatFeedback\oUF_CombatFeedback.lua
 modules\oUF_Smooth\oUF_Smooth.lua
 
+kill.lua
 tags.lua
 castbar.lua
 core.lua

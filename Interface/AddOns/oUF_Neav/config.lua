@@ -62,7 +62,7 @@ ns.Config = {
             showVengeance = false,                                                          -- Attention: vengeance and swingtimer will overlap eachother, 
             showSwingTimer = false,                                                         -- Change the pos in the oUF_Neav file if you want both
             showStatusFlash = true,
-            showCombatFeedback = true,
+            showCombatFeedback = false,
 
             position = {'TOPLEFT', UIParent, 34, -30},
 
@@ -150,12 +150,9 @@ ns.Config = {
             powerTagFull = '$cur',
             powerTagNoMana = '$cur',
 
-            showPowerPercent = false,
+            showCombatFeedback = false,
 
-            showCombatFeedback = true,
-            showUnitTypeTab = false,                                                        -- Shows a tab with the unit race or creature type
-
-            position = {'TOPLEFT', UIParent, 270, -30},
+            position = {'TOPLEFT', UIParent, 300, -30},
 
             castbar = {
                 show = true, 
@@ -200,7 +197,7 @@ ns.Config = {
 
             showPowerPercent = false,
 
-            showCombatFeedback = true,
+            showCombatFeedback = false,
 
             enableFocusToggleKeybind = true,
             focusToggleKey = 'type4',                                                       -- type1, type2 (mousebutton 1 or 2, 3, 4, 5 etc. works too)
