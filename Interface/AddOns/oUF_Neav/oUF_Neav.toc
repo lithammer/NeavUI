@@ -12,7 +12,6 @@ func\castbar.lua
 func\func.lua
 func\flash.lua
 
-##modules\druidmana.lua
 modules\offline.lua
 modules\portraittimers.lua
 modules\smartthreat.lua
