@@ -73,7 +73,7 @@ hooksecurefunc('MultiCastFlyoutFrame_LoadSlotSpells', function(self, slot, ...)
     end
 end)
 
-if (not cfg.totemManager.hideRecallButton) then
+if (cfg.totemManager.hideRecallButton) then
     hooksecurefunc(MultiCastRecallSpellButton, 'Show', function(self)
         self:Hide()
     end)
