@@ -4,37 +4,6 @@ local config = ns.Config
 
 local playerClass = select(2, UnitClass('player'))
 
-for _, object in pairs({
-    CompactPartyFrame,
-    CompactRaidFrameManager,
-    CompactRaidFrameContainer,
-}) do
-    object:UnregisterAllEvents()
-
-    hooksecurefunc(object, 'Show', function(self)
-        self:Hide()
-    end)
-end
-
-InterfaceOptionsFrameCategoriesButton10:SetScale(0.00001)
-InterfaceOptionsFrameCategoriesButton10:SetAlpha(0)
-InterfaceOptionsFrameCategoriesButton11:SetScale(0.00001)
-InterfaceOptionsFrameCategoriesButton11:SetAlpha(0)
-
-CompactUnitFrame_UpateVisible = function() end
-CompactUnitFrame_UpdateAll = function() end
-
-local function CreateDropDown(self)
-    if (InCombatLockdown()) then
-        return
-    end
-
-    _G['CompactRaidFrame'..self.id..'DropDown'].unit = self.unit
-    _G['CompactRaidFrame'..self.id..'DropDown'].id = self.id
-    _G['CompactRaidFrame'..self.id..'DropDown'].initialize = RaidFrameDropDown_Initialize
-    ToggleDropDownMenu(1, nil, _G['CompactRaidFrame'..self.id..'DropDown'], 'cursor')
-end
-
     -- oUF_AuraWatch
     -- Class buffs { spell ID, position [, {r, g, b, a}][, anyUnit][, hideCooldown][, hideCount] }
     
@@ -81,9 +50,9 @@ end
     
 local inlist
 do
-	inlist = {
-		DRUID = {
-			[1] = {
+    inlist = {
+        DRUID = {
+            [1] = {
                 spellid = 774,  -- Rejuvenation
                 pos = 'BOTTOMRIGHT', 
                 color = {1, 0.2, 1}, -- custom color, set to nil if the spellicon should be shown
@@ -110,35 +79,35 @@ do
                 hideCD = false,
                 hideCount = true,
             },
-		}
+        }
     }
 
-		MAGE = {
-			{54648, 'BOTTOMRIGHT', {0.7, 0, 1}, true, true}, -- Focus Magic
-		},
-		PALADIN = {
-			{53563, 'BOTTOMRIGHT', {0, 1, 0}}, -- Beacon of Light
-		},
-		PRIEST = {
-			{6788, 'BOTTOMRIGHT', {0.6, 0, 0}, true}, -- Weakened Soul
-			{17, 'BOTTOMRIGHT', {1, 1, 0}, true}, -- Power Word: Shield
-			{33076, 'TOPRIGHT', {1, 0.6, 0.6}, true, true}, -- Prayer of Mending
-			{139, 'BOTTOMLEFT', {0, 1, 0}}, -- Renew
-		},
-		SHAMAN = {
-			{61295, 'TOPLEFT', {0.7, 0.3, 0.7}}, -- Riptide
-			{51945, 'TOPRIGHT', {0.2, 0.7, 0.2}}, -- Earthliving
-			{16177, 'BOTTOMLEFT', {0.4, 0.7, 0.2}}, -- Ancestral Fortitude
-			{974, 'BOTTOMRIGHT', {0.7, 0.4, 0}, false, true}, -- Earth Shield
-		},
-		WARLOCK = {
-			{20707, 'BOTTOMRIGHT', {0.7, 0, 1}, true, true}, -- Soulstone
-			{85767, 'BOTTOMLEFT', {0.7, 0.5, 1}, true, true, true}, -- Dark Intent
-		},
-		ALL = {
+        MAGE = {
+            {54648, 'BOTTOMRIGHT', {0.7, 0, 1}, true, true}, -- Focus Magic
+        },
+        PALADIN = {
+            {53563, 'BOTTOMRIGHT', {0, 1, 0}}, -- Beacon of Light
+        },
+        PRIEST = {
+            {6788, 'BOTTOMRIGHT', {0.6, 0, 0}, true}, -- Weakened Soul
+            {17, 'BOTTOMRIGHT', {1, 1, 0}, true}, -- Power Word: Shield
+            {33076, 'TOPRIGHT', {1, 0.6, 0.6}, true, true}, -- Prayer of Mending
+            {139, 'BOTTOMLEFT', {0, 1, 0}}, -- Renew
+        },
+        SHAMAN = {
+            {61295, 'TOPLEFT', {0.7, 0.3, 0.7}}, -- Riptide
+            {51945, 'TOPRIGHT', {0.2, 0.7, 0.2}}, -- Earthliving
+            {16177, 'BOTTOMLEFT', {0.4, 0.7, 0.2}}, -- Ancestral Fortitude
+            {974, 'BOTTOMRIGHT', {0.7, 0.4, 0}, false, true}, -- Earth Shield
+        },
+        WARLOCK = {
+            {20707, 'BOTTOMRIGHT', {0.7, 0, 1}, true, true}, -- Soulstone
+            {85767, 'BOTTOMLEFT', {0.7, 0.5, 1}, true, true, true}, -- Dark Intent
+        },
+        ALL = {
             {23333, 'TOPLEFT', {1, 0, 0}}, -- Warsong flag, Horde
             {23335, 'TOPLEFT', {0, 0, 1}}, -- Warsong flag, Alliance 
-		},
+        },
 end
 ]]
 
@@ -222,7 +191,6 @@ local function CreateIndicators(self, unit)
     if (buffs) then
         for key, spell in pairs(buffs) do
             local icon = CreateFrame('Frame', nil, self.AuraWatch)
-            icon:SetFrameStrata('HIGH')
             icon:SetWidth(config.units.raid.indicatorSize)
             icon:SetHeight(config.units.raid.indicatorSize)
             icon:SetPoint(spell[2], self.Health, unpack(offsets[spell[2]].icon))
@@ -232,7 +200,7 @@ local function CreateIndicators(self, unit)
             icon.hideCooldown = spell[5]
             icon.hideCount = spell[6]
 
-                -- Exception to place PW:S above Weakened Soul
+                -- exception to place PW:S above Weakened Soul
 
             if (spell[1] == 17) then
                 icon:SetFrameLevel(icon:GetFrameLevel() + 5)
@@ -282,7 +250,7 @@ local function UpdateThreat(self, _, unit)
     else
         -- self.Bg:SetVertexColor(0, 0, 0)
         self.ThreatGlow:SetBackdropBorderColor(0, 0, 0, 0)
-        
+
         if (self.ThreatText) then
             self.ThreatText:Hide()
         end
@@ -364,7 +332,6 @@ local function UpdateHealth(Health, unit, cur, max)
 end
 
 local function CreateRaidLayout(self, unit)
-    self.menu = CreateDropDown
     self:RegisterForClicks('AnyUp')
 
     self:SetScript('OnEnter', function(self)
@@ -576,6 +543,7 @@ local function CreateRaidLayout(self, unit)
         self.MainTank = self.Health:CreateTexture(nil, 'OVERLAY')
         self.MainTank:SetSize(12, 11)
         self.MainTank:SetPoint('CENTER', self, 'TOP', 0, 1)
+        self.MainTank:Hide()
     end
 
         -- Leader icons

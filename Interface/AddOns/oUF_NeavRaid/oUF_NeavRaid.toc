@@ -15,6 +15,7 @@ modules\oUF_Freebgrid\oUF_Freebgrid_AurasPriority.lua
 modules\oUF_Freebgrid\oUF_Freebgrid_AurasList.lua
 modules\oUF_Freebgrid\oUF_Freebgrid_Auras.lua
 
+kill.lua
 tags.lua
 core.lua
 marker.lua
