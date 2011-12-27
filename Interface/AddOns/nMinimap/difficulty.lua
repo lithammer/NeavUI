@@ -122,7 +122,7 @@ MiniMapInstanceDifficulty:HookScript('OnEvent', function(self)
 end)
 
 if (cfg.mouseover.instanceDifficulty) then
-    f.InstanceText:SetAlpha(0)
+    Minimap.InstanceText:SetAlpha(0)
 
     Minimap:HookScript('OnEnter', function(self)
         securecall('UIFrameFadeIn', self.InstanceText, 0.235, 0, 1)

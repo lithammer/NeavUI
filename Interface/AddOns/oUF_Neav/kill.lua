@@ -21,6 +21,7 @@ for _, button in pairs({
 end
 
 function PetFrame_Update() end
+
 function PlayerFrame_AnimateOut() end
 function PlayerFrame_AnimFinished() end
 function PlayerFrame_ToPlayerArt() end

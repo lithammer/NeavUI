@@ -192,10 +192,10 @@ local function UpdateAddOnTable()
         }
     end
 
-    if (IsAddOnLoaded('Grid') or IsAddOnLoaded('Grid2') and not v3) then
+    if ((IsAddOnLoaded('Grid') or IsAddOnLoaded('Grid2')) and not v3) then
         x = true
         n = (#addonMenuTable[2].menuList)+1
-        v = true
+        v3 = true
         addonMenuTable[2].menuList[n] = { 
             text = 'Grid', 
             func = function() 

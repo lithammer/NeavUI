@@ -1,5 +1,5 @@
 
-local _G = _G
+local gsub = string.gsub
 
 for i = 1, NUM_CHAT_WINDOWS do
     local editBox = _G['ChatFrame'..i..'EditBox']
@@ -9,8 +9,8 @@ for i = 1, NUM_CHAT_WINDOWS do
         if (UnitExists('target') and UnitIsPlayer('target') and UnitIsFriend('player', 'target')) then
             if (text:len() < 5) then
                 if (text:sub(1, 4) == '/tt ') then
-                    local unitname, realm
-                    unitname, realm = UnitName('target')
+                    local unitname, realm = UnitName('target')
+
                     if (unitname) then 
                         unitname = gsub(unitname, ' ', '') 
                     end

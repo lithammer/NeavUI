@@ -1,24 +1,18 @@
 
---[[
-for _, object in pairs({
-    CompactPartyFrame,
-    CompactRaidFrameManager,
-    CompactRaidFrameContainer,
-}) do
-    object:UnregisterAllEvents()
-
-    hooksecurefunc(object, 'Show', function(self)
-        self:Hide()
-    end)
-end
---]]
-
 InterfaceOptionsFrameCategoriesButton11:SetScale(0.00001)
 InterfaceOptionsFrameCategoriesButton11:SetAlpha(0)
 
-CompactRaidFrameManager:UnregisterAllEvents()
-CompactUnitFrame_UpateVisible = function() end
-CompactUnitFrame_UpdateAll = function() end
+--[[
+function CompactUnitFrame_UpateVisible() end
+function CompactUnitFrame_UpdateAll() end
+
+function CompactRaidFrameContainer_OnLoad() end
+function CompactUnitFrame_SetUnit() end
+
+function CompactRaidFrameManager_OnEvent() end
+function CompactRaidFrameManager_SetBorderShown() end
+function CompactRaidFrameManager_SetSetting() end
+function CompactRaidFrameManager_SetManaged() end
 
 local function KillRaidFrame()
     CompactRaidFrameManager:UnregisterAllEvents()
@@ -37,3 +31,20 @@ hooksecurefunc('CompactRaidFrameManager_UpdateShown', function()
 end)
 
 KillRaidFrame()
+--]]
+
+function CompactUnitFrame_UpateVisible() end
+function CompactUnitFrame_UpdateAll() end
+function CompactRaidFrameContainer_OnLoad() end
+
+for _, object in pairs({
+    CompactPartyFrame,
+    CompactRaidFrameManager,
+    CompactRaidFrameContainer,
+}) do
+    object:UnregisterAllEvents()
+
+    hooksecurefunc(object, 'Show', function(self)
+        self:Hide()
+    end)
+end

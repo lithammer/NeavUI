@@ -7,7 +7,7 @@ nBuff.Config = {
     buffBorderColor = {1, 1, 1}, 
 
     buffFontSize = 14,
-    buffCountSize = 17,
+    buffCountSize = 16,
 
     borderBuff = 'Interface\\AddOns\\nBuff\\media\\textureOverlay',
     borderDebuff = 'Interface\\AddOns\\nBuff\\media\\textureDebuff',
@@ -16,7 +16,7 @@ nBuff.Config = {
     debuffScale = 1,
 
     debuffFontSize = 14,
-    debuffCountSize = 17,
+    debuffCountSize = 16,
 
     paddingX = 7,
     paddingY = 7,

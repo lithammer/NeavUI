@@ -44,8 +44,8 @@ hooksecurefunc('PetActionBar_Update', function()
                 if (not InCombatLockdown()) then
                     local cooldown = _G[name..i..'Cooldown']
                     cooldown:ClearAllPoints()
-                    cooldown:SetPoint('TOPRIGHT', button, -2.33, -2.33)
-                    cooldown:SetPoint('BOTTOMLEFT', button, 1.66, 2.33)
+                    cooldown:SetPoint('TOPRIGHT', button, -2, -2)
+                    cooldown:SetPoint('BOTTOMLEFT', button, 1, 1)
                     -- cooldown:SetDrawEdge(true)
                 end
 
@@ -78,8 +78,8 @@ hooksecurefunc('PetActionBar_Update', function()
                     local buttonBg = _G[name..i..'FloatingBG']
                     if (buttonBg) then
                         buttonBg:ClearAllPoints()
-                        buttonBg:SetPoint('TOPRIGHT', button, 4.5, 4.5)
-                        buttonBg:SetPoint('BOTTOMLEFT', button, -4.5, -4.5)
+                        buttonBg:SetPoint('TOPRIGHT', button, 5, 5)
+                        buttonBg:SetPoint('BOTTOMLEFT', button, -5, -5)
                         buttonBg:SetTexture(path..'textureShadow')
                         buttonBg:SetVertexColor(0, 0, 0, 1)
                         button.Shadow = true

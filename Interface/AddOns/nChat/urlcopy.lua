@@ -1,80 +1,75 @@
 
-local _G = _G
-local gsub = string.gsub
 local find = string.find
+local gsub = string.gsub
 
-local urlStyle = '|cffff00ff|Hurl:%1|h%1|h|r'
-local urlPatterns = {
-    '(http://%S+)',                 -- http://xxx.com
-    '(www%.%S+)',                   -- www.xxx.com/site/index.php
-    '(%d+%.%d+%.%d+%.%d+:?%d*)',    -- 192.168.1.1 / 192.168.1.1:1110
-}
+local found = false
 
-local messageTypes = {
-    'CHAT_MSG_CHANNEL',
-    'CHAT_MSG_GUILD',
-    'CHAT_MSG_PARTY',
-    'CHAT_MSG_RAID',
-    'CHAT_MSG_SAY',
-    'CHAT_MSG_WHISPER',
-}
+local function ColorURL(text, url)
+    found = true
+    return ' |H'..'url'..':'..tostring(url)..'|h'..'|cff0099FF'..tostring(url)..'|h|r '
+end
 
-local function urlFilter(self, event, text, ...)
-    for _, pattern in ipairs(urlPatterns) do
-        local result, matches = gsub(text, pattern, urlStyle)
+local function ScanURL(frame, text, ...)
+    found = false
 
-        if (matches > 0) then
-            return false, result, ...
+    if (find(text, '%pTInterface%p+')) then
+        found = true
+    end
+
+        -- 192.168.2.1:1234
+    if (not found) then
+        text = gsub(text, '(%s?)(%d%d?%d?%.%d%d?%d?%.%d%d?%d?%.%d%d?%d?:%d%d?%d?%d?%d?)(%s?)', ColorURL)
+    end
+        -- 192.168.2.1
+    if (not found) then
+        text = gsub(text, '(%s?)(%d%d?%d?%.%d%d?%d?%.%d%d?%d?%.%d%d?%d?)(%s?)', ColorURL)
+    end
+        -- www.url.com:3333
+    if (not found) then
+        text = gsub(text, '(%s?)([%w_-]+%.?[%w_-]+%.[%w_-]+:%d%d%d?%d?%d?)(%s?)', ColorURL)
+    end
+        -- http://www.google.com
+    if (not found) then
+        text = gsub(text, "(%s?)(%a+://[%w_/%.%?%%=~&-'%-]+)(%s?)", ColorURL)
+    end
+        -- www.google.com
+    if (not found) then
+        text = gsub(text, "(%s?)(www%.[%w_/%.%?%%=~&-'%-]+)(%s?)", ColorURL)
+    end
+        -- url@domain.com
+    if (not found) then
+        text = gsub(text, '(%s?)([_%w-%.~-]+@[_%w-]+%.[_%w-%.]+)(%s?)', ColorURL)
+    end
+
+    frame.add(frame, text,...)
+end
+
+local function EnableURLCopy()
+    for _, v in pairs(CHAT_FRAMES) do
+        local chat = _G[v]
+        if (chat and not chat.hasURLCopy and (chat ~= 'ChatFrame2')) then
+            chat.add = chat.AddMessage
+            chat.AddMessage = ScanURL
+            chat.hasURLCopy = true
         end
     end
 end
+hooksecurefunc('FCF_OpenTemporaryWindow', EnableURLCopy)
 
-for _, event in ipairs(messageTypes) do
-    ChatFrame_AddMessageEventFilter(event, urlFilter)
-end
-
-local origSetItemRef = _G.SetItemRef
-local currentLink
-local SetItemRefHook = function(link, text, button)
-    if (link:sub(0, 3) == 'url') then
-        currentLink = link:sub(5)
-        StaticPopup_Show('UrlCopyDialog')
-        return
-    end
-
-    return origSetItemRef(link, text, button)
-end
-
-SetItemRef = SetItemRefHook
-
-StaticPopupDialogs['UrlCopyDialog'] = {
-    text = 'URL',
-    button2 = CLOSE,
-    hasEditBox = 1,
-    editBoxWidth = 250,
-
-    OnShow = function(frame)
+local orig = ChatFrame_OnHyperlinkShow
+function ChatFrame_OnHyperlinkShow(frame, link, text, button)
+    local type, value = link:match('(%a+):(.+)')
+    if (type == 'url') then
         local editBox = _G[frame:GetName()..'EditBox']
         if (editBox) then
-            editBox:SetText(currentLink)
+            editBox:Show()
+            editBox:SetText(value)
             editBox:SetFocus()
-            editBox:HighlightText(0)
+            editBox:HighlightText()
         end
+    else
+        orig(self, link, text, button)
+    end
+end
 
-        local button = _G[frame:GetName()..'Button2']
-        if (button) then
-            button:ClearAllPoints()
-            button:SetWidth(100)
-            button:SetPoint('CENTER', editBox, 'CENTER', 0, -30)
-        end
-    end,
-
-    EditBoxOnEscapePressed = function(frame) 
-        frame:GetParent():Hide() 
-    end,
-
-    timeout = 0,
-    whileDead = 1,
-    hideOnEscape = 1,
-    maxLetters = 1024,
-}
+EnableURLCopy()

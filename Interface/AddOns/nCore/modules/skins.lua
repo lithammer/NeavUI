@@ -82,9 +82,21 @@ f:SetScript('OnEvent', function(self)
         end)
     end
 
+    if (IsAddOnLoaded('TinyDPS')) then
+        if (not tdpsFrame.beautyBorder) then
+            tdpsFrame:CreateBeautyBorder(11)
+            tdpsFrame:SetBeautyBorderPadding(2)
+            tdpsFrame:SetBackdrop({
+                bgFile = 'Interface\\Buttons\\WHITE8x8',
+                insets = { left = 0, right = 0, top = 0, bottom = 0 },
+            })
+            tdpsFrame:SetBackdropColor(0, 0, 0, 0.5)
+        end
+    end
+
     if (IsAddOnLoaded('Recount')) then
         if (not Recount.MainWindow.beautyBorder) then
-            Recount.MainWindow:CreateBeautyBorder(11)
+            Recount.MainWindow:CreateBeautyBorder(12)
             Recount.MainWindow:SetBeautyBorderPadding(2, -10, 2, -10, 2, 2, 2, 2)
             Recount.MainWindow:SetBackdrop({
                 bgFile = 'Interface\\Buttons\\WHITE8x8',
@@ -93,16 +105,4 @@ f:SetScript('OnEvent', function(self)
             Recount.MainWindow:SetBackdropColor(0, 0, 0, 0.5)
         end
     end
-
-	if (IsAddOnLoaded('TinyDPS')) then
-		if (not tdpsFrame.beautyBorder) then
-			tdpsFrame:CreateBeautyBorder(11)
-			tdpsFrame:SetBeautyBorderPadding(2, 2, 2, 2, 2, 2, 2, 2)
-			tdpsFrame:SetBackdrop({
-				bgFile = 'Interface\\Buttons\\WHITE8x8',
-				insets = { left = 0, right = 0, top = 0, bottom = 0 },
-			})
-			tdpsFrame:SetBackdropColor(0, 0, 0, 0.5)
-		end
-	end
 end)

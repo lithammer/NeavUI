@@ -3,6 +3,7 @@
 ## RequiredDeps: !Beautycase
 
 config.lua
+config_custom.lua
 
 core.lua
 copy.lua

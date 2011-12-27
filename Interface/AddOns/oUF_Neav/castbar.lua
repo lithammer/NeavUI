@@ -27,8 +27,8 @@ function ns.CreateCastbars(self, unit)
         self.Castbar:SetStatusBarTexture(ns.Config.media.statusbar)
         self.Castbar:SetScale(config.scale)
         self.Castbar:SetSize(config.width, config.height)
-        self.Castbar:SetStatusBarColor(unpack(config.color))
-
+        self.Castbar:SetStatusBarColor(unpack(config.color))  
+        
         if (unit == 'focus') then
             self.Castbar:SetPoint('BOTTOM', self, 'TOP', 0, 25)
         else

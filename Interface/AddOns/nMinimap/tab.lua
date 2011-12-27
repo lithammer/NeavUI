@@ -7,6 +7,15 @@ if (not cfg.tab.show) then
 end
 
 local _, class = UnitClass('player')
+local a = CreateFrame('Frame')
+a:SetScript('OnEvent', function(self, event)
+    if (event=='PLAYER_LOGIN') then
+        if (not GuildFrame and IsInGuild()) then 
+            LoadAddOn('Blizzard_GuildUI') 
+        end
+    end
+end)
+a:RegisterEvent('PLAYER_LOGIN')
 
 local select = select
 local tostring = tostring
@@ -15,8 +24,7 @@ local modf = math.modf
 local sort = table.sort
 local format = string.format
 
-local entry
-local total
+local entry, total
 local addonTable = {}
 
 local totalGuildOnline = 0
@@ -35,9 +43,9 @@ local groupedTable = { '|cffaaaaaa*|r', '' }
 local activezone = {r = 0.3, g = 1.0, b = 0}
 local inactivezone = {r = 0.75, g = 0.75, b = 0.75}
 
-local guildIcon = "|TInterface\\GossipFrame\\TabardGossipIcon:13|t'"
-local friendIcon = "|TInterface\\FriendsFrame\\UI-Toast-ChatInviteIcon:15|t'"
-local performanceIcon = "|TInterface\\AddOns\\nMinimap\\media\\texturePerformance:10|t'"
+local guildIcon = '|TInterface\\GossipFrame\\TabardGossipIcon:13|t'
+local friendIcon = '|TInterface\\FriendsFrame\\PlusManz-BattleNet:13|t'
+local performanceIcon = '|TInterface\\AddOns\\nMinimap\\media\\texturePerformance:10|t'
 
 local gradientColor = {
     0, 1, 0, 
@@ -100,12 +108,12 @@ f:SetAlpha(cfg.tab.alphaNoMouseover)
 f:CreateBeautyBorder(11)
 f:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
 f:SetBackdropColor(0, 0, 0, 0.6)
+f.parent = Minimap
 
     -- The left button
 
 f.Left = CreateFrame('Button', nil, f)
 f.Left:RegisterForClicks('anyup')
-
 f.Left:RegisterEvent('PLAYER_ENTERING_WORLD')
 f.Left:RegisterEvent('MODIFIER_STATE_CHANGED')
 f.Left:RegisterEvent('PLAYER_GUILD_UPDATE')
@@ -113,8 +121,10 @@ f.Left:RegisterEvent('GUILD_ROSTER_SHOW')
 f.Left:RegisterEvent('GUILD_ROSTER_UPDATE')
 f.Left:RegisterEvent('GUILD_MOTD')
 f.Left:RegisterEvent('GUILD_XP_UPDATE')
+f.Left:RegisterEvent('PLAYER_GUILD_UPDATE')
+f.Left:RegisterEvent('CHAT_MSG_SYSTEM')
 
-f.Left.Text = f.Left:CreateFontString(nil, 'OVERLAY')
+f.Left.Text = f.Left:CreateFontString(nil, 'BACKGROUND')
 f.Left.Text:SetFont('Fonts\\ARIALN.ttf', 12)
 f.Left.Text:SetShadowColor(0, 0, 0)
 f.Left.Text:SetShadowOffset(1, -1)
@@ -125,7 +135,7 @@ f.Left:SetAllPoints(f.Left.Text)
 f.Right = CreateFrame('Button', nil, f)
 f.Right:RegisterEvent('MODIFIER_STATE_CHANGED')
 
-f.Right.Text = f.Right:CreateFontString(nil, 'OVERLAY')
+f.Right.Text = f.Right:CreateFontString(nil, 'BACKGROUND')
 f.Right.Text:SetFont('Fonts\\ARIALN.ttf', 12)
 f.Right.Text:SetShadowColor(0, 0, 0)
 f.Right.Text:SetShadowOffset(1, -1)
@@ -146,7 +156,6 @@ end)
 
 f.Center = CreateFrame('Button', nil, f)
 f.Center:RegisterForClicks('anyup')
-
 f.Center:RegisterEvent('BN_FRIEND_ACCOUNT_ONLINE')
 f.Center:RegisterEvent('BN_FRIEND_ACCOUNT_OFFLINE')
 f.Center:RegisterEvent('BN_FRIEND_INFO_CHANGED')
@@ -156,81 +165,107 @@ f.Center:RegisterEvent('BN_TOON_NAME_UPDATED')
 f.Center:RegisterEvent('FRIENDLIST_UPDATE')
 f.Center:RegisterEvent('PLAYER_ENTERING_WORLD')
 
-f.Center.Text = f.Center:CreateFontString(nil, 'OVERLAY')
+f.Center.Text = f.Center:CreateFontString(nil, 'BACKGROUND')
 f.Center.Text:SetFont('Fonts\\ARIALN.ttf', 12)
 f.Center.Text:SetShadowColor(0, 0, 0)
 f.Center.Text:SetShadowOffset(1, -1)
 f.Center:SetAllPoints(f.Center.Text)
-
-if (cfg.tab.showBelowMinimap) then
-    f.Left.Text:SetPoint('BOTTOMLEFT', f, 6, 5)
-    f.Right.Text:SetPoint('BOTTOMRIGHT', f, -6, 5)
-else
-    f.Left.Text:SetPoint('TOPLEFT', f, 6, -5)
-    f.Right.Text:SetPoint('TOPRIGHT', f, -6, -5)
-end
-
 f.Center.Text:SetPoint('TOPLEFT', f.Left, 'TOPRIGHT', 12, 0)
 f.Center.Text:SetPoint('TOPRIGHT', f.Right, 'TOPLEFT', -12, 0)
 
 local function HideTab()
-    if (not cfg.tab.showAlways) then
-        f.Left:Hide()
-        f.Right:Hide()
-        f.Center:Hide()
+    GameTooltip:Hide() 
 
-        if (cfg.tab.showBelowMinimap) then
-            f:SetPoint('TOPLEFT', Minimap, 'BOTTOMLEFT', 10, 23)
-            f:SetPoint('TOPRIGHT', Minimap, 'BOTTOMRIGHT', -10, 23)
-        else
-            f:SetPoint('BOTTOMLEFT', Minimap, 'TOPLEFT', 10, -23)
-            f:SetPoint('BOTTOMRIGHT', Minimap, 'TOPRIGHT', -10, -23)
-        end
-
-        f:SetAlpha(cfg.tab.alphaNoMouseover)
+    if (cfg.tab.showAlways) then
+        return
     end
 
-    GameTooltip:Hide() 
+    securecall('UIFrameFadeOut', f.Left, 0.15, f.Left:GetAlpha(), 0)
+    securecall('UIFrameFadeOut', f.Right, 0.15, f.Right:GetAlpha(), 0)
+    securecall('UIFrameFadeOut', f.Center, 0.15, f.Center:GetAlpha(), 0)
+    securecall('UIFrameFadeOut', f, 0.15, f:GetAlpha(), cfg.tab.alphaNoMouseover)
 end
 
 local function ShowTab()
-    f.Left:Show()
-    f.Right:Show()
-    f.Center:Show()
-
-    if (cfg.tab.showBelowMinimap) then
-        f:SetPoint('TOPLEFT', Minimap, 'BOTTOMLEFT', 10, 10)
-        f:SetPoint('TOPRIGHT', Minimap, 'BOTTOMRIGHT', -10, 10)
-    else
-        f:SetPoint('BOTTOMLEFT', Minimap, 'TOPLEFT', 10, -10)
-        f:SetPoint('BOTTOMRIGHT', Minimap, 'TOPRIGHT', -10, -10)
-    end
-
-    f:SetAlpha(cfg.tab.alphaMouseover)
+    securecall('UIFrameFadeIn', f.Left, 0.15, f.Left:GetAlpha(), 1)
+    securecall('UIFrameFadeIn', f.Right, 0.15, f.Right:GetAlpha(), 1)
+    securecall('UIFrameFadeIn', f.Center, 0.15, f.Center:GetAlpha(), 1)
+    securecall('UIFrameFadeIn', f, 0.15, f:GetAlpha(), cfg.tab.alphaMouseover)
 end
 
-if (cfg.tab.showAlways) then
-    ShowTab()
-else
-    HideTab()
-end
+if (cfg.tab.showBelowMinimap) then
+    f.Left.Text:SetPoint('BOTTOMLEFT', f, 6, 5)
+    f.Right.Text:SetPoint('BOTTOMRIGHT', f, -6, 5)
 
-if (cfg.tab.showMinimapMouseover) then
-    Minimap:HookScript('OnEnter', function()
+    if (cfg.tab.showAlways) then
         ShowTab()
-    end)
 
-    Minimap:HookScript('OnLeave', function()
-        HideTab()
-    end)
+        f:SetPoint('LEFT', Minimap, 'BOTTOMLEFT', 10, -6)
+        f:SetPoint('RIGHT', Minimap, 'BOTTOMRIGHT', -10, -6)
+    else
+        f:SetPoint('LEFT', Minimap, 'BOTTOMLEFT', 10, 9)
+        f:SetPoint('RIGHT', Minimap, 'BOTTOMRIGHT', -10, 9)
+    end
+else
+    f.Left.Text:SetPoint('TOPLEFT', f, 6, -5)
+    f.Right.Text:SetPoint('TOPRIGHT', f, -6, -5)
+
+    if (cfg.tab.showAlways) then
+        ShowTab()
+
+        f:SetPoint('LEFT', Minimap, 'TOPLEFT', 10, 6)
+        f:SetPoint('RIGHT', Minimap, 'TOPRIGHT', -10, 6)
+    else
+        f:SetPoint('LEFT', Minimap, 'TOPLEFT', 10, -9)
+        f:SetPoint('RIGHT', Minimap, 'TOPRIGHT', -10, -9)
+    end
+end
+
+local function SlideFrame(self, t)
+    self.pos = self.pos + t * self.speed
+    self:SetPoint(self.point, self.parent, self.point, 0, self.pos or 0)
+
+    if (self.pos * self.mod >= self.limit * self.mod) then
+        self:SetPoint(self.point, self.parent, self.point, 0, self.limit or 0)
+        self.pos = self.limit
+        self:SetScript('OnUpdate', nil)
+
+        if (self.finish_hide) then
+            self:Hide()
+        end
+
+        if (self.finish_function) then
+            self:finish_function()
+        end
+    end
+end
+
+if (cfg.tab.showBelowMinimap) then
+    f.point = 'BOTTOM'
+    f.pos = -6
+else
+    f.point = 'TOP'
+    f.pos = 6
+end
+
+local function SlideUp()
+    f.mod = 1
+    f.limit = cfg.tab.showBelowMinimap and -6 or 21
+    f.speed = 200
+    f:SetScript('OnUpdate', SlideFrame)
+end
+
+local function SlideDown()
+    f.mod = -1
+    f.limit = cfg.tab.showBelowMinimap and -21 or 6
+    f.speed = -200
+    f:SetScript('OnUpdate', SlideFrame)
 end
 
 local function AddonMem()
     total = 0
-
     collectgarbage()
     UpdateAddOnMemoryUsage()
-
     wipe(addonTable)
 
     for i = 1, GetNumAddOns() do
@@ -261,7 +296,6 @@ local function ShowMemoryTip(self)
     AddonMem()
 
     GameTooltip:AddLine(COMBAT_MISC_INFO)    
-
     GameTooltip:AddLine(' ')
 
     local _, _, lagHome, lagWorld = GetNetStats()
@@ -275,7 +309,6 @@ local function ShowMemoryTip(self)
     end
 
     GameTooltip:AddLine(' ')
-
     GameTooltip:AddDoubleLine(ALL, FormatMemoryValue(total), nil, nil, nil, RGBGradient(total / (1024*10)))
 
     if (SHOW_NEWBIE_TIPS == '1') then
@@ -367,8 +400,17 @@ local function UpdateGuildXP()
     local percentTotal = tostring(ceil((currentXP / nextLevelXP) * 100))
     local percentDaily = tostring(ceil((dailyXP / maxDailyXP) * 100))
 
-    guildXP[0] = { currentXP, nextLevelXP, percentTotal }
-    guildXP[1] = { dailyXP, maxDailyXP, percentDaily }
+    guildXP[0] = {
+        currentXP, 
+        nextLevelXP, 
+        percentTotal 
+    }
+
+    guildXP[1] = {
+        dailyXP, 
+        maxDailyXP, 
+        percentDaily 
+    }
 end
 
 local function GuildTip(self)
@@ -376,12 +418,10 @@ local function GuildTip(self)
         return 
     end
 
-    GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMLEFT')
-
-    local col = RGBToHex(1, 0, 1)
     local zonec, classc, levelc
     local online = totalGuildOnline
 
+    GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMLEFT')
     GameTooltip:AddLine(GetGuildInfo('player')..' - '..LEVEL..' '..GetGuildLevel())
     GameTooltip:AddLine(' ')
     GameTooltip:AddLine(GUILD_MOTD, nil, nil, nil) 
@@ -391,22 +431,9 @@ local function GuildTip(self)
     if (GetGuildLevel() ~= 25) then
         local currentXP, nextLevelXP, percentTotal = unpack(guildXP[0])
         local dailyXP, maxDailyXP, percentDaily = unpack(guildXP[1])
-        GameTooltip:AddLine(format(col..GUILD_EXPERIENCE_CURRENT, '|r |cFFFFFFFF'..ShortValue(currentXP), ShortValue(nextLevelXP), percentTotal))
-        GameTooltip:AddLine(format(col..GUILD_EXPERIENCE_DAILY, '|r |cFFFFFFFF'..ShortValue(dailyXP), ShortValue(maxDailyXP), percentDaily))
+        GameTooltip:AddLine(format(GUILD_EXPERIENCE_CURRENT, '|r |cFFFFFFFF'..ShortValue(currentXP), ShortValue(nextLevelXP), percentTotal))
+        GameTooltip:AddLine(format(GUILD_EXPERIENCE_DAILY, '|r |cFFFFFFFF'..ShortValue(dailyXP), ShortValue(maxDailyXP), percentDaily))
     end
-
-    local _, _, standingID, min, max, curr = GetGuildFactionInfo()
-    if (standingID ~= 4) then
-        max = max - min
-        curr = curr - min
-        min = 0
-        GameTooltip:AddLine(COMBAT_FACTION_CHANGE)
-        GameTooltip:AddLine(format('|cFFFFFFFF%s/%s (%s%%)', ShortValue(curr), ShortValue(max), ceil((curr / max) * 100)))
-    end
-
-    GameTooltip:AddLine(' ')
-    GameTooltip:AddLine(GUILD_ONLINE_LABEL)
-    GameTooltip:AddLine(format('|cffffffff%d/%d|r', online, #guildTable))
 
     if (online > 1) then
         GameTooltip:AddLine(' ')
@@ -430,16 +457,14 @@ local function GuildTip(self)
 
                 local classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class], GetQuestDifficultyColor(level)
                 if (IsShiftKeyDown()) then
-                    local pii = '|cff999999'
-                    GameTooltip:AddDoubleLine(format('|cff%02x%02x%02x%d|r %s '..pii..'[%s]|r', levelc.r*255, levelc.g*255, levelc.b*255, level, name, rank), zone, classc.r, classc.g, classc.b, zonec.r, zonec.g, zonec.b)
+                    GameTooltip:AddDoubleLine(format('|cff%02x%02x%02x%d|r %s |r', levelc.r*255, levelc.g*255, levelc.b*255, level, name), RGBToHex(0.75, 0.75, 0.75)..rank, classc.r, classc.g, classc.b)
 
                     if (note ~= '') then 
-                        GameTooltip:AddLine(format("    |cffffffff'%s'|r", note), 1, 1, 0, 1) 
+                        GameTooltip:AddLine(format('        |cffffffff%s|r', note), 1, 1, 0, 1) 
                     end
 
                     if (officernote ~= '') then 
-                        local oCOL = RGBToHex(0.3, 1, 0.15)
-                        GameTooltip:AddLine(format(oCOL.."    o: '%s'", officernote), 1, 0, 1, 1) 
+                        GameTooltip:AddLine(format(RGBToHex(0.3, 1, 0)..'        %s', officernote), 1, 0, 1, 1) 
                     end
                 else
                     GameTooltip:AddDoubleLine(format('|cff%02x%02x%02x%d|r %s %s', levelc.r*255, levelc.g*255, levelc.b*255, level, name, status), zone, classc.r, classc.g, classc.b, zonec.r, zonec.g, zonec.b)
@@ -447,7 +472,9 @@ local function GuildTip(self)
             end
         end
     end
-
+    
+    GameTooltip:AddLine(' ')
+    GameTooltip:AddLine(GUILD_MEMBERS_ONLINE_COLON..' '..format('|cffffffff%d/%d|r', online, #guildTable))
     GameTooltip:Show()
 end
 
@@ -481,20 +508,18 @@ local function GuildOnEvent(self, event)
 end
 
 f.Left:SetScript('OnClick', function(self, button) 
-    if (button == 'LeftButton') then      
-        if (not GuildFrame and IsInGuild()) then 
-            LoadAddOn('Blizzard_GuildUI') 
-        end
+    if (not IsInGuild()) then 
+        return
+    end
 
+    if (button == 'LeftButton') then
         GuildFrame_Toggle() 
     else
         GameTooltip:Hide()
-        UpdateGuildXP() 
 
         local classc, levelc, grouped
         local menuCountWhispers = 0
         local menuCountInvites = 0
-    
         menuList[2].menuList = {}
         menuList[3].menuList = {}
 
@@ -612,7 +637,24 @@ local function BuildBNTable(total)
             end 
         end
 
-        BNTable[i] = { presenceID, givenName, surname, toonName, toonID, client, isOnline, isAFK, isDND, noteText, realmName, faction, race, class, zoneName, level }
+        BNTable[i] = { 
+            presenceID, 
+            givenName, 
+            surname, 
+            toonName, 
+            toonID, 
+            client, 
+            isOnline, 
+            isAFK, 
+            isDND, 
+            noteText, 
+            realmName, 
+            faction, 
+            race, 
+            class, 
+            zoneName, 
+            level 
+        }
 
         if (isOnline) then 
             totalBattleNetOnline = totalBattleNetOnline + 1 
@@ -650,7 +692,6 @@ local function UpdateBNTable(total)
         end
 
         BNTable[index][7] = isOnline
-
         if (isOnline) then
             BNTable[index][2] = givenName
             BNTable[index][3] = surname
@@ -666,7 +707,6 @@ local function UpdateBNTable(total)
             BNTable[index][14] = class
             BNTable[index][15] = zoneName
             BNTable[index][16] = level
-
             totalBattleNetOnline = totalBattleNetOnline + 1
         end
     end
@@ -773,9 +813,8 @@ f.Center:SetScript('OnClick', function(self, button)
 end)
 
 local function FriendsOnEvent(self, event)
-    if (event == 'BN_FRIEND_INFO_CHANGED' or event == 'BN_FRIEND_ACCOUNT_ONLINE' or event == 'BN_FRIEND_ACCOUNT_OFFLINE' or event == 'BN_TOON_NAME_UPDATED' or event == 'BN_FRIEND_TOON_ONLINE' or event == 'BN_FRIEND_TOON_OFFLINE' or event == 'PLAYER_ENTERING_WORLD') then
+    if (event:match('BN_FRIEND') or  event == 'PLAYER_ENTERING_WORLD') then
         local BNTotal = BNGetNumFriends()
-
         if (BNTotal == #BNTable) then
             UpdateBNTable(BNTotal)
         else
@@ -785,7 +824,6 @@ local function FriendsOnEvent(self, event)
 
     if (event == 'FRIENDLIST_UPDATE' or event == 'PLAYER_ENTERING_WORLD') then
         local total = GetNumFriends()
-
         if (total == #friendTable) then
             UpdateFriendTable(total)
         else
@@ -805,32 +843,29 @@ local function FriendsOnEnter(self)
         GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMLEFT')
         GameTooltip:ClearLines()
         GameTooltip:AddLine(FRIENDS_LIST_ONLINE..format(': %s/%s', totalFriendsOnline, totalfriends))
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddLine('World of Warcraft')
 
-        if (totalFriendsOnline > 0) then
-            GameTooltip:AddLine(' ')
-            GameTooltip:AddLine('World of Warcraft')
-
-            for i = 1, #friendTable do
-                if (friendTable[i][5]) then
-                    if (GetRealZoneText() == friendTable[i][4]) then 
-                        zonec = activezone 
-                    else 
-                        zonec = inactivezone 
-                    end
-
-                    classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[friendTable[i][3]], GetQuestDifficultyColor(friendTable[i][2])
-                    if (classc == nil) then 
-                        classc = GetQuestDifficultyColor(friendTable[i][2]) 
-                    end
-
-                    if (UnitInParty(friendTable[i][1]) or UnitInRaid(friendTable[i][1])) then 
-                        grouped = 1 
-                    else 
-                        grouped = 2 
-                    end
-                    
-                    GameTooltip:AddDoubleLine(format('|cff%02x%02x%02x%d|r %s%s%s', levelc.r*255, levelc.g*255, levelc.b*255, friendTable[i][2], friendTable[i][1], groupedTable[grouped],' '..friendTable[i][6]), friendTable[i][4], classc.r, classc.g, classc.b, zonec.r, zonec.g, zonec.b)
+        for i = 1, #friendTable do
+            if (friendTable[i][5]) then
+                if (GetRealZoneText() == friendTable[i][4]) then 
+                    zonec = activezone 
+                else 
+                    zonec = inactivezone 
                 end
+
+                classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[friendTable[i][3]], GetQuestDifficultyColor(friendTable[i][2])
+                if (classc == nil) then 
+                    classc = GetQuestDifficultyColor(friendTable[i][2]) 
+                end
+
+                if (UnitInParty(friendTable[i][1]) or UnitInRaid(friendTable[i][1])) then 
+                    grouped = 1 
+                else 
+                    grouped = 2 
+                end
+
+                GameTooltip:AddDoubleLine(format('|cff%02x%02x%02x%d|r %s%s%s', levelc.r*255, levelc.g*255, levelc.b*255, friendTable[i][2], friendTable[i][1], groupedTable[grouped],' '..friendTable[i][6]), friendTable[i][4], classc.r, classc.g, classc.b, zonec.r, zonec.g, zonec.b)
             end
         end
 
@@ -850,7 +885,8 @@ local function FriendsOnEnter(self)
                             status = 3 
                         end
 
-                        classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[BNTable[i][14]], GetQuestDifficultyColor(BNTable[i][16])
+                        classc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[BNTable[i][14]]
+                        levelc = GetQuestDifficultyColor(BNTable[i][16])
                         if (classc == nil) then 
                             classc = GetQuestDifficultyColor(BNTable[i][16]) 
                         end
@@ -875,60 +911,106 @@ local function FriendsOnEnter(self)
     end
 end
 
-    -- The 'OnEnter' functions
+    -- the 'OnEnter' functions
 
 f:SetScript('OnEnter', function()
-    ShowTab()
+    if (not cfg.tab.showAlways) then
+        ShowTab()
+        if (cfg.tab.showBelowMinimap) then
+            SlideDown()
+        else
+            SlideUp()
+        end
+    end
 end)
 
 f.Center:SetScript('OnEnter', function(self)
     FriendsOnEnter(self)
-    ShowTab()
+
+    if (not cfg.tab.showAlways) then
+        ShowTab()
+        if (cfg.tab.showBelowMinimap) then
+            SlideDown()
+        else
+            SlideUp()
+        end
+    end
 end)
 
 f.Right:SetScript('OnEnter', function(self)
     ShowMemoryTip(self)
-    ShowTab()
+
+    if (not cfg.tab.showAlways) then
+        ShowTab()
+        if (cfg.tab.showBelowMinimap) then
+            SlideDown()
+        else
+            SlideUp()
+        end
+    end
 end)
 
 f.Left:SetScript('OnEnter', function(self)
     GuildTip(self)
     UpdateGuildText()
-    ShowTab()
+
+    if (not cfg.tab.showAlways) then
+        ShowTab()
+        if (cfg.tab.showBelowMinimap) then
+            SlideDown()
+        else
+            SlideUp()
+        end
+    end
 end)
 
-    -- The 'OnLeave' functions
+    -- the 'OnLeave' functions
+    
+for _, leaveFrame in pairs({
+    f,
+    f.Right,    
+    f.Left,
+    f.Center,
+}) do
+    leaveFrame:SetScript('OnLeave', function()
+        HideTab()
 
-f:SetScript('OnLeave', function()
-    HideTab()
-end)
+        if (not cfg.tab.showAlways) then
+            if (cfg.tab.showBelowMinimap) then
+                SlideUp()
+            else
+                SlideDown()
+            end
+        end
+    end)
+end
 
-f.Right:SetScript('OnLeave', function()
-    GameTooltip:Hide()
-    HideTab()
-end)
+    -- the Minimap scripts
 
-f.Left:SetScript('OnLeave', function() 
-    GameTooltip:Hide()
-    HideTab()
-end)
+if (not cfg.tab.showAlways) then
+    Minimap:HookScript('OnEnter',function()
+        ShowTab()
 
-f.Center:SetScript('OnLeave', function() 
-    GameTooltip:Hide()
-    HideTab()
-end)
+        if (cfg.tab.showBelowMinimap) then
+            SlideDown()
+        else
+            SlideUp()
+        end
+    end)
+    
+    Minimap:HookScript('OnLeave', function()
+        HideTab()
 
-    -- The 'OnEvent' functions
+        if (cfg.tab.showBelowMinimap) then
+            SlideUp()
+        else
+            SlideDown()
+        end
+    end)
+end
 
-f.Center:SetScript('OnEvent', function(self, event)
-    FriendsOnEvent(self, event)
-end)
+    -- the 'OnEvent' functions
 
-f.Left:SetScript('OnEvent', function(self, event)
-    GuildOnEvent(self, event)
-end)
-
-f.Right:SetScript('OnEvent', function(self)
-    InfoOnEvent(self)
-end)
-
+f.Center:SetScript('OnEvent', FriendsOnEvent)
+f.Left:SetScript('OnEvent', GuildOnEvent)
+f.Right:SetScript('OnEvent', InfoOnEvent)

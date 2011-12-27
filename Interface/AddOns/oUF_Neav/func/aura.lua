@@ -6,34 +6,16 @@ local GetTime = GetTime
 local floor, fmod = floor, math.fmod
 local day, hour, minute = 86400, 3600, 60
 
+local function ExactTime(time)
+    return format('%.1f', time), (time * 100 - floor(time * 100))/100
+end
+
 local function IsMine(unit)
     if (unit == 'player' or unit == 'vehicle' or unit == 'pet') then
         return true
     else
         return false
     end
-end
-
---[[
-local function AuraMouseover(button, ...)
-    local size = ...
-
-    button:HookScript('OnEnter', function(self)
-        button.icon:SetSize(size + 8, size + 8)
-        button:SetFrameLevel(2)
-        button.count:SetFont(config.font.normal, 15, 'THINOUTLINE')
-    end)
-
-    button:HookScript('OnLeave', function(self)
-        button.icon:SetSize(size, size)
-        button:SetFrameLevel(1)
-        button.count:SetFont(config.font.normal, 11, 'THINOUTLINE')
-    end)
-end
---]]
-
-local function ExactTime(time)
-    return format("%.1f", time), (time * 100 - floor(time * 100))/100
 end
 
 ns.UpdateAuraTimer = function(self, elapsed)
@@ -43,20 +25,18 @@ ns.UpdateAuraTimer = function(self, elapsed)
     end
 
     self.elapsed = 0
-    
+
     local timeLeft = self.expires - GetTime()
     if (timeLeft <= 0) then
         self.remaining:SetText(nil)
     else
         if (timeLeft <= 5 and IsMine(self.owner)) then
             self.remaining:SetText('|cffff0000'..ExactTime(timeLeft)..'|r')
-
             if (not self.ignoreSize) then
                 self.remaining:SetFont(config.font.normal, 12, 'THINOUTLINE')
             end
         else
             self.remaining:SetText(ns.FormatTime(timeLeft))
-
             if (not self.ignoreSize) then
                 self.remaining:SetFont(config.font.normal, 8, 'THINOUTLINE')
             end
@@ -67,11 +47,21 @@ end
 ns.PostUpdateIcon = function(icons, unit, icon, index, offset)
     icon:SetAlpha(1)
 
+    if (icon.isStealable) then
+        if (icon.Shadow) then
+            icon.Shadow:SetVertexColor(1, 1, 0, 1)
+        end
+    else
+        if (icon.Shadow) then
+            icon.Shadow:SetVertexColor(0, 0, 0, 1)
+        end
+    end
+
     if (config.units.target.colorPlayerDebuffsOnly) then
         if (unit == 'target') then 
             if (icon.debuff) then
                 if (not IsMine(icon.owner)) then
-                    icon.overlay:SetVertexColor(0.45, 0.45, 0.45)
+                    -- icon.overlay:SetVertexColor(0.45, 0.45, 0.45)
                     icon.icon:SetDesaturated(true)
                     icon:SetAlpha(0.55)
                 else
@@ -83,22 +73,28 @@ ns.PostUpdateIcon = function(icons, unit, icon, index, offset)
     end
 
     if (icon.remaining) then
-        local _, _, _, _, _, duration, expirationTime = UnitAura(unit, index, icon.filter)
-
-        if (duration and duration > 0) then
-            if (not icon.remaining:IsShown()) then
-                icon.remaining:Show()
-            end
-        else
+        if (unit == 'target' and icon.debuff and not IsMine(icon.owner) and (not UnitIsFriend('player', unit) and UnitCanAttack(unit, 'player') and not UnitPlayerControlled(unit)) and not config.units.target.showAllTimers ) then
             if (icon.remaining:IsShown()) then
                 icon.remaining:Hide()
             end
-        end
 
-        icon.duration = duration
-        icon.expires = expirationTime
-        
-        icon:SetScript('OnUpdate', ns.UpdateAuraTimer)
+            icon:SetScript('OnUpdate', nil)
+        else
+            local _, _, _, _, _, duration, expirationTime = UnitAura(unit, index, icon.filter)
+            if (duration and duration > 0) then
+                if (not icon.remaining:IsShown()) then
+                    icon.remaining:Show()
+                end
+            else
+                if (icon.remaining:IsShown()) then
+                    icon.remaining:Hide()
+                end
+            end
+
+            icon.duration = duration
+            icon.expires = expirationTime
+            icon:SetScript('OnUpdate', ns.UpdateAuraTimer)
+        end
     end
 end
 
@@ -122,7 +118,7 @@ ns.UpdateAuraIcons = function(auras, button)
         button.count:SetFont(config.font.normal, 11, 'THINOUTLINE')
         button.count:SetShadowOffset(0, 0)
         button.count:ClearAllPoints()
-        button.count:SetPoint('BOTTOMRIGHT', button.icon, 1, 1)
+        button.count:SetPoint('BOTTOMRIGHT', button.icon, 2, 0)
 
         if (config.show.disableCooldown) then
             button.cd:SetReverse()
@@ -132,7 +128,8 @@ ns.UpdateAuraIcons = function(auras, button)
             button.cd:SetPoint('BOTTOMLEFT', button.icon, 'BOTTOMLEFT', 1, 1)
         else
             auras.disableCooldown = true
-            
+            -- button.cd.noOCC = true
+
             button.remaining = button:CreateFontString(nil, 'OVERLAY')
             button.remaining:SetFont(config.font.normal, 8, 'THINOUTLINE')
             button.remaining:SetShadowOffset(0, 0)
@@ -148,13 +145,7 @@ ns.UpdateAuraIcons = function(auras, button)
         end
 
         button.overlay.Hide = function(self)
-            self:SetVertexColor(0.45, 0.45, 0.45, 1)
+            self:SetVertexColor(0.5, 0.5, 0.5, 1)
         end
-
-        --[[
-        if (not button.disableMouseover) then
-            AuraMouseover(button, size)
-        end
-        --]]
     end
 end

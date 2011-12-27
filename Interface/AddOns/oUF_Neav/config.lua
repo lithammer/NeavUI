@@ -121,7 +121,7 @@ ns.Config = {
                     positionOutside = true,
                 },
 
-                position = {'BOTTOM', UIParent, 'BOTTOM', 0, 390},
+                position = {'TOP', oUF_Neav_Player, 'BOTTOM', 0, -50},
 
                 ignoreSpells = true,                                                        -- Hides castbar for spells listed in 'ignoreList'
                 ignoreList = {
@@ -137,6 +137,7 @@ ns.Config = {
             numBuffs = 20,
             numDebuffs = 20,
             colorPlayerDebuffsOnly = true,
+            showAllTimers = false,                                                          -- If false, only the player debuffs have timer
             disableAura = false,                                                            -- Disable Auras on this unitframe
 
             showComboPoints = true,

@@ -108,7 +108,6 @@ function GetMinimapShape()
 end
 
 Minimap:SetMaskTexture('Interface\\ChatFrame\\ChatFrameBackground')
-
 Minimap:CreateBeautyBorder(11)
 Minimap:SetBeautyBorderPadding(1)
 
@@ -136,8 +135,7 @@ end)
     -- Skin the ticket status frame
 
 TicketStatusFrame:ClearAllPoints()
-TicketStatusFrame:SetPoint('BOTTOMRIGHT', UIParent, 0, 0)
-
+TicketStatusFrame:SetPoint('BOTTOMRIGHT', UIParent, -25, -33)
 TicketStatusFrameButton:HookScript('OnShow', function(self)
     self:SetBackdrop({
         bgFile = 'Interface\\Buttons\\WHITE8x8', 
@@ -154,7 +152,6 @@ end)
 
 local function GetZoneColor()
     local zoneType = GetZonePVPInfo()
-    
     if (zoneType == 'sanctuary') then
         return 0.4, 0.8, 0.94
     elseif (zoneType == 'arena') then
@@ -193,16 +190,16 @@ if (cfg.mouseover.zoneText) then
         if (not IsShiftKeyDown()) then
             SubZone:SetTextColor(GetZoneColor())
             SubZone:SetText(GetSubZoneText())
-            securecall('UIFrameFadeIn', SubZone, 0.235, SubZone:GetAlpha(), 1)
+            securecall('UIFrameFadeIn', SubZone, 0.15, SubZone:GetAlpha(), 1)
 
             MainZone:SetTextColor(GetZoneColor())
             MainZone:SetText(GetRealZoneText())
-            securecall('UIFrameFadeIn', MainZone, 0.235, MainZone:GetAlpha(), 1)
+            securecall('UIFrameFadeIn', MainZone, 0.15, MainZone:GetAlpha(), 1)
         end
     end)
 
     Minimap:HookScript('OnLeave', function()
-        securecall('UIFrameFadeOut', SubZone, 0.235, SubZone:GetAlpha(), 0)
-        securecall('UIFrameFadeOut', MainZone, 0.235, MainZone:GetAlpha(), 0)
+        securecall('UIFrameFadeOut', SubZone, 0.15, SubZone:GetAlpha(), 0)
+        securecall('UIFrameFadeOut', MainZone, 0.15, MainZone:GetAlpha(), 0)
     end)
 end

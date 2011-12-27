@@ -34,7 +34,9 @@ local function DeficitValue(value)
 end
 
 ns.cUnit = function(unit)
-    if (unit:match('party%d')) then
+    if (unit:match('vehicle')) then
+        return 'player'
+    elseif (unit:match('party%d')) then
         return 'party'
     elseif (unit:match('arena%d')) then
         return 'arena'

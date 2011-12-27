@@ -4,12 +4,11 @@ local _, nMinimap = ...
 nMinimap.Config = {
     tab = {
         show = true,
+        showAlways = false,
 
         alphaMouseover = 1,
-        alphaNoMouseover = 0.55,
-        
-        showAlways = false,
-        showMinimapMouseover = true,
+        alphaNoMouseover = 0.5,
+
         showBelowMinimap = false,
     },
 
