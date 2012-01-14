@@ -83,7 +83,7 @@ function oGlow:UpdatePipe(pipe)
 	argcheck(pipe, 2, 'string')
 
 	local ref = pipesTable[pipe]
-	if(ref and ref.isActive) then
+	if(ref) then
 		ref.update(self)
 
 		return true

@@ -1,9 +1,9 @@
 -- TODO:
---  - Clean up the dupe code.
 --  - Prevent unnecessary double updates.
 --  - Write a description.
 
 local hook
+local _E
 
 local pipe = function(self)
 	if(oGlow:IsPipeEnabled'bags') then
@@ -16,7 +16,7 @@ local pipe = function(self)
 			local slotFrame = _G[name .. 'Item' .. bid]
 			local slotLink = GetContainerItemLink(id, i)
 
-			oGlow:CallFilters('bags', slotFrame, slotLink)
+			oGlow:CallFilters('bags', slotFrame, _E and slotLink)
 		end
 	end
 end
@@ -32,6 +32,8 @@ local update = function(self)
 end
 
 local enable = function(self)
+	_E = true
+
 	if(not hook) then
 		hooksecurefunc("ContainerFrame_Update", pipe)
 		hook = true
@@ -39,18 +41,7 @@ local enable = function(self)
 end
 
 local disable = function(self)
-	for i=1, NUM_CONTAINER_FRAMES or 13 do
-		local frame = _G['ContainerFrame' .. i]
-		local size = frame.size
-		if(not size) then break end
-
-		for j=1, size do
-			local bid = size - j + 1
-			local slotFrame = _G[frame:GetName() .. 'Item' .. bid]
-
-			oGlow:CallFilters('bags', slotFrame)
-		end
-	end
+	_E = nil
 end
 
 oGlow:RegisterPipe('bags', enable, disable, update, 'Bag containers', nil)
