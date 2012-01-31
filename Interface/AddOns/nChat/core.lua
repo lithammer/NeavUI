@@ -65,17 +65,6 @@ _G.CHAT_RAID_LEADER_GET = '(|Hchannel:raid|hL|h) %s:\32'
 _G.CHAT_BATTLEGROUND_GET = '(|Hchannel:Battleground|hBG|h) %s:\32'
 _G.CHAT_BATTLEGROUND_LEADER_GET = '(|Hchannel:Battleground|hBL|h) %s:\32'
 
-    -- Blizzard introduced a bug in 4.3 that always enables
-    -- the profanity filter
-
-BNSetMatureLanguageFilter(false)
-
-    -- Disable the profanity filter interface option
-
-InterfaceOptionsSocialPanelProfanityFilter:SetAlpha(0.35)
-InterfaceOptionsSocialPanelProfanityFilter:Disable()
-InterfaceOptionsSocialPanelProfanityFilter:EnableMouse(false)
-
 --[[
 local channelFormat 
 do
