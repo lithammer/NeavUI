@@ -497,6 +497,38 @@ local function CreateUnitLayout(self, unit)
         self.Health:SetSize(70, 7) 
     end
 
+        -- Heal prediction, new healcomm
+
+    local myBar = CreateFrame('StatusBar', nil, self)
+	myBar:SetFrameLevel(self:GetFrameLevel() - 1)
+    myBar:SetStatusBarTexture(config.media.statusbar, 'OVERLAY')
+    myBar:SetStatusBarColor(0, 1, 0.3, 0.5)
+
+	myBar.Smooth = true
+
+	myBar:SetOrientation('HORIZONTAL')
+	myBar:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
+	myBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
+	myBar:SetWidth(self.Health:GetWidth())
+
+    local otherBar = CreateFrame('StatusBar', nil, self)
+	otherBar:SetFrameLevel(self:GetFrameLevel() - 1)
+    otherBar:SetStatusBarTexture(config.media.statusbar, 'OVERLAY')
+    otherBar:SetStatusBarColor(0, 1, 0, 0.35)
+
+	otherBar.Smooth = true
+
+	otherBar:SetOrientation('HORIZONTAL')
+	otherBar:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
+	otherBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
+	otherBar:SetWidth(self.Health:GetWidth())
+
+    self.HealPrediction = {
+        myBar = myBar,
+        otherBar = otherBar,
+        maxOverflow = 1.0,
+    }
+
         -- Health text
 
     self.Health.Value = self:CreateFontString(nil, 'OVERLAY')
@@ -799,7 +831,8 @@ local function CreateUnitLayout(self, unit)
             ShardBarFrame:SetScale(config.units.player.scale * 0.8)
             ShardBar_OnLoad(ShardBarFrame)
             ShardBarFrame:ClearAllPoints()
-            ShardBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, -1)
+            --ShardBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, -1)
+            ShardBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, -2)
             ShardBarFrame:Show()
         end
 
