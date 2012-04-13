@@ -519,8 +519,8 @@ local function CreateUnitLayout(self, unit)
 	otherBar.Smooth = true
 
 	otherBar:SetOrientation('HORIZONTAL')
-	otherBar:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
-	otherBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
+	otherBar:SetPoint('TOPLEFT', myBar:GetStatusBarTexture(), 'TOPRIGHT')
+	otherBar:SetPoint('BOTTOMLEFT', myBar:GetStatusBarTexture(), 'BOTTOMRIGHT')
 	otherBar:SetWidth(self.Health:GetWidth())
 
     self.HealPrediction = {
