@@ -467,14 +467,14 @@ local function CreateRaidLayout(self, unit)
 
     if (config.units.raid.horizontalHealthBars) then
         otherBar:SetOrientation('HORIZONTAL')
-        otherBar:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
-        otherBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
-        otherBar:SetWidth(self.Health:GetWidth())
+        otherBar:SetPoint('TOPLEFT', myBar:GetStatusBarTexture(), 'TOPRIGHT')
+        otherBar:SetPoint('BOTTOMLEFT', myBar:GetStatusBarTexture(), 'BOTTOMRIGHT')
+        otherBar:SetWidth(self:GetWidth())
     else
         otherBar:SetOrientation('VERTICAL')
-        otherBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'TOPLEFT')
-        otherBar:SetPoint('BOTTOMRIGHT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
-        otherBar:SetHeight(self.Health:GetHeight())
+        otherBar:SetPoint('BOTTOMLEFT', myBar:GetStatusBarTexture(), 'TOPLEFT')
+        otherBar:SetPoint('BOTTOMRIGHT', myBar:GetStatusBarTexture(), 'TOPRIGHT')
+        otherBar:SetHeight(self:GetHeight())
     end
 
     self.HealPrediction = {
