@@ -78,7 +78,7 @@ local function GetFormattedText(text, cur, max, alt)
         text = gsub(text, '$alt', ((alt > 0) and format('%s', FormatValue(alt)) or ''))
     end
 
-    local r, g, b = oUF.ColorGradient(cur/max, unpack(oUF.smoothGradient or oUF.colors.smooth))
+    local r, g, b = oUF.ColorGradient(cur, max, unpack(oUF.smoothGradient or oUF.colors.smooth))
     text = gsub(text, '$cur', format('%s', (cur > 0 and FormatValue(cur)) or ''))
     text = gsub(text, '$max', format('%s', FormatValue(max)))
     text = gsub(text, '$deficit', format('%s', DeficitValue(max-cur)))
