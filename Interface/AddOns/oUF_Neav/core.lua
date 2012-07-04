@@ -836,6 +836,12 @@ local function CreateUnitLayout(self, unit)
 			WarlockPowerFrame_OnLoad(self)
         end
 
+			-- Priest bar
+		if (playerClass == 'PRIEST') then
+			PriestBarFrame:SetParent(oUF_Neav_Player)
+			PriestBarFrame_OnLoad(PriestBarFrame)
+		end
+
             -- Holy power bar
 
         if (playerClass == 'PALADIN') then
