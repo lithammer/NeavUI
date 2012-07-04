@@ -369,7 +369,7 @@ local function BuildGuildTable()
     wipe(guildTable)
 
     for i = 1, GetNumGuildMembers() do
-        local name, rank, _, level, _, zone, note, officernote, connected, status, class = GetGuildRosterInfo(i)
+        local name, rank, _, level, _, zone, note, officernote, connected, status, class, reputationStanding = GetGuildRosterInfo(i)
         guildTable[i] = { 
             name, 
             rank, 
