@@ -987,8 +987,7 @@ local function CreateUnitLayout(self, unit)
         CreateTab(self)
         UpdatePartyTab(self) 
 
-        self:RegisterEvent('RAID_ROSTER_UPDATE', UpdatePartyTab)
-        self:RegisterEvent('PARTY_MEMBER_CHANGED', UpdatePartyTab)
+        self:RegisterEvent('GROUP_ROSTER_UPDATE', UpdatePartyTab)
 
             -- Resting/combat status flashing
 

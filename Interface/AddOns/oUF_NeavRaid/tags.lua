@@ -20,7 +20,7 @@ oUF.Tags['status:raid'] = function(unit)
     end
 end
 
-oUF.TagEvents['role:raid'] = 'PARTY_MEMBERS_CHANGED PLAYER_ROLES_ASSIGNED'
+oUF.TagEvents['role:raid'] = 'GROUP_ROSTER_UPDATE PLAYER_ROLES_ASSIGNED'
 if (not oUF.Tags['role:raid']) then
     oUF.Tags['role:raid'] = function(unit)
         local role = UnitGroupRolesAssigned(unit)
