@@ -1,0 +1,15 @@
+.DS_Store
+*.app/
+config_custom.lua
+Cache/
+Data/
+Interface/AddOns/Blizzard_*/
+Logs/
+Patch.html
+Updates/
+WTF/
+*.mfil
+*.tfil
+*.pfil
+*.db
+*.mpq
