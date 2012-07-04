@@ -194,6 +194,7 @@ HelpIDs = ( {
     DRUID = { 5185 }; -- Healing Touch (40yd) - Lvl 3
     -- HUNTER = {};
     MAGE = { 475 }; -- Remove Curse (40yd) - Lvl 30
+    MONK = { 115450 }, -- Detox (40yd) - Lvl 20
     PALADIN = { 85673 }; -- Word of Glory (40yd) - Lvl 9
     PRIEST = { 2061 }; -- Flash Heal (40yd) - Lvl 3
     -- ROGUE = {};
@@ -207,6 +208,7 @@ HarmIDs = ( {
     DRUID = { 5176 }; -- Wrath (40yd) - Starter
     HUNTER = { 75 }; -- Auto Shot (5-40yd) - Starter
     MAGE = { 133 }; -- Fireball (40yd) - Starter
+    MONK = { 115546 }; -- Provoke (40yd) - Lvl 14
     PALADIN = {
         62124, -- Hand of Reckoning (30yd) - Lvl 14
         879, -- Exorcism (30yd) - Lvl 18
