@@ -11,8 +11,8 @@ local function FormatValue(value)
     end
 end
 
-oUF.TagEvents['druidmana'] = 'UNIT_POWER UNIT_DISPLAYPOWER UNIT_MAXPOWER'
-oUF.Tags['druidmana'] = function(unit)
+oUF.Tags.Events['druidmana'] = 'UNIT_POWER UNIT_DISPLAYPOWER UNIT_MAXPOWER'
+oUF.Tags.Methods['druidmana'] = function(unit)
     local min, max = UnitPower(unit, SPELL_POWER_MANA), UnitPowerMax(unit, SPELL_POWER_MANA)
     if (min == max) then
         return FormatValue(min)
@@ -21,7 +21,7 @@ oUF.Tags['druidmana'] = function(unit)
     end
 end
 
-oUF.Tags['pvptimer'] = function(unit)
+oUF.Tags.Methods['pvptimer'] = function(unit)
     if (not IsPVPTimerRunning() and GetPVPTimer() >= 0) then
         return ''
     end
@@ -29,7 +29,7 @@ oUF.Tags['pvptimer'] = function(unit)
     return ns.FormatTime(math.floor(GetPVPTimer()/1000))
 end
 
-oUF.Tags['level'] = function(unit)
+oUF.Tags.Methods['level'] = function(unit)
     local r, g, b
     local level = UnitLevel(unit)
     local colorL = GetQuestDifficultyColor(level)
@@ -48,8 +48,8 @@ oUF.Tags['level'] = function(unit)
     return format('|cff%02x%02x%02x%s|r', r*255, g*255, b*255, level)
 end
 
-oUF.TagEvents['name'] = 'UNIT_NAME_UPDATE'
-oUF.Tags['name'] = function(unit)
+oUF.Tags.Events['name'] = 'UNIT_NAME_UPDATE'
+oUF.Tags.Methods['name'] = function(unit)
     local r, g, b = 1, 1, 1
     local colorA, colorB
     local unitName, unitRealm = UnitName(unit)
@@ -87,8 +87,8 @@ oUF.Tags['name'] = function(unit)
     -- return format('|cff%02x%02x%02x%s|r', r*255, g*255, b*255, string.gsub(unitName, '%s?(.[\128-\191]*)%S+%s', '%1. '))   -- abbrev all words except the last
 end
 
-oUF.TagEvents['combopoints'] = 'UNIT_COMBO_POINTS PLAYER_TARGET_CHANGED'
-oUF.Tags['combopoints'] = function(unit)
+oUF.Tags.Events['combopoints'] = 'UNIT_COMBO_POINTS PLAYER_TARGET_CHANGED'
+oUF.Tags.Methods['combopoints'] = function(unit)
     local cp
     if (UnitHasVehicleUI('player')) then
         cp = GetComboPoints('vehicle', 'target')
