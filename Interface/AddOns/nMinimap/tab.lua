@@ -395,21 +395,21 @@ local function BuildGuildTable()
 end
 
 local function UpdateGuildXP()
-    local currentXP, remainingXP, dailyXP, maxDailyXP = UnitGetGuildXP('player')
+    local currentXP, remainingXP = UnitGetGuildXP('player')
     local nextLevelXP = currentXP + remainingXP
+	if (nextLevelXP == 0) then
+		nextLevelXP = 1
+	end
     local percentTotal = tostring(ceil((currentXP / nextLevelXP) * 100))
-    local percentDaily = tostring(ceil((dailyXP / maxDailyXP) * 100))
 
     guildXP[0] = {
-        currentXP, 
-        nextLevelXP, 
-        percentTotal 
+        currentXP,
+        nextLevelXP,
+        percentTotal
     }
 
     guildXP[1] = {
-        dailyXP, 
-        maxDailyXP, 
-        percentDaily 
+        maxDailyXP
     }
 end
 
@@ -430,9 +430,8 @@ local function GuildTip(self)
 
     if (GetGuildLevel() ~= 25) then
         local currentXP, nextLevelXP, percentTotal = unpack(guildXP[0])
-        local dailyXP, maxDailyXP, percentDaily = unpack(guildXP[1])
+        local maxDailyXP = unpack(guildXP[1])
         GameTooltip:AddLine(format(GUILD_EXPERIENCE_CURRENT, '|r |cFFFFFFFF'..ShortValue(currentXP), ShortValue(nextLevelXP), percentTotal))
-        GameTooltip:AddLine(format(GUILD_EXPERIENCE_DAILY, '|r |cFFFFFFFF'..ShortValue(dailyXP), ShortValue(maxDailyXP), percentDaily))
     end
 
     if (online > 1) then
