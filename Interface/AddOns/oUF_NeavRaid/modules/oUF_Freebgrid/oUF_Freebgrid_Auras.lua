@@ -120,6 +120,12 @@ local dispelClass = {
         -- Disease = true, 
         -- Magic = true,
     },
+	MONK = {
+        -- Curse = true,
+        Poison = true, 
+        Disease = true, 
+        Magic = true,
+	},
     DRUID = { 
         Curse = true, 
         Poison = true,
