@@ -59,26 +59,26 @@ end
 
 local totemData = {
     [TotemName(8177)] = {TotemIcon(8177)}, -- Grounding Totem
-    [TotemName(8512)] = {TotemIcon(8512)}, -- Windfury Totem
-    [TotemName(3738)] = {TotemIcon(3738)}, -- Wrath of Air Totem
+    --[TotemName(8512)] = {TotemIcon(8512)}, -- Windfury Totem XXX
+    --[TotemName(3738)] = {TotemIcon(3738)}, -- Wrath of Air Totem XXX
 
     [TotemName(2062)] = {TotemIcon(2062)}, -- Earth Elemental Totem
     [TotemName(2484)] = {TotemIcon(2484)}, -- Earthbind Totem
-    [TotemName(5730)] = {TotemIcon(5730)}, -- Stoneclaw Totem
-    [TotemName(8071)] = {TotemIcon(8071)}, -- Stoneskin Totem
-    [TotemName(8075)] = {TotemIcon(8075)}, -- Strength of Earth Totem
+    --[TotemName(5730)] = {TotemIcon(5730)}, -- Stoneclaw Totem XXX
+    --[TotemName(8071)] = {TotemIcon(8071)}, -- Stoneskin Totem XXX
+    --[TotemName(8075)] = {TotemIcon(8075)}, -- Strength of Earth Totem XXX
     [TotemName(8143)] = {TotemIcon(8143)}, -- Tremor Totem
 
     [TotemName(2894)] = {TotemIcon(2894)}, -- Fire Elemental Totem
-    [TotemName(8227)] = {TotemIcon(8227)}, -- Flametongue Totem
+    --[TotemName(8227)] = {TotemIcon(8227)}, -- Flametongue Totem XXX
     [TotemName(8190)] = {TotemIcon(8190)}, -- Magma Totem
     [TotemName(3599)] = {TotemIcon(3599)}, -- Searing Totem
 
-    [TotemName(8184)] = {TotemIcon(8184)}, -- Elemental Resistance Totem
+    --[TotemName(8184)] = {TotemIcon(8184)}, -- Elemental Resistance Totem XXX
     [TotemName(5394)] = {TotemIcon(5394)}, -- Healing Stream Totem
-    [TotemName(5675)] = {TotemIcon(5675)}, -- Mana Spring Totem
+    --[TotemName(5675)] = {TotemIcon(5675)}, -- Mana Spring Totem XXX
     [TotemName(16190)] = {TotemIcon(16190)}, -- Mana Tide Totem
-    [TotemName(87718)] = {TotemIcon(87718)}, -- Totem of Tranquil Mind
+    --[TotemName(87718)] = {TotemIcon(87718)}, -- Totem of Tranquil Mind XXX
 }
 
     -- Some general functions
