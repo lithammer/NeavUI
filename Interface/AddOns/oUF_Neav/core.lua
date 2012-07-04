@@ -500,28 +500,28 @@ local function CreateUnitLayout(self, unit)
         -- Heal prediction, new healcomm
 
     local myBar = CreateFrame('StatusBar', nil, self)
-	myBar:SetFrameLevel(self:GetFrameLevel() - 1)
+    myBar:SetFrameLevel(self:GetFrameLevel() - 1)
     myBar:SetStatusBarTexture(config.media.statusbar, 'OVERLAY')
     myBar:SetStatusBarColor(0, 1, 0.3, 0.5)
 
-	myBar.Smooth = true
+    myBar.Smooth = true
 
-	myBar:SetOrientation('HORIZONTAL')
-	myBar:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
-	myBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
-	myBar:SetWidth(self.Health:GetWidth())
+    myBar:SetOrientation('HORIZONTAL')
+    myBar:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
+    myBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
+    myBar:SetWidth(self.Health:GetWidth())
 
     local otherBar = CreateFrame('StatusBar', nil, self)
-	otherBar:SetFrameLevel(self:GetFrameLevel() - 1)
+    otherBar:SetFrameLevel(self:GetFrameLevel() - 1)
     otherBar:SetStatusBarTexture(config.media.statusbar, 'OVERLAY')
     otherBar:SetStatusBarColor(0, 1, 0, 0.35)
 
-	otherBar.Smooth = true
+    otherBar.Smooth = true
 
-	otherBar:SetOrientation('HORIZONTAL')
-	otherBar:SetPoint('TOPLEFT', myBar:GetStatusBarTexture(), 'TOPRIGHT')
-	otherBar:SetPoint('BOTTOMLEFT', myBar:GetStatusBarTexture(), 'BOTTOMRIGHT')
-	otherBar:SetWidth(self.Health:GetWidth())
+    otherBar:SetOrientation('HORIZONTAL')
+    otherBar:SetPoint('TOPLEFT', myBar:GetStatusBarTexture(), 'TOPRIGHT')
+    otherBar:SetPoint('BOTTOMLEFT', myBar:GetStatusBarTexture(), 'BOTTOMRIGHT')
+    otherBar:SetWidth(self.Health:GetWidth())
 
     self.HealPrediction = {
         myBar = myBar,
@@ -744,11 +744,11 @@ local function CreateUnitLayout(self, unit)
     self.RaidIcon:SetSize(s1, s1)
 
         -- Phase icon
-    
+
     if (not IsTargetFrame) then
         self.PhaseIcon = self:CreateTexture(nil, 'OVERLAY')
         self.PhaseIcon:SetPoint('CENTER', self.Portrait, 'BOTTOM')
-        
+
         if (self.IsMainFrame) then
             self.PhaseIcon:SetSize(26, 26)
         else
@@ -824,23 +824,27 @@ local function CreateUnitLayout(self, unit)
         self.Name.Bg:SetTexture('Interface\\Buttons\\WHITE8x8')
         self.Name.Bg:SetVertexColor(0, 0, 0, 0.55)
 
-            -- Warlock Power Bars
+            -- Warlock power Bars
 
         if (playerClass == 'WARLOCK') then
             ShardBarFrame:SetParent(oUF_Neav_Player)
             ShardBarFrame:SetScale(config.units.player.scale * 0.8)
-            ShardBarFrame:ClearAllPoints()
-            ShardBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, -2)
-			BurningEmbersBarFrame:SetParent(oUF_Neav_Player)
-			DemonicFuryBarFrame:SetParent(oUF_Neav_Player)
-			WarlockPowerFrame_OnLoad(self)
+
+            BurningEmbersBarFrame:SetParent(oUF_Neav_Player)
+            BurningEmbersBarFrame:SetScale(config.units.player.scale * 0.8)
+
+            DemonicFuryBarFrame:SetParent(oUF_Neav_Player)
+            DemonicFuryBarFrame:SetScale(config.units.player.scale * 0.8)
+
+            WarlockPowerFrame_OnLoad(WarlockPowerFrame)
         end
 
-			-- Priest bar
-		if (playerClass == 'PRIEST') then
-			PriestBarFrame:SetParent(oUF_Neav_Player)
-			PriestBarFrame_OnLoad(PriestBarFrame)
-		end
+            -- Priest bar
+
+        if (playerClass == 'PRIEST') then
+            PriestBarFrame:SetParent(oUF_Neav_Player)
+            PriestBarFrame_OnLoad(PriestBarFrame)
+        end
 
             -- Holy power bar
 
@@ -851,6 +855,13 @@ local function CreateUnitLayout(self, unit)
             PaladinPowerBar:ClearAllPoints()
             PaladinPowerBar:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 25, 2)
             PaladinPowerBar:Show()
+        end
+
+            -- Monk harmony bar
+
+        if (playerClass == 'MONK') then
+            MonkHarmonyBar:SetParent(oUF_Neav_Player)
+            MonkHarmonyBar_OnLoad(MonkHarmonyBar)
         end
 
             -- Deathknight runebar
