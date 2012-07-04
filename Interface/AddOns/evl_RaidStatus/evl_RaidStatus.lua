@@ -19,11 +19,11 @@ local onUpdate = function(self, elapsed)
 		lastUpdate = 0
 		result = nil
 		
-		if GetNumRaidMembers() > 0 then
+		if GetNumGroupMembers() > 0 then
 			for name, callback in pairs(watches) do
 				local count = 0
 	
-				for i = 1, GetNumRaidMembers() do
+				for i = 1, GetNumGroupMembers() do
 					local unit = "raid" .. i
 
 					if UnitExists(unit) and callback(unit) then
@@ -55,7 +55,7 @@ local onEnter = function()
 	for name, callback in pairs(watches) do
 		matches = {}
 		
-		for i = 1, GetNumRaidMembers() do
+		for i = 1, GetNumGroupMembers() do
 			unit = "raid" .. i
 
 			if UnitExists(unit) and callback(unit) then

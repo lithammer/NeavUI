@@ -972,7 +972,7 @@ local function CreateUnitLayout(self, unit)
 
         local function UpdatePartyTab(self)
             for i = 1, MAX_RAID_MEMBERS do
-                if (GetNumRaidMembers() > 0) then
+                if (GetNumGroupMembers() > 0) then
                     local unitName, _, groupNumber = GetRaidRosterInfo(i)
                     if (unitName == UnitName('player')) then
                         self.T:FadeIn(0.5, 0.65)
