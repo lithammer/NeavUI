@@ -2,14 +2,14 @@
 local _, nMainbar = ...
 local cfg = nMainbar.Config
 
-ShapeshiftBarFrame:SetFrameStrata('HIGH')
+StanceBarFrame:SetFrameStrata('HIGH')
 
-ShapeshiftBarFrame:SetScale(cfg.stanceBar.scale)
-ShapeshiftBarFrame:SetAlpha(cfg.stanceBar.alpha)
+StanceBarFrame:SetScale(cfg.stanceBar.scale)
+StanceBarFrame:SetAlpha(cfg.stanceBar.alpha)
 
 if (cfg.stanceBar.hide) then
-    for i = 1, NUM_SHAPESHIFT_SLOTS do
-        local button = _G['ShapeshiftButton'..i]
+    for i = 1, NUM_STANCE_SLOTS do
+        local button = _G['StanceButton'..i]
         button:SetAlpha(0)
         button.SetAlpha = function() end
 
@@ -17,4 +17,3 @@ if (cfg.stanceBar.hide) then
         button.EnableMouse = function() end
     end
 end
-

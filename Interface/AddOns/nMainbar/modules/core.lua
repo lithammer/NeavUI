@@ -8,4 +8,4 @@ if (cfg.MainMenuBar.hideGryphons) then
 end
 
 MainMenuBar:SetScale(cfg.MainMenuBar.scale)
-VehicleMenuBar:SetScale(cfg.vehicleBar.scale)
+OverrideActionBar:SetScale(cfg.vehicleBar.scale)

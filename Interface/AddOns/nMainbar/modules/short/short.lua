@@ -158,17 +158,21 @@ MainMenuBarRightEndCap.SetPoint = function() end
 CharacterMicroButton:ClearAllPoints()
 CharacterMicroButton:SetPoint('BOTTOMLEFT', UIParent, 9000, 9000)
 
-hooksecurefunc('VehicleMenuBar_MoveMicroButtons', function(self)
-    if (not self) then
-        CharacterMicroButton:ClearAllPoints()
-        CharacterMicroButton:SetPoint('BOTTOMLEFT', UIParent, 9000, 9000)
-    elseif (self == 'Mechanical') then
-        CharacterMicroButton:ClearAllPoints()
-        CharacterMicroButton:SetPoint('BOTTOMLEFT', VehicleMenuBar, 'BOTTOMRIGHT', -340, 41)
-    elseif (self == 'Natural') then
-        CharacterMicroButton:ClearAllPoints()
-        CharacterMicroButton:SetPoint('BOTTOMLEFT', VehicleMenuBar, 'BOTTOMRIGHT', -365, 41)
-    end
+--hooksecurefunc('VehicleMenuBar_MoveMicroButtons', function(self)
+--    if (not self) then
+--        CharacterMicroButton:ClearAllPoints()
+--        CharacterMicroButton:SetPoint('BOTTOMLEFT', UIParent, 9000, 9000)
+--    elseif (self == 'Mechanical') then
+--        CharacterMicroButton:ClearAllPoints()
+--        CharacterMicroButton:SetPoint('BOTTOMLEFT', VehicleMenuBar, 'BOTTOMRIGHT', -340, 41)
+--    elseif (self == 'Natural') then
+--        CharacterMicroButton:ClearAllPoints()
+--        CharacterMicroButton:SetPoint('BOTTOMLEFT', VehicleMenuBar, 'BOTTOMRIGHT', -365, 41)
+--    end
+--end)
+hooksecurefunc('MoveMicroButtons', function(...)
+	CharacterMicroButton:ClearAllPoints()
+	CharacterMicroButton:SetPoint('BOTTOMLEFT', UIParent, 9000, 9000)
 end)
 
     -- a new place for the exit vehicle button

@@ -19,8 +19,8 @@ local function IsSpecificButton(self, name)
 end
 
 local function UpdateVehicleButton()
-    for i = 1, VEHICLE_MAX_ACTIONBUTTONS do
-        local hotkey = _G['VehicleMenuBarActionButton'..i..'HotKey']
+    for i = 1, NUM_OVERRIDE_BUTTONS do
+        local hotkey = _G['OverrideActionBarButton'..i..'HotKey']
         if (cfg.button.showVehicleKeybinds) then
             hotkey:SetFont(cfg.button.hotkeyFont, cfg.button.hotkeyFontsize + 3, 'OUTLINE')
             hotkey:SetVertexColor(cfg.color.HotKeyText[1], cfg.color.HotKeyText[2], cfg.color.HotKeyText[3])
@@ -253,7 +253,7 @@ end)
 hooksecurefunc('ActionButton_UpdateHotkeys', function(self)
     local hotkey = _G[self:GetName()..'HotKey']
 
-    if (not IsSpecificButton(self, 'VehicleMenuBarActionButton')) then
+    if (not IsSpecificButton(self, 'OverrideActionBarButton')) then
         if (cfg.button.showKeybinds) then
             hotkey:ClearAllPoints()
             hotkey:SetPoint('TOPRIGHT', self, 0, -3)
