@@ -16,7 +16,7 @@ do
             {48438, 'BOTTOMLEFT', {0.7, 1, 0}}, -- Wild Growth
         },
         MAGE = {
-            {54648, 'BOTTOMRIGHT', {0.7, 0, 1}, true, true}, -- Focus Magic
+            --{54648, 'BOTTOMRIGHT', {0.7, 0, 1}, true, true}, -- Focus Magic
         },
 		MONK = {
 			{119611, 'BOTTOMRIGHT', {0, 1, 0}}, -- Renewing Mist
@@ -42,7 +42,6 @@ do
         },
         WARLOCK = {
             {20707, 'BOTTOMRIGHT', {0.7, 0, 1}, true, true}, -- Soulstone
-            {85767, 'BOTTOMLEFT', {0.7, 0.5, 1}, true, true, true}, -- Dark Intent
         },
         ALL = {
             {23333, 'TOPLEFT', {1, 0, 0}}, -- Warsong flag, Horde
