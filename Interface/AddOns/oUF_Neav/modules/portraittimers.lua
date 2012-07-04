@@ -17,16 +17,12 @@ ns.PortraitTimerDB = {
 
     '408',      -- Kidney Shot
     '1833',     -- Cheap Shot
-    '12809',    -- Concussion Blow
     '46968',    -- Shockwave
     '853',      -- Hammer of Justice
-    '49203',    -- Hungering Cold
-    '85388',    -- Throwdown
     '44572',    -- Deep Freeze
     '5211',     -- Bash
     '19503',    -- Scatter Shot
     '30283',    -- Shadowfury
-    '89605',    -- Aura of Foreboding
     '89766',    -- Axe Toss
     '22570',    -- Maim
     '9005',     -- Pounce
@@ -35,10 +31,8 @@ ns.PortraitTimerDB = {
     '6770',     -- Sap
     '87195',    -- Paralysis
     '88625',    -- Holy Word: Chastise   
-    '90337',     -- Bad Manner (monkey stun)   
-    '12489',    -- Improved Cone of Cold
+    '90337',    -- Bad Manner (monkey stun)   
     '65929',    -- Charge Stun
-    '20253',    -- Intercept 
     '91797',    -- Monstrous Blow (Gnaw with DT)
 
         -- CC
@@ -65,11 +59,10 @@ ns.PortraitTimerDB = {
     '31661',    -- Dragon's Breath
     '16689',    -- Nature's Grasp
     '82691',    -- Ring of Frost
-    '23694',    -- Improved Hamstring
     '76780',    -- Bind Elemental
     '19387',    -- Entrapment
 
-        -- CCc immune
+        -- CC immune
 
     '53271',    -- Master's Call
     '1044',     -- Hand of Freedom
@@ -77,7 +70,7 @@ ns.PortraitTimerDB = {
     '51271',    -- Pillar of Frost
     '31821',    -- Aura Mastery
 
-        -- Smg reductions
+        -- Dmg reductions
 
     '48707',    -- Anti-Magic Shell
     '30823',    -- Shamanistic Rage 
@@ -90,7 +83,7 @@ ns.PortraitTimerDB = {
     '61336',    -- Survival Instincts	
     '5277',     -- Evasion
     '74001',    -- Combat Readiness
-    '47788',     -- Guardian Spirit
+    '47788',    -- Guardian Spirit
 
         -- Silences
 
@@ -119,7 +112,6 @@ ns.PortraitTimerDB = {
     '89488',    -- Strength of Soul
     '23920',    -- Spell Reflection (warrior)
     '68992',    -- Darkflight (Worgen racial)
-    '31642',    -- Blazing Speed
     '54428',    -- Divine Plea
     '2983',     -- Sprint
     '1850',     -- Dash
