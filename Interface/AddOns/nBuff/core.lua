@@ -64,7 +64,7 @@ ConsolidatedBuffsCount:SetPoint('CENTER', ConsolidatedBuffsIcon, 0, 1)
 ConsolidatedBuffsCount:SetFont('Fonts\\ARIALN.ttf', cfg.buffFontSize+2, 'THINOUTLINE')
 ConsolidatedBuffsCount:SetShadowOffset(0, 0)
 
-ConsolidatedBuffsContainer:SetScale(0.57)
+--ConsolidatedBuffsContainer:SetScale(0.57)
 ConsolidatedBuffsTooltip:SetScale(1.2)
 
 local function UpdateFirstButton(self)
