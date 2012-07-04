@@ -1,4 +1,4 @@
-## Interface: 40300
+## Interface: 50000
 ## Title: OmniCC
 ## Notes: Cooldown count for everything
 ## Author: Tuller
