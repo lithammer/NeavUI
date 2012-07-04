@@ -176,8 +176,8 @@ checkTalents:SetScript('OnEvent', function()
             local _, _, _, _,rank = GetTalentInfo(3, 17)
             dispelClass[class].Magic = rank == 1 and true
         elseif (class == 'PRIEST') then
-            local tree = GetPrimaryTalentTree()
-            dispelClass[class].Magic = (tree == 1 or tree == 2) and true
+            local spec = GetSpecialization()
+            dispelClass[class].Magic = (spec == 1 or spec == 2) and true
         end
     end
 
