@@ -1,3 +1,42 @@
+--[[ Element: Portraits
+
+ Handles updating of the unit's portrait.
+
+ Widget
+
+ Portrait - A PlayerModel or Texture used to represent the unit's portrait.
+
+ Notes
+
+ The quest delivery question mark will be used instead of the unit's model when
+ the client doesn't have the model information for the unit.
+
+ Examples
+
+   -- 3D Portrait
+   -- Position and size
+   local Portrait = CreateFrame('PlayerModel', nil, self)
+   Portrait:SetSize(32, 32)
+   Portrait:SetPoint('RIGHT', self, 'LEFT')
+   
+   -- Register it with oUF
+   self.Portrait = Portrait
+
+   -- 2D Portrait
+   local Portrait = self:CreateTexture(nil, 'OVERLAY')
+   Portrait:SetSize(32, 32)
+   Portrait:SetPoint('RIGHT', self, 'LEFT')
+   
+   -- Register it with oUF
+   self.Portrait = Portrait
+
+ Hooks
+
+ Override(self) - Used to completely override the internal update function.
+                  Removing the table key entry will make the element fall-back
+                  to its internal function again.
+]]
+
 local parent, ns = ...
 local oUF = ns.oUF
 
@@ -10,16 +49,19 @@ local Update = function(self, event, unit)
 	if(portrait:IsObjectType'Model') then
 		local guid = UnitGUID(unit)
 		if(not UnitExists(unit) or not UnitIsConnected(unit) or not UnitIsVisible(unit)) then
-			portrait:SetModelScale(4.25)
-			portrait:SetPosition(0, 0, -1.5)
-			portrait:SetModel"Interface\\Buttons\\talktomequestionmark.mdx"
+			portrait:SetCamDistanceScale(0.25)
+			portrait:SetPortraitZoom(0)
+			portrait:SetPosition(0,0,0.5)
+			portrait:ClearModel()
+			portrait:SetModel('interface\\buttons\\talktomequestionmark.m2')
+			portrait.guid = nil
 		elseif(portrait.guid ~= guid or event == 'UNIT_MODEL_CHANGED') then
+			portrait:SetCamDistanceScale(1)
+			portrait:SetPortraitZoom(1)
+			portrait:SetPosition(0,0,0)
+			portrait:ClearModel()
 			portrait:SetUnit(unit)
-			portrait:SetCamera(0)
-
 			portrait.guid = guid
-		else
-			portrait:SetCamera(0)
 		end
 	else
 		SetPortraitTexture(portrait, unit)

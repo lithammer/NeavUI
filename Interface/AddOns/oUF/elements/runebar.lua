@@ -1,5 +1,41 @@
---[[ Runebar:
-	Authors: Zariel, Haste
+--[[ Element: Runes Bar
+
+ Handle updating and visibility of the Death Knight's Rune indicators.
+
+ Widget
+
+ Runes - An array holding six StatusBar's.
+
+ Sub-Widgets
+
+ .bg - A Texture which functions as a background. It will inherit the color of
+       the main StatusBar.
+
+ Notes
+
+ The default StatusBar texture will be applied if the UI widget doesn't have a
+             status bar texture or color defined.
+
+ Sub-Widgets Options
+
+ .multiplier - Defines a multiplier, which is used to tint the background based
+               on the main widgets R, G and B values. Defaults to 1 if not
+               present.
+
+ Examples
+
+   local Runes = {}
+   for index = 1, 6 do
+      -- Position and size of the rune bar indicators
+      local Rune = CreateFrame('StatusBar', nil, self)
+      Rune:SetSize(120 / 6, 20)
+      Rune:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', index * 120 / 6, 0)
+   
+      Runes[index] = Rune
+   end
+   
+   -- Register with oUF
+   self.Runes = Runes
 ]]
 
 if select(2, UnitClass("player")) ~= "DEATHKNIGHT" then return end
@@ -8,11 +44,13 @@ local parent, ns = ...
 local oUF = ns.oUF
 
 oUF.colors.runes = {
-	{1, 0, 0};
-	{0, .5, 0};
-	{0, 1, 1};
-	{.9, .1, 1};
+	{1, 0, 0},   -- blood
+	{0, .5, 0},  -- unholy
+	{0, 1, 1},   -- frost
+	{.9, .1, 1}, -- death
 }
+
+local runemap = { 1, 2, 5, 6, 3, 4 }
 
 local OnUpdate = function(self, elapsed)
 	local duration = self.duration + elapsed
@@ -24,9 +62,9 @@ local OnUpdate = function(self, elapsed)
 	end
 end
 
-local UpdateType = function(self, event, rune, alt)
-	local colors = self.colors.runes[GetRuneType(rune) or alt]
-	local rune = self.Runes[rune]
+local UpdateType = function(self, event, rid, alt)
+	local rune = self.Runes[runemap[rid]]
+	local colors = self.colors.runes[GetRuneType(rid) or alt]
 	local r, g, b = colors[1], colors[2], colors[3]
 
 	rune:SetStatusBarColor(r, g, b)
@@ -38,9 +76,9 @@ local UpdateType = function(self, event, rune, alt)
 end
 
 local UpdateRune = function(self, event, rid)
-	local rune = self.Runes[rid]
+	local rune = self.Runes[runemap[rid]]
 	if(rune) then
-		local start, duration, runeReady = GetRuneCooldown(rune:GetID())
+		local start, duration, runeReady = GetRuneCooldown(rid)
 		if(runeReady) then
 			rune:SetMinMaxValues(0, 1)
 			rune:SetValue(1)
@@ -71,21 +109,18 @@ local Enable = function(self, unit)
 		runes.ForceUpdate = ForceUpdate
 
 		for i=1, 6 do
-			local rune = runes[i]
-			rune:SetID(i)
-			-- From my minor testing this is a okey solution. A full login always remove
-			-- the death runes, or at least the clients knowledge about them.
-			UpdateType(self, nil, i, math.floor((i+1)/2))
-
+			local rune = runes[runemap[i]]
 			if(rune:IsObjectType'StatusBar' and not rune:GetStatusBarTexture()) then
 				rune:SetStatusBarTexture[[Interface\TargetingFrame\UI-StatusBar]]
 			end
+
+			-- From my minor testing this is a okey solution. A full login always remove
+			-- the death runes, or at least the clients knowledge about them.
+			UpdateType(self, nil, i, math.floor((runemap[i]+1)/2))
 		end
 
-		self:RegisterEvent("RUNE_POWER_UPDATE", UpdateRune)
-		self:RegisterEvent("RUNE_TYPE_UPDATE", UpdateType)
-
-		runes:Show()
+		self:RegisterEvent("RUNE_POWER_UPDATE", UpdateRune, true)
+		self:RegisterEvent("RUNE_TYPE_UPDATE", UpdateType, true)
 
 		-- oUF leaves the vehicle events registered on the player frame, so
 		-- buffs and such are correctly updated when entering/exiting vehicles.
@@ -99,7 +134,6 @@ local Enable = function(self, unit)
 end
 
 local Disable = function(self)
-	self.Runes:Hide()
 	RuneFrame.Show = nil
 	RuneFrame:Show()
 

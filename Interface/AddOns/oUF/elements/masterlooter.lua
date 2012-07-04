@@ -1,29 +1,73 @@
+--[[ Element: Master Looter Icon
+
+ Toggles visibility of the master looter icon.
+
+ Widget
+
+ MasterLooter - Any UI widget.
+
+ Notes
+
+ The default master looter icon will be applied if the UI widget is a texture
+ and doesn't have a texture or color defined.
+
+ Examples
+
+   -- Position and size
+   local MasterLooter = self:CreateTexture(nil, 'OVERLAY')
+   MasterLooter:SetSize(16, 16)
+   MasterLooter:SetPoint('TOPRIGHT', self)
+   
+   -- Register it with oUF
+   self.MasterLooter = MasterLooter
+
+ Hooks
+
+ Override(self) - Used to completely override the internal update function.
+                  Removing the table key entry will make the element fall-back
+                  to its internal function again.
+
+]]
+
+local WoW5 = select(4, GetBuildInfo()) == 50001
 local parent, ns = ...
 local oUF = ns.oUF
 
-local function Update(self, event)
-	local unit
+local Update = function(self, event)
+	local unit = self.unit
+	local masterlooter = self.MasterLooter
+	if(not (UnitInParty(unit) or UnitInRaid(unit))) then
+		return masterlooter:Hide()
+	end
+
+	if(masterlooter.PreUpdate) then
+		masterlooter:PreUpdate()
+	end
+
 	local method, pid, rid = GetLootMethod()
 	if(method == 'master') then
+		local mlUnit
 		if(pid) then
 			if(pid == 0) then
-				unit = 'player'
+				mlUnit = 'player'
 			else
-				unit = 'party'..pid
+				mlUnit = 'party'..pid
 			end
 		elseif(rid) then
-			unit = 'raid'..rid
-		else
-			return
+			mlUnit = 'raid'..rid
 		end
 
-		if(UnitIsUnit(unit, self.unit)) then
-			self.MasterLooter:Show()
-		elseif(self.MasterLooter:IsShown()) then
-			self.MasterLooter:Hide()
+		if(UnitIsUnit(unit, mlUnit)) then
+			masterlooter:Show()
+		elseif(masterlooter:IsShown()) then
+			masterlooter:Hide()
 		end
-	elseif(self.MasterLooter:IsShown()) then
-		self.MasterLooter:Hide()
+	else
+		masterlooter:Hide()
+	end
+
+	if(masterlooter.PostUpdate) then
+		return masterlooter:PostUpdate(masterlooter:IsShown())
 	end
 end
 
@@ -41,8 +85,12 @@ local function Enable(self, unit)
 		masterlooter.__owner = self
 		masterlooter.ForceUpdate = ForceUpdate
 
-		self:RegisterEvent('PARTY_LOOT_METHOD_CHANGED', Path)
-		self:RegisterEvent('PARTY_MEMBERS_CHANGED', Path)
+		self:RegisterEvent('PARTY_LOOT_METHOD_CHANGED', Path, true)
+		if(WoW5) then
+			self:RegisterEvent('GROUP_ROSTER_UPDATE', Path, true)
+		else
+			self:RegisterEvent('PARTY_MEMBERS_CHANGED', Path, true)
+		end
 
 		if(masterlooter:IsObjectType('Texture') and not masterlooter:GetTexture()) then
 			masterlooter:SetTexture([[Interface\GroupFrame\UI-Group-MasterLooter]])
@@ -55,7 +103,11 @@ end
 local function Disable(self)
 	if(self.MasterLooter) then
 		self:UnregisterEvent('PARTY_LOOT_METHOD_CHANGED', Path)
-		self:UnregisterEvent('PARTY_MEMBERS_CHANGED', Path)
+		if(WoW5) then
+			self:UnregisterEvent('GROUP_ROSTER_UPDATE', Path)
+		else
+			self:UnregisterEvent('PARTY_MEMBERS_CHANGED', Path)
+		end
 	end
 end
 

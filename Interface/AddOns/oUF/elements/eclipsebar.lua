@@ -1,5 +1,47 @@
+--[[ Element: Eclipse Bar
+ Handle updating and visibility of the Druid eclipse state status bars.
+
+ Widget
+
+ EclipseBar - A table to hold the sub-widgets.
+
+ Sub-Widgets
+
+ LunarBar - A StatusBar used to represent the lunar power state.
+ SolarBar - A StatusBar used to represent the solar power state.
+
+ Notes
+
+ The default StatusBar texture will be applied if the UI widget doesn't have a
+ status bar texture or color defined.
+
+ Examples
+
+   -- Position and size
+   local LunarBar = CreateFrame('StatusBar', nil, self)
+   LunarBar:SetPoint('LEFT')
+   LunarBar:SetSize(160, 20)
+   
+   local SolarBar = CreateFrame('StatusBar', nil, self)
+   SolarBar:SetPoint('LEFT', LunarBar:GetStatusBarTexture(), 'RIGHT')
+   SolarBar:SetSize(160, 20)
+   
+   -- Register with oUF
+   self.EclipseBar = {
+      LunarBar = LunarBar,
+      SolarBar = SolarBar,
+   }
+
+ Hooks and Callbacks
+
+ Override(self) - Used to completely override the internal update function.
+                  Removing the table key entry will make the element fall-back
+                  to its internal function again.
+]]
+
 if(select(2, UnitClass('player')) ~= 'DRUID') then return end
 
+local WoW5 = select(4, GetBuildInfo()) == 50001
 local parent, ns = ...
 local oUF = ns.oUF
 
@@ -27,6 +69,15 @@ local UNIT_POWER = function(self, event, unit, powerType)
 	end
 
 	if(eb.PostUpdatePower) then
+		--[[ :PostUpdatePower(unit)
+
+		 Callback which is called after lunar and solar bar was updated.
+
+		 Arguments
+
+		 self - The widget that holds the eclipse frame.
+		 unit - The unit that has the widget.
+		]]
 		return eb:PostUpdatePower(unit)
 	end
 end
@@ -38,7 +89,7 @@ local UPDATE_VISIBILITY = function(self, event)
 	local showBar
 	local form = GetShapeshiftFormID()
 	if(not form) then
-		local ptt = GetPrimaryTalentTree()
+		local ptt = WoW5 and GetSpecialization() or GetPrimaryTalentTree()
 		if(ptt and ptt == 1) then -- player has balance spec
 			showBar = true
 		end
@@ -53,6 +104,15 @@ local UPDATE_VISIBILITY = function(self, event)
 	end
 
 	if(eb.PostUpdateVisibility) then
+		--[[ :PostUpdateVisibility(unit)
+
+		 Callback which is called after the eclipse frame was shown or hidden.
+
+		 Arguments
+
+		 self - The widget that holds the eclipse frame.
+		 unit - The unit that has the widget.
+		]]
 		return eb:PostUpdateVisibility(self.unit)
 	end
 end
@@ -79,6 +139,15 @@ local UNIT_AURA = function(self, event, unit)
 	eb.hasLunarEclipse = hasLunarEclipse
 
 	if(eb.PostUnitAura) then
+		--[[ :PostUnitAura(unit)
+
+		 Callback which is called after the eclipse state was checked.
+
+		 Arguments
+
+		 self - The widget that holds the eclipse frame.
+		 unit - The unit that has the widget.
+		]]
 		return eb:PostUnitAura(unit)
 	end
 end
@@ -89,6 +158,15 @@ local ECLIPSE_DIRECTION_CHANGE = function(self, event, isLunar)
 	eb.directionIsLunar = isLunar
 
 	if(eb.PostDirectionChange) then
+		--[[ :PostDirectionChange(unit)
+
+		 Callback which is called after eclipse direction was changed.
+
+		 Arguments
+
+		 self - The widget that holds the eclipse frame.
+		 unit - The unit that has the widget.
+		]]
 		return eb:PostDirectionChange(self.unit)
 	end
 end
@@ -116,11 +194,11 @@ local function Enable(self)
 			eb.SolarBar:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
 		end
 
-		self:RegisterEvent('ECLIPSE_DIRECTION_CHANGE', ECLIPSE_DIRECTION_CHANGE)
-		self:RegisterEvent('PLAYER_TALENT_UPDATE', UPDATE_VISIBILITY)
+		self:RegisterEvent('ECLIPSE_DIRECTION_CHANGE', ECLIPSE_DIRECTION_CHANGE, true)
+		self:RegisterEvent('PLAYER_TALENT_UPDATE', UPDATE_VISIBILITY, true)
 		self:RegisterEvent('UNIT_AURA', UNIT_AURA)
 		self:RegisterEvent('UNIT_POWER', UNIT_POWER)
-		self:RegisterEvent('UPDATE_SHAPESHIFT_FORM', UPDATE_VISIBILITY)
+		self:RegisterEvent('UPDATE_SHAPESHIFT_FORM', UPDATE_VISIBILITY, true)
 
 		return true
 	end
