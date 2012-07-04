@@ -824,16 +824,16 @@ local function CreateUnitLayout(self, unit)
         self.Name.Bg:SetTexture('Interface\\Buttons\\WHITE8x8')
         self.Name.Bg:SetVertexColor(0, 0, 0, 0.55)
 
-            -- Warlock soulshard bar
+            -- Warlock Power Bars
 
         if (playerClass == 'WARLOCK') then
             ShardBarFrame:SetParent(oUF_Neav_Player)
             ShardBarFrame:SetScale(config.units.player.scale * 0.8)
-            ShardBar_OnLoad(ShardBarFrame)
             ShardBarFrame:ClearAllPoints()
-            --ShardBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, -1)
             ShardBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, -2)
-            ShardBarFrame:Show()
+			BurningEmbersBarFrame:SetParent(oUF_Neav_Player)
+			DemonicFuryBarFrame:SetParent(oUF_Neav_Player)
+			WarlockPowerFrame_OnLoad(self)
         end
 
             -- Holy power bar
