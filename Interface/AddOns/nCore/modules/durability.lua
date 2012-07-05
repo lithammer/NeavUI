@@ -53,8 +53,8 @@ local function ColorGradient(perc, ...)
 end
 
 f:SetScript('OnEvent', function(event)
-    local total = 0
-    local overAll = 0
+    local total = 1
+    local overAll = 1
 
     for i = 1, #slotInfo do
         local id = GetInventorySlotInfo(slotInfo[i][2] .. 'Slot') 
