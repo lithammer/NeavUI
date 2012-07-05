@@ -827,16 +827,21 @@ local function CreateUnitLayout(self, unit)
             -- Warlock power Bars
 
         if (playerClass == 'WARLOCK') then
-            ShardBarFrame:SetParent(oUF_Neav_Player)
-            ShardBarFrame:SetScale(config.units.player.scale * 0.8)
-
-            BurningEmbersBarFrame:SetParent(oUF_Neav_Player)
-            BurningEmbersBarFrame:SetScale(config.units.player.scale * 0.8)
-
-            DemonicFuryBarFrame:SetParent(oUF_Neav_Player)
-            DemonicFuryBarFrame:SetScale(config.units.player.scale * 0.8)
-
+            WarlockPowerFrame:SetParent(oUF_Neav_Player)
+            WarlockPowerFrame:SetScale(config.units.player.scale * 0.8)
             WarlockPowerFrame_OnLoad(WarlockPowerFrame)
+
+            ShardBarFrame:SetScale(config.units.player.scale * 0.8)
+            ShardBarFrame:ClearAllPoints()
+            ShardBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, -2)
+
+            BurningEmbersBarFrame:SetScale(config.units.player.scale * 0.8)
+            BurningEmbersBarFrame:ClearAllPoints()
+            BurningEmbersBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, 0)
+
+            DemonicFuryBarFrame:SetScale(config.units.player.scale * 0.8)
+            DemonicFuryBarFrame:ClearAllPoints()
+            DemonicFuryBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 35, 12)
         end
 
             -- Priest bar
