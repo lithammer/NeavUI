@@ -133,10 +133,10 @@ end)
 
 hooksecurefunc('DebuffButton_UpdateAnchors', function(self, index)
     local numBuffs = BUFF_ACTUAL_DISPLAY + BuffFrame.numEnchants
-	if (ShouldShowConsolidatedBuffFrame()) then
-		numBuffs = numBuffs + 1 -- consolidated buffs
+    if (ShouldShowConsolidatedBuffFrame()) then
+        numBuffs = numBuffs + 1 -- consolidated buffs
     end
-    
+
     local rowSpacing
     local debuffSpace = cfg.buffSize + cfg.paddingY
     local numRows = ceil(numBuffs/cfg.buffPerRow)
@@ -199,7 +199,7 @@ end
 
 hooksecurefunc('AuraButton_Update', function(self, index)
     local button = _G[self..index]
-    
+
     if (button and not button.Shadow) then
         if (button) then
             if (self:match('Debuff')) then
