@@ -64,7 +64,6 @@ ConsolidatedBuffsCount:SetPoint('CENTER', ConsolidatedBuffsIcon, 0, 1)
 ConsolidatedBuffsCount:SetFont('Fonts\\ARIALN.ttf', cfg.buffFontSize+2, 'THINOUTLINE')
 ConsolidatedBuffsCount:SetShadowOffset(0, 0)
 
---ConsolidatedBuffsContainer:SetScale(0.57)
 ConsolidatedBuffsTooltip:SetScale(1.2)
 
 local function UpdateFirstButton(self)
@@ -87,7 +86,8 @@ end
 
 local function CheckFirstButton()
     if (BuffButton1) then
-        if (not BuffButton1:GetParent() == ConsolidatedBuffsContainer) then
+        --if (not BuffButton1:GetParent() == ConsolidatedBuffsContainer) then
+        if (not BuffButton1:GetParent() == ConsolidatedBuffsTooltipBuff1) then
             UpdateFirstButton(BuffButton1)
         end
     end
@@ -133,8 +133,8 @@ end)
 
 hooksecurefunc('DebuffButton_UpdateAnchors', function(self, index)
     local numBuffs = BUFF_ACTUAL_DISPLAY + BuffFrame.numEnchants
-    if (BuffFrame.numConsolidated > 0) then
-        numBuffs = numBuffs - BuffFrame.numConsolidated -- + 1
+	if (ShouldShowConsolidatedBuffFrame()) then
+		numBuffs = numBuffs + 1 -- consolidated buffs
     end
     
     local rowSpacing
