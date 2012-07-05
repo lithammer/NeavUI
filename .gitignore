@@ -3,9 +3,9 @@
 config_custom.lua
 Cache/
 Data/
+Errors/
 Interface/AddOns/Blizzard_*/
 Logs/
-Patch.html
 Updates/
 WTF/
 *.mfil
@@ -13,3 +13,7 @@ WTF/
 *.pfil
 *.db
 *.mpq
+*.exe
+*.dll
+*.manifest
+*.html
