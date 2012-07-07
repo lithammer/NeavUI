@@ -28,7 +28,7 @@ if (nPower.rune.showRuneCooldown) then
 end
 
 -- f:RegisterEvent('UNIT_DISPLAYPOWER')
--- f:RegisterEvent('UNIT_POWER')
+-- f:RegisterUnitEvent('UNIT_POWER', 'player')
 -- f:RegisterEvent('UPDATE_SHAPESHIFT_FORM')
 
 if (nPower.energy.showComboPoints) then
@@ -36,7 +36,7 @@ if (nPower.energy.showComboPoints) then
 
     for i = 1, 5 do
         f.ComboPoints[i] = f:CreateFontString(nil, 'ARTWORK')
-        
+
         if (nPower.energy.comboFontOutline) then
             f.ComboPoints[i]:SetFont(nPower.energy.comboFont, nPower.energy.comboFontSize, 'THINOUTLINE')
             f.ComboPoints[i]:SetShadowOffset(0, 0)
@@ -44,13 +44,13 @@ if (nPower.energy.showComboPoints) then
             f.ComboPoints[i]:SetFont(nPower.energy.comboFont, nPower.energy.comboFontSize)
             f.ComboPoints[i]:SetShadowOffset(1, -1)
         end
-        
+
         f.ComboPoints[i]:SetParent(f)
         f.ComboPoints[i]:SetText(i)
         f.ComboPoints[i]:SetAlpha(0)
     end
 
-	local yOffset = nPower.energy.comboPointsBelow and -35 or 0
+    local yOffset = nPower.energy.comboPointsBelow and -35 or 0
     f.ComboPoints[1]:SetPoint('CENTER', -52, yOffset)
     f.ComboPoints[2]:SetPoint('CENTER', -26, yOffset)
     f.ComboPoints[3]:SetPoint('CENTER', 0, yOffset)
@@ -58,9 +58,30 @@ if (nPower.energy.showComboPoints) then
     f.ComboPoints[5]:SetPoint('CENTER', 52, yOffset)
 end
 
+if (playerClass == 'MONK') then
+    f.Chi = {}
+
+    for i = 1, 4 do
+        f.Chi[i] = f:CreateFontString(nil, 'ARTWORK')
+
+        f.Chi[i]:SetFont(nPower.energy.comboFont, nPower.energy.comboFontSize, 'THINOUTLINE')
+        f.Chi[i]:SetShadowOffset(0, 0)
+
+        f.Chi[i]:SetParent(f)
+        f.Chi[i]:SetText(i)
+        f.Chi[i]:SetAlpha(0)
+    end
+
+    local yOffset = nPower.energy.comboPointsBelow and -35 or 0
+    f.Chi[1]:SetPoint('CENTER', -39, yOffset)
+    f.Chi[2]:SetPoint('CENTER', -13, yOffset)
+    f.Chi[3]:SetPoint('CENTER', 13, yOffset)
+    f.Chi[4]:SetPoint('CENTER', 39, yOffset)
+end
+
 if (playerClass == 'WARLOCK' and nPower.showSoulshards or playerClass == 'PALADIN' and nPower.showHolypower) then
     f.extraPoints = f:CreateFontString(nil, 'ARTWORK')
-    
+
     if (nPower.extraFontOutline) then
         f.extraPoints:SetFont(nPower.extraFont, nPower.extraFontSize, 'THINOUTLINE')
         f.extraPoints:SetShadowOffset(0, 0)
@@ -195,6 +216,16 @@ local function SetComboAlpha(i)
     local comboPoints = GetComboPoints('player', 'target') or 0
 
     if (i == comboPoints) then
+        return 1
+    else
+        return 0
+    end
+end
+
+local function SetChiAlpha(i)
+    local chi = UnitPower('player', SPELL_POWER_LIGHT_FORCE) or 0
+
+    if (i == chi) then
         return 1
     else
         return 0
@@ -351,8 +382,20 @@ f:SetScript('OnUpdate', function(self, elapsed)
                 elseif (playerClass == 'PALADIN') then
                     nump = UnitPower('player', SPELL_POWER_HOLY_POWER)
                 end
-                
+
                 f.extraPoints:SetText(nump == 0 and '' or nump)
+            end
+        end
+
+        if (f.Chi) then
+            if (UnitHasVehicleUI('player')) then
+                if (f.Chi:IsShown()) then
+                    f.Chi:Hide()
+                end
+            else
+                for i = 1, 4 do
+                    f.Chi[i]:SetAlpha(SetChiAlpha(i))
+                end
             end
         end
 
