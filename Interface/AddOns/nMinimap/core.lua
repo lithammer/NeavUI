@@ -30,7 +30,7 @@ QueueStatusMinimapButton:SetSize(14, 14)
 QueueStatusMinimapButton:SetHighlightTexture(nil)
 
 QueueStatusMinimapButtonBorder:SetTexture()
---QueueStatusMinimapButton.eye:Hide() -- XXX
+QueueStatusMinimapButton.Eye:Hide()
 
 hooksecurefunc('EyeTemplate_StartAnimating', function(self)
     self:SetScript('OnUpdate', nil)

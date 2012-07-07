@@ -849,6 +849,8 @@ local function CreateUnitLayout(self, unit)
         if (playerClass == 'PRIEST') then
             PriestBarFrame:SetParent(oUF_Neav_Player)
             PriestBarFrame_OnLoad(PriestBarFrame)
+            PriestBarFrame:ClearAllPoints()
+            PriestBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 33, 0)
         end
 
             -- Holy power bar
@@ -866,7 +868,10 @@ local function CreateUnitLayout(self, unit)
 
         if (playerClass == 'MONK') then
             MonkHarmonyBar:SetParent(oUF_Neav_Player)
+            MonkHarmonyBar:SetScale(config.units.player.scale * 0.81)
             MonkHarmonyBar_OnLoad(MonkHarmonyBar)
+            MonkHarmonyBar:ClearAllPoints()
+            MonkHarmonyBar:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, 18)
         end
 
             -- Deathknight runebar
