@@ -190,6 +190,25 @@ local function FormatValue(self)
     end
 end
 
+local function GetWarlockPower()
+    local powerType = SPELL_POWER_MANA
+    local unitPower = 0
+
+    if (IsPlayerSpell(WARLOCK_SOULBURN)) then
+        powerType = SPELL_POWER_SOUL_SHARDS
+    elseif (IsPlayerSpell(WARLOCK_BURNING_EMBERS)) then
+        powerType = SPELL_POWER_BURNING_EMBERS
+    elseif (IsPlayerSpell(WARLOCK_METAMORPHOSIS)) then
+        powerType = SPELL_POWER_DEMONIC_FURY
+    end
+
+    if (powerType ~= SPELL_POWER_MANA) then
+        unitPower = UnitPower('player', powerType)
+    end
+
+    return unitPower
+end
+
 local function GetRealMpFive()
     local _, activeRegen = GetPowerRegen()
     local realRegen = activeRegen * 5
@@ -378,7 +397,7 @@ f:SetScript('OnUpdate', function(self, elapsed)
             else
                 local nump
                 if (playerClass == 'WARLOCK') then
-                    nump = UnitPower('player', SPELL_POWER_SOUL_SHARDS)
+                    nump = GetWarlockPower()
                 elseif (playerClass == 'PALADIN') then
                     nump = UnitPower('player', SPELL_POWER_HOLY_POWER)
                 end
