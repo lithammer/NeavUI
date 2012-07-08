@@ -37,7 +37,7 @@ do
         SHAMAN = {
             {61295, 'TOPLEFT', {0.7, 0.3, 0.7}}, -- Riptide
             {51945, 'TOPRIGHT', {0.2, 0.7, 0.2}}, -- Earthliving
-            {16177, 'BOTTOMLEFT', {0.4, 0.7, 0.2}}, -- Ancestral Fortitude
+            --{16177, 'BOTTOMLEFT', {0.4, 0.7, 0.2}}, -- Ancestral Fortitude -- XXX: Removed in MoP?
             {974, 'BOTTOMRIGHT', {0.7, 0.4, 0}, false, true}, -- Earth Shield
         },
         WARLOCK = {
