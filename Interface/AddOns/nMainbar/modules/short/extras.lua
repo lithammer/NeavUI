@@ -6,17 +6,6 @@ if (not cfg.MainMenuBar.shortBar and not cfg.MainMenuBar.moveableExtraBars) then
     return
 end
 
-function StanceBar_Update()
-    local numForms = GetNumShapeshiftForms()
-    if (numForms > 0) then
-        StanceBarFrame:Show()
-    else
-        StanceBarFrame:Hide()
-    end
-
-    securecall('StanceBar_UpdateState')
-end
-
     -- moveable bars
 
 for _, frame in pairs({        
