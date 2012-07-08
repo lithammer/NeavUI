@@ -11,7 +11,7 @@ hooksecurefunc('UIParent_ManageFramePositions', function()
 	if (not MultiBarBottomLeft:IsShown()) then
 		SlidingActionBarTexture0:Hide()
 		SlidingActionBarTexture1:Hide()
-		if ( StanceBarFrame ) then
+		if (StanceBarFrame) then
 			StanceBarLeft:Hide()
 			StanceBarRight:Hide()
 			StanceBarMiddle:Hide()
