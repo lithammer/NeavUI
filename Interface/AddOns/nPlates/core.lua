@@ -29,8 +29,8 @@ local namePlate, frames
 
 local f = CreateFrame('Frame', nil, UIParent)
 
-f.elapsed = 0  
-f.elapsedLong = 0  
+f.elapsed = 0
+f.elapsedLong = 0
 
 
 f:RegisterEvent('PLAYER_TARGET_CHANGED')
@@ -58,27 +58,25 @@ local function TotemIcon(SpellID)
 end
 
 local totemData = {
+    -- Air
     [TotemName(8177)] = {TotemIcon(8177)}, -- Grounding Totem
-    --[TotemName(8512)] = {TotemIcon(8512)}, -- Windfury Totem XXX
-    --[TotemName(3738)] = {TotemIcon(3738)}, -- Wrath of Air Totem XXX
+    [TotemName(108269)] = {TotemIcon(108269)}, -- Capacitor Totem
+    [TotemName(120668)] = {TotemIcon(120668)}, -- Stormlash Totem
+    [TotemName(98009)] = {TotemIcon(98008)}, -- Spirit Link Totem
 
+    -- Earth
     [TotemName(2062)] = {TotemIcon(2062)}, -- Earth Elemental Totem
     [TotemName(2484)] = {TotemIcon(2484)}, -- Earthbind Totem
-    --[TotemName(5730)] = {TotemIcon(5730)}, -- Stoneclaw Totem XXX
-    --[TotemName(8071)] = {TotemIcon(8071)}, -- Stoneskin Totem XXX
-    --[TotemName(8075)] = {TotemIcon(8075)}, -- Strength of Earth Totem XXX
     [TotemName(8143)] = {TotemIcon(8143)}, -- Tremor Totem
 
+    -- Fire
     [TotemName(2894)] = {TotemIcon(2894)}, -- Fire Elemental Totem
-    --[TotemName(8227)] = {TotemIcon(8227)}, -- Flametongue Totem XXX
     [TotemName(8190)] = {TotemIcon(8190)}, -- Magma Totem
     [TotemName(3599)] = {TotemIcon(3599)}, -- Searing Totem
 
-    --[TotemName(8184)] = {TotemIcon(8184)}, -- Elemental Resistance Totem XXX
-    [TotemName(5394)] = {TotemIcon(5394)}, -- Healing Stream Totem
-    --[TotemName(5675)] = {TotemIcon(5675)}, -- Mana Spring Totem XXX
+    -- Water
     [TotemName(16190)] = {TotemIcon(16190)}, -- Mana Tide Totem
-    --[TotemName(87718)] = {TotemIcon(87718)}, -- Totem of Tranquil Mind XXX
+    [TotemName(5394)] = {TotemIcon(5394)}, -- Healing Stream Totem
 }
 
     -- Some general functions
@@ -223,10 +221,10 @@ end
 local function UpdateHealthText(self)
     local min, max = self.Health:GetMinMaxValues()
     local currentValue = self.Health:GetValue()
-    local perc = (currentValue/max)*100	
+    local perc = (currentValue/max)*100
 
     if (perc >= 100 and currentValue > 5 and cfg.showFullHP) then
-        self.Health.Value:SetFormattedText('%s', FormatValue(currentValue))		
+        self.Health.Value:SetFormattedText('%s', FormatValue(currentValue))
     elseif (perc < 100 and currentValue > 5) then
         self.Health.Value:SetFormattedText('%s - %.0f%%', FormatValue(currentValue), perc-0.5)
     else
@@ -269,7 +267,7 @@ local function UpdateNameL(self)
     if (cfg.abbrevLongNames) then
         newName = (len(newName) > 20) and gsub(newName, '%s?(.[\128-\191]*)%S+%s', '%1. ') or newName
     end
-    
+
     self.NewName:SetTextColor(1, 1, 1)
     if (cfg.showLevel) then
         local levelText = self.Level:GetText()
@@ -410,10 +408,10 @@ local function SkinPlate(self)
     self.Castbar.Overlay:ClearAllPoints()
     self.Castbar.Overlay:SetPoint('TOPRIGHT', self.Castbar, 35.66666667, 5.66666667)
     self.Castbar.Overlay:SetPoint('BOTTOMLEFT', self.Castbar, -36.66666667, -5.66666667)
-    
+
         -- Castbar casttime font string
 
-    if (not self.Castbar.CastTime) then   
+    if (not self.Castbar.CastTime) then
         self.Castbar.CastTime = self.Castbar:CreateFontString(nil, 'OVERLAY')
         self.Castbar.CastTime:SetPoint('RIGHT', self.Castbar, 1.6666667, 0)
         self.Castbar.CastTime:SetFont('Fonts\\ARIALN.ttf', 16)   -- , 'THINOUTLINE')
@@ -470,7 +468,7 @@ local function SkinPlate(self)
     self:SetScript('OnHide', function(self)
         self.Highlight:Hide()
     end)
-    
+
     f:HookScript('OnUpdate', function(_, elapsed)
         if (not self:IsVisible()) then
             return
