@@ -60,8 +60,9 @@ end
 
 if (playerClass == 'MONK') then
     f.Chi = {}
+    f.Chi.maxChi = 4
 
-    for i = 1, 4 do
+    for i = 1, 5 do
         f.Chi[i] = f:CreateFontString(nil, 'ARTWORK')
 
         f.Chi[i]:SetFont(nPower.energy.comboFont, nPower.energy.comboFontSize, 'THINOUTLINE')
@@ -77,6 +78,8 @@ if (playerClass == 'MONK') then
     f.Chi[2]:SetPoint('CENTER', -13, yOffset)
     f.Chi[3]:SetPoint('CENTER', 13, yOffset)
     f.Chi[4]:SetPoint('CENTER', 39, yOffset)
+    f.Chi[5]:SetPoint('CENTER', 52, yOffset)
+    f.Chi[5]:Hide()
 end
 
 if (playerClass == 'WARLOCK' and nPower.showSoulshards or playerClass == 'PALADIN' and nPower.showHolypower) then
@@ -251,6 +254,31 @@ local function SetChiAlpha(i)
     end
 end
 
+local function UpdateChi()
+    local chi = UnitPower('player', SPELL_POWER_LIGHT_FORCE)
+    local maxChi = UnitPowerMax('player', SPELL_POWER_LIGHT_FORCE)
+
+    if (f.Chi.maxChi ~= maxChi) then
+        if (maxChi == 4) then
+            f.Chi[1]:SetPoint('CENTER', -39, yOffset)
+            f.Chi[2]:SetPoint('CENTER', -13, yOffset)
+            f.Chi[3]:SetPoint('CENTER', 13, yOffset)
+            f.Chi[4]:SetPoint('CENTER', 39, yOffset)
+            f.Chi[5]:Hide()
+        else
+            f.Chi[1]:SetPoint('CENTER', -52, yOffset)
+            f.Chi[2]:SetPoint('CENTER', -26, yOffset)
+            f.Chi[3]:SetPoint('CENTER', 0, yOffset)
+            f.Chi[4]:SetPoint('CENTER', 26, yOffset)
+            f.Chi[5]:Show()
+        end
+    end
+
+    for i = 1, maxChi do
+        f.Chi[i]:SetAlpha(SetChiAlpha(i))
+    end
+end
+
 local function CalcRuneCooldown(self)
     local start, duration, runeReady = GetRuneCooldown(self)
     local time = floor(GetTime() - start)
@@ -357,7 +385,7 @@ f:SetScript('OnEvent', function(self, event, arg1)
     if (event == 'PLAYER_REGEN_DISABLED') then
         securecall('UIFrameFadeIn', f, 0.35, f:GetAlpha(), 1)
     end
-    
+
     if (event == 'PLAYER_REGEN_ENABLED') then
         securecall('UIFrameFadeOut', f, 0.35, f:GetAlpha(), nPower.inactiveAlpha)
     end
@@ -412,9 +440,7 @@ f:SetScript('OnUpdate', function(self, elapsed)
                     f.Chi:Hide()
                 end
             else
-                for i = 1, 4 do
-                    f.Chi[i]:SetAlpha(SetChiAlpha(i))
-                end
+                UpdateChi()
             end
         end
 
