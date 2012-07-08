@@ -198,7 +198,7 @@ HelpIDs = ( {
     PALADIN = { 85673 }; -- Word of Glory (40yd) - Lvl 9
     PRIEST = { 2061 }; -- Flash Heal (40yd) - Lvl 3
     -- ROGUE = {};
-    SHAMAN = { 331 }; -- Healing Wave (40yd) - Lvl 7
+    SHAMAN = { 8004 }; -- Healing Surge (40yd) - Lvl 7
     WARLOCK = { 5697 }; -- Unending Breath (30yd) - Lvl 16
     -- WARRIOR = {};
 } )[ Class ];
