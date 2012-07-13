@@ -114,10 +114,10 @@ ns.auras = {
                 -- Maloriak
 
             [GetSpellInfo(77786)] = 8, -- Consuming Flames
-            --[GetSpellInfo(92978)] = 8, -- Flash Freeze XXX
-            --[GetSpellInfo(92976)] = 7, -- Biting Chill XXX
-            --[GetSpellInfo(91829)] = 7, -- Fixate XXX
-            --[GetSpellInfo(92787)] = 9, -- Engulfing Darkness XXX
+            [GetSpellInfo(77699)] = 8, -- Flash Freeze
+            [GetSpellInfo(77760)] = 7, -- Biting Chill
+            --[GetSpellInfo(91829)] = 7, -- Fixate XXX: Gone?
+            [GetSpellInfo(92787)] = 9, -- Engulfing Darkness
 
                 -- Atramedes
 
@@ -133,7 +133,7 @@ ns.auras = {
 
                 -- Nefarian
 
-            --[GetSpellInfo(94128)] = 7, -- Tail Lash XXX
+            [GetSpellInfo(77827)] = 7, -- Tail Lash
             -- [GetSpellInfo(94075)] = 8, -- Magma
             [GetSpellInfo(79339)] = 9, -- Explosive Cinders
             [GetSpellInfo(79318)] = 9, -- Dominion
@@ -144,7 +144,7 @@ ns.auras = {
                 -- Halfus
 
             [GetSpellInfo(39171)] = 7, -- Malevolent Strikes
-            --[GetSpellInfo(86169)] = 8, -- Furious Roar XXX
+            [GetSpellInfo(83710)] = 8, -- Furious Roar
 
                 -- Valiona & Theralion
 
@@ -159,14 +159,14 @@ ns.auras = {
             [GetSpellInfo(82762)] = 7, -- Waterlogged
             [GetSpellInfo(83099)] = 7, -- Lightning Rod
             [GetSpellInfo(82285)] = 7, -- Elemental Stasis
-            --[GetSpellInfo(92488)] = 8, -- Gravity Crush XXX
+            [GetSpellInfo(84948)] = 8, -- Gravity Crush
 
                 -- Cho'gall
 
             [GetSpellInfo(86028)] = 6, -- Cho's Blast
             [GetSpellInfo(86029)] = 6, -- Gall's Blast
-            --[GetSpellInfo(93189)] = 7, -- Corrupted Blood XXX
-            --[GetSpellInfo(93133)] = 7, -- Debilitating Beam XXX
+            [GetSpellInfo(81701)] = 7, -- Corrupted Blood
+            [GetSpellInfo(82411)] = 7, -- Debilitating Beam
             [GetSpellInfo(81836)] = 8, -- Corruption: Accelerated
             [GetSpellInfo(81831)] = 8, -- Corruption: Sickness
             [GetSpellInfo(82125)] = 8, -- Corruption: Malformation
@@ -183,18 +183,18 @@ ns.auras = {
 
             [GetSpellInfo(85576)] = 9, -- Withering Winds
             [GetSpellInfo(85573)] = 9, -- Deafening Winds
-            --[GetSpellInfo(93057)] = 7, -- Slicing Gale XXX
+            [GetSpellInfo(86182)] = 7, -- Slicing Gale
             [GetSpellInfo(86481)] = 8, -- Hurricane
-            --[GetSpellInfo(93123)] = 7, -- Wind Chill XXX
-            --[GetSpellInfo(93121)] = 8, -- Toxic Spores XXX
+            [GetSpellInfo(84645)] = 7, -- Wind Chill
+            [GetSpellInfo(86282)] = 8, -- Toxic Spores
 
                 -- Al'Akir
 
             -- [GetSpellInfo(93281)] = 7, -- Acid Rain
             [GetSpellInfo(87873)] = 7, -- Static Shock
             [GetSpellInfo(88427)] = 7, -- Electrocute
-            --[GetSpellInfo(93294)] = 8, -- Lightning Rod XXX
-            --[GetSpellInfo(93284)] = 9, -- Squall Line XXX
+            [GetSpellInfo(89667)] = 8, -- Lightning Rod
+            [GetSpellInfo(87856)] = 9, -- Squall Line
         },
 
             -- Naxxramas
@@ -208,7 +208,7 @@ ns.auras = {
         [L['ToC']] = {    
             [GetSpellInfo(66869)] = 8, -- Burning Bile
             [GetSpellInfo(66823)] = 10, -- Paralizing Toxin
-            --[GetSpellInfo(67049)] = 9, -- Incinerate Flesh XXX
+            [GetSpellInfo(66237)] = 9, -- Incinerate Flesh
         },
 
             -- Ruby Sanctum
@@ -222,10 +222,10 @@ ns.auras = {
 
         [L['Icecrown']] = {
             [GetSpellInfo(69057)] = 9, -- Bone Spike Graveyard
-            --[GetSpellInfo(72448)] = 9, -- Rune of Blood XXX
+            [GetSpellInfo(72410)] = 9, -- Rune of Blood
             [GetSpellInfo(72293)] = 10, -- Mark of the Fallen Champion, Deathbringer Saurfang
 
-            --[GetSpellInfo(71224)] = 9, -- Mutated Infection, Rotface XXX
+            [GetSpellInfo(69674)] = 9, -- Mutated Infection, Rotface
             [GetSpellInfo(72272)] = 9, -- Vile Gas, Festergut
             [GetSpellInfo(69279)] = 8, -- Gas Spore, Festergut
 
