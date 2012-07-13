@@ -6,8 +6,6 @@ if (not cfg.showPicomenu) then
     return
 end
 
--- INTERFACE_ACTION_BLOCKED = ''
-
 local x, x2, n = nil, false
 local v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11
 
@@ -25,7 +23,6 @@ local menuList = {
         func = function() 
             securecall(ToggleCharacter, 'PaperDollFrame') 
         end,
-                tooltipTitle = 'MOOO',
         notCheckable = true,
     },
     {
@@ -34,6 +31,8 @@ local menuList = {
         func = function() 
             securecall(ToggleSpellBook, BOOKTYPE_SPELL)
         end,
+        tooltipTitle = securecall(MicroButtonTooltipText, SPELLBOOK_ABILITIES_BUTTON, 'TOGGLESPELLBOOK'),
+        tooltipText = NEWBIE_TOOLTIP_SPELLBOOK,
         notCheckable = true,
     },
     {
@@ -41,16 +40,19 @@ local menuList = {
         icon = 'Interface\\MINIMAP\\TRACKING\\Ammunition',
         -- icon = 'Interface\\AddOns\\nMainbar\\media\\picomenu\\picomenuTalents',
         func = function() 
-			if (not PlayerTalentFrame) then 
+            if (not PlayerTalentFrame) then 
                 LoadAddOn('Blizzard_TalentUI') 
             end
 
-			if (not GlyphFrame) then 
+            if (not GlyphFrame) then 
                 LoadAddOn('Blizzard_GlyphUI') 
             end 
 
-			PlayerTalentFrame_Toggle()
+            --PlayerTalentFrame_Toggle()
+            securecall(ToggleTalentFrame)
         end,
+        tooltipTitle = securecall(MicroButtonTooltipText, TALENTS_BUTTON, 'TOGGLETALENTS'),
+        tooltipText = NEWBIE_TOOLTIP_TALENTS,
         notCheckable = true,
     },
     {
@@ -59,6 +61,8 @@ local menuList = {
         func = function() 
             securecall(ToggleAchievementFrame) 
         end,
+        tooltipTitle = securecall(MicroButtonTooltipText, ACHIEVEMENT_BUTTON, 'TOGGLEACHIEVEMENT'),
+        tooltipText = NEWBIE_TOOLTIP_ACHIEVEMENT,
         notCheckable = true,
     },
     {
@@ -67,6 +71,8 @@ local menuList = {
         func = function() 
             securecall(ToggleFrame, QuestLogFrame) 
         end,
+        tooltipTitle = securecall(MicroButtonTooltipText, QUESTLOG_BUTTON, 'TOGGLEQUESTLOG'),
+        tooltipText = NEWBIE_TOOLTIP_QUESTLOG,
         notCheckable = true,
     },
     {
@@ -74,7 +80,12 @@ local menuList = {
         icon = 'Interface\\GossipFrame\\TabardGossipIcon',
         arg1 = IsInGuild('player'),
         func = function() 
-            ToggleGuildFrame()
+            --ToggleGuildFrame()
+            if (IsTrialAccount()) then
+                UIErrorsFrame:AddMessage(ERR_RESTRICTED_ACCOUNT, 1, 0, 0)
+            else
+                securecall(ToggleGuildFrame)
+            end
         end,
         notCheckable = true,
     },
@@ -90,23 +101,37 @@ local menuList = {
         text = PLAYER_V_PLAYER,
         icon = 'Interface\\MINIMAP\\TRACKING\\BattleMaster',
         func = function() 
-            securecall(ToggleFrame, PVPFrame) 
+            --securecall(ToggleFrame, PVPFrame) 
+            securecall(TogglePVPFrame)
         end,
+        tooltipTitle = securecall(MicroButtonTooltipText, PLAYER_V_PLAYER, 'TOGGLECHARACTER4'),
+        tooltipText = NEWBIE_TOOLTIP_PVP,
         notCheckable = true,
     },
     {
         text = DUNGEONS_BUTTON,
-        icon = 'Interface\\MINIMAP\\TRACKING\\None',
+        icon = 'Interface\\LFGFRAME\\BattleNetWorking0',
         func = function() 
-            securecall(ToggleLFDParentFrame)
+            --securecall(ToggleLFDParentFrame)
+            securecall(PVEFrame_ToggleFrame, 'GroupFinderFrame', LFDParentFrame)
+        end,
+        tooltipTitle = securecall(MicroButtonTooltipText, DUNGEONS_BUTTON, 'TOGGLELFGPARENT'),
+        tooltipText = NEWBIE_TOOLTIP_LFGPARENT,
+        notCheckable = true,
+    },
+    {
+        text = CHALLENGES,
+        icon = 'Interface\\BUTTONS\\UI-GroupLoot-DE-Up',
+        func = function() 
+            securecall(PVEFrame_ToggleFrame, 'ChallengesFrame')
         end,
         notCheckable = true,
     },
     {
         text = RAID_FINDER,
-        icon = 'Interface\\MINIMAP\\TRACKING\\None',
+        icon = 'Interface\\TARGETINGFRAME\\UI-TargetingFrame-Skull',
         func = function() 
-            securecall(ToggleFrame, RaidParentFrame)
+            securecall(PVEFrame_ToggleFrame, 'GroupFinderFrame', RaidFinderFrame)
         end,
         notCheckable = true,
     },
@@ -119,11 +144,23 @@ local menuList = {
         notCheckable = true,
     },
     {
+        text = MOUNTS_AND_PETS,
+        icon = 'Interface\\MINIMAP\\TRACKING\\StableMaster',
+        func = function() 
+            securecall(TogglePetJournal)
+        end,
+        tooltipTitle = securecall(MicroButtonTooltipText, MOUNTS_AND_PETS, 'TOGGLEMOUNTJOURNAL'),
+        tooltipText = NEWBIE_TOOLTIP_MOUNTS_AND_PETS,
+        notCheckable = true,
+    },
+    {
         text = ENCOUNTER_JOURNAL,
         icon = 'Interface\\MINIMAP\\TRACKING\\Profession',
         func = function() 
             securecall(ToggleEncounterJournal)
         end,
+        tooltipTitle = securecall(MicroButtonTooltipText, ENCOUNTER_JOURNAL, 'TOGGLEENCOUNTERJOURNAL'),
+        tooltipText = NEWBIE_TOOLTIP_ENCOUNTER_JOURNAL,
         notCheckable = true,
     },
     {
@@ -132,6 +169,8 @@ local menuList = {
         func = function() 
             securecall(ToggleHelpFrame) 
         end,
+        tooltipTitle = HELP_BUTTON,
+        tooltipText = NEWBIE_TOOLTIP_HELP,
         notCheckable = true,
     },
     {
@@ -165,7 +204,7 @@ local addonMenuTable = {
 
 local function UpdateAddOnTable()
     if (IsAddOnLoaded('oUF_NeavRaid') and not v1) then
-        x = true      
+        x = true
         n = (#addonMenuTable[2].menuList)+1
         v1 = true
         addonMenuTable[2].menuList[n] = {
