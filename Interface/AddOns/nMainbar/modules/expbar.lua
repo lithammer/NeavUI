@@ -21,3 +21,12 @@ else
     MainMenuBarExpText:Show()
     MainMenuBarExpText.Hide = function() end
 end
+
+-- Hack to force OverrideActionBarExpBar's textures being drawn above its statusbar
+for _, texture in pairs({
+    'XpMid',
+    'XpL',
+    'XpR',
+}) do
+    OverrideActionBarExpBar[texture]:SetDrawLayer('OVERLAY', 0)
+end
