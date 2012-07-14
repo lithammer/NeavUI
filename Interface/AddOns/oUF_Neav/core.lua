@@ -193,6 +193,8 @@ local function PlayerToVehicleTexture(self, event, unit)
     self.MasterLooter:SetPoint('TOPLEFT', self.Texture, 74, -14)
     self.RaidIcon:SetPoint('CENTER', self.Portrait, 'TOP', 0, -5)
     self.T[1]:SetPoint('BOTTOM', self.Name, 'TOP', 0, 8)
+
+    securecall('PlayerFrame_ShowVehicleTexture')
 end
 
 local function VehicleToPlayerTexture(self, event, unit)
@@ -236,6 +238,8 @@ local function VehicleToPlayerTexture(self, event, unit)
     self.MasterLooter:SetPoint('TOPRIGHT', self.Portrait, -3, 3)
     self.RaidIcon:SetPoint('CENTER', self.Portrait, 'TOP', 0, -1)
     self.T[1]:SetPoint('BOTTOM', self.Name.Bg, 'TOP', -1, 0)
+
+    securecall('PlayerFrame_HideVehicleTexture')
 end
 
 local function CreateTab(self, text)
