@@ -102,7 +102,7 @@ for i = 1, 19, 2 do
     end
 end
 
-local function UpdateDividers()
+hooksecurefunc(_G['MainMenuXPBarDiv2'], 'Show', function(self)
     local divWidth = MainMenuExpBar:GetWidth() / 10
     local xpos = divWidth - 4.5
 
@@ -112,23 +112,20 @@ local function UpdateDividers()
         texture:SetPoint('LEFT', xalign, 1)
         xpos = xpos + divWidth
     end
-end
-
-hooksecurefunc(_G['MainMenuXPBarDiv2'], 'Show', function(self)
-    UpdateDividers()
 end)
 
 _G['MainMenuXPBarDiv2']:Show()
 
     -- fix the exp bar size when exiting vehicle
 
-MainMenuExpBar:HookScript('OnSizeChanged', function(self, width, height)
-    if (math.floor(width) == EXP_DEFAULT_WIDTH) then
-        securecall(MainMenuExpBar_SetWidth, 512)
-        CharacterMicroButton:ClearAllPoints()
-        CharacterMicroButton:SetPoint('BOTTOMLEFT', UIParent, 9000, 9000)
-    end
-end)
+-- XXX: Not need anymore?
+--MainMenuExpBar:HookScript('OnSizeChanged', function(self, width, height)
+--    if (math.floor(width) == EXP_DEFAULT_WIDTH) then
+--        securecall(MainMenuExpBar_SetWidth, 512)
+--        CharacterMicroButton:ClearAllPoints()
+--        CharacterMicroButton:SetPoint('BOTTOMLEFT', UIParent, 9000, 9000)
+--    end
+--end)
 
     -- the bottom right bar needs a better place, above the bottom left bar
 
@@ -152,27 +149,14 @@ MainMenuBarRightEndCap.SetPoint = function() end
 
     -- reposit the micromenu
 
--- GuildMicroButton:ClearAllPoints()
--- GuildMicroButton:SetPoint('TOPLEFT', CharacterMicroButton, 'BOTTOMLEFT', 0, 20)
-
 CharacterMicroButton:ClearAllPoints()
 CharacterMicroButton:SetPoint('BOTTOMLEFT', UIParent, 9000, 9000)
 
---hooksecurefunc('VehicleMenuBar_MoveMicroButtons', function(self)
---    if (not self) then
---        CharacterMicroButton:ClearAllPoints()
---        CharacterMicroButton:SetPoint('BOTTOMLEFT', UIParent, 9000, 9000)
---    elseif (self == 'Mechanical') then
---        CharacterMicroButton:ClearAllPoints()
---        CharacterMicroButton:SetPoint('BOTTOMLEFT', VehicleMenuBar, 'BOTTOMRIGHT', -340, 41)
---    elseif (self == 'Natural') then
---        CharacterMicroButton:ClearAllPoints()
---        CharacterMicroButton:SetPoint('BOTTOMLEFT', VehicleMenuBar, 'BOTTOMRIGHT', -365, 41)
---    end
---end)
 hooksecurefunc('MoveMicroButtons', function(...)
-	CharacterMicroButton:ClearAllPoints()
-	CharacterMicroButton:SetPoint('BOTTOMLEFT', UIParent, 9000, 9000)
+    if (not UnitHasVehicleUI('player')) then
+        CharacterMicroButton:ClearAllPoints()
+        CharacterMicroButton:SetPoint('BOTTOMLEFT', UIParent, 9000, 9000)
+    end
 end)
 
     -- a new place for the exit vehicle button
