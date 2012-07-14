@@ -8,12 +8,12 @@ InterfaceOptionsFrameCategoriesButton10:SetAlpha(0)
 
 for _, button in pairs({
     'CombatPanelTargetOfTarget',
-    'CombatPanelTOTDropDown',
-    'CombatPanelTOTDropDownButton',
+    --'CombatPanelTOTDropDown',
+    --'CombatPanelTOTDropDownButton',
     'CombatPanelEnemyCastBarsOnPortrait',
 
     'DisplayPanelShowAggroPercentage',
-    'DisplayPanelemphasizeMySpellEffects'
+    --'DisplayPanelemphasizeMySpellEffects'
 }) do
     _G['InterfaceOptions'..button]:SetAlpha(0.35)
     _G['InterfaceOptions'..button]:Disable()
