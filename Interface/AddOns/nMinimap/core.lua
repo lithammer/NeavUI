@@ -40,7 +40,7 @@ QueueStatusMinimapButton.Text = QueueStatusMinimapButton:CreateFontString(nil, '
 QueueStatusMinimapButton.Text:SetFont('Fonts\\ARIALN.ttf', 15, 'OUTLINE')
 QueueStatusMinimapButton.Text:SetPoint('TOP', QueueStatusMinimapButton)
 QueueStatusMinimapButton.Text:SetTextColor(1, 0.4, 0)
-QueueStatusMinimapButton.Text:SetText('L')
+QueueStatusMinimapButton.Text:SetText('Q')
 
    -- Modify the battlefield frame
 
