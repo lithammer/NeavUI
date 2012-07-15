@@ -244,19 +244,10 @@ local function SetComboAlpha(i)
     end
 end
 
-local function SetChiAlpha(i)
-    local chi = UnitPower('player', SPELL_POWER_LIGHT_FORCE) or 0
-
-    if (i == chi) then
-        return 1
-    else
-        return 0
-    end
-end
-
 local function UpdateChi()
     local chi = UnitPower('player', SPELL_POWER_LIGHT_FORCE)
     local maxChi = UnitPowerMax('player', SPELL_POWER_LIGHT_FORCE)
+    local yOffset = nPower.energy.comboPointsBelow and -35 or 0
 
     if (f.Chi.maxChi ~= maxChi) then
         if (maxChi == 4) then
@@ -265,17 +256,19 @@ local function UpdateChi()
             f.Chi[3]:SetPoint('CENTER', 13, yOffset)
             f.Chi[4]:SetPoint('CENTER', 39, yOffset)
             f.Chi[5]:Hide()
+            f.Chi.maxChi = 4
         else
             f.Chi[1]:SetPoint('CENTER', -52, yOffset)
             f.Chi[2]:SetPoint('CENTER', -26, yOffset)
             f.Chi[3]:SetPoint('CENTER', 0, yOffset)
             f.Chi[4]:SetPoint('CENTER', 26, yOffset)
             f.Chi[5]:Show()
+            f.Chi.maxChi = 5
         end
     end
 
     for i = 1, maxChi do
-        f.Chi[i]:SetAlpha(SetChiAlpha(i))
+        f.Chi[i]:SetAlpha(i == chi and 1 or 0)
     end
 end
 
@@ -436,8 +429,10 @@ f:SetScript('OnUpdate', function(self, elapsed)
 
         if (f.Chi) then
             if (UnitHasVehicleUI('player')) then
-                if (f.Chi:IsShown()) then
-                    f.Chi:Hide()
+                for i = 1, 5 do
+                    if (f.Chi[i]:IsShown()) then
+                        f.Chi[i]:Hide()
+                    end
                 end
             else
                 UpdateChi()
