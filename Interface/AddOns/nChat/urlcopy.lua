@@ -12,7 +12,7 @@ end
 local function ScanURL(frame, text, ...)
     found = false
 
-    if (find(text, '%pTInterface%p+')) then
+    if (find(text:upper(), '%pTINTERFACE%p+')) then
         found = true
     end
 
