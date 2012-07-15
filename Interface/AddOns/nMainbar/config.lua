@@ -11,10 +11,10 @@ nMainbar.Config = {
 
         countFontsize = 19,
         countFont = 'Interface\\AddOns\\nMainbar\\media\\font.ttf',
-        
+
         macronameFontsize = 17,
         macronameFont = 'Interface\\AddOns\\nMainbar\\media\\font.ttf',
-        
+
         hotkeyFontsize = 18,
         hotkeyFont = 'Interface\\AddOns\\nMainbar\\media\\font.ttf',
     },
@@ -22,12 +22,12 @@ nMainbar.Config = {
     color = {   -- Red, Green, Blue
         Normal = { 1, 1, 1 },
         IsEquipped = { 0, 1, 0 },
-        
+
         OutOfRange = { 0.9, 0, 0 },
         OutOfMana = { 0.3, 0.3, 1 },
-        
+
         NotUsable = { 0.35, 0.35, 0.35 },
-        
+
         HotKeyText = { 0.6, 0.6, 0.6 },
         MacroText = { 1, 1, 1 },
         CountText = { 1, 1, 1 },
@@ -48,10 +48,10 @@ nMainbar.Config = {
     MainMenuBar = {
         scale = 1,
         hideGryphons = false,
-        
+
         shortBar = true,
         skinButton = true,
-        
+
         moveableExtraBars = false,      -- Make the pet, possess, shapeshift and totembar moveable, even when the mainmenubar is not "short"
     },
 
