@@ -149,7 +149,7 @@ local menuList = {
         func = function() 
             securecall(TogglePetJournal)
         end,
-        tooltipTitle = securecall(MicroButtonTooltipText, MOUNTS_AND_PETS, 'TOGGLEMOUNTJOURNAL'),
+        tooltipTitle = securecall(MicroButtonTooltipText, MOUNTS_AND_PETS, 'TOGGLEPETJOURNAL'),
         tooltipText = NEWBIE_TOOLTIP_MOUNTS_AND_PETS,
         notCheckable = true,
     },
