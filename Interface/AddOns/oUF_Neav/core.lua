@@ -155,6 +155,24 @@ local function CreateFocusButton(self)
     end)
 end
 
+-- XXX: Hack to handle visibility of the Chi bar when entering/exiting a vehicle
+-- because Blizzard doesn't handle it (yet)
+hooksecurefunc('PlayerFrame_HideVehicleTexture', function()
+	local _, class = UnitClass('player')
+
+	if (class == 'MONK') then
+		MonkHarmonyBar:Show()
+	end
+end)
+
+hooksecurefunc('PlayerFrame_ShowVehicleTexture', function()
+	local _, class = UnitClass('player')
+
+	if (class == 'MONK') then
+		MonkHarmonyBar:Hide()
+	end
+end)
+
 local function PlayerToVehicleTexture(self, event, unit)
     self.Texture:SetSize(240, 121)
     self.Texture:SetPoint('CENTER', self, 0, -8)
