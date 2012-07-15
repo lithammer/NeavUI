@@ -18,27 +18,18 @@ if (cfg.stanceBar.hide) then
     end
 end
 
+StanceBarLeft:SetTexture('')
+StanceBarMiddle:SetTexture('')
+StanceBarRight:SetTexture('')
+
 hooksecurefunc('UIParent_ManageFramePositions', function()
     if (StanceBarFrame) then
-        StanceBarLeft:Hide()
-        StanceBarRight:Hide()
-        StanceBarMiddle:Hide()
         for i = 1, NUM_STANCE_SLOTS do
-            _G['StanceButton'..i]:GetNormalTexture():SetWidth(52)
-            _G['StanceButton'..i]:GetNormalTexture():SetHeight(52)
+            _G['StanceButton'..i]:GetNormalTexture():SetSize(52, 52)
         end
     end
 end)
 
--- Override Blizzard's function because they keep re-positioning the stance bar
--- when GetNumShapeshiftForms() == 1
-function StanceBar_Update()
-    local numForms = GetNumShapeshiftForms()
-    if (numForms > 0 and not IsPossessBarVisible()) then
-        StanceBarFrame:Show()
-        StanceBar_UpdateState()
-    else
-        StanceBarFrame:Hide()
-    end
-    UIParent_ManageFramePositions()
-end
+-- HACK: This will prevent Blizzard's StanceBar_Update() function from
+-- re-positioning StanceBarFrame when GetNumShapeshiftForms() == 1.
+StanceBarFrame.numForms = GetNumShapeshiftForms()
