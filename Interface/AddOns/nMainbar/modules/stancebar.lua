@@ -18,10 +18,6 @@ if (cfg.stanceBar.hide) then
     end
 end
 
-StanceBarLeft:SetTexture('')
-StanceBarMiddle:SetTexture('')
-StanceBarRight:SetTexture('')
-
 hooksecurefunc('UIParent_ManageFramePositions', function()
     if (StanceBarFrame) then
         for i = 1, NUM_STANCE_SLOTS do
@@ -42,16 +38,16 @@ local point, relativeTo, relativePoint, xOffset, yOffset
 
 local f = CreateFrame('Frame')
 f:RegisterEvent('VARIABLES_LOADED')
-f:RegisterEvent('PLAYER_ENTERING_WORLD')
+f:RegisterEvent('PLAYER_ALIVE')
 f:SetScript('OnEvent', function(self, event, ...)
     if (event == 'VARIABLES_LOADED') then
         point, relativeTo, relativePoint, xOffset, yOffset = StanceButton1:GetPoint()
         self:UnregisterEvent('VARIABLES_LOADED')
     end
 
-    if (event == 'PLAYER_ENTERING_WORLD') then
+    if (event == 'PLAYER_ALIVE') then
         StanceButton1:ClearAllPoints()
         StanceButton1:SetPoint(point, relativeTo, relativePoint, xOffset, yOffset)
-        self:UnregisterEvent('PLAYER_ENTERING_WORLD')
+        self:UnregisterEvent('PLAYER_ALIVE')
     end
 end)
