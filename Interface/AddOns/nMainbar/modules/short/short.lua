@@ -14,7 +14,7 @@ do
         'MultiBarRight',
         'MultiBarBottomRight',
 
-        'ShapeshiftBarFrame',
+        --'StanceBarFrame',
         'PossessBarFrame',
 
         'MULTICASTACTIONBAR_YPOS',
@@ -53,9 +53,9 @@ for i = 2, 3 do
         _G['SlidingActionBarTexture0'],
         _G['SlidingActionBarTexture1'],
 
-        _G['ShapeshiftBarLeft'],
-        _G['ShapeshiftBarMiddle'],
-        _G['ShapeshiftBarRight'],
+        _G['StanceBarLeft'],
+        _G['StanceBarMiddle'],
+        _G['StanceBarRight'],
 
         _G['PossessBackground1'],
         _G['PossessBackground2'],
