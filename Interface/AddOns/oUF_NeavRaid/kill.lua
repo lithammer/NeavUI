@@ -3,7 +3,7 @@ InterfaceOptionsFrameCategoriesButton11:SetScale(0.00001)
 InterfaceOptionsFrameCategoriesButton11:SetAlpha(0)
 
 --[[
-function CompactUnitFrame_UpateVisible() end
+function CompactUnitFrame_UpdateVisible() end
 function CompactUnitFrame_UpdateAll() end
 
 function CompactRaidFrameContainer_OnLoad() end
@@ -33,7 +33,7 @@ end)
 KillRaidFrame()
 --]]
 
-function CompactUnitFrame_UpateVisible() end
+function CompactUnitFrame_UpdateVisible() end
 function CompactUnitFrame_UpdateAll() end
 function CompactRaidFrameContainer_OnLoad() end
 
