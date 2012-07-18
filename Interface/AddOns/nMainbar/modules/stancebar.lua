@@ -21,7 +21,10 @@ end
 -- HACK: This will prevent Blizzard's StanceBar_Update() function from
 -- re-positioning StanceButton1 when GetNumShapeshiftForms() == 1. Ugly as
 -- hell, but StanceButton1 is extremely taint prone if manipulated at the wrong
--- time. All these methods caused taint:
+-- time.
+--
+-- All these methods caused taint when doing action bar swapping
+-- (shift+mousescroll) in combat:
 --
 -- 1. Forcing a call to StanceBar_Update() to have it fire before Blizzard
 --    applies user positions from layout-local.txt.
