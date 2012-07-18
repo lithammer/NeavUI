@@ -18,14 +18,6 @@ if (cfg.stanceBar.hide) then
     end
 end
 
-hooksecurefunc('UIParent_ManageFramePositions', function()
-    if (StanceBarFrame) then
-        for i = 1, NUM_STANCE_SLOTS do
-            _G['StanceButton'..i]:GetNormalTexture():SetSize(52, 52)
-        end
-    end
-end)
-
 -- HACK: This will prevent Blizzard's StanceBar_Update() function from
 -- re-positioning StanceButton1 when GetNumShapeshiftForms() == 1. Ugly as
 -- hell, but StanceButton1 is extremely taint prone if manipulated at the wrong
@@ -47,7 +39,9 @@ f:SetScript('OnEvent', function(self, event, ...)
 
     if (event == 'PLAYER_ALIVE') then
         StanceButton1:ClearAllPoints()
-        StanceButton1:SetPoint(point, relativeTo, relativePoint, xOffset, yOffset)
+        if (point) then
+            StanceButton1:SetPoint(point, relativeTo, relativePoint, xOffset, yOffset)
+        end
         self:UnregisterEvent('PLAYER_ALIVE')
     end
 end)
