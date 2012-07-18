@@ -23,9 +23,15 @@ end
 -- hell, but StanceButton1 is extremely taint prone if manipulated at the wrong
 -- time. All these methods caused taint:
 --
--- 1. Forcing a call to StanceBar_Update() have fire before Blizzard applies user positions.
--- 2. Fetching StanceButton1:GetPoint() values early, and re-apply them by hooksecurefunc() on StanceBar_Update().
--- 3. Setting StanceBarFrame.numForms to GetNumShapeshiftForms() so that StanceBarFrame.numForms ~= numForms is always false.
+-- 1. Forcing a call to StanceBar_Update() to have it fire before Blizzard
+--    applies user positions from layout-local.txt.
+--
+-- 2. Fetching StanceButton1:GetPoint() as early as possible after they've been
+--    loaded from layout-local.txt, and re-apply them by
+--    hooksecurefunc('StanceBar_Update', ...).
+--
+-- 3. Setting StanceBarFrame.numForms = GetNumShapeshiftForms() so that
+--    StanceBarFrame.numForms ~= numForms always evaluates to false.
 local point, relativeTo, relativePoint, xOffset, yOffset
 
 local f = CreateFrame('Frame')
