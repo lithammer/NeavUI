@@ -34,7 +34,7 @@ hooksecurefunc('PetActionBar_Update', function()
     for _, name in pairs({
         'PetActionButton',
         'PossessButton',    
-        'ShapeshiftButton', 
+        'StanceButton', 
     }) do
         for i = 1, 12 do
             local button = _G[name..i]
@@ -96,6 +96,8 @@ hooksecurefunc('PetActionBar_Update', function()
         end
     end
 end)
+-- Force an update for StanceButton for those who doesn't have pet bar
+securecall('PetActionBar_Update')
 
 hooksecurefunc('ActionButton_Update', function(self)
     if (IsSpecificButton(self, 'MultiCast')) then
