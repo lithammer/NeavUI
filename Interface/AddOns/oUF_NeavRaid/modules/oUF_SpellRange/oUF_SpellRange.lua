@@ -38,7 +38,7 @@ do
     local UnitInRange = UnitInRange
     local IsSpellInRange = IsSpellInRange
     local CheckInteractDistance = CheckInteractDistance
-    
+
         -- Uses an appropriate range check for the given unit.
         -- Actual range depends on reaction, known spells, and status of the unit.
         -- @param UnitID  Unit to check range for.
@@ -168,7 +168,7 @@ local function Enable(self, UnitID)
             UpdateFrame:RegisterEvent('SPELLS_CHANGED')
             OnSpellsChanged() -- Recheck spells immediately
         end
-        
+
         Objects[self] = true
         return true
     end
@@ -192,7 +192,10 @@ local _, Class = UnitClass('player')
 HelpIDs = ( {
     DEATHKNIGHT = { 47541 }; -- Death Coil (40yd) - Starter
     DRUID = { 5185 }; -- Healing Touch (40yd) - Lvl 3
-    -- HUNTER = {};
+    HUNTER = {
+        53271, -- Master's Call (40yd) - Lvl 74
+        136, -- Mend Pet (45yd) - Lvl 16
+    };
     MAGE = { 475 }; -- Remove Curse (40yd) - Lvl 30
     MONK = { 115450 }, -- Detox (40yd) - Lvl 20
     PALADIN = { 85673 }; -- Word of Glory (40yd) - Lvl 9
