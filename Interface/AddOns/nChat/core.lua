@@ -221,7 +221,7 @@ end)
 
     -- Modify the chat tabs
 
-function SkinTab(self)
+local function SkinTab(self)
     local chat = _G[self]
 
     local tab = _G[self..'Tab']
