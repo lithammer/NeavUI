@@ -393,7 +393,7 @@ local function UpdatePortraitColor(self, unit, min, max)
         self.Portrait:SetVertexColor(0.35, 0.35, 0.35, 0.7)
     elseif (UnitIsGhost(unit)) then
         self.Portrait:SetVertexColor(0.3, 0.3, 0.9, 0.7)
-    elseif (min/max * 100 < 25) then
+    elseif (max == 0 or min/max * 100 < 25) then
         if (UnitIsPlayer(unit)) then
             if (unit ~= 'player') then
                 self.Portrait:SetVertexColor(1, 0, 0, 0.7)
