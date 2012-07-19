@@ -47,8 +47,8 @@ f:SetScript('OnEvent', function(self, event, ...)
     end
 
     if (event == 'PLAYER_ALIVE') then
-        StanceButton1:ClearAllPoints()
         if (point) then
+            StanceButton1:ClearAllPoints()
             StanceButton1:SetPoint(point, relativeTo, relativePoint, xOffset, yOffset)
         end
         self:UnregisterEvent('PLAYER_ALIVE')
