@@ -152,8 +152,8 @@ MainMenuBarRightEndCap.SetPoint = function() end
 CharacterMicroButton:ClearAllPoints()
 CharacterMicroButton:SetPoint('BOTTOMLEFT', UIParent, 9000, 9000)
 
-hooksecurefunc('MoveMicroButtons', function(...)
-    if (not UnitHasVehicleUI('player')) then
+hooksecurefunc('MoveMicroButtons', function(anchor, achorTo, relAnchor, x, y, isStacked)
+    if (not isStacked) then
         CharacterMicroButton:ClearAllPoints()
         CharacterMicroButton:SetPoint('BOTTOMLEFT', UIParent, 9000, 9000)
     end
@@ -161,7 +161,7 @@ end)
 
     -- a new place for the exit vehicle button
 
-MainMenuBarVehicleLeaveButton:HookScript('OnShow', function()
-    MainMenuBarVehicleLeaveButton:ClearAllPoints()
-    MainMenuBarVehicleLeaveButton:SetPoint('LEFT', MainMenuBar, 'RIGHT', 10, 75)
+MainMenuBarVehicleLeaveButton:HookScript('OnShow', function(self)
+    self:ClearAllPoints()
+    self:SetPoint('LEFT', MainMenuBar, 'RIGHT', 10, 75)
 end)
