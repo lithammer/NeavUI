@@ -45,11 +45,11 @@ end
 
 -- HACK: This will prevent Blizzard's StanceBar_Update() function from
 -- re-positioning StanceButton1 when GetNumShapeshiftForms() == 1.
-if (GetNumShapeshiftForms() == 1) then
-    StanceButton1:HookScript('OnDragStop', function(self)
+StanceButton1:HookScript('OnDragStop', function(self)
+    if (GetNumShapeshiftForms() == 1) then
         local point, relativeTo, relativePoint, xOffset, yOffset = self:GetPoint()
         StanceBarFrame:ClearAllPoints()
         -- 12 and 3 is to offset for StanceButton1's relative position towards StanceBarFrame set by StanceBar_Update()
         StanceBarFrame:SetPoint(point, relativeTo, relativePoint, xOffset - 12, yOffset - 3)
-    end)
-end
+    end
+end)
