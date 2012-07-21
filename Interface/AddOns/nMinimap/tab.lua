@@ -402,14 +402,10 @@ local function UpdateGuildXP()
 	end
     local percentTotal = tostring(ceil((currentXP / nextLevelXP) * 100))
 
-    guildXP[0] = {
+    guildXP = {
         currentXP,
         nextLevelXP,
         percentTotal
-    }
-
-    guildXP[1] = {
-        maxDailyXP
     }
 end
 
@@ -429,8 +425,7 @@ local function GuildTip(self)
     GameTooltip:AddLine(' ')
 
     if (GetGuildLevel() ~= 25) then
-        local currentXP, nextLevelXP, percentTotal = unpack(guildXP[0])
-        local maxDailyXP = unpack(guildXP[1])
+        local currentXP, nextLevelXP, percentTotal = unpack(guildXP)
         GameTooltip:AddLine(format(GUILD_EXPERIENCE_CURRENT, '|r |cFFFFFFFF'..ShortValue(currentXP), ShortValue(nextLevelXP), percentTotal))
     end
 
