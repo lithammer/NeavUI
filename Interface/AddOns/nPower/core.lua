@@ -100,7 +100,7 @@ if (playerClass == 'WARLOCK' and nPower.showSoulshards or playerClass == 'PALADI
 end
 
 if (playerClass == 'DEATHKNIGHT' and nPower.rune.showRuneCooldown) then
-    for i = 1, 6 do 
+    for i = 1, 6 do
         RuneFrame:UnregisterAllEvents()
         _G['RuneButtonIndividual'..i]:Hide()
     end
