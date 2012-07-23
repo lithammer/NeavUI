@@ -1,4 +1,4 @@
-﻿
+
 local _, nMinimap = ...
 local cfg = nMinimap.Config
 
