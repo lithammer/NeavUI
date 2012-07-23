@@ -1,4 +1,4 @@
-local _, ABT_NS = ... -- namespace
+local _, addon = ... -- namespace
 local ABT_abouttext = '<HTML><BODY>\
 <H1>|cff00ff00ActionButtonText (1.02)|r</H1>\
 <H2>Created by &lt;Damage Inc&gt; of (EU)Draenor</H2>\
@@ -7,31 +7,31 @@ local ABT_abouttext = '<HTML><BODY>\
 <H1>|cffffff00Presets|r</H1>\
 </BODY></HTML>'
 
-function ABT_NS.prehash(name)
-	if strfind(name,'#') then
+function addon.prehash(name)
+	if string.find(name,'#') then
 		return name
 	else
 		return '#' .. name
 	end
 end
 
-function ABT_NS.optclick(self)
-	local to = 'PRESET' .. ABT_NS.prehash(self.spellname)
+function addon.optclick(self)
+	local to = 'PRESET' .. addon.prehash(self.spellname)
 
 	if self:GetChecked() then
-		if not ABT_spelldb then
-			ABT_spelldb = {}
+		if not ABT_SpellDB then
+			ABT_SpellDB = {}
 		end
-		ABT_spelldb[to] = {}
-		for name,val in pairs(ABT_NS.presets[self.classname][self.spellname]) do
-			ABT_spelldb[to][name] = val
+		ABT_SpellDB[to] = {}
+		for name,val in pairs(addon.presets[self.classname][self.spellname]) do
+			ABT_SpellDB[to][name] = val
 		end
 	else
-		ABT_spelldb[to] = nil
+		ABT_SpellDB[to] = nil
 	end
 end
 
-function ABT_NS.addopt(n,class,spellname,text)
+function addon.addopt(n,class,spellname,text)
 	local optbtn = CreateFrame('CheckButton', 'obiopt'..n , _G['obiabout'], 'UICheckButtonTemplate')
 	_G[optbtn:GetName() .. 'Text']:SetText(text)
 	_G[optbtn:GetName() .. 'Text']:SetWidth(400)
@@ -40,19 +40,19 @@ function ABT_NS.addopt(n,class,spellname,text)
 	optbtn:SetPoint('TOPLEFT', _G['obiabout'], 'BOTTOMLEFT', 0, -30 * (n - 1) + -40)
 	optbtn.classname = class
 	optbtn.spellname = spellname
-	optbtn:SetScript('OnClick',ABT_NS.optclick)
+	optbtn:SetScript('OnClick',addon.optclick)
 
-	if ABT_spelldb and ABT_spelldb['PRESET'..ABT_NS.prehash(spellname)] then
+	if ABT_SpellDB and ABT_SpellDB['PRESET'..addon.prehash(spellname)] then
 		optbtn:SetChecked(true)
 	end
 end
 
-function ABT_NS.optshow()
+function addon.optshow()
 	local x = 1
 	local optb = _G['obiopt'..x]
 
 	while optb do
-		if ABT_spelldb and ABT_spelldb['PRESET'..ABT_NS.prehash(optb.spellname)] then
+		if ABT_SpellDB and ABT_SpellDB['PRESET'..addon.prehash(optb.spellname)] then
 			optb:SetChecked(true)
 		else
 			optb:SetChecked(false)
@@ -63,10 +63,10 @@ function ABT_NS.optshow()
 	end
 end
 
-function ABT_NS.optionsinit()
+function addon.OptionsInit()
 	local ABT_optionspanel = CreateFrame('Frame', 'OBIOptions', UIParent)
 	ABT_optionspanel.name = 'ActionButtonText'
-	ABT_optionspanel:SetScript('OnShow', ABT_NS.optshow)
+	ABT_optionspanel:SetScript('OnShow', addon.optshow)
 	InterfaceOptions_AddCategory(ABT_optionspanel)
 
 	local scroll0 = CreateFrame('ScrollFrame', 'obiscr0', ABT_optionspanel)
@@ -84,10 +84,10 @@ function ABT_NS.optionsinit()
 	scroll0:SetScrollChild(about)
 
 	local x = 1
-	for class in pairs(ABT_NS.presets) do
+	for class in pairs(addon.presets) do
 		if class == 'ALL' or class == select(2,UnitClass('PLAYER')) or class == select(2,UnitRace('PLAYER')) then 
-			for spell in pairs(ABT_NS.presets[class]) do
-				ABT_NS.addopt(x,class,spell,ABT_NS.presets[class][spell]['DESC'] or spell)
+			for spell in pairs(addon.presets[class]) do
+				addon.addopt(x,class,spell,addon.presets[class][spell]['DESC'] or spell)
 				x = x + 1
 			end
 		end
@@ -97,11 +97,11 @@ function ABT_NS.optionsinit()
 	savec:SetWidth(220)
 	savec:SetHeight(20)
 	savec:SetPoint('BOTTOMLEFT', ABT_optionspanel, 'BOTTOMLEFT', 20, 20)
-	savec:SetText(ABT_NS.opt1)
+	savec:SetText(addon.opt1)
 
 	savec:SetScript('OnClick', function()
 		InterfaceOptionsFrameCancel_OnClick()
-		ABT_NS.configpanel:Show()
+		addon.configpanel:Show()
 	end)
 
 	savec:Show()

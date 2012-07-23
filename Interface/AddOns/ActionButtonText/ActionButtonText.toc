@@ -2,9 +2,9 @@
 ## Title: ActionButtonText
 ## OptionalDeps:
 ## Dependencies:
-## SavedVariablesPerCharacter: ABT_spelldb
-ABT.lua
+## SavedVariablesPerCharacter: ABT_SpellDB
 ABTSpells.lua
 localisation.en.lua
 ABTOptions.lua
 ABTConfig.lua
+ABT.lua
