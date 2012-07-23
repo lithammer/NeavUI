@@ -1,4 +1,6 @@
 
+local _, addon = ...
+
 local ComboColor = nPower.energy.comboColor
 local playerClass = select(2, UnitClass('player'))
 
@@ -185,14 +187,6 @@ if (nPower.showCombatRegen) then
     f.mpreg:Show()
 end
 
-local function FormatValue(self)
-    if (self >= 10000) then
-        return ('%.1fk'):format(self / 1e3)
-    else
-        return self
-    end
-end
-
 local function GetWarlockPower()
     local powerType = SPELL_POWER_MANA
     local unitPower = 0
@@ -294,15 +288,23 @@ end
 
 local function UpdateBarVisibility()
     local _, powerType = UnitPowerType('player')
+    local endAlpha = nil
 
     if ((not nPower.energy.show and powerType == 'ENERGY') or (not nPower.focus.show and powerType == 'FOCUS') or (not nPower.rage.show and powerType == 'RAGE') or (not nPower.mana.show and powerType == 'MANA') or (not nPower.rune.show and powerType == 'RUNEPOWER') or UnitIsDeadOrGhost('player') or UnitHasVehicleUI('player')) then
         f.Power:SetAlpha(0)
     elseif (InCombatLockdown()) then
-        securecall('UIFrameFadeIn', f.Power, 0.3, f.Power:GetAlpha(), nPower.activeAlpha)
+        --securecall('UIFrameFadeIn', f.Power, 0.3, f.Power:GetAlpha(), nPower.activeAlpha)
+        endAlpha = nPower.activeAlpha
     elseif (not InCombatLockdown() and UnitPower('player') > 0) then
-        securecall('UIFrameFadeOut', f.Power, 0.3, f.Power:GetAlpha(), nPower.inactiveAlpha)
+        --securecall('UIFrameFadeOut', f.Power, 0.3, f.Power:GetAlpha(), nPower.inactiveAlpha)
+        endAlpha = nPower.inactiveAlpha
     else
-        securecall('UIFrameFadeOut', f.Power, 0.3, f.Power:GetAlpha(), nPower.emptyAlpha)
+        --securecall('UIFrameFadeOut', f.Power, 0.3, f.Power:GetAlpha(), nPower.emptyAlpha)
+        endAlpha = nPower.emptyAlpha
+    end
+
+    if (endAlpha) then
+        addon:Fade(f.Power, 0.3, f.Power:GetAlpha(), endAlpha)
     end
 end
 
@@ -325,7 +327,7 @@ local function UpdateBarValue()
     f.Power:SetValue(min)
 
     if (nPower.valueAbbrev) then
-        f.Power.Value:SetText(min > 0 and FormatValue(min) or '')
+        f.Power.Value:SetText(min > 0 and addon:FormatValue(min) or '')
     else
         f.Power.Value:SetText(min > 0 and min or '')
     end
