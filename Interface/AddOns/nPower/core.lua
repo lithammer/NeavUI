@@ -262,6 +262,15 @@ local function UpdateChi()
     end
 
     for i = 1, maxChi do
+        if (UnitHasVehicleUI('player')) then
+            if (f.Chi[i]:IsShown()) then
+                f.Chi[i]:Hide()
+            end
+        else
+            if (not f.Chi[i]:IsShown()) then
+                f.Chi[i]:Show()
+            end
+        end
         f.Chi[i]:SetAlpha(i == chi and 1 or 0)
     end
 end
@@ -430,15 +439,7 @@ f:SetScript('OnUpdate', function(self, elapsed)
         end
 
         if (f.Chi) then
-            if (UnitHasVehicleUI('player')) then
-                for i = 1, 5 do
-                    if (f.Chi[i]:IsShown()) then
-                        f.Chi[i]:Hide()
-                    end
-                end
-            else
-                UpdateChi()
-            end
+            UpdateChi()
         end
 
         UpdateBar()
