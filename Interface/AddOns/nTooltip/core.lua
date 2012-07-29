@@ -90,7 +90,7 @@ for _, tooltip in pairs({
 
     ShoppingTooltip1,
     ShoppingTooltip2,
-    ShoppingTooltip3,   
+    ShoppingTooltip3,
 
     WorldMapTooltip,
 
@@ -118,7 +118,7 @@ if (cfg.itemqualityBorderColor) then
 
         ShoppingTooltip1,
         ShoppingTooltip2,
-        ShoppingTooltip3,   
+        ShoppingTooltip3,
     }) do
         if (tooltip.beautyBorder) then
             tooltip:HookScript('OnTooltipSetItem', function(self)
@@ -186,7 +186,7 @@ local function GetRealUnit(self)
     elseif (GetMouseFocus() and GetMouseFocus():GetAttribute('unit')) then
         return GetMouseFocus():GetAttribute('unit')
     elseif (select(2, self:GetUnit())) then
-        return select(2, self:GetUnit()) 
+        return select(2, self:GetUnit())
     else
         return 'mouseover'
     end
@@ -207,7 +207,7 @@ local function GetFormattedUnitClassification(unit)
         return '|cffFF0000'..BOSS..'|r '
     elseif (class == 'rareelite') then
         return '|cffFF66CCRare|r |cffFFFF00'..ELITE..'|r '
-    elseif (class == 'rare') then 
+    elseif (class == 'rare') then
         return '|cffFF66CCRare|r '
     elseif (class == 'elite') then
         return '|cffFFFF00'..ELITE..'|r '
@@ -223,7 +223,7 @@ local function GetFormattedUnitLevel(unit)
     elseif (UnitLevel(unit) == 0) then
         return '? '
     else
-        return format('|cff%02x%02x%02x%s|r ', diff.r*255, diff.g*255, diff.b*255, UnitLevel(unit))    
+        return format('|cff%02x%02x%02x%s|r ', diff.r*255, diff.g*255, diff.b*255, UnitLevel(unit))
     end
 end
 
@@ -234,7 +234,7 @@ local function GetFormattedUnitClass(unit)
     end
 end
 
-local function GetFormattedUnitString(unit) 
+local function GetFormattedUnitString(unit)
     if (UnitIsPlayer(unit)) then
         return GetFormattedUnitLevel(unit)..UnitRace(unit)..GetFormattedUnitClass(unit)
     else
@@ -287,7 +287,7 @@ local function GetUnitRaidIcon(unit)
     end
 end
 
-local function GetUnitPVPIcon(unit) 
+local function GetUnitPVPIcon(unit)
     local factionGroup = UnitFactionGroup(unit)
 
     if (UnitIsPVPFreeForAll(unit)) then
@@ -310,20 +310,20 @@ end
 local function AddMouseoverTarget(self, unit)
     local unitTargetName = UnitName(unit..'target')
     local unitTargetClassColor = RAID_CLASS_COLORS[select(2, UnitClass(unit..'target'))] or { r = 1, g = 0, b = 1 }
-    local unitTargetReactionColor = { 
-        r = select(1, UnitSelectionColor(unit..'target')), 
-        g = select(2, UnitSelectionColor(unit..'target')), 
-        b = select(3, UnitSelectionColor(unit..'target')) 
+    local unitTargetReactionColor = {
+        r = select(1, UnitSelectionColor(unit..'target')),
+        g = select(2, UnitSelectionColor(unit..'target')),
+        b = select(3, UnitSelectionColor(unit..'target'))
     }
 
     if (UnitExists(unit..'target')) then
-        if (UnitName('player') == unitTargetName) then   
+        if (UnitName('player') == unitTargetName) then
             self:AddLine(format('   '..GetUnitRaidIcon(unit..'target')..'|cffff00ff%s|r', string.upper(YOU)), 1, 1, 1)
         else
             if (UnitIsPlayer(unit..'target')) then
                 self:AddLine(format('   '..GetUnitRaidIcon(unit..'target')..'|cff%02x%02x%02x%s|r', unitTargetClassColor.r*255, unitTargetClassColor.g*255, unitTargetClassColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)
             else
-                self:AddLine(format('   '..GetUnitRaidIcon(unit..'target')..'|cff%02x%02x%02x%s|r', unitTargetReactionColor.r*255, unitTargetReactionColor.g*255, unitTargetReactionColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)                 
+                self:AddLine(format('   '..GetUnitRaidIcon(unit..'target')..'|cff%02x%02x%02x%s|r', unitTargetReactionColor.r*255, unitTargetReactionColor.g*255, unitTargetReactionColor.b*255, unitTargetName:sub(1, 40)), 1, 1, 1)
             end
         end
     end
@@ -338,8 +338,8 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             -- Hide player titles
 
         if (cfg.showPlayerTitles) then
-            if (UnitPVPName(unit)) then 
-                name = UnitPVPName(unit) 
+            if (UnitPVPName(unit)) then
+                name = UnitPVPName(unit)
             end
         end
 
@@ -366,14 +366,14 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
         if (cfg.showUnitRole) then
             self:AddLine(GetUnitRoleString(unit), 1, 1, 1)
         end
-        
+
             -- Mouse over target with raidicon support
 
         if (cfg.showMouseoverTarget) then
             AddMouseoverTarget(self, unit)
         end
-  
-            -- Pvp flag prefix 
+
+            -- Pvp flag prefix
 
         for i = 3, GameTooltip:NumLines() do
             if (_G['GameTooltipTextLeft'..i]:GetText():find(PVP_ENABLED)) then
@@ -388,8 +388,8 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
 
             -- Afk and dnd prefix
 
-        if (UnitIsAFK(unit)) then 
-            self:AppendText('|cff00ff00 <AFK>|r')   
+        if (UnitIsAFK(unit)) then
+            self:AppendText('|cff00ff00 <AFK>|r')
         elseif (UnitIsDND(unit)) then
             self:AppendText('|cff00ff00 <DND>|r')
         end
@@ -427,7 +427,7 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
 
         if (cfg.reactionBorderColor and self.beautyBorder) then
             local r, g, b = UnitSelectionColor(unit)
-            
+
             self:SetBeautyBorderTexture('white')
             self:SetBeautyBorderColor(r, g, b)
         end
@@ -445,7 +445,7 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
         end
 
             -- Custom healthbar coloring
-        
+
         if (cfg.healthbar.reactionColoring or cfg.healthbar.customColor.apply) then
             GameTooltipStatusBar:HookScript('OnValueChanged', function()
                 SetHealthBarColor(unit)
