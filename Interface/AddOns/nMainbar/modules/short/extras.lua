@@ -23,7 +23,6 @@ for _, button in pairs({
     _G['PossessButton1'],
     _G['PetActionButton1'],
     _G['StanceButton1'],
-    _G['StanceBarFrame'],
 }) do
     button:ClearAllPoints()
     button:SetPoint('CENTER', UIParent, -100)
@@ -42,14 +41,3 @@ for _, button in pairs({
         self:StopMovingOrSizing()
     end)
 end
-
--- HACK: This will prevent Blizzard's StanceBar_Update() function from
--- re-positioning StanceButton1 when GetNumShapeshiftForms() == 1.
-StanceButton1:HookScript('OnDragStop', function(self)
-    if (GetNumShapeshiftForms() == 1) then
-        local point, relativeTo, relativePoint, xOffset, yOffset = self:GetPoint()
-        StanceBarFrame:ClearAllPoints()
-        -- 12 and 3 is to offset for StanceButton1's relative position towards StanceBarFrame set by StanceBar_Update()
-        StanceBarFrame:SetPoint(point, relativeTo, relativePoint, xOffset - 12, yOffset - 3)
-    end
-end)
