@@ -622,7 +622,7 @@ local function BuildBNTable(total)
     wipe(BNTable)
 
     for i = 1, total do
-        local presenceID, givenName, surname, toonName, toonID, client, isOnline, _, isAFK, isDND, _, noteText = BNGetFriendInfo(i)
+        local presenceID, presenceName, battleTag, _, toonName, toonID, client, isOnline, _, isAFK, isDND, _, noteText = BNGetFriendInfo(i)
         local _, _, _, realmName, faction, _, race, class, _, zoneName, level = BNGetToonInfo(presenceID)
 
         for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do 
@@ -633,8 +633,8 @@ local function BuildBNTable(total)
 
         BNTable[i] = { 
             presenceID, 
-            givenName, 
-            surname, 
+            presenceName, 
+            battleTag, 
             toonName, 
             toonID, 
             client, 
@@ -670,7 +670,7 @@ local function UpdateBNTable(total)
     totalBattleNetOnline = 0
 
     for i = 1, #BNTable do
-        local presenceID, givenName, surname, toonName, toonID, client, isOnline, _, isAFK, isDND, _, noteText = BNGetFriendInfo(i)
+        local presenceID, presenceName, battleTag, _, toonName, toonID, client, isOnline, _, isAFK, isDND, _, noteText = BNGetFriendInfo(i)
         local _, _, _, realmName, faction, _, race, class, _, zoneName, level = BNGetToonInfo(presenceID)
 
         for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do 
@@ -687,8 +687,8 @@ local function UpdateBNTable(total)
 
         BNTable[index][7] = isOnline
         if (isOnline) then
-            BNTable[index][2] = givenName
-            BNTable[index][3] = surname
+            BNTable[index][2] = presenceName
+            BNTable[index][3] = battleTag
             BNTable[index][4] = toonName
             BNTable[index][5] = toonID
             BNTable[index][6] = client
@@ -775,7 +775,7 @@ f.Center:SetScript('OnClick', function(self, button)
                         playerFaction = 1 
                     end
 
-                    if (BNTable[i][6] == 'WoW' and BNTable[i][11] == GetRealmName() and playerFaction == BNTable[i][12]) then
+                    if (BNTable[i][6] == BNET_CLIENT_WOW and BNTable[i][11] == GetRealmName() and playerFaction == BNTable[i][12]) then
                         classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[BNTable[i][14]], GetQuestDifficultyColor(BNTable[i][16])
                         if (classc == nil) then 
                             classc = GetQuestDifficultyColor(BNTable[i][16]) 
@@ -859,7 +859,7 @@ local function FriendsOnEnter(self)
                     grouped = 2 
                 end
 
-                GameTooltip:AddDoubleLine(format('|cff%02x%02x%02x%d|r %s%s%s', levelc.r*255, levelc.g*255, levelc.b*255, friendTable[i][2], friendTable[i][1], groupedTable[grouped],' '..friendTable[i][6]), friendTable[i][4], classc.r, classc.g, classc.b, zonec.r, zonec.g, zonec.b)
+                GameTooltip:AddDoubleLine(format('|cff%02x%02x%02x%d|r %s%s%s', levelc.r*255, levelc.g*255, levelc.b*255, friendTable[i][2], friendTable[i][1], groupedTable[grouped], ' '..friendTable[i][6]), friendTable[i][4], classc.r, classc.g, classc.b, zonec.r, zonec.g, zonec.b)
             end
         end
 
@@ -870,7 +870,7 @@ local function FriendsOnEnter(self)
             local status = 0
             for i = 1, #BNTable do
                 if (BNTable[i][7]) then
-                    if (BNTable[i][6] == 'WoW') then
+                    if (BNTable[i][6] == BNET_CLIENT_WOW) then
                         if (BNTable[i][8] == true) then 
                             status = 1 
                         elseif (BNTable[i][9] == true) then 
@@ -891,7 +891,7 @@ local function FriendsOnEnter(self)
                             grouped = 2 
                         end
 
-                        GameTooltip:AddDoubleLine(format('%s (|cff%02x%02x%02x%d|r |cff%02x%02x%02x%s|r%s) |cff%02x%02x%02x%s|r', BNTable[i][6],levelc.r*255,levelc.g*255,levelc.b*255,BNTable[i][16],classc.r*255,classc.g*255,classc.b*255, BNTable[i][4], groupedTable[grouped], 255, 0, 0, statusTable[status]),BNTable[i][2]..' '..BNTable[i][3],238,238,238,238,238,238)
+                        GameTooltip:AddDoubleLine(format('%s (|cff%02x%02x%02x%d|r |cff%02x%02x%02x%s|r%s) |cff%02x%02x%02x%s|r', BNTable[i][6], levelc.r*255, levelc.g*255, levelc.b*255, BNTable[i][16], classc.r*255, classc.g*255, classc.b*255, BNTable[i][4], groupedTable[grouped], 255, 0, 0, statusTable[status]),BNTable[i][2]..' '..BNTable[i][3], 238, 238, 238, 238, 238, 238)
                     else
                         GameTooltip:AddDoubleLine('|cffeeeeee'..BNTable[i][6]..' ('..BNTable[i][4]..')|r', '|cffeeeeee'..BNTable[i][2]..' '..BNTable[i][3]..'|r')
                     end
