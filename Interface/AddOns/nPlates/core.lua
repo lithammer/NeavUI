@@ -18,8 +18,6 @@ local UnitChannelInfo = UnitChannelInfo
 local borderColor = {0.47, 0.47, 0.47}
 local noThreatColor = {0, 1, 0}
 
-local nameplateFlashTexture = 'Interface\\TargetingFrame\\UI-TargetingFrame-Flash'
-
 local glowTexture = 'Interface\\AddOns\\nPlates\\media\\textureNewGlow'
 local overlayTexture = 'Interface\\AddOns\\nPlates\\media\\textureOverlay'
 local whiteOverlay = 'Interface\\AddOns\\nPlates\\media\\textureIconOverlay'
@@ -529,21 +527,21 @@ end
     -- Scan the worldframe for nameplates
 
 local function IsNameplate(self)
-    -- local region = self:GetRegions()
-    -- return region region:GetObjectType() == 'Texture' and region:GetTexture() == nameplateFlashTexture
     return self:GetName() and self:GetName():find('NamePlate(%d)')
 end
 
+local previous = 1
 f:SetScript('OnUpdate', function()
     frames = select('#', WorldFrame:GetChildren())
     if (frames ~= total) then
-        for i = 1, frames do
+        for i = previous, frames do
             namePlate = select(i, WorldFrame:GetChildren())
             if (IsNameplate(namePlate) and not namePlate.NewName) then
                 SkinPlate(namePlate)
             end
 
             total = frames
+            previous = frames
         end
     end
 end)
