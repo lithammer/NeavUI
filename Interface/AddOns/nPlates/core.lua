@@ -91,10 +91,10 @@ end
 
 local function RGBHex(r, g, b)
     if (type(r) == 'table') then
-        if (r.r) then 
-            r, g, b = r.r, r.g, r.b 
-        else 
-            r, g, b = unpack(r) 
+        if (r.r) then
+            r, g, b = r.r, r.g, r.b
+        else
+            r, g, b = unpack(r)
         end
     end
 
@@ -119,7 +119,7 @@ local function GetUnitCombatStatus(r, g, b)
     return false
 end
 
-local function IsTarget(self) 
+local function IsTarget(self)
     local targetExists = UnitExists('target')
     if (not targetExists) then
         return false
@@ -134,15 +134,15 @@ local function IsTarget(self)
 end
 
 local function CanHaveThreat(r, g, b)
-    if (r < .01 and b < .01 and g > .99) then 
+    if (r < .01 and b < .01 and g > .99) then
         return false
-    elseif (r < .01 and b > .99 and g < .01) then 
+    elseif (r < .01 and b > .99 and g < .01) then
         return false
-    elseif (r > .99 and b < .01 and g > .99) then 
+    elseif (r > .99 and b < .01 and g > .99) then
         return false
-    elseif (r > .99 and b < .01 and g < .01) then 
+    elseif (r > .99 and b < .01 and g < .01) then
         return true
-    else 
+    else
         return true
     end
 end
@@ -158,8 +158,8 @@ local function UpdateTotemIcon(self)
 
         local icon = totemData[self.Name:GetText()]
         self.Icon:SetBackdrop({
-            bgFile = icon[1], 
-            edgeFile = 'Interface\\Buttons\\WHITE8x8', 
+            bgFile = icon[1],
+            edgeFile = 'Interface\\Buttons\\WHITE8x8',
             edgeSize = 1.5,
             insets = { top = -0, left = -0, bottom = -0, right = -0 },
         })
@@ -186,7 +186,7 @@ local function UpdateThreatColor(self)
     if (lowThreat and not self.Glow:IsVisible() and isEnemy and cfg.enableTankMode) then
         r, g, b = unpack(noThreatColor)
         self.NewGlow:SetVertexColor(r, g, b)
-        
+
         if (not self.NewGlow:IsVisible()) then
             self.NewGlow:Show()
         end
@@ -316,8 +316,8 @@ local function UpdatePlate(self)
     self.Highlight:ClearAllPoints()
     self.Highlight:SetAllPoints(self.Health)
 
-    if (self.Castbar:IsVisible()) then     
-        self.Castbar:Hide() 
+    if (self.Castbar:IsVisible()) then
+        self.Castbar:Hide()
     end
 
     local r, g, b = self.Health:GetStatusBarColor()
@@ -363,7 +363,7 @@ local function SkinPlate(self)
 
         -- Create health value font string
 
-    if (not self.Health.Value) then    
+    if (not self.Health.Value) then
         self.Health.Value = self.Health:CreateFontString(nil, 'OVERLAY')
         self.Health.Value:SetPoint('CENTER', self.Health, 0, 0)
         self.Health.Value:SetFont('Fonts\\ARIALN.ttf', 9)
