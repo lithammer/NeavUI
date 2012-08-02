@@ -9,7 +9,7 @@ local function EnableMouseOver(self, bar, min, max, alpha)
 
     for i = min, max do
         local button = _G[self..i]
-        
+
         local f = CreateFrame('Frame', bar, bar)
         f:SetFrameStrata('LOW')
         f:SetFrameLevel(1)
@@ -62,5 +62,5 @@ if (cfg.petBar.mouseover) then
 end
 
 if (cfg.stanceBar.mouseover) then
-    EnableMouseOver('StanceButton', StanceButton1, 1, NUM_STANCE_SLOTS, cfg.stanceBar.alpha)
+    EnableMouseOver('StanceButton', StanceBarFrame, 1, NUM_STANCE_SLOTS, cfg.stanceBar.alpha)
 end

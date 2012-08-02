@@ -25,7 +25,7 @@ if (cfg.multiBarLeft.orderHorizontal) then
             else
                 self:SetPoint('BOTTOMLEFT', MultiBarBottomRightButton1, 'TOPLEFT', 0, 6)
             end
-            
+
         end
     end)
 else
@@ -33,7 +33,7 @@ else
         MultiBarLeftButton1:ClearAllPoints()
         MultiBarLeftButton1:SetPoint('TOPRIGHT', UIParent, 'RIGHT', -6, (MultiBarLeft:GetHeight() / 2))
     else
-        MultiBarLeftButton1:ClearAllPoints() 
+        MultiBarLeftButton1:ClearAllPoints()
         MultiBarLeftButton1:SetPoint('TOPRIGHT', MultiBarRightButton1, 'TOPLEFT', -6, 0)
     end
 end

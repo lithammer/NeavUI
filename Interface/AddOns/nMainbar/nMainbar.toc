@@ -13,14 +13,13 @@ modules\right.lua
 modules\skins.lua
 modules\expbar.lua
 modules\hotkey.lua
-modules\mouseover.lua
 modules\petbar.lua
 modules\possessbar.lua
 modules\repbar.lua
-modules\slash.lua
 modules\stancebar.lua
+modules\mouseover.lua
+modules\slash.lua
 modules\picomenu.lua
 
 modules\short\short.lua
 modules\short\extras.lua
-modules\short\totem.lua
