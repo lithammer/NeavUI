@@ -512,19 +512,24 @@ local function IsNameplate(self)
     return self:GetName() and self:GetName():find('NamePlate(%d)')
 end
 
-local previous = 1
 f:SetScript('OnUpdate', function()
-    frames = select('#', WorldFrame:GetChildren())
-    if (frames ~= total) then
-        for i = previous, frames do
-            namePlate = select(i, WorldFrame:GetChildren())
-            if (IsNameplate(namePlate) and not namePlate.NewName) then
-                SkinPlate(namePlate)
-            end
+    self.lastUpdate = self.lastUpdate and (self.lastUpdate + elapsed) or 0
 
-            total = frames
-            previous = frames
+    if (self.lastUpdate > 0.1) then
+        frames = select('#', WorldFrame:GetChildren())
+        if (frames ~= total) then
+            for i = 1, frames do
+                namePlate = select(i, WorldFrame:GetChildren())
+                if (IsNameplate(namePlate) and not namePlate.NewName) then
+                    SkinPlate(namePlate)
+                end
+
+                total = frames
+                previous = frames
+            end
         end
+
+        self.lastUpdate = 0
     end
 end)
 
