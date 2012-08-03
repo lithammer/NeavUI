@@ -14,14 +14,14 @@ button:HookScript('OnClick', function()
     dropDown:SetPoint(p1, p2, p3, p4 + 9, p5 - 5) 
 end)
 
-_G[button:GetName().."Left"]:SetTexture(nil)
-_G[button:GetName().."Left"].SetTexture = function() end
+_G[button:GetName()..'Left']:SetTexture(nil)
+_G[button:GetName()..'Left'].SetTexture = function() end
 
-_G[button:GetName().."Middle"]:SetTexture(nil)
-_G[button:GetName().."Middle"].SetTexture = function() end
+_G[button:GetName()..'Middle']:SetTexture(nil)
+_G[button:GetName()..'Middle'].SetTexture = function() end
 
-_G[button:GetName().."Right"]:SetTexture(nil)
-_G[button:GetName().."Right"].SetTexture = function() end
+_G[button:GetName()..'Right']:SetTexture(nil)
+_G[button:GetName()..'Right'].SetTexture = function() end
                
 buttonHighlight = button:GetHighlightTexture()
 buttonHighlight:ClearAllPoints()
@@ -33,7 +33,7 @@ buttonHighlight:SetTexture(nil)
 
 SlashCmdList['WORLDMARKERS'] = function()
 	local instanceName, instanceType = GetInstanceInfo()
-	local isLeader = IsRealPartyLeader() or IsRealRaidLeader() or IsRaidOfficer()
+	local isLeader = UnitIsGroupLeader('player') or UnitIsGroupAssistant('player')
 	local isPvPZone = instanceType == 'arena' or instanceType == 'pvp' and instanceName == 'Wintergrasp' or instanceName == 'Tol Barad'
 
 	if (UnitInParty('player') and (not isPvPZone) and isLeader) then
