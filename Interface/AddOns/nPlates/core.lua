@@ -525,7 +525,6 @@ f:SetScript('OnUpdate', function()
                 end
 
                 total = frames
-                previous = frames
             end
         end
 
