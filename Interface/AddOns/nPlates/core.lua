@@ -27,10 +27,6 @@ local namePlate, frames
 
 local f = CreateFrame('Frame', nil, UIParent)
 
-f.elapsed = 0
-f.elapsedLong = 0
-
-
 f:RegisterEvent('PLAYER_TARGET_CHANGED')
 
 --f:RegisterEvent('UNIT_TARGET')
@@ -512,7 +508,7 @@ local function IsNameplate(self)
     return self:GetName() and self:GetName():find('NamePlate(%d)')
 end
 
-f:SetScript('OnUpdate', function()
+f:SetScript('OnUpdate', function(self, elapsed)
     self.lastUpdate = self.lastUpdate and (self.lastUpdate + elapsed) or 0
 
     if (self.lastUpdate > 0.1) then
