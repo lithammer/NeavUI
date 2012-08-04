@@ -62,6 +62,7 @@ nMainbar.Config = {
     petBar = {
         mouseover = false,
         scale = 1,
+        hiddenAlpha = 0,
         alpha = 1,
         vertical = false,
     },
@@ -76,35 +77,34 @@ nMainbar.Config = {
         hide = false,
         scale = 1,
         alpha = 1,
+        hiddenAlpha = 0,
     },
 
     multiBarLeft = {
         mouseover = true,
+        hiddenAlpha = 0,
         alpha = 1,
         orderHorizontal = false,
     },
 
     multiBarRight = {
         mouseover = true,
+        hiddenAlpha = 0,
         alpha = 1,
         orderHorizontal = false,
     },
 
     multiBarBottomLeft = {
         mouseover = false,
+        hiddenAlpha = 0,
         alpha = 1,
     },
 
     multiBarBottomRight = {
-        mouseover = false,
+        mouseover = true,
+        hiddenAlpha = 0,
         alpha = 1,
         orderVertical = false,
         verticalPosition = 'LEFT', -- 'LEFT' or 'RIGHT'
-    },
-
-    totemManager = {
-        scale = 1,
-        alpha = 1,
-        hideRecallButton = false,
     },
 }
