@@ -162,7 +162,6 @@ local function GetItemLevel(unit)
         'Trinket1',
         'MainHand',
         'SecondaryHand',
-        'Ranged',
     }) do
         local slot = GetInventoryItemLink(unit, GetInventorySlotInfo(v..'Slot'))
         if (slot ~= nil) then
