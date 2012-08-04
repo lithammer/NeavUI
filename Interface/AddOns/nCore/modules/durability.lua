@@ -16,7 +16,6 @@ local slotInfo = {
     [8] = {8, 'Feet'},
     [9] = {16, 'MainHand'},
     [10] = {17, 'SecondaryHand'},
-    --[11] = {18, 'Ranged'}
 }
 
 local charString = CharacterLevelText 
