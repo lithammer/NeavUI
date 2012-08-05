@@ -9,27 +9,27 @@ local _, class = UnitClass('player')
 local buffcolor = { r = 0.0, g = 1.0, b = 1.0 }
 
 local backdrop = {
-    bgFile = 'Interface\\Buttons\\WHITE8x8', 
-    tile = true, 
+    bgFile = 'Interface\\Buttons\\WHITE8x8',
+    tile = true,
     tileSize = 16,
-    edgeFile = 'Interface\\Buttons\\WHITE8x8', 
+    edgeFile = 'Interface\\Buttons\\WHITE8x8',
     edgeSize = 2,
     insets = {
-        top = 2, 
-        left = 2, 
-        bottom = 2, 
+        top = 2,
+        left = 2,
+        bottom = 2,
         right = 2
     },
 }
 
 local BBackdrop = {
-    bgFile = 'Interface\\Buttons\\WHITE8x8', 
-    tile = true, 
+    bgFile = 'Interface\\Buttons\\WHITE8x8',
+    tile = true,
     tileSize = 16,
     insets = {
-        top = -1, 
-        left = -1, 
-        bottom = -1, 
+        top = -1,
+        left = -1,
+        bottom = -1,
         right = -1
     },
 }
@@ -76,7 +76,7 @@ local CreateAuraIcon = function(auras)
         count:SetPoint('BOTTOMRIGHT', button, 'BOTTOMRIGHT', 1, 1)
 
         local remaining = button:CreateFontString(nil, 'OVERLAY')
-        remaining:SetPoint('CENTER', icon, 0.5, 0) 
+        remaining:SetPoint('CENTER', icon, 0.5, 0)
         remaining:SetFont(font, 11, 'THINOUTLINE')
         remaining:SetTextColor(1, 0.82, 0)
 
@@ -96,72 +96,72 @@ end
     -- I've prepared something below..
 
 local dispelClass = {
-    PRIEST = { 
+    PRIEST = {
+        -- Disease = true,
+        Magic = true,
+        -- Poison = true,
+        -- Curse = true,
+    },
+    SHAMAN = {
+        Curse = true,
+        -- Magic = true,
+        -- Disease = true,
+        -- Poison = true,
+    },
+    PALADIN = {
+        Poison = true,
         Disease = true,
         -- Magic = true,
-        -- Poison = true, 
-        -- Curse = true,
+        -- Disease = true,
     },
-    SHAMAN = { 
+    MAGE = {
         Curse = true,
-        -- Magic = true,
-        -- Disease = true, 
-        -- Poison = true, 
-    },
-    PALADIN = { 
-        Poison = true, 
-        Disease = true, 
-        -- Magic = true,
-        -- Disease = true, 
-    },
-    MAGE = { 
-        Curse = true,
-        -- Poison = true, 
-        -- Disease = true, 
+        -- Poison = true,
+        -- Disease = true,
         -- Magic = true,
     },
-	MONK = {
+    MONK = {
         -- Curse = true,
-        Poison = true, 
-        Disease = true, 
-        Magic = true,
-	},
-    DRUID = { 
-        Curse = true, 
+        Poison = true,
+        Disease = true,
+        -- Magic = true,
+    },
+    DRUID = {
+        Curse = true,
         Poison = true,
         -- Magic = true,
-        -- Disease = true, 
+        -- Disease = true,
     },
     --[[
-    WARRIOR = { 
-        Curse = true, 
+    WARRIOR = {
+        Curse = true,
         Poison = true,
         Magic = true,
-        Disease = true, 
+        Disease = true,
     },
-    DEATHKNIGHT = { 
-        Curse = true, 
+    DEATHKNIGHT = {
+        Curse = true,
         Poison = true,
         Magic = true,
-        Disease = true, 
+        Disease = true,
     },
     HUNTER = {
-        Curse = true, 
+        Curse = true,
         Poison = true,
         Magic = true,
-        Disease = true, 
+        Disease = true,
     },
-    WARLOCK = { 
-        Curse = true, 
+    WARLOCK = {
+        Curse = true,
         Poison = true,
         Magic = true,
-        Disease = true, 
-    },   
-    ROGUE = { 
-        Curse = true, 
+        Disease = true,
+    },
+    ROGUE = {
+        Curse = true,
         Poison = true,
         Magic = true,
-        Disease = true, 
+        Disease = true,
     },
     --]]
 }
@@ -169,21 +169,21 @@ local dispelClass = {
 local checkTalents = CreateFrame('Frame')
 checkTalents:RegisterEvent('PLAYER_ENTERING_WORLD')
 checkTalents:RegisterEvent('ACTIVE_TALENT_GROUP_CHANGED')
+checkTalents:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
 checkTalents:RegisterEvent('CHARACTER_POINTS_CHANGED')
 checkTalents:SetScript('OnEvent', function()
-    if (ns.MultiCheck(class, 'SHAMAN', 'PALADIN', 'DRUID', 'PRIEST')) then
+    if (ns.MultiCheck(class, 'SHAMAN', 'PALADIN', 'DRUID', 'PRIEST', 'MONK')) then
+        local spec = GetSpecialization()
         if (class == 'SHAMAN') then
-            local _, _, _, _, rank = GetTalentInfo(3, 12)
-            dispelClass[class].Magic = rank == 1 and true
+            dispelClass[class].Magic = spec == 3 and true
         elseif (class == 'PALADIN') then
-            local _, _, _, _,rank = GetTalentInfo(1, 14)
-            dispelClass[class].Magic = rank == 1 and true
+            dispelClass[class].Magic = spec == 1 and true
         elseif (class == 'DRUID') then
-            local _, _, _, _,rank = GetTalentInfo(3, 17)
-            dispelClass[class].Magic = rank == 1 and true
+            dispelClass[class].Magic = spec == 4 and true
         elseif (class == 'PRIEST') then
-            local spec = GetSpecialization()
-            dispelClass[class].Magic = (spec == 1 or spec == 2) and true
+            dispelClass[class].Disease = (spec == 1 or spec == 2) and true
+        elseif (class == 'MONK') then
+            dispelClass[class].Magic = spec == 2 and true
         end
     end
 
@@ -199,8 +199,8 @@ local delaytimer = 0
 local zoneDelay = function(self, elapsed)
     delaytimer = delaytimer + elapsed
 
-    if (delaytimer < 5) then 
-        return 
+    if (delaytimer < 5) then
+        return
     end
 
     if (IsInInstance()) then
@@ -262,8 +262,8 @@ end
 local AuraTimerAsc = function(self, elapsed)
     self.elapsed = (self.elapsed or 0) + elapsed
 
-    if (self.elapsed < .2) then 
-        return 
+    if (self.elapsed < .2) then
+        return
     end
 
     self.elapsed = 0
@@ -280,8 +280,8 @@ end
 local AuraTimer = function(self, elapsed)
     self.elapsed = (self.elapsed or 0) + elapsed
 
-    if (self.elapsed) < .2 then 
-        return 
+    if (self.elapsed) < .2 then
+        return
     end
 
     self.elapsed = 0
@@ -313,8 +313,8 @@ local updateDebuff = function(icon, texture, count, dtype, duration, expires, bu
 end
 
 local Update = function(self, event, unit)
-    if (self.unit ~= unit) then 
-        return 
+    if (self.unit ~= unit) then
+        return
     end
 
     local cur
@@ -325,8 +325,8 @@ local Update = function(self, event, unit)
     local index = 1
     while true do
         local name, rank, texture, count, dtype, duration, expires, caster = UnitDebuff(unit, index)
-        if (not name) then 
-            break 
+        if (not name) then
+            break
         end
 
         local show = CustomFilter(auras, unit, icon, name, rank, texture, count, dtype, duration, expires, caster)
@@ -342,7 +342,7 @@ local Update = function(self, event, unit)
             end
 
             icon:Show()
-            
+
             if (self.Name) then
                 self.Name:Hide()
             end
@@ -360,8 +360,8 @@ local Update = function(self, event, unit)
     index = 1
     while true do
         local name, rank, texture, count, dtype, duration, expires, caster = UnitBuff(unit, index)
-        if (not name) then 
-            break 
+        if (not name) then
+            break
         end
 
         local show = CustomFilter(auras, unit, icon, name, rank, texture, count, dtype, duration, expires, caster)
@@ -385,7 +385,7 @@ local Update = function(self, event, unit)
             if (self.Health.Value) then
                 self.Health.Value:Hide()
             end
-            
+
             hide = false
         end
 
