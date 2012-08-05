@@ -22,7 +22,7 @@ do
 			{119611, 'BOTTOMRIGHT', {0, 1, 0}}, -- Renewing Mist
 			{124682, 'BOTTOMLEFT', {0.15, 0.98, 0.64}}, -- Enveloping Mist
 			{115175, 'TOPRIGHT', {0.15, 0.98, 0.64}}, -- Soothing Mist
-			{116849, 'TOPRIGHT', {1, 1, 0}}, -- Life Cocoon
+			{116849, 'TOPLEFT', {1, 1, 0}}, -- Life Cocoon
 			{124081, 'BOTTOMLEFT', {0.7, 0.8, 1}}, -- Zen Sphere
 		},
         PALADIN = {
