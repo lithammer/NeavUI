@@ -1,7 +1,7 @@
 ## Interface: 50001
 ## Title: oGlow
 ## Author: Haste
-## Version: 2.2.0
+## Version: 2.2.1
 ## SavedVariables: oGlowDB
 ## X-eMail: troeks@gmail.com
 ## Notes: Make your shiny items... glow in the dark!
