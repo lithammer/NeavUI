@@ -22,9 +22,6 @@ local glowTexture = 'Interface\\AddOns\\nPlates\\media\\textureNewGlow'
 local overlayTexture = 'Interface\\AddOns\\nPlates\\media\\textureOverlay'
 local whiteOverlay = 'Interface\\AddOns\\nPlates\\media\\textureIconOverlay'
 
-local total = -1
-local namePlate, frames
-
 local f = CreateFrame('Frame', nil, UIParent)
 
 f:RegisterEvent('PLAYER_TARGET_CHANGED')
@@ -504,23 +501,26 @@ end
 
     -- Scan the worldframe for nameplates
 
-local function IsNameplate(self)
-    return self:GetName() and self:GetName():find('NamePlate(%d)')
-end
-
+local numFrames = 0
+local lastUpdate = 0
+local index = 1
 f:SetScript('OnUpdate', function(self, elapsed)
-    self.lastUpdate = self.lastUpdate and (self.lastUpdate + elapsed) or 0
+    lastUpdate = lastUpdate + elapsed
 
     if (self.lastUpdate > 0.1) then
-        frames = select('#', WorldFrame:GetChildren())
-        if (frames ~= total) then
-            for i = 1, frames do
-                namePlate = select(i, WorldFrame:GetChildren())
-                if (IsNameplate(namePlate) and not namePlate.NewName) then
-                    SkinPlate(namePlate)
-                end
+        local newNumFrames = WorldFrame:GetNumChildren()
 
-                total = frames
+        if (newNumFrames ~= numFrames) then
+            numFrames = newNumFrames
+
+            for i = index, numFrames do
+                local frame = select(i, WorldFrame:GetChildren())
+                local frameName = frame:GetName()
+
+                if (frameName and frameName:find('NamePlate') and not frame.NewName) then
+                    SkinPlate(frame)
+                    index = i
+                end
             end
         end
 
