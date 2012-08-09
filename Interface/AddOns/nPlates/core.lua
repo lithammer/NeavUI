@@ -507,7 +507,7 @@ local index = 1
 f:SetScript('OnUpdate', function(self, elapsed)
     lastUpdate = lastUpdate + elapsed
 
-    if (self.lastUpdate > 0.1) then
+    if (lastUpdate > 0.1) then
         local newNumFrames = WorldFrame:GetNumChildren()
 
         if (newNumFrames ~= numFrames) then
@@ -524,7 +524,7 @@ f:SetScript('OnUpdate', function(self, elapsed)
             end
         end
 
-        self.lastUpdate = 0
+        lastUpdate = 0
     end
 end)
 
