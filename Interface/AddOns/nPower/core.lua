@@ -84,7 +84,7 @@ if (playerClass == 'MONK') then
     f.Chi[5]:Hide()
 end
 
-if (playerClass == 'WARLOCK' and nPower.showSoulshards or playerClass == 'PALADIN' and nPower.showHolypower) then
+if (playerClass == 'WARLOCK' and nPower.showSoulshards or playerClass == 'PALADIN' and nPower.showHolypower or playerClass == 'PRIEST' and nPower.showShadowOrbs) then
     f.extraPoints = f:CreateFontString(nil, 'ARTWORK')
 
     if (nPower.extraFontOutline) then
@@ -432,6 +432,8 @@ f:SetScript('OnUpdate', function(self, elapsed)
                     nump = GetWarlockPower()
                 elseif (playerClass == 'PALADIN') then
                     nump = UnitPower('player', SPELL_POWER_HOLY_POWER)
+                elseif (playerClass == 'PRIEST') then
+                    nump = UnitPower('player', SPELL_POWER_SHADOW_ORBS)
                 end
 
                 f.extraPoints:SetText(nump == 0 and '' or nump)
