@@ -36,9 +36,9 @@ local function CreateDropDown(self)
     end
 end
 
-UnitPopupMenus['MOVE_PLAYER_FRAME'] = { 
-    'UNLOCK_PLAYER_FRAME', 
-    'LOCK_PLAYER_FRAME', 
+UnitPopupMenus['MOVE_PLAYER_FRAME'] = {
+    'UNLOCK_PLAYER_FRAME',
+    'LOCK_PLAYER_FRAME',
     'RESET_PLAYER_FRAME_POSITION'
 }
 
@@ -55,11 +55,11 @@ function PlayerFrame_SetLocked(locked)
 
     if (locked) then
         if (oUF_Neav_Player) then
-            oUF_Neav_Player:RegisterForDrag() 
+            oUF_Neav_Player:RegisterForDrag()
         end
     else
         if (oUF_Neav_Player) then
-            oUF_Neav_Player:RegisterForDrag('LeftButton') 
+            oUF_Neav_Player:RegisterForDrag('LeftButton')
         end
     end
 end
@@ -72,9 +72,9 @@ function PlayerFrame_ResetUserPlacedPosition()
     end
 end
 
-UnitPopupMenus['MOVE_TARGET_FRAME'] = { 
-    'UNLOCK_TARGET_FRAME', 
-    'LOCK_TARGET_FRAME', 
+UnitPopupMenus['MOVE_TARGET_FRAME'] = {
+    'UNLOCK_TARGET_FRAME',
+    'LOCK_TARGET_FRAME',
     'RESET_TARGET_FRAME_POSITION'
 }
 
@@ -91,11 +91,11 @@ function TargetFrame_SetLocked(locked)
 
     if (locked) then
         if (oUF_Neav_Target) then
-            oUF_Neav_Target:RegisterForDrag() 
+            oUF_Neav_Target:RegisterForDrag()
         end
     else
         if (oUF_Neav_Target) then
-            oUF_Neav_Target:RegisterForDrag('LeftButton') 
+            oUF_Neav_Target:RegisterForDrag('LeftButton')
         end
     end
 end
@@ -108,11 +108,11 @@ function TargetFrame_ResetUserPlacedPosition()
     end
 end
 
-UnitPopupMenus['FOCUS'] = { 
-    'LOCK_FOCUS_FRAME', 
-    'UNLOCK_FOCUS_FRAME', 
-    'RAID_TARGET_ICON', 
-    'CANCEL' 
+UnitPopupMenus['FOCUS'] = {
+    'LOCK_FOCUS_FRAME',
+    'UNLOCK_FOCUS_FRAME',
+    'RAID_TARGET_ICON',
+    'CANCEL'
 }
 local __fa = CreateFrame('Frame', 'oUF_Neav_Focus_Anchor', UIParent)
 __fa:SetSize(1, 1)
@@ -496,9 +496,9 @@ local function CreateUnitLayout(self, unit)
     elseif (self.IsTargetFrame) then
         self.Health:SetSize(46, 9)
         self.Health:SetPoint('CENTER', self, 18, 4)
-    elseif (self.IsPartyFrame) then   
+    elseif (self.IsPartyFrame) then
         self.Health:SetPoint('TOPLEFT', self.Texture, 47, -12)
-        self.Health:SetSize(70, 7) 
+        self.Health:SetSize(70, 7)
     end
 
         -- Heal prediction, new healcomm
@@ -557,7 +557,7 @@ local function CreateUnitLayout(self, unit)
     self.Power.frequentUpdates = true
     self.Power.Smooth = true
     self.Power.colorPower = true
-    
+
     if (self.IsTargetFrame) then
         self.Power:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', 0, 0)
         self.Power:SetPoint('TOPRIGHT', self.Health, 'BOTTOMRIGHT', -8, 0)
@@ -600,7 +600,7 @@ local function CreateUnitLayout(self, unit)
         self.Name:SetWidth(65)
         self.Name:SetJustifyH('LEFT')
         self.Name:SetPoint('TOPLEFT', self, 'CENTER', -4, -11)
-    elseif (self.IsPartyFrame) then    
+    elseif (self.IsPartyFrame) then
         self.Name:SetJustifyH('CENTER')
         self.Name:SetHeight(10)
         self.Name:SetPoint('TOPLEFT', self.Power, 'BOTTOMLEFT', 0, -3)
@@ -618,7 +618,7 @@ local function CreateUnitLayout(self, unit)
 
         -- Portrait
 
-    if (config.show.threeDPortraits) then    
+    if (config.show.threeDPortraits) then
         self.Portrait = CreateFrame('PlayerModel', nil, self)
         self.Portrait:SetFrameStrata('BACKGROUND')
 
@@ -687,7 +687,7 @@ local function CreateUnitLayout(self, unit)
         self.PortraitTimer.Icon:SetAllPoints(self.Portrait.Bg or self.Portrait)
 
         self.PortraitTimer.Remaining = self.PortraitTimer:CreateFontString(nil, 'OVERLAY')
-        self.PortraitTimer.Remaining:SetPoint('CENTER', self.PortraitTimer.Icon) 
+        self.PortraitTimer.Remaining:SetPoint('CENTER', self.PortraitTimer.Icon)
         self.PortraitTimer.Remaining:SetFont(config.font.normal, (self.Portrait:GetWidth()/3.5), 'THINOUTLINE')
         self.PortraitTimer.Remaining:SetTextColor(1, 1, 1)
     end
@@ -720,7 +720,7 @@ local function CreateUnitLayout(self, unit)
         self.MasterLooter:SetPoint('TOPLEFT', self.Portrait, 3, 3)
     elseif (self.IsTargetFrame) then
         self.MasterLooter:SetPoint('CENTER', self.Portrait, 'TOPLEFT', 3, -3)
-    elseif (self.IsPartyFrame) then  
+    elseif (self.IsPartyFrame) then
         self.MasterLooter:SetSize(14, 14)
         self.MasterLooter:SetPoint('TOPLEFT', self.Texture, 29, 0)
     end
@@ -824,7 +824,7 @@ local function CreateUnitLayout(self, unit)
         self.Name.Bg = self:CreateTexture(nil, 'BACKGROUND')
         self.Name.Bg:SetHeight(18)
         self.Name.Bg:SetPoint('BOTTOMRIGHT', self.Health, 'TOPRIGHT')
-        self.Name.Bg:SetPoint('BOTTOMLEFT', self.Health, 'TOPLEFT') 
+        self.Name.Bg:SetPoint('BOTTOMLEFT', self.Health, 'TOPLEFT')
         self.Name.Bg:SetTexture('Interface\\Buttons\\WHITE8x8')
         self.Name.Bg:SetVertexColor(0, 0, 0, 0.55)
 
@@ -959,7 +959,7 @@ local function CreateUnitLayout(self, unit)
             self.DruidMana.Value:SetPoint('CENTER', self.DruidMana, 0, 0.5)
 
             self:Tag(self.DruidMana.Value, '[druidmana]')
-            
+
             self.DruidMana.Texture = self.DruidMana:CreateTexture(nil, 'ARTWORK')
             self.DruidMana.Texture:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\druidmanaTexture')
             self.DruidMana.Texture:SetSize(104, 28)
@@ -976,7 +976,7 @@ local function CreateUnitLayout(self, unit)
                     TotemFrameTotem2Duration:ClearAllPoints()
                     TotemFrameTotem2Duration:SetPoint('TOP', self.Power, 'BOTTOM', 0, -4)
                 end
-            end 
+            end
 
                 -- Move the shroomtimer if the eclipsebar or druid manabar is shown
 
@@ -1016,7 +1016,7 @@ local function CreateUnitLayout(self, unit)
         end
 
         CreateTab(self)
-        UpdatePartyTab(self) 
+        UpdatePartyTab(self)
 
         self:RegisterEvent('GROUP_ROSTER_UPDATE', UpdatePartyTab)
 
@@ -1031,7 +1031,7 @@ local function CreateUnitLayout(self, unit)
             self.StatusFlash:SetPoint('TOPLEFT', self.Texture, 35, -8)
             self.StatusFlash:SetAlpha(0)
 
-            UpdateFlashStatus(self, _, unit) 
+            UpdateFlashStatus(self, _, unit)
 
             self:RegisterEvent('PLAYER_DEAD', UpdateFlashStatus)
             self:RegisterEvent('PLAYER_UNGHOST', UpdateFlashStatus)
@@ -1052,7 +1052,7 @@ local function CreateUnitLayout(self, unit)
             self:Tag(self.PvPTimer, '[pvptimer]')
         end
 
-            -- oUF_Swing support 
+            -- oUF_Swing support
 
         if (config.units.player.showSwingTimer) then
             self.Swing = CreateFrame('Frame', nil, self)
@@ -1073,7 +1073,7 @@ local function CreateUnitLayout(self, unit)
             self.Swing:SetBeautyBorderPadding(3)
 
             self.Swing.f = CreateFrame('Frame', nil, self.Swing)
-            self.Swing.f:SetFrameStrata('HIGH')       
+            self.Swing.f:SetFrameStrata('HIGH')
 
             self.Swing.Text = self.Swing.f:CreateFontString(nil, 'OVERLAY')
             self.Swing.Text:SetFont(config.font.normal, config.font.normalSize)
@@ -1084,7 +1084,7 @@ local function CreateUnitLayout(self, unit)
             self.Swing.hideOoc = true
         end
 
-            -- oUF_Vengeance support 
+            -- oUF_Vengeance support
 
         if (config.units.player.showVengeance) then
             self.Vengeance = CreateFrame('StatusBar', nil, self)
@@ -1168,7 +1168,7 @@ local function CreateUnitLayout(self, unit)
         self.Name.Bg:SetHeight(18)
         self.Name.Bg:SetTexCoord(0.2, 0.8, 0.3, 0.85)
         self.Name.Bg:SetPoint('BOTTOMRIGHT', self.Health, 'TOPRIGHT')
-        self.Name.Bg:SetPoint('BOTTOMLEFT', self.Health, 'TOPLEFT') 
+        self.Name.Bg:SetPoint('BOTTOMLEFT', self.Health, 'TOPLEFT')
         self.Name.Bg:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\nameBackground')
 
             -- Combat feedback text
@@ -1243,7 +1243,7 @@ local function CreateUnitLayout(self, unit)
                 self.CPoints[3]:SetPoint('TOP', self.CPoints[2], 'BOTTOM', 4.66, 4.33)
                 self.CPoints[4]:SetPoint('TOP', self.CPoints[3], 'BOTTOM', 1.33 , 3.66)
                 self.CPoints[5]:SetPoint('TOP', self.CPoints[4], 'BOTTOM', -1.66, 3.66)
-                
+
                 self.CPointsBG = {}
                 for i = 1, 5 do
                     self.CPointsBG[i] = self:CreateTexture(nil, 'ARTWORK')
@@ -1439,12 +1439,12 @@ oUF:Factory(function(self)
 
     local pet = self:Spawn('pet', 'oUF_Neav_Pet')
     pet:SetPoint('TOPLEFT', player, 'BOTTOMLEFT', unpack(config.units.pet.position))
-    
+
         -- Target frame spawn
 
     local target = self:Spawn('target', 'oUF_Neav_Target')
     target:SetPoint('TOPLEFT', __ta)
-    
+
     target:SetScript('OnDragStart', function()
         __ta:StartMoving()
     end)
@@ -1468,7 +1468,7 @@ oUF:Factory(function(self)
 
     local focus = self:Spawn('focus', 'oUF_Neav_Focus')
     focus:SetPoint('TOPLEFT', __fa)
-    focus:RegisterForDrag('LeftButton') 
+    focus:RegisterForDrag('LeftButton')
 
     focus:SetScript('OnDragStart', function()
         FOCUS_FRAME_MOVING = false
