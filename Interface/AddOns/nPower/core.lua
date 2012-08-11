@@ -22,16 +22,25 @@ f:EnableMouse(false)
 f:RegisterEvent('PLAYER_REGEN_ENABLED')
 f:RegisterEvent('PLAYER_REGEN_DISABLED')
 f:RegisterEvent('PLAYER_ENTERING_WORLD')
-f:RegisterEvent('UNIT_COMBO_POINTS')
+f:RegisterUnitEvent('UNIT_COMBO_POINTS', 'player')
 f:RegisterEvent('PLAYER_TARGET_CHANGED')
 
 if (nPower.rune.showRuneCooldown) then
     f:RegisterEvent('RUNE_TYPE_UPDATE')
 end
 
--- f:RegisterEvent('UNIT_DISPLAYPOWER')
--- f:RegisterUnitEvent('UNIT_POWER', 'player')
--- f:RegisterEvent('UPDATE_SHAPESHIFT_FORM')
+f:RegisterUnitEvent('UNIT_DISPLAYPOWER', 'player')
+f:RegisterUnitEvent('UNIT_POWER_FREQUENT', 'player')
+f:RegisterEvent('UPDATE_SHAPESHIFT_FORM')
+
+if (nPower.showCombatRegen) then
+    f:RegisterUnitEvent('UNIT_AURA', 'player')
+end
+
+f:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
+f:RegisterUnitEvent('UNIT_ENTERING_VEHICLE', 'player')
+f:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
+f:RegisterUnitEvent('UNIT_EXITING_VEHICLE', 'player')
 
 if (nPower.energy.showComboPoints) then
     f.ComboPoints = {}
@@ -297,23 +306,23 @@ end
 
 local function UpdateBarVisibility()
     local _, powerType = UnitPowerType('player')
-    local endAlpha = nil
+    local newAlpha = nil
 
     if ((not nPower.energy.show and powerType == 'ENERGY') or (not nPower.focus.show and powerType == 'FOCUS') or (not nPower.rage.show and powerType == 'RAGE') or (not nPower.mana.show and powerType == 'MANA') or (not nPower.rune.show and powerType == 'RUNEPOWER') or UnitIsDeadOrGhost('player') or UnitHasVehicleUI('player')) then
         f.Power:SetAlpha(0)
     elseif (InCombatLockdown()) then
         --securecall('UIFrameFadeIn', f.Power, 0.3, f.Power:GetAlpha(), nPower.activeAlpha)
-        endAlpha = nPower.activeAlpha
+        newAlpha = nPower.activeAlpha
     elseif (not InCombatLockdown() and UnitPower('player') > 0) then
         --securecall('UIFrameFadeOut', f.Power, 0.3, f.Power:GetAlpha(), nPower.inactiveAlpha)
-        endAlpha = nPower.inactiveAlpha
+        newAlpha = nPower.inactiveAlpha
     else
         --securecall('UIFrameFadeOut', f.Power, 0.3, f.Power:GetAlpha(), nPower.emptyAlpha)
-        endAlpha = nPower.emptyAlpha
+        newAlpha = nPower.emptyAlpha
     end
 
-    if (endAlpha) then
-        addon:Fade(f.Power, 0.3, f.Power:GetAlpha(), endAlpha)
+    if (newAlpha) then
+        addon:Fade(f.Power, 0.3, f.Power:GetAlpha(), newAlpha)
     end
 end
 
@@ -373,10 +382,35 @@ f:SetScript('OnEvent', function(self, event, arg1)
         f.Rune[arg1].type = GetRuneType(arg1)
     end
 
-    --[[
+    if (f.extraPoints) then
+        if (UnitHasVehicleUI('player')) then
+            if (f.extraPoints:IsShown()) then
+                f.extraPoints:Hide()
+            end
+        else
+            local nump
+            if (playerClass == 'WARLOCK') then
+                nump = GetWarlockPower()
+            elseif (playerClass == 'PALADIN') then
+                nump = UnitPower('player', SPELL_POWER_HOLY_POWER)
+            elseif (playerClass == 'PRIEST') then
+                nump = UnitPower('player', SPELL_POWER_SHADOW_ORBS)
+            end
+
+            f.extraPoints:SetText(nump == 0 and '' or nump)
+        end
+    end
+
+    if (f.Chi) then
+        UpdateChi()
+    end
+
+    if (f.mpreg and (event == 'UNIT_AURA' or event == 'PLAYER_ENTERING_WORLD')) then
+        f.mpreg:SetText(GetRealMpFive())
+    end
+
     UpdateBar()
     UpdateBarVisibility()
-    --]]
 
     if (event == 'PLAYER_ENTERING_WORLD') then
         if (InCombatLockdown()) then
@@ -395,16 +429,12 @@ f:SetScript('OnEvent', function(self, event, arg1)
     end
 end)
 
-local updateTimer = 0
-f:SetScript('OnUpdate', function(self, elapsed)
-    updateTimer = updateTimer + elapsed
+if (f.Rune) then
+    local updateTimer = 0
+    f:SetScript('OnUpdate', function(self, elapsed)
+        updateTimer = updateTimer + elapsed
 
-    if (updateTimer > 0.1) then
-        if (f.mpreg) then
-            f.mpreg:SetText(GetRealMpFive())
-        end
-
-        if (f.Rune) then
+        if (updateTimer > 0.1) then
             for i = 1, 6 do
                 if (UnitHasVehicleUI('player')) then
                     if (f.Rune[i]:IsShown()) then
@@ -419,34 +449,8 @@ f:SetScript('OnUpdate', function(self, elapsed)
                 f.Rune[i]:SetText(CalcRuneCooldown(i))
                 f.Rune[i]:SetTextColor(SetRuneColor(i))
             end
+
+            updateTimer = 0
         end
-
-        if (f.extraPoints) then
-            if (UnitHasVehicleUI('player')) then
-                if (f.extraPoints:IsShown()) then
-                    f.extraPoints:Hide()
-                end
-            else
-                local nump
-                if (playerClass == 'WARLOCK') then
-                    nump = GetWarlockPower()
-                elseif (playerClass == 'PALADIN') then
-                    nump = UnitPower('player', SPELL_POWER_HOLY_POWER)
-                elseif (playerClass == 'PRIEST') then
-                    nump = UnitPower('player', SPELL_POWER_SHADOW_ORBS)
-                end
-
-                f.extraPoints:SetText(nump == 0 and '' or nump)
-            end
-        end
-
-        if (f.Chi) then
-            UpdateChi()
-        end
-
-        UpdateBar()
-        UpdateBarVisibility()
-
-        updateTimer = 0
-    end
-end)
+    end)
+end
