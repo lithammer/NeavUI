@@ -598,7 +598,7 @@ local function UpdateFriendTable(total)
             end
         end
 
-        index = GetTableIndex(friendTable, 1, name)
+        local index = GetTableIndex(friendTable, 1, name)
         if (index == -1) then
             BuildFriendTable(total)
             break
@@ -679,7 +679,7 @@ local function UpdateBNTable(total)
             end
         end
 
-        index = GetTableIndex(BNTable, 1, presenceID)
+        local index = GetTableIndex(BNTable, 1, presenceID)
         if (index == -1) then
             BuildBNTable(total)
             return
