@@ -44,15 +44,20 @@ do
         -- @param UnitID  Unit to check range for.
         -- @return True if in casting range
 
-    function IsInRange ( UnitID )
-        if (UnitIsConnected( UnitID )) then
+    function IsInRange(UnitID)
+        if (UnitIsConnected(UnitID)) then
             if (UnitCanAssist('player', UnitID)) then
-                if ( HelpName and not UnitIsDead(UnitID)) then
+                if (HelpName and not UnitIsDead(UnitID)) then
                     return IsSpellInRange( HelpName, UnitID) == 1
-                elseif (not UnitOnTaxi('player') -- UnitInRange always returns nil while on flightpaths
-                and (UnitIsUnit(UnitID, 'player') or UnitIsUnit(UnitID, 'pet')
-                or UnitPlayerOrPetInParty(UnitID) or UnitPlayerOrPetInRaid(UnitID))) then
-                    return UnitInRange(UnitID) -- Fast checking for self and party members (38 yd range)
+                elseif (UnitOnTaxi('player')) then  -- UnitInRange always returns nil while on flightpaths
+                    return false
+                elseif (UnitIsUnit(UnitID, 'player') or UnitIsUnit(UnitID, 'pet') or UnitPlayerOrPetInParty(UnitID) or UnitPlayerOrPetInRaid(UnitID)) then
+                    local inRange, checkedRange = UnitInRange(UnitID)
+                    if (checkedRange and not inRange) then
+                        return false
+                    else
+                        return true
+                    end
                 end
             elseif (HarmName and not UnitIsDead(UnitID) and UnitCanAttack('player', UnitID)) then
                 return IsSpellInRange(HarmName, UnitID) == 1
@@ -88,7 +93,7 @@ do
 
         -- Updates the range display for all visible oUF unit frames on an interval
 
-    function OnUpdate (self, Elapsed)
+    function OnUpdate(self, Elapsed)
         NextUpdate = NextUpdate - Elapsed
         if (NextUpdate <= 0) then
             NextUpdate = UpdateRate
@@ -192,10 +197,7 @@ local _, Class = UnitClass('player')
 HelpIDs = ( {
     DEATHKNIGHT = { 47541 }; -- Death Coil (40yd) - Starter
     DRUID = { 5185 }; -- Healing Touch (40yd) - Lvl 3
-    HUNTER = {
-        53271, -- Master's Call (40yd) - Lvl 74
-        136, -- Mend Pet (45yd) - Lvl 16
-    };
+    -- HUNTER = {};
     MAGE = { 475 }; -- Remove Curse (40yd) - Lvl 30
     MONK = { 115450 }, -- Detox (40yd) - Lvl 20
     PALADIN = { 85673 }; -- Word of Glory (40yd) - Lvl 9
