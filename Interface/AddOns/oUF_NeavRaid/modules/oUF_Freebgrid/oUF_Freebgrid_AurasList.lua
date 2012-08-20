@@ -60,8 +60,8 @@ ns.auras = {
         -- General debuffs
 
     debuffs = {
-        [GetSpellInfo(39171)] = 9, -- Mortal Strike
-        [GetSpellInfo(76622)] = 9, -- Sunder Armor
+        [GetSpellInfo(115804)] = 9, -- Mortal Wounds
+        [GetSpellInfo(113746)] = 9, -- Weakened Armor
         [GetSpellInfo(51372)] = 1, -- Daze
         [GetSpellInfo(5246)] = 5, -- Intimidating Shout
         -- [GetSpellInfo(6788)] = 16, -- Weakened Soul
