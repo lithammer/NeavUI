@@ -5,27 +5,27 @@
 local _, ns = ...
 local oUF = ns.oUF or oUF
 
-local spellcache = setmetatable({}, {__index=function(t,v) 
-    local a = {GetSpellInfo(v)} 
-    if (GetSpellInfo(v)) then 
-        t[v] = a 
-    end 
+local spellcache = setmetatable({}, {__index=function(t,v)
+    local a = {GetSpellInfo(v)}
+    if (GetSpellInfo(v)) then
+        t[v] = a
+    end
 
-    return a 
+    return a
 end})
 
 local function GetSpellInfo(a)
     return unpack(spellcache[a])
 end
 
-    -- instance name and the instance ID, 
+    -- instance name and the instance ID,
     -- find out the instance ID by typing this in the chat "/run print(GetCurrentMapAreaID())"
     -- Note: Just must be in this instance, when you run the script above
-    
+
 local L = {
-	['Terrace of Endless Spring'] = 886,
-	['Heart of Fear'] = 897,
-	['Mogu\'shan Vaults'] = 896,
+    ['Terrace of Endless Spring'] = 886,
+    ['Heart of Fear'] = 897,
+    ['Mogu\'shan Vaults'] = 896,
 
     ['Baradin Hold'] = 752,
     ['Blackwing Descent'] = 754,
@@ -33,7 +33,7 @@ local L = {
     ['Throne of the Four Winds'] = 773,
     ['Firelands'] = 800,
     ['Dragon Soul'] = 824,
-    
+
     -- ['Ulduar'] = 529,
     ['ToC'] = 543,
     ['Naxxramas'] = 535,
@@ -215,13 +215,13 @@ ns.auras = {
 
             -- Naxxramas
 
-        [L['Naxxramas']] = {      
-            [GetSpellInfo(27808)] = 9, -- Frost Blast, Kel'Thuzad    
+        [L['Naxxramas']] = {
+            [GetSpellInfo(27808)] = 9, -- Frost Blast, Kel'Thuzad
         },
 
             -- Trial of Crusader
 
-        [L['ToC']] = {    
+        [L['ToC']] = {
             [GetSpellInfo(66869)] = 8, -- Burning Bile
             [GetSpellInfo(66823)] = 10, -- Paralizing Toxin
             [GetSpellInfo(66237)] = 9, -- Incinerate Flesh
@@ -229,7 +229,7 @@ ns.auras = {
 
             -- Ruby Sanctum
 
-        [L['Ruby Sanctum']] = {     
+        [L['Ruby Sanctum']] = {
             [GetSpellInfo(74562)] = 8, -- Fiery Combustion, Halion
             [GetSpellInfo(74792)] = 8, -- Soul Consumption, Halion
         },
