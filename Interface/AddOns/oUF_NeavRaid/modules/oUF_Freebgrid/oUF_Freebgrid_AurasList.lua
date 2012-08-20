@@ -23,6 +23,10 @@ end
     -- Note: Just must be in this instance, when you run the script above
     
 local L = {
+	['Terrace of Endless Spring'] = 886,
+	['Heart of Fear'] = 897,
+	['Mogu\'shan Vaults'] = 896,
+
     ['Baradin Hold'] = 752,
     ['Blackwing Descent'] = 754,
     ['The Bastion of Twilight'] = 758,
@@ -80,6 +84,18 @@ ns.auras = {
         -- Raid Debuffs
 
     instances = {
+        [L['Terrace of Endless Spring']] = {
+        },
+
+        [L['Heart of Fear']] = {
+        },
+
+        [L['Mogu\'shan Vaults']] = {
+            [GetSpellInfo(130395)] = 6, -- Jasper Chains: Stacks, Stone Guard
+            [GetSpellInfo(130404)] = 3, -- Jasper Chains: Stacks, Stone Guard
+            [GetSpellInfo(130774)] = 6, -- Amethyst Pool, Stone Guard
+        },
+
         [L['Dragon Soul']] = {
             [GetSpellInfo(109075)] = 7, -- Fading Light, Ultraxion
         },
