@@ -15,9 +15,6 @@ do
             {33763, 'BOTTOM', {0.5, 1, 0.5}, false, false, true}, -- Lifebloom
             {48438, 'BOTTOMLEFT', {0.7, 1, 0}}, -- Wild Growth
         },
-        MAGE = {
-            --{54648, 'BOTTOMRIGHT', {0.7, 0, 1}, true, true}, -- Focus Magic
-        },
 		MONK = {
 			{119611, 'BOTTOMRIGHT', {0, 1, 0}}, -- Renewing Mist
 			{124682, 'BOTTOMLEFT', {0.15, 0.98, 0.64}}, -- Enveloping Mist
@@ -27,6 +24,7 @@ do
 		},
         PALADIN = {
             {53563, 'BOTTOMRIGHT', {0, 1, 0}}, -- Beacon of Light
+            {20925, 'BOTTOMRIGHT', {1, 1, 0}}, -- Sacred Shield
         },
         PRIEST = {
             {6788, 'BOTTOMRIGHT', {0.6, 0, 0}, true}, -- Weakened Soul
