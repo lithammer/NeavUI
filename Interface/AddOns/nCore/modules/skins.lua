@@ -107,7 +107,7 @@ f:SetScript('OnEvent', function(self)
     end
 
     if (IsAddOnLoaded('Skada')) then
-        local OriginalFunc = Skada.PLAYER_ENTERING_WORLD
+        local OriginalSkadaFunc = Skada.PLAYER_ENTERING_WORLD
         function Skada:PLAYER_ENTERING_WORLD()
             OriginalSkadaFunc(self)
 
