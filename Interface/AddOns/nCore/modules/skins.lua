@@ -14,12 +14,12 @@ f:SetScript('OnEvent', function(self)
 
         -- a example for addons like pitbull
 
-    --[[ 
+    --[[
     if (IsAddOnLoaded('PitBull4')) then
         f:SetScript('OnUpdate', function(self)
-                
+
                 -- works fine because beautycase will not create multiple textures/borders
-                
+
             for _, pitframe in pairs({
                 PitBull4_Frames_player,
                 PitBull4_Frames_target,
@@ -103,6 +103,23 @@ f:SetScript('OnEvent', function(self)
                 insets = { left = 0, right = 0, top = 10, bottom = 0 },
             })
             Recount.MainWindow:SetBackdropColor(0, 0, 0, 0.5)
+        end
+    end
+
+    if (IsAddOnLoaded('Skada')) then
+        local OriginalFunc = Skada.PLAYER_ENTERING_WORLD
+        function Skada:PLAYER_ENTERING_WORLD()
+            OriginalSkadaFunc(self)
+
+            if (SkadaBarWindowSkada and not SkadaBarWindowSkada.beautyBorder) then
+                SkadaBarWindowSkada:CreateBeautyBorder(11)
+                SkadaBarWindowSkada:SetBeautyBorderPadding(3)
+                SkadaBarWindowSkada:SetBackdrop({
+                    bgFile = 'Interface\\Buttons\\WHITE8x8',
+                    insets = { left = 0, right = 0, top = 10, bottom = 0 },
+                })
+                SkadaBarWindowSkada:SetBackdropColor(0, 0, 0, 0.5)
+            end
         end
     end
 end)
