@@ -16,14 +16,14 @@ nTooltip.Config = {
     itemqualityBorderColor = true,
 
     abbrevRealmNames = false, 
-    showPlayerTitles = false,
+    showPlayerTitles = true,
     showUnitRole = true,
     showPVPIcons = false,                       -- Show pvp icons instead of just a prefix
     showMouseoverTarget = true,
     showItemLevel = false,
 
     healthbar = {
-        showHealthValue = false,
+        showHealthValue = true,
 
         healthFormat = '$cur / $max',           -- Possible: $cur, $max, $deficit, $perc, $smartperc, $smartcolorperc, $colorperc
         healthFullFormat = '$cur',              -- if the tooltip unit has 100% hp 
