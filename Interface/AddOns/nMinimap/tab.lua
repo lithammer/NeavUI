@@ -397,9 +397,9 @@ end
 local function UpdateGuildXP()
     local currentXP, remainingXP = UnitGetGuildXP('player')
     local nextLevelXP = currentXP + remainingXP
-	if (nextLevelXP == 0) then
-		nextLevelXP = 1
-	end
+    if (nextLevelXP == 0) then
+        nextLevelXP = 1
+    end
     local percentTotal = tostring(ceil((currentXP / nextLevelXP) * 100))
 
     guildXP = {
@@ -657,7 +657,7 @@ local function BuildBNTable(total)
 
     sort(BNTable, function(a, b)
         if (a[2] and b[2]) then
-            if (a[2] == b[2]) then
+            if (a[2] == b[2] and a[3] and b[3]) then
                 return a[3] < b[3]
             end
 
@@ -757,7 +757,7 @@ f.Center:SetScript('OnClick', function(self, button)
             local realID, playerFaction, grouped
             for i = 1, #BNTable do
                 if (BNTable[i][7]) then
-                    realID = (BATTLENET_NAME_FORMAT):format(BNTable[i][2], BNTable[i][3])
+                    realID = BNTable[i][2] --(BATTLENET_NAME_FORMAT):format(BNTable[i][2], BNTable[i][3])
                     menuCountWhispers = menuCountWhispers + 1
                     menuList[3].menuList[menuCountWhispers] = {
                         text = realID,
@@ -765,7 +765,7 @@ f.Center:SetScript('OnClick', function(self, button)
                         notCheckable = true,
                         func = function(self, arg1)
                             menuFrame:Hide()
-                            SetItemRef('player:'..arg1, ('|Hplayer:%1$s|h[%1$s]|h'):format(arg1), 'LeftButton')
+                            ChatFrame_SendSmartTell(arg1)
                         end
                     }
 
@@ -891,7 +891,7 @@ local function FriendsOnEnter(self)
                             grouped = 2
                         end
 
-                        GameTooltip:AddDoubleLine(format('%s (|cff%02x%02x%02x%d|r |cff%02x%02x%02x%s|r%s) |cff%02x%02x%02x%s|r', BNTable[i][6], levelc.r*255, levelc.g*255, levelc.b*255, BNTable[i][16], classc.r*255, classc.g*255, classc.b*255, BNTable[i][4], groupedTable[grouped], 255, 0, 0, statusTable[status]),BNTable[i][2]..' '..BNTable[i][3], 238, 238, 238, 238, 238, 238)
+                        GameTooltip:AddDoubleLine(format('%s (|cff%02x%02x%02x%d|r |cff%02x%02x%02x%s|r%s) |cff%02x%02x%02x%s|r', BNTable[i][6], levelc.r*255, levelc.g*255, levelc.b*255, BNTable[i][16], classc.r*255, classc.g*255, classc.b*255, BNTable[i][4], groupedTable[grouped], 255, 0, 0, statusTable[status]), BNTable[i][2], 238, 238, 238, 238, 238, 238)
                     else
                         GameTooltip:AddDoubleLine('|cffeeeeee'..BNTable[i][6]..' ('..BNTable[i][4]..')|r', '|cffeeeeee'..BNTable[i][2]..' '..BNTable[i][3]..'|r')
                     end
