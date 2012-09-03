@@ -8,7 +8,7 @@ end
 
 SetCVar('showArenaEnemyFrames', 0)
 
-local function ColorNameBackground(self)
+local function ColorNameBackground(self, unit)
     local _, class = UnitClass(unit)
     local classColor = RAID_CLASS_COLORS[class]
     self.Name.Bg:SetVertexColor(classColor.r, classColor.g, classColor.b)
@@ -27,7 +27,7 @@ local function UpdateHealth(Health, unit, cur, max)
 
     local self = Health:GetParent()
     if (self.Name.Bg) then
-        ColorNameBackground(self) 
+        ColorNameBackground(self, unit)
     end
 end
 
@@ -88,7 +88,7 @@ local function CreateArenaLayout(self, unit)
         self.Power:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', 0, -3)
         self.Power:SetPoint('TOPRIGHT', self.Health, 'BOTTOMRIGHT', 0, -3)
         self.Power:SetHeight(self.Health:GetHeight())
-        
+
         self.Power:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
         self.Power:SetBackdropColor(0, 0, 0, 0.55)
 
@@ -133,7 +133,7 @@ local function CreateArenaLayout(self, unit)
         self.Name.Bg:SetHeight(18)
         self.Name.Bg:SetTexCoord(0.2, 0.8, 0.3, 0.85)
         self.Name.Bg:SetPoint('BOTTOMRIGHT', self.Health, 'TOPRIGHT')
-        self.Name.Bg:SetPoint('BOTTOMLEFT', self.Health, 'TOPLEFT') 
+        self.Name.Bg:SetPoint('BOTTOMLEFT', self.Health, 'TOPLEFT')
         self.Name.Bg:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\nameBackground')
 
             -- raidicons
@@ -157,11 +157,13 @@ local function CreateArenaLayout(self, unit)
         self.Buffs.PostCreateIcon = ns.UpdateAuraIcons
         self.Buffs.PostUpdateIcon = ns.PostUpdateIcon
 
+        --[[
         self.Buffs.CustomFilter = function(icons, unit, icon, name, rank, texture, count, dtype, duration, timeLeft, caster)
             if (ns.buffList[name]) then
                 return true
             end
         end
+        ]]--
 
         self.Debuffs = CreateFrame('Frame', nil, self)
         self.Debuffs.size = 22
@@ -224,7 +226,7 @@ local function CreateArenaLayout(self, unit)
         self.Trinket.trinketUpAnnounce = true
 
             -- oUF_Talents support
-        --[[    
+        --[[
         self.Talents = self.Health:CreateFontString(nil, 'OVERLAY')
         self.Talents:SetFont(config.font.normal, 16)
         self.Talents:SetTextColor(1, 0, 0)
@@ -273,7 +275,7 @@ oUF:Factory(function(self)
         else
             arena[i]:SetPoint('TOPLEFT', arena[i-1], 'BOTTOMLEFT', 0, -80)
         end
-    
+
         arenaTarget[i] = self:Spawn('arena'..i..'target', 'oUF_Neav_ArenaFrame'..i..'Target')
         arenaTarget[i]:SetPoint('TOPRIGHT', arena[i], 'BOTTOMLEFT', 71, -7)
     end
