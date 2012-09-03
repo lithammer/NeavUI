@@ -61,9 +61,9 @@ ns.PostUpdateIcon = function(icons, unit, icon, index, offset)
         if (unit == 'target') then 
             if (icon.isDebuff) then
                 if (not IsMine(icon.owner)) then
-                    -- icon.overlay:SetVertexColor(0.45, 0.45, 0.45)
+                    icon.overlay:SetVertexColor(0.45, 0.45, 0.45)
                     icon.icon:SetDesaturated(true)
-                    icon:SetAlpha(0.55)
+                    -- icon:SetAlpha(0.55)
                 else
                     icon.icon:SetDesaturated(false)
                     icon:SetAlpha(1)
