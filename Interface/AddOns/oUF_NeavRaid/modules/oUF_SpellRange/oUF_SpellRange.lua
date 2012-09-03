@@ -23,8 +23,45 @@ local ObjectRanges = {}
 
 -- Array of possible spell IDs in order of priority, and the name of the highest known priority spell
 
-local HelpIDs, HelpName
-local HarmIDs, HarmName
+local HelpName
+local HarmName
+
+local _, playerClass = UnitClass('player')
+
+-- Optional lists of low level baseline skills with greater than 28 yard range.
+-- First known spell in the appropriate class list gets used.
+-- Note: Spells probably shouldn't have minimum ranges!
+
+local HelpIDs = ({
+    DEATHKNIGHT = { 47541 }, -- Death Coil (40yd) - Starter
+    DRUID = { 5185 }, -- Healing Touch (40yd) - Lvl 3
+    -- HUNTER = {},
+    MAGE = { 475 }, -- Remove Curse (40yd) - Lvl 30
+    MONK = { 115450 }, -- Detox (40yd) - Lvl 20
+    PALADIN = { 85673 }, -- Word of Glory (40yd) - Lvl 9
+    PRIEST = { 2061 }, -- Flash Heal (40yd) - Lvl 3
+    -- ROGUE = {},
+    SHAMAN = { 8004 }, -- Healing Surge (40yd) - Lvl 7
+    WARLOCK = { 5697 }, -- Unending Breath (30yd) - Lvl 16
+    -- WARRIOR = {},
+})[playerClass]
+
+local HarmIDs = ({
+    DEATHKNIGHT = { 47541 }, -- Death Coil (30yd) - Starter
+    DRUID = { 5176 }, -- Wrath (40yd) - Starter
+    HUNTER = { 75 }, -- Auto Shot (5-40yd) - Starter
+    MAGE = { 133 }, -- Fireball (40yd) - Starter
+    MONK = { 115546 }, -- Provoke (40yd) - Lvl 14
+    PALADIN = {
+        62124, -- Hand of Reckoning (30yd) - Lvl 14
+        879, -- Exorcism (30yd) - Lvl 18
+    },
+    PRIEST = { 589 }, -- Shadow Word: Pain (40yd) - Lvl 4
+    -- ROGUE = {},
+    SHAMAN = { 403 }, -- Lightning Bolt (30yd) - Starter
+    WARLOCK = { 686 }, -- Shadow Bolt (40yd) - Starter
+    WARRIOR = { 355 }, -- Taunt (30yd) - Lvl 12
+})[playerClass]
 
 local IsInRange
 do
@@ -41,30 +78,30 @@ do
 
 	-- Uses an appropriate range check for the given unit.
 	-- Actual range depends on reaction, known spells, and status of the unit.
-	-- @param UnitID  Unit to check range for.
+	-- @param unit  Unit to check range for.
 	-- @return True if in casting range
-    function IsInRange(UnitID)
-        if (UnitIsConnected(UnitID)) then
-            if (UnitCanAssist('player', UnitID)) then
-                if (HelpName and not UnitIsDead(UnitID)) then
-                    return IsSpellInRange( HelpName, UnitID) and true
+    function IsInRange(unit)
+        if (UnitIsConnected(unit)) then
+            if (UnitCanAssist('player', unit)) then
+                if (HelpName and not UnitIsDead(unit)) then
+                    return IsSpellInRange(HelpName, unit) == 1 and true or false
                 elseif (UnitOnTaxi('player')) then  -- UnitInRange always returns nil while on flightpaths
                     return false
-                elseif (UnitIsUnit(UnitID, 'player') or UnitIsUnit(UnitID, 'pet') or UnitPlayerOrPetInParty(UnitID) or UnitPlayerOrPetInRaid(UnitID)) then
-                    local inRange, checkedRange = UnitInRange(UnitID)
+                elseif (UnitIsUnit(unit, 'player') or UnitIsUnit(unit, 'pet') or UnitPlayerOrPetInParty(unit) or UnitPlayerOrPetInRaid(unit)) then
+                    local inRange, checkedRange = UnitInRange(unit)
                     if (checkedRange and not inRange) then
                         return false
                     else
                         return true
                     end
                 end
-            elseif (HarmName and not UnitIsDead(UnitID) and UnitCanAttack('player', UnitID)) then
-                return IsSpellInRange(HarmName, UnitID) and true
+            elseif (HarmName and not UnitIsDead(unit) and UnitCanAttack('player', unit)) then
+                return IsSpellInRange(HarmName, unit) == 1 and true or false
             end
 
                 -- Fallback when spell not found or class uses none
 
-            return CheckInteractDistance(UnitID, 4) -- Follow distance (28 yd range)
+            return CheckInteractDistance(unit, 4) and true or false -- Follow distance (28 yd range)
         end
     end
 end
@@ -72,8 +109,8 @@ end
 -- Rechecks range for a unit frame, and fires callbacks when the unit passes in or out of range
 local function UpdateRange(self)
     local InRange = IsInRange(self.unit)
-    if (ObjectRanges[ self ] ~= InRange) then -- Range state changed
-        ObjectRanges[ self ] = InRange;
+    if (ObjectRanges[self] ~= InRange) then -- Range state changed
+        ObjectRanges[self] = InRange
 
         local SpellRange = self.SpellRange
         if (SpellRange.Update) then
@@ -182,42 +219,5 @@ local function Disable(self)
         UpdateFrame:UnregisterEvent('SPELLS_CHANGED')
     end
 end
-
-local _, Class = UnitClass('player')
-
--- Optional lists of low level baseline skills with greater than 28 yard range.
--- First known spell in the appropriate class list gets used.
--- Note: Spells probably shouldn't have minimum ranges!
-
-HelpIDs = ({
-    DEATHKNIGHT = { 47541 }; -- Death Coil (40yd) - Starter
-    DRUID = { 5185 }; -- Healing Touch (40yd) - Lvl 3
-    -- HUNTER = {};
-    MAGE = { 475 }; -- Remove Curse (40yd) - Lvl 30
-    MONK = { 115450 }, -- Detox (40yd) - Lvl 20
-    PALADIN = { 85673 }; -- Word of Glory (40yd) - Lvl 9
-    PRIEST = { 2061 }; -- Flash Heal (40yd) - Lvl 3
-    -- ROGUE = {};
-    SHAMAN = { 8004 }; -- Healing Surge (40yd) - Lvl 7
-    WARLOCK = { 5697 }; -- Unending Breath (30yd) - Lvl 16
-    -- WARRIOR = {};
-})[Class]
-
-HarmIDs = ({
-    DEATHKNIGHT = { 47541 }; -- Death Coil (30yd) - Starter
-    DRUID = { 5176 }; -- Wrath (40yd) - Starter
-    HUNTER = { 75 }; -- Auto Shot (5-40yd) - Starter
-    MAGE = { 133 }; -- Fireball (40yd) - Starter
-    MONK = { 115546 }; -- Provoke (40yd) - Lvl 14
-    PALADIN = {
-        62124, -- Hand of Reckoning (30yd) - Lvl 14
-        879, -- Exorcism (30yd) - Lvl 18
-    };
-    PRIEST = { 589 }; -- Shadow Word: Pain (40yd) - Lvl 4
-    -- ROGUE = {};
-    SHAMAN = { 403 }; -- Lightning Bolt (30yd) - Starter
-    WARLOCK = { 686 }; -- Shadow Bolt (40yd) - Starter
-    WARRIOR = { 355 }; -- Taunt (30yd) - Lvl 12
-})[Class]
 
 oUF:AddElement('SpellRange', Update, Enable, Disable)
