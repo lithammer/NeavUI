@@ -59,7 +59,7 @@ ns.PostUpdateIcon = function(icons, unit, icon, index, offset)
 
     if (config.units.target.colorPlayerDebuffsOnly) then
         if (unit == 'target') then 
-            if (icon.debuff) then
+            if (icon.isDebuff) then
                 if (not IsMine(icon.owner)) then
                     -- icon.overlay:SetVertexColor(0.45, 0.45, 0.45)
                     icon.icon:SetDesaturated(true)
@@ -73,7 +73,7 @@ ns.PostUpdateIcon = function(icons, unit, icon, index, offset)
     end
 
     if (icon.remaining) then
-        if (unit == 'target' and icon.debuff and not IsMine(icon.owner) and (not UnitIsFriend('player', unit) and UnitCanAttack(unit, 'player') and not UnitPlayerControlled(unit)) and not config.units.target.showAllTimers ) then
+        if (unit == 'target' and icon.isDebuff and not IsMine(icon.owner) and (not UnitIsFriend('player', unit) and UnitCanAttack(unit, 'player') and not UnitPlayerControlled(unit)) and not config.units.target.showAllTimers ) then
             if (icon.remaining:IsShown()) then
                 icon.remaining:Hide()
             end
