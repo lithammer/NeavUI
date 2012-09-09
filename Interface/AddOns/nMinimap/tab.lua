@@ -634,7 +634,7 @@ local function BuildBNTable(total)
         BNTable[i] = {
             presenceID,
             presenceName,
-            battleTag,
+            battleTag or '',
             toonName,
             toonID,
             client,
@@ -688,7 +688,7 @@ local function UpdateBNTable(total)
         BNTable[index][7] = isOnline
         if (isOnline) then
             BNTable[index][2] = presenceName
-            BNTable[index][3] = battleTag
+            BNTable[index][3] = battleTag or ''
             BNTable[index][4] = toonName
             BNTable[index][5] = toonID
             BNTable[index][6] = client
@@ -893,7 +893,7 @@ local function FriendsOnEnter(self)
 
                         GameTooltip:AddDoubleLine(format('%s (|cff%02x%02x%02x%d|r |cff%02x%02x%02x%s|r%s) |cff%02x%02x%02x%s|r', BNTable[i][6], levelc.r*255, levelc.g*255, levelc.b*255, BNTable[i][16], classc.r*255, classc.g*255, classc.b*255, BNTable[i][4], groupedTable[grouped], 255, 0, 0, statusTable[status]), BNTable[i][2], 238, 238, 238, 238, 238, 238)
                     else
-                        GameTooltip:AddDoubleLine('|cffeeeeee'..BNTable[i][6]..' ('..BNTable[i][4]..')|r', '|cffeeeeee'..BNTable[i][2]..' '..BNTable[i][3]..'|r')
+                        GameTooltip:AddDoubleLine('|cffeeeeee'..BNTable[i][6]..' ('..BNTable[i][4]..')|r', '|cffeeeeee'..BNTable[i][2]..'|r')
                     end
                 end
             end
