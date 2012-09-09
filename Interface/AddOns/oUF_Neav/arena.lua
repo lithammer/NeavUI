@@ -157,6 +157,8 @@ local function CreateArenaLayout(self, unit)
         self.Buffs.PostCreateIcon = ns.UpdateAuraIcons
         self.Buffs.PostUpdateIcon = ns.PostUpdateIcon
 
+        -- TODO: ns.buffList doesn't exist at the moment.
+
         --[[
         self.Buffs.CustomFilter = function(icons, unit, icon, name, rank, texture, count, dtype, duration, timeLeft, caster)
             if (ns.buffList[name]) then
