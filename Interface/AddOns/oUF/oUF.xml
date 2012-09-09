@@ -28,8 +28,6 @@
 	<Script file='elements\runebar.lua' />
 	<Script file='elements\lfdrole.lua' />
 	<Script file='elements\healprediction.lua' />
-	<Script file='elements\holypower.lua' />
-	<Script file='elements\soulshards.lua' />
 	<Script file='elements\picon.lua' />
 	<Script file='elements\readycheck.lua' />
 	<Script file='elements\qicon.lua' />
@@ -37,10 +35,8 @@
 	<Script file='elements\altpowerbar.lua' />
 	<Script file='elements\totems.lua' />
 	<Script file='elements\resurrect.lua' />
-	<Script file='elements\maintank.lua' />
 	<Script file='elements\druidmana.lua' />
-	<Script file='elements\harmonyorbs.lua' />
-	<Script file='elements\shadoworbs.lua' />
+	<Script file='elements\classicons.lua' />
 
 	<!-- Clique support -->
 	<Button name="oUF_ClickCastUnitTemplate" virtual="true" inherits="SecureUnitButtonTemplate,SecureHandlerEnterLeaveTemplate">
