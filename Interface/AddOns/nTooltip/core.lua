@@ -528,7 +528,6 @@ end)
 
 
 GameTooltip:RegisterEvent('INSPECT_READY')
-GameTooltip:RegisterEvent('MODIFIER_STATE_CHANGED')
 GameTooltip:SetScript('OnEvent', function(self, event, GUID)
     if (not self:IsShown()) then
         return
@@ -538,12 +537,6 @@ GameTooltip:SetScript('OnEvent', function(self, event, GUID)
 
     if (not unit) then
         return
-    end
-
-    if (event == 'MODIFIER_STATE_CHANGED') then
-        if (IsShiftKeyDown()) then
-            GameTooltip:SetUnit('mouseover')
-        end
     end
 
     if (event == 'INSPECT_READY' and UnitGUID(unit) == GUID) then
