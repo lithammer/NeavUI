@@ -437,18 +437,6 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
         GameTooltipStatusBar:SetPoint('LEFT', self:GetName()..'TextLeft'..self:NumLines(), 1, -3)
         GameTooltipStatusBar:SetPoint('RIGHT', self, -10, 0)
 
-            -- Show player item lvl
-
-        if (cfg.showItemLevel) then
-            if (unit and CanInspect(unit)) then
-                if (not ((InspectFrame and InspectFrame:IsShown()) or (Examiner and Examiner:IsShown()))) then
-                    NotifyInspect(unit)
-                    GameTooltip:AddLine('Item Level: ' .. GetItemLevel(unit))
-                    ClearInspectPlayer(unit)
-                end
-            end
-        end
-
             -- Border coloring
 
         if (cfg.reactionBorderColor and self.beautyBorder) then
@@ -476,6 +464,14 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             GameTooltipStatusBar:HookScript('OnValueChanged', function()
                 SetHealthBarColor(unit)
             end)
+        end
+
+            -- Show player item lvl
+
+        if (unit and CanInspect(unit)) then
+            if (not ((InspectFrame and InspectFrame:IsShown()) or (Examiner and Examiner:IsShown()))) then
+                NotifyInspect(unit)
+            end
         end
 
             -- Symbiosis
@@ -527,5 +523,61 @@ hooksecurefunc('GameTooltip_SetDefaultAnchor', function(self, parent)
         self:SetOwner(parent, 'ANCHOR_CURSOR')
     else
         self:SetPoint(unpack(cfg.position))
+    end
+end)
+
+
+GameTooltip:RegisterEvent('INSPECT_READY')
+GameTooltip:RegisterEvent('MODIFIER_STATE_CHANGED')
+GameTooltip:SetScript('OnEvent', function(self, event, GUID)
+    if (not self:IsShown()) then
+        return
+    end
+
+    local _, unit = self:GetUnit()
+
+    if (not unit) then
+        return
+    end
+
+    if (event == 'MODIFIER_STATE_CHANGED') then
+        if (IsShiftKeyDown()) then
+            GameTooltip:SetUnit('mouseover')
+        end
+    end
+
+    if (event == 'INSPECT_READY' and UnitGUID(unit) == GUID) then
+        local id = GetInspectSpecialization(unit)
+        local _, spec, _, icon, _, _, class = GetSpecializationInfoByID(id)
+
+            -- Show spec icon
+
+        if (spec) then
+            local race = UnitRace(unit)
+
+            for i = 1, select('#', self:GetRegions()) do
+                local obj = select(i, self:GetRegions())
+
+                if (obj and obj:GetObjectType() == 'FontString') then
+                    if (obj:GetText() and obj:GetText():find(race)) then
+                        obj:SetText(obj:GetText()..' |T'..icon..':0|t')
+                    end
+                end
+            end
+        end
+
+            -- Show player item lvl
+
+        if (cfg.showItemLevel) then
+            local ilvl = GetItemLevel(unit)
+
+            if (ilvl > 1) then
+                GameTooltip:AddLine(STAT_AVERAGE_ITEM_LEVEL .. ': ' .. '|cffFFFFFF'..ilvl..'|r')
+            end
+        end
+
+        self:Show()
+
+        ClearInspectPlayer(unit)
     end
 end)
