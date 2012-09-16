@@ -522,6 +522,7 @@ hooksecurefunc('GameTooltip_SetDefaultAnchor', function(self, parent)
     if (cfg.showOnMouseover) then
         self:SetOwner(parent, 'ANCHOR_CURSOR')
     else
+        self:SetOwner(parent, 'ANCHOR_NONE')
         self:SetPoint(unpack(cfg.position))
     end
 end)
