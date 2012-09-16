@@ -231,7 +231,7 @@ ns.Config = {
 
         ['party'] = {
             scale = 1.11,
-            show = false,
+            show = true,
             hideInRaid = true,
 
             mouseoverText = true,
@@ -288,6 +288,10 @@ ns.Config = {
                 },
 
                 color = {1, 0, 0},
+            },
+
+            buffList = { -- A whitelist for buffs to display on arena frames
+                'Power Word: Shield',
             },
         },
     },
