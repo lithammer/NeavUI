@@ -846,6 +846,27 @@ local function CreateUnitLayout(self, unit)
             DemonicFuryBarFrame:SetScale(config.units.player.scale * 0.8)
             DemonicFuryBarFrame:ClearAllPoints()
             DemonicFuryBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 35, 12)
+
+                -- Demonic Gateway timer
+
+            TotemFrame:ClearAllPoints()
+            TotemFrame:SetPoint('TOPLEFT', oUF_Neav_Player, 'TOPLEFT', 0, -70)
+            TotemFrame:SetParent(oUF_Neav_Player)
+            TotemFrame:SetScale(config.units.player.scale * 0.65)
+            TotemFrame:Show()
+
+            for i = 1, MAX_TOTEMS do
+                _G['TotemFrameTotem'..i]:SetFrameStrata('LOW')
+
+                _G['TotemFrameTotem'..i..'IconCooldown']:SetAlpha(0)
+
+                _G['TotemFrameTotem'..i..'Duration']:SetParent(self)
+                _G['TotemFrameTotem'..i..'Duration']:SetDrawLayer('OVERLAY')
+                _G['TotemFrameTotem'..i..'Duration']:ClearAllPoints()
+                _G['TotemFrameTotem'..i..'Duration']:SetPoint('BOTTOM', _G['TotemFrameTotem'..i], 0, 3)
+                _G['TotemFrameTotem'..i..'Duration']:SetFont(config.font.normal, 10, 'OUTLINE')
+                _G['TotemFrameTotem'..i..'Duration']:SetShadowOffset(0, 0)
+            end
         end
 
             -- Priest bar
@@ -888,12 +909,12 @@ local function CreateUnitLayout(self, unit)
 
         if (playerClass == 'SHAMAN') then
             TotemFrame:ClearAllPoints()
-            TotemFrame:SetPoint('TOP', self.Power, 'BOTTOM', -2, -0)
+            TotemFrame:SetPoint('TOP', self.Power, 'BOTTOM', -2, 0)
             TotemFrame:SetParent(oUF_Neav_Player)
             TotemFrame:SetScale(config.units.player.scale * 0.65)
             TotemFrame:Show()
 
-            for i = 1, 4 do
+            for i = 1, MAX_TOTEMS do
                 _G['TotemFrameTotem'..i]:SetFrameStrata('LOW')
 
                 _G['TotemFrameTotem'..i..'IconCooldown']:SetAlpha(0)
