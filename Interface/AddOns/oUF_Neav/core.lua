@@ -1312,7 +1312,9 @@ local function CreateUnitLayout(self, unit)
             self.Auras.numDebuffs = config.units.target.numDebuffs
             self.Auras.spacing = 4.5
 
-            self.Auras.customBreak = true
+            self.Auras.PostUpdateGapIcon = function(self, unit, icon, visibleBuffs)
+                icon:Hide()
+            end
         end
     end
 
