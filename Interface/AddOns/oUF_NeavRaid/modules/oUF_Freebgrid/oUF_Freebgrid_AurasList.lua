@@ -85,15 +85,88 @@ ns.auras = {
 
     instances = {
         [L['Terrace of Endless Spring']] = {
+
+                -- Protectors of the Endless
+
+            [GetSpellInfo(117436)] = 5,    -- Lightning Prison
+            [GetSpellInfo(118091)] = 5,    -- Defiled Ground
+            [GetSpellInfo(117519)] = 5,    -- Touch of Sha
+
+                -- Tsulong
+
+            [GetSpellInfo(122752)] = 5,    -- Shadow Breath
+            [GetSpellInfo(123011)] = 5,    -- Terrorize
+            [GetSpellInfo(116161)] = 5,    -- Crossed Over
+
+                -- Lei Shi
+
+            [GetSpellInfo(123121)] = 5,    -- Spray
+
+                -- Sha of Fear
+
+            [GetSpellInfo(119985)] = 5,    -- Dread Spray
+            [GetSpellInfo(119086)] = 5,    -- Penetrating Bolt
+            [GetSpellInfo(119775)] = 5,    -- Reaching Attack
         },
 
         [L['Heart of Fear']] = {
+
+                -- Imperial Vizier Zor'lok
+
+            [GetSpellInfo(122761)] = 5,    -- Exhale
+            [GetSpellInfo(122760)] = 5, -- Exhale
+            [GetSpellInfo(122740)] = 5,    -- Convert
+            [GetSpellInfo(123812)] = 5,    -- Pheromones of Zeal
+
+                -- Blade Lord Ta'yak
+
+            [GetSpellInfo(123180)] = 5,    -- Wind Step
+            [GetSpellInfo(123474)] = 5,    -- Overwhelming Assault
+
+                -- Garalon
+
+            [GetSpellInfo(122835)] = 5,    -- Pheromones
+            [GetSpellInfo(123081)] = 5,    -- Pungency
+
+                -- Wind Lord Mel'jarak
+
+            [GetSpellInfo(122125)] = 5,    -- Corrosive Resin Pool
+            [GetSpellInfo(121885)] = 5,     -- Amber Prison
+
+                -- Amber-Shaper Un'sok
+
+            [GetSpellInfo(121949)] = 5,    -- Parasitic Growth
+
+                -- Grand Empress Shek'zeer
         },
 
         [L['Mogu\'shan Vaults']] = {
-            [GetSpellInfo(130395)] = 6, -- Jasper Chains: Stacks, Stone Guard
-            [GetSpellInfo(130404)] = 3, -- Jasper Chains: Stacks, Stone Guard
-            [GetSpellInfo(130774)] = 6, -- Amethyst Pool, Stone Guard
+
+                -- The Stone Guard
+
+            [GetSpellInfo(130395)] = 6, -- Jasper Chains: Stacks
+            [GetSpellInfo(130404)] = 3, -- Jasper Chains: Stacks
+            [GetSpellInfo(130774)] = 6, -- Amethyst Pool
+
+                -- Feng the Accursed
+
+            [GetSpellInfo(116942)] = 6, -- Flaming Spear
+
+                -- Gara'jal the Spiritbinder
+
+            [GetSpellInfo(116161)] = 8, -- Crossed Over
+            [GetSpellInfo(116161)] = 3, -- Voodoo Dolls
+
+                -- The Spirit Kings
+
+            [GetSpellInfo(118135)] = 6,    -- Pinned Down
+
+                -- Elagon
+
+                -- Will of the Emperor
+
+            [GetSpellInfo(116778)] = 7,    -- Focused Defense
+            [GetSpellInfo(116525)] = 7,    -- Focused Assault
         },
 
         [L['Dragon Soul']] = {
