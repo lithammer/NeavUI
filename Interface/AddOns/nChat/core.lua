@@ -66,7 +66,7 @@ _G.CHAT_BATTLEGROUND_GET = '(|Hchannel:Battleground|hBG|h) %s:\32'
 _G.CHAT_BATTLEGROUND_LEADER_GET = '(|Hchannel:Battleground|hBL|h) %s:\32'
 
 --[[
-local channelFormat 
+local channelFormat
 do
     local a, b = '.*%[(.*)%].*', '%%[%1%%]'
     channelFormat = {
@@ -75,7 +75,7 @@ do
 
         [3] = {gsub(CHAT_GUILD_GET, a, b), '[G]'},
         [4] = {gsub(CHAT_OFFICER_GET, a, b), '[O]'},
-        
+
         [5] = {gsub(CHAT_PARTY_GET, a, b), '[P]'},
         [6] = {gsub(CHAT_PARTY_LEADER_GET, a, b), '[PL]'},
         [7] = {gsub(CHAT_PARTY_GUIDE_GET, a, b), '[PL]'},
@@ -96,8 +96,8 @@ local function FCF_AddMessage(self, text, ...)
     if (type(text) == 'string') then
         text = gsub(text, '(|HBNplayer.-|h)%[(.-)%]|h', '%1%2|h')
         text = gsub(text, '(|Hplayer.-|h)%[(.-)%]|h', '%1%2|h')
-        text = gsub(text, '%[(%d0?)%. (.-)%]', '(%1)') 
-        
+        text = gsub(text, '%[(%d0?)%. (.-)%]', '(%1)')
+
         --[[
         for i = 1, #channelFormat  do
             text = gsub(text, channelFormat[i][1], channelFormat[i][2])
@@ -106,41 +106,6 @@ local function FCF_AddMessage(self, text, ...)
     end
 
     return AddMessage(self, text, ...)
-end
-
-    -- Modify the editbox
-    
-for k = 6, 11 do
-   select(k, ChatFrame1EditBox:GetRegions()):SetTexture(nil)
-end
-
-ChatFrame1EditBox:SetAltArrowKeyMode(false)
-ChatFrame1EditBox:ClearAllPoints()
-ChatFrame1EditBox:SetPoint('BOTTOMLEFT', ChatFrame1, 'TOPLEFT', 2, 33)
-ChatFrame1EditBox:SetPoint('BOTTOMRIGHT', ChatFrame1, 'TOPRIGHT', 0, 33)
-ChatFrame1EditBox:SetBackdrop({
-    bgFile = 'Interface\\Buttons\\WHITE8x8',
-    insets = { 
-        left = 3, right = 3, top = 2, bottom = 2 
-    },
-})
-
-ChatFrame1EditBox:SetBackdropColor(0, 0, 0, 0.5)
-ChatFrame1EditBox:CreateBeautyBorder(11)
-ChatFrame1EditBox:SetBeautyBorderPadding(-2, -1, -2, -1, -2, -1, -2, -1)
-
-if (cfg.enableBorderColoring) then
-    ChatFrame1EditBox:SetBeautyBorderTexture('white')
-
-    hooksecurefunc('ChatEdit_UpdateHeader', function(editBox)
-        local type = editBox:GetAttribute('chatType')
-        if (not type) then
-            return
-        end
-
-        local info = ChatTypeInfo[type]
-        ChatFrame1EditBox:SetBeautyBorderColor(info.r, info.g, info.b)
-    end)
 end
 
     -- Hide the menu and friend button
@@ -281,7 +246,7 @@ local function SkinTab(self)
     hooksecurefunc(tab, 'Show', function()
         if (not tab.wasShown) then
             local hasNofication = tabGlow:IsShown()
-            
+
             if (chat:IsMouseOver()) then
                 tab:SetAlpha(CHAT_FRAME_TAB_NORMAL_MOUSEOVER_ALPHA)
             else
@@ -324,7 +289,7 @@ local function ModChat(self)
     chat:SetClampRectInsets(0, 0, 0, 0)
     chat:SetMaxResize(UIParent:GetWidth(), UIParent:GetHeight())
     chat:SetMinResize(150, 25)
-    
+
     if (self ~= 'ChatFrame2') then
         chat.AddMessage = FCF_AddMessage
     end
@@ -362,6 +327,41 @@ local function ModChat(self)
         'ButtonFrameTopTexture',
     }) do
         _G[self..texture]:SetTexture(nil)
+    end
+
+        -- Modify the editbox
+
+    for k = 6, 11 do
+        select(k, _G[self..'EditBox']:GetRegions()):SetTexture(nil)
+    end
+
+    _G[self..'EditBox']:SetAltArrowKeyMode(false)
+    _G[self..'EditBox']:ClearAllPoints()
+    _G[self..'EditBox']:SetPoint('BOTTOMLEFT', self, 'TOPLEFT', 2, 33)
+    _G[self..'EditBox']:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT', 0, 33)
+    _G[self..'EditBox']:SetBackdrop({
+        bgFile = 'Interface\\Buttons\\WHITE8x8',
+        insets = {
+            left = 3, right = 3, top = 2, bottom = 2
+        },
+    })
+
+    _G[self..'EditBox']:SetBackdropColor(0, 0, 0, 0.5)
+    _G[self..'EditBox']:CreateBeautyBorder(11)
+    _G[self..'EditBox']:SetBeautyBorderPadding(-2, -1, -2, -1, -2, -1, -2, -1)
+
+    if (cfg.enableBorderColoring) then
+        _G[self..'EditBox']:SetBeautyBorderTexture('white')
+
+        hooksecurefunc('ChatEdit_UpdateHeader', function(editBox)
+            local type = editBox:GetAttribute('chatType')
+            if (not type) then
+                return
+            end
+
+            local info = ChatTypeInfo[type]
+            _G[self..'EditBox']:SetBeautyBorderColor(info.r, info.g, info.b)
+        end)
     end
 end
 
@@ -447,9 +447,9 @@ local combatLog = {
     colorCode = '|cffFFD100',
     isNotRadio = true,
 
-    func = function() 
+    func = function()
         if (not LoggingCombat()) then
-            LoggingCombat(true) 
+            LoggingCombat(true)
             DEFAULT_CHAT_FRAME:AddMessage(COMBATLOGENABLED, 1, 1, 0)
         else
             LoggingCombat(false)
@@ -471,9 +471,9 @@ local chatLog = {
     colorCode = '|cffFFD100',
     isNotRadio = true,
 
-    func = function() 
+    func = function()
         if (not LoggingChat()) then
-            LoggingChat(true) 
+            LoggingChat(true)
             DEFAULT_CHAT_FRAME:AddMessage(CHATLOGENABLED, 1, 1, 0)
         else
             LoggingChat(false)
