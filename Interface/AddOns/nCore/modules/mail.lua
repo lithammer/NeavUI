@@ -1,6 +1,6 @@
 
 local f = CreateFrame('Button', nil, InboxFrame, 'UIPanelButtonTemplate')
-f:SetPoint('TOPRIGHT', -48, -46)
+f:SetPoint('TOPRIGHT', -58, -30)
 f:SetSize(100, 22)
 f:SetText(OPENMAIL)
 
