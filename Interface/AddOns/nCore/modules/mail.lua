@@ -4,6 +4,7 @@ f:SetPoint('TOPRIGHT', -58, -30)
 f:SetSize(100, 22)
 f:SetText(OPENMAIL)
 
+local totalMoney = 0
 local processing = false
 local function OnEvent()
     if (not MailFrame:IsShown()) then
@@ -18,7 +19,6 @@ local function OnEvent()
             return
         end
 
-        local totalMoney = 0
         for i = num, 1, -1 do
             local _, _, _, _, money, COD, _, item = GetInboxHeaderInfo(i)
             if (item and COD < 1) then
@@ -44,6 +44,7 @@ f:RegisterEvent('MAIL_INBOX_UPDATE')
 f:SetScript('OnEvent', OnEvent)
 f:SetScript('OnClick', function(self) 
     if (not processing) then 
+        totalMoney = 0
         processing = true 
         OnEvent() 
     end 
