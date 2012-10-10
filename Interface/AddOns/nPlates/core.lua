@@ -24,15 +24,8 @@ local whiteOverlay = 'Interface\\AddOns\\nPlates\\media\\textureIconOverlay'
 
 local f = CreateFrame('Frame', nil, UIParent)
 
-f:RegisterEvent('PLAYER_TARGET_CHANGED')
-
---f:RegisterEvent('UNIT_TARGET')
-f:RegisterEvent('UNIT_THREAT_SITUATION_UPDATE')
-f:RegisterEvent('UNIT_THREAT_LIST_UPDATE')
-f:RegisterEvent('PLAYER_REGEN_ENABLED')
-f:RegisterEvent('PLAYER_REGEN_DISABLED')
-f:RegisterEvent('PLAYER_CONTROL_LOST')
-f:RegisterEvent('PLAYER_CONTROL_GAINED')
+f.elapsed = 0
+f.elapsedLong = 0
 
     -- Totem data and functions
 
@@ -259,7 +252,7 @@ local function UpdateNameL(self)
 
     self.NewName:SetTextColor(1, 1, 1)
     if (cfg.showLevel) then
-        local levelText = self.Level:GetText()
+        local levelText = self.Level:GetText() or ''
         local levelColor = RGBHex(self.Level:GetTextColor())
         local eliteTexture = self.EliteIcon:IsVisible()
 
@@ -458,22 +451,13 @@ local function SkinPlate(self)
         self.Highlight:Hide()
     end)
 
-    f:HookScript('OnEvent', function(_, event)
-        if (not self:IsVisible()) then
-            return
-        end
-
-        if (CanHaveThreat(self.Health:GetStatusBarColor())) then
-            if (event == 'UNIT_THREAT_LIST_UPDATE' or event == 'UNIT_THREAT_SITUATION_UPDATE' or event == 'PLAYER_REGEN_ENABLED' or event == 'PLAYER_REGEN_DISABLED') then
+    self:SetScript('OnUpdate', function(_, elapsed)
+        f.elapsed = f.elapsed + elapsed
+        if (f.elapsed >= 0.1) then
+            if ((CanHaveThreat(self.Health:GetStatusBarColor()) and InCombatLockdown()) or self.NewGlow:IsShown()) then
                 UpdateThreatColor(self)
             end
-        else
-            if (self.NewGlow:IsVisible()) then
-                self.NewGlow:Hide()
-            end
-        end
 
-        if (event == 'PLAYER_TARGET_CHANGED') then
             if (cfg.showTargetBorder) then
                 if (IsTarget(self)) then
                     if (not self.TargetHighlight) then
@@ -492,9 +476,16 @@ local function SkinPlate(self)
                     end
                 end
             end
+
+            f.elapsed = 0
         end
 
-        UpdateHealthColor(self)
+        f.elapsedLong = f.elapsedLong + elapsed
+        if (f.elapsedLong >= 0.49) then
+            UpdateHealthColor(self)
+
+            f.elapsedLong = 0
+        end
 
     end)
 end
