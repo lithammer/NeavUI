@@ -18,6 +18,12 @@ hooksecurefunc('ActionButton_UpdateHotkeys', function(self)
         text = gsub(text, _G['KEY_NUMPAD'..i], 'Nu'..i)
     end
 
+    text = gsub(text, KEY_NUMPADDECIMAL, 'Nu.')
+    text = gsub(text, KEY_NUMPADDIVIDE, 'Nu/')
+    text = gsub(text, KEY_NUMPADMINUS, 'Nu-')
+    text = gsub(text, KEY_NUMPADMULTIPLY, 'Nu*')
+    text = gsub(text, KEY_NUMPADPLUS, 'Nu+')
+
     text = gsub(text, KEY_MOUSEWHEELUP, 'MU')
     text = gsub(text, KEY_MOUSEWHEELDOWN, 'MD')
     text = gsub(text, KEY_NUMLOCK, 'NuL')
