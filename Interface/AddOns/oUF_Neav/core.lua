@@ -155,6 +155,23 @@ local function CreateFocusButton(self)
     end)
 end
 
+local function UpdateThreat(self)
+    local _, status, scaledPercent, _, _ = UnitDetailedThreatSituation('player', 'target')
+
+    if (scaledPercent) then
+        local red, green, blue = GetThreatStatusColor(status)
+        self.NumericalThreat.bg:SetStatusBarColor(red, green, blue)
+        self.NumericalThreat.value:SetText(math.ceil(scaledPercent)..'%')
+        if (not self.NumericalThreat:IsVisible()) then
+            self.NumericalThreat:Show()
+        end
+    else
+        if (self.NumericalThreat:IsVisible()) then
+            self.NumericalThreat:Hide()
+        end
+    end
+end
+
 local function PlayerToVehicleTexture(self, event, unit)
     self.Texture:SetSize(240, 121)
     self.Texture:SetPoint('CENTER', self, 0, -8)
@@ -1316,6 +1333,34 @@ local function CreateUnitLayout(self, unit)
             self.Auras.PostUpdateGapIcon = function(self, unit, icon, visibleBuffs)
                 icon:Hide()
             end
+        end
+
+        if (config.units.target.showThreatValue) then
+            self.NumericalThreat = CreateFrame('Frame', nil, self)
+            self.NumericalThreat:SetSize(49, 18)
+            self.NumericalThreat:SetPoint('BOTTOM', self, 'TOP', 0, 0)
+            self.NumericalThreat:Hide()
+
+            self.NumericalThreat.value = self.NumericalThreat:CreateFontString(nil, 'OVERLAY', 'GameFontHighlight')
+            self.NumericalThreat.value:SetPoint('TOP', 0, -4)
+
+            self.NumericalThreat.bg = CreateFrame('StatusBar', nil, self.NumericalThreat)
+            self.NumericalThreat.bg:SetStatusBarTexture(config.media.statusbar)
+            self.NumericalThreat.bg:SetFrameStrata('LOW')
+            self.NumericalThreat.bg:SetPoint('TOP', 0, -3)
+            self.NumericalThreat.bg:SetSize(37, 14)
+
+            self.NumericalThreat.texture = self.NumericalThreat:CreateTexture(nil, 'ARTWORK')
+            self.NumericalThreat.texture:SetPoint('TOP', 0, 0)
+            self.NumericalThreat.texture:SetTexture('Interface\\TargetingFrame\\NumericThreatBorder')
+            self.NumericalThreat.texture:SetTexCoord(0, 0.765625, 0, 0.5625)
+            self.NumericalThreat.texture:SetSize(49, 18)
+
+            self:RegisterEvent('UNIT_THREAT_LIST_UPDATE', UpdateThreat)
+            self:RegisterEvent('UNIT_THREAT_SITUATION_UPDATE', UpdateThreat)
+            self:RegisterEvent('PLAYER_REGEN_DISABLED', UpdateThreat)
+            self:RegisterEvent('PLAYER_REGEN_ENABLED', UpdateThreat)
+            self:RegisterEvent('PLAYER_TARGET_CHANGED', UpdateThreat)
         end
     end
 

@@ -153,6 +153,8 @@ ns.Config = {
 
             showCombatFeedback = false,
 
+            showThreatValue = true,                                                         -- Show a Blizzard style threat indicator
+
             position = {'TOPLEFT', UIParent, 300, -30},
 
             castbar = {
