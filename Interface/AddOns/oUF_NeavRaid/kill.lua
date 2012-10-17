@@ -1,17 +1,18 @@
 
+local frameHider = CreateFrame('Frame')
+frameHider:Hide()
+
 InterfaceOptionsFrameCategoriesButton11:SetScale(0.00001)
 InterfaceOptionsFrameCategoriesButton11:SetAlpha(0)
 
-CompactRaidFrameManager:ClearAllPoints()
-CompactRaidFrameManager:SetPoint('TOP', UIParent, 'BOTTOM', 0, -9000)
+CompactRaidFrameManager:SetParent(frameHider)
 CompactUnitFrameProfiles:UnregisterAllEvents()
 
 for i = 1, MAX_PARTY_MEMBERS do
     local name = 'PartyMemberFrame'..i
     local frame = _G[name]
 
-    frame:ClearAllPoints()
-    frame:SetPoint('TOP', UIParent, 'BOTTOM', 0, -9000)
+    frame:SetParent(frameHider)
 
     _G[name..'HealthBar']:UnregisterAllEvents()
     _G[name..'ManaBar']:UnregisterAllEvents()
@@ -19,8 +20,7 @@ for i = 1, MAX_PARTY_MEMBERS do
     local pet = name..'PetFrame'
     local petframe = _G[pet]
 
-    petframe:ClearAllPoints()
-    petframe:SetPoint('TOP', UIParent, 'BOTTOM', 0, -9000)
+    petframe:SetParent(frameHider)
 
     _G[pet]:UnregisterAllEvents()
 end
