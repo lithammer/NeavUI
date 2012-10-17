@@ -1,5 +1,5 @@
 
-local _, addon = ...
+local _, nPower = ...
 
 local ComboColor = nPower.energy.comboColor
 local playerClass = select(2, UnitClass('player'))
@@ -322,7 +322,7 @@ local function UpdateBarVisibility()
     end
 
     if (newAlpha) then
-        addon:Fade(f.Power, 0.3, f.Power:GetAlpha(), newAlpha)
+        nPower:Fade(f.Power, 0.3, f.Power:GetAlpha(), newAlpha)
     end
 end
 
@@ -345,7 +345,7 @@ local function UpdateBarValue()
     f.Power:SetValue(min)
 
     if (nPower.valueAbbrev) then
-        f.Power.Value:SetText(min > 0 and addon:FormatValue(min) or '')
+        f.Power.Value:SetText(min > 0 and nPower:FormatValue(min) or '')
     else
         f.Power.Value:SetText(min > 0 and min or '')
     end

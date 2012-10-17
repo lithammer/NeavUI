@@ -1,4 +1,6 @@
 
+local _, nPower = ...
+
 nPower = {
     position = {'CENTER', UIParent, 0, -100},
     sizeWidth = 200,
