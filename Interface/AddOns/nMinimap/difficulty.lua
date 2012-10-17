@@ -14,10 +14,12 @@ end
 
 function GetDifficultyText()
     local inInstance, instancetype = IsInInstance()
-    local _, _, difficultyIndex, _, maxPlayers, playerDifficulty, isDynamic = GetInstanceInfo()
+    local _, _, difficultyIndex, _, maxPlayers, playerDifficulty, _ = GetInstanceInfo()
 
+    local instanceText = ''
     local guildStyle
     local heroStyle = '|cffff00ffH|r'
+    local lookingForRaidStyle = '|cffffffffLFR'
 
     if (isGuildGroup or GuildInstanceDifficulty:IsShown()) then
         guildStyle = '|cffffff00G|r'
@@ -25,51 +27,22 @@ function GetDifficultyText()
         guildStyle = ''
     end
 
-    if (inInstance and instancetype == 'raid') then
-        if (isDynamic) then
-            if (difficultyIndex == 4 or difficultyIndex == 3) then
-                if (playerDifficulty == 0) then
-                    return maxPlayers..guildStyle..heroStyle
-                end
-            end
+    local isHeroicIndex = {
+        [2] = true,
+        [5] = true,
+        [6] = true,
+        [8] = true,
+    }
 
-            if (difficultyIndex == 2) then
-                return maxPlayers..guildStyle
-            end
+    if (inInstance) then
+        instanceText = maxPlayers..guildStyle
 
-            if (difficultyIndex == 1) then
-                if (playerDifficulty == 0) then
-                    return maxPlayers..guildStyle
-                end
-
-                if (playerDifficulty == 1) then
-                    return maxPlayers..guildStyle..heroStyle
-                end
-            end
-        end
-
-        if (not isDynamic) then
-            if (difficultyIndex == 1 or difficultyIndex == 2) then
-                return maxPlayers..guildStyle
-            end
-
-            if (difficultyIndex == 3 or difficultyIndex == 4) then
-                return maxPlayers..guildStyle..heroStyle
-            end
+        if (isHeroicIndex[difficultyIndex]) then
+            instanceText = instanceText..heroStyle
         end
     end
 
-    if (inInstance and instancetype == 'party') then
-        if (difficultyIndex == 2)then
-            return maxPlayers..guildStyle..heroStyle
-        elseif (difficultyIndex == 1)then
-            return maxPlayers..guildStyle
-        end
-    end
-
-    if (not inInstance) then
-        return '' 
-    end
+    return instanceText
 end
 
 local f = Minimap
@@ -91,7 +64,7 @@ GuildInstanceDifficulty:Hide()
 GuildInstanceDifficulty:Show()
 GuildInstanceDifficulty:ClearAllPoints()
 GuildInstanceDifficulty:SetPoint('TOPLEFT', Minimap, 1, 5)
-GuildInstanceDifficulty:SetScale(0.9)   
+GuildInstanceDifficulty:SetScale(0.9)
 --]]
 
 hooksecurefunc(GuildInstanceDifficulty, 'Show', function()
