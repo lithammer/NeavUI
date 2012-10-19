@@ -399,6 +399,10 @@ f:SetScript('OnEvent', function(self, event, arg1)
             end
 
             f.extraPoints:SetText(nump == 0 and '' or nump)
+
+            if (not f.extraPoints:IsShown()) then
+                f.extraPoints:Show()
+            end
         end
     end
 
