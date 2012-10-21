@@ -260,9 +260,9 @@ local function GetFormattedUnitClass(unit)
     end
 end
 
-local function GetFormattedUnitString(unit)
+local function GetFormattedUnitString(unit, spec)
     if (UnitIsPlayer(unit)) then
-        return GetFormattedUnitLevel(unit)..UnitRace(unit)..GetFormattedUnitClass(unit)
+        return GetFormattedUnitLevel(unit)..UnitRace(unit)..GetFormattedUnitClass(unit)..(spec and spec or '')
     else
         return GetFormattedUnitLevel(unit)..GetFormattedUnitClassification(unit)..GetFormattedUnitType(unit)
     end
@@ -355,10 +355,38 @@ local function AddMouseoverTarget(self, unit)
     end
 end
 
+GameTooltip.inspectCache = {}
+
 GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
     local unit = GetRealUnit(self)
 
     if (UnitExists(unit) and UnitName(unit) ~= UNKNOWN) then
+
+        local ilvl = 0
+        local spec = nil
+        local lastUpdate = 30
+        for index, _ in pairs(self.inspectCache) do
+            local inspectCache = self.inspectCache[index]
+            if (inspectCache.GUID == UnitGUID(unit)) then
+                ilvl = inspectCache.itemLevel or 0
+                spec = inspectCache.talentSpec or nil
+                lastUpdate = inspectCache.lastUpdate and math.abs(inspectCache.lastUpdate - math.floor(GetTime())) or 30
+            end
+        end
+
+            -- Fetch inspect information (ilvl and spec)
+
+        if (unit and CanInspect(unit)) then
+            if (not self.inspectRefresh and lastUpdate >= 30 and not self.blockInspectRequests) then
+                if (not self.blockInspectRequests) then
+                    self.inspectRequestSent = true
+                    NotifyInspect(unit)
+                end
+            end
+        end
+
+        self.inspectRefresh = false
+
         local name, realm = UnitName(unit)
 
             -- Hide player titles
@@ -383,7 +411,7 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
 
         for i = 2, GameTooltip:NumLines() do
             if (_G['GameTooltipTextLeft'..i]:GetText():find('^'..TOOLTIP_UNIT_LEVEL:gsub('%%s', '.+'))) then
-                _G['GameTooltipTextLeft'..i]:SetText(GetFormattedUnitString(unit))
+                _G['GameTooltipTextLeft'..i]:SetText(GetFormattedUnitString(unit, spec))
             end
         end
 
@@ -468,39 +496,35 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
 
             -- Show player item lvl
 
-        if (unit and CanInspect(unit)) then
-            if (not ((InspectFrame and InspectFrame:IsShown()) or (Examiner and Examiner:IsShown()))) then
-                NotifyInspect(unit)
-            end
+        if (cfg.showItemLevel and ilvl > 1) then
+            GameTooltip:AddLine(STAT_AVERAGE_ITEM_LEVEL .. ': ' .. '|cffFFFFFF'..ilvl..'|r')
         end
 
             -- Symbiosis
 
         if (UnitIsPlayer(unit) and not UnitIsEnemy(unit, 'player')) then
-            local already = false
+            local hasSymbiosisBuff = false
             for i = 1, 40 do
                 if select(11, UnitAura(unit, i, 'HELPFUL')) == 110309 then
-                    already = true
+                    hasSymbiosisBuff = true
                     break
                 end
             end
 
-            local class = select(2, UnitClass('player'))
-            local uclass = select(2, UnitClass(unit))
-            local spec = SPEC_CORE_ABILITY_TEXT[select(1, GetSpecializationInfo(GetSpecialization() or 1))]
-            local spellID = (class == 'DRUID' and uclass ~= 'DRUID') and symbiosis.grant[uclass][spec] or (class ~= 'DRUID' and uclass == 'DRUID') and symbiosis.grant[class][spec]
+            local _, playerClass = UnitClass('player')
+            local _, unitClass = UnitClass(unit)
+            local spec = SPEC_CORE_ABILITY_TEXT[GetSpecializationInfo(GetSpecialization() or 1)]
+            local spellID = (playerClass == 'DRUID' and unitClass ~= 'DRUID') and symbiosis.grant[unitClass][spec] or (playerClass ~= 'DRUID' and unitClass == 'DRUID') and symbiosis.grant[playerClass][spec]
             local name, _, icon = GetSpellInfo(spellID)
 
-            if already then
+            if (hasSymbiosisBuff) then
                 GameTooltip:AddLine(' ')
-                GameTooltip:AddLine('|cff3eea23'..select(1, GetSpellInfo(110309))..' already buffed|r')
+                GameTooltip:AddLine('|cff3eea23'..GetSpellInfo(110309)..' already buffed|r')
             end
 
-            if icon then
+            if (icon) then
                 GameTooltip:AddLine(' ')
-                GameTooltip:AddDoubleLine('|T'..icon..':16:16:0:0:64:64:4:60:4:60|t '..name, '|cff3eea23'..select(1, GetSpellInfo(110309))..'|r')
-                self:Show()
-                if self.aura then self.aura:SetSize(self:GetWidth(), 0) end
+                GameTooltip:AddDoubleLine('|T'..icon..':16:16:0:0:64:64:4:60:4:60|t '..name, '|cff3eea23'..GetSpellInfo(110309)..'|r')
             end
         end
     end
@@ -540,38 +564,67 @@ GameTooltip:SetScript('OnEvent', function(self, event, GUID)
         return
     end
 
-    if (event == 'INSPECT_READY' and UnitGUID(unit) == GUID) then
-        local id = GetInspectSpecialization(unit)
-        local _, spec, _, icon, _, _, class = GetSpecializationInfoByID(id)
+    if (self.blockInspectRequests) then
+        self.inspectRequestSent = false
+    end
 
-            -- Show spec icon
-
-        if (spec) then
-            local race = UnitRace(unit)
-
-            for i = 1, select('#', self:GetRegions()) do
-                local obj = select(i, self:GetRegions())
-
-                if (obj and obj:GetObjectType() == 'FontString') then
-                    if (obj:GetText() and obj:GetText():find(race)) then
-                        obj:SetText(obj:GetText()..' |T'..icon..':0|t')
-                    end
-                end
-            end
+    if (UnitGUID(unit) ~= GUID or not self.inspectRequestSent) then
+        if (not self.blockInspectRequests) then
+            ClearInspectPlayer()
         end
+        return
+    end
 
-            -- Show player item lvl
+    local _, spec, _, icon, _, _, class = GetSpecializationInfoByID(GetInspectSpecialization(unit))
+    local ilvl = GetItemLevel(unit)
+    local now = GetTime()
 
-        if (cfg.showItemLevel) then
-            local ilvl = GetItemLevel(unit)
-
-            if (ilvl > 1) then
-                GameTooltip:AddLine(STAT_AVERAGE_ITEM_LEVEL .. ': ' .. '|cffFFFFFF'..ilvl..'|r')
-            end
+    local matchFound
+    for index, _ in pairs(self.inspectCache) do
+        local inspectCache = self.inspectCache[index]
+        if (inspectCache.GUID == GUID) then
+            inspectCache.itemLevel = ilvl
+            inspectCache.talentSpec = ' |T'..icon..':0|t'
+            inspectCache.lastUpdate = math.floor(now)
+            matchFound = true
         end
+    end
 
-        self:Show()
+    if not matchFound then
+        local GUIDInfo = {
+            ['GUID'] = GUID,
+            ['itemLevel'] = ilvl,
+            ['talentSpec'] = ' |T'..icon..':0|t',
+            ['lastUpdate'] = math.floor(now)
+        }
+        table.insert(self.inspectCache, GUIDInfo)
+    end
 
-        ClearInspectPlayer(unit)
+    if (#self.inspectCache > 30) then
+        table.remove(self.inspectCache, 1)
+    end
+
+    self.inspectRefresh = true
+    GameTooltip:SetUnit('mouseover')
+
+    if (not self.blockInspectRequests) then
+        ClearInspectPlayer()
+    end
+    self.inspectRequestSent = false
+end)
+
+local f = CreateFrame('Frame')
+f:RegisterEvent('ADDON_LOADED')
+f:SetScript('OnEvent', function(self, event)
+    if IsAddOnLoaded('Blizzard_InspectUI') then
+        hooksecurefunc('InspectFrame_Show', function(unit)
+            GameTooltip.blockInspectRequests = true
+        end)
+
+        InspectFrame:HookScript('OnHide', function()
+            GameTooltip.blockInspectRequests = false
+        end)
+
+        self:UnregisterEvent('ADDON_LOADED')
     end
 end)
