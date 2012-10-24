@@ -20,7 +20,8 @@ nTooltip.Config = {
     showUnitRole = true,
     showPVPIcons = false,                       -- Show pvp icons instead of just a prefix
     showMouseoverTarget = true,
-    showItemLevel = false,
+    showItemLevel = true,
+    showSpecializationIcon = true,
 
     healthbar = {
         showHealthValue = true,

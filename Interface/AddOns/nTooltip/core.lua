@@ -260,9 +260,9 @@ local function GetFormattedUnitClass(unit)
     end
 end
 
-local function GetFormattedUnitString(unit, spec)
+local function GetFormattedUnitString(unit, specIcon)
     if (UnitIsPlayer(unit)) then
-        return GetFormattedUnitLevel(unit)..UnitRace(unit)..GetFormattedUnitClass(unit)..(spec and spec or '')
+        return GetFormattedUnitLevel(unit)..UnitRace(unit)..GetFormattedUnitClass(unit)..(cfg.showSpecializationIcon and specIcon or '')
     else
         return GetFormattedUnitLevel(unit)..GetFormattedUnitClassification(unit)..GetFormattedUnitType(unit)
     end
@@ -363,13 +363,13 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
     if (UnitExists(unit) and UnitName(unit) ~= UNKNOWN) then
 
         local ilvl = 0
-        local spec = nil
+        local specIcon = ''
         local lastUpdate = 30
         for index, _ in pairs(self.inspectCache) do
             local inspectCache = self.inspectCache[index]
             if (inspectCache.GUID == UnitGUID(unit)) then
                 ilvl = inspectCache.itemLevel or 0
-                spec = inspectCache.talentSpec or nil
+                specIcon = inspectCache.specIcon or ''
                 lastUpdate = inspectCache.lastUpdate and math.abs(inspectCache.lastUpdate - math.floor(GetTime())) or 30
             end
         end
@@ -411,7 +411,7 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
 
         for i = 2, GameTooltip:NumLines() do
             if (_G['GameTooltipTextLeft'..i]:GetText():find('^'..TOOLTIP_UNIT_LEVEL:gsub('%%s', '.+'))) then
-                _G['GameTooltipTextLeft'..i]:SetText(GetFormattedUnitString(unit, spec))
+                _G['GameTooltipTextLeft'..i]:SetText(GetFormattedUnitString(unit, specIcon))
             end
         end
 
@@ -575,7 +575,7 @@ GameTooltip:SetScript('OnEvent', function(self, event, GUID)
         return
     end
 
-    local _, spec, _, icon, _, _, class = GetSpecializationInfoByID(GetInspectSpecialization(unit))
+    local _, _, _, icon = GetSpecializationInfoByID(GetInspectSpecialization(unit))
     local ilvl = GetItemLevel(unit)
     local now = GetTime()
 
@@ -584,7 +584,7 @@ GameTooltip:SetScript('OnEvent', function(self, event, GUID)
         local inspectCache = self.inspectCache[index]
         if (inspectCache.GUID == GUID) then
             inspectCache.itemLevel = ilvl
-            inspectCache.talentSpec = ' |T'..icon..':0|t'
+            inspectCache.specIcon = icon and ' |T'..icon..':0|t' or ''
             inspectCache.lastUpdate = math.floor(now)
             matchFound = true
         end
@@ -594,7 +594,7 @@ GameTooltip:SetScript('OnEvent', function(self, event, GUID)
         local GUIDInfo = {
             ['GUID'] = GUID,
             ['itemLevel'] = ilvl,
-            ['talentSpec'] = ' |T'..icon..':0|t',
+            ['specIcon'] = icon and ' |T'..icon..':0|t' or '',
             ['lastUpdate'] = math.floor(now)
         }
         table.insert(self.inspectCache, GUIDInfo)
