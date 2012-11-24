@@ -9,6 +9,11 @@
 
  AltPowerBar - A StatusBar to represent alternative power.
 
+ Options
+
+ .colorTexture  - Use the vertex color values returned by
+                  UnitAlternatePowerTextureInfo to color the bar.
+
  Examples
 
    -- Position and size
@@ -46,13 +51,22 @@ local UpdatePower = function(self, event, unit, powerType)
 		altpowerbar:PreUpdate()
 	end
 
-	local barType, min = UnitAlternatePowerInfo(unit)
+	local _, r, g, b
+	if(altpowerbar.colorTexture) then
+		_, r, g, b = UnitAlternatePowerTextureInfo(unit, 2)
+	end
+
 	local cur = UnitPower(unit, ALTERNATE_POWER_INDEX)
 	local max = UnitPowerMax(unit, ALTERNATE_POWER_INDEX)
 
+	local barType, min = UnitAlternatePowerInfo(unit)
 	altpowerbar.barType = barType
 	altpowerbar:SetMinMaxValues(min, max)
 	altpowerbar:SetValue(cur)
+
+	if(b) then
+		altpowerbar:SetStatusBarColor(r, g, b)
+	end
 
 	--[[ :PostUpdate(min, cur, max)
 
