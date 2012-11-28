@@ -249,8 +249,8 @@ local function SetComboAlpha(i)
 end
 
 local function UpdateChi()
-    local chi = UnitPower('player', SPELL_POWER_LIGHT_FORCE)
-    local maxChi = UnitPowerMax('player', SPELL_POWER_LIGHT_FORCE)
+    local chi = UnitPower('player', SPELL_POWER_CHI)
+    local maxChi = UnitPowerMax('player', SPELL_POWER_CHI)
     local yOffset = config.energy.comboPointsBelow and -35 or 0
 
     if (f.Chi.maxChi ~= maxChi) then
