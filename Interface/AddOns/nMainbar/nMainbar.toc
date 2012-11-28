@@ -1,4 +1,4 @@
-## Interface: 50001
+## Interface: 50100
 ## Title: |cffCC3333 n|rMainBar
 ## Notes: Yet another Blizzbar mod
 
