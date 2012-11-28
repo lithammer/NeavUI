@@ -28,10 +28,10 @@ function GetDifficultyText()
     end
 
     local isHeroicIndex = {
-        [2] = true,
-        [5] = true,
-        [6] = true,
-        [8] = true,
+        [DIFFICULTY_DUNGEON_HEROIC] = true,
+        [DIFFICULTY_RAID10_HEROIC] = true,
+        [DIFFICULTY_RAID25_HEROIC] = true,
+        [DIFFICULTY_DUNGEON_CHALLENGE] = true,
     }
 
     if (inInstance) then
