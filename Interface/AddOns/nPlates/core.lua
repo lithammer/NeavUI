@@ -308,10 +308,11 @@ local function UpdatePlate(self)
     self.Castbar.IconOverlay:SetVertexColor(r, g, b)
 end
 
-local function SkinPlate(self)
+local function SkinPlate(self, nameFrame)
     self.Health, self.Castbar = self:GetChildren()
     _, self.Castbar.Overlay, self.Castbar.Shield, self.Castbar.Icon = self.Castbar:GetRegions()
-    self.Glow, self.Overlay, self.Highlight, self.Name, self.Level, self.BossIcon, self.RaidIcon, self.EliteIcon = self:GetRegions()
+    self.Glow, self.Overlay, self.Highlight, self.Level, self.BossIcon, self.RaidIcon, self.EliteIcon = self:GetRegions()
+    self.Name = nameFrame:GetRegions()
 
         -- Hide some nameplate objects
 
@@ -509,7 +510,7 @@ f:SetScript('OnUpdate', function(self, elapsed)
                 local frameName = frame:GetName()
 
                 if (frameName and frameName:find('NamePlate') and not frame.NewName) then
-                    SkinPlate(frame)
+                    SkinPlate(frame:GetChildren())
                     index = i
                 end
             end
@@ -518,41 +519,3 @@ f:SetScript('OnUpdate', function(self, elapsed)
         lastUpdate = 0
     end
 end)
-
---[[
-local index = nil
-
-local function OnUpdate(self, elapsed)
-    self.lastUpdate = self.lastUpdate and (self.lastUpdate + elapsed) or 0
-    if (self.lastUpdate > 0.25) then
-        while(_G['NamePlate' .. index]) do
-            local frame = _G['NamePlate' .. index]
-            frame:HookScript('OnShow', SkinPlate)
-            SkinPlate(frame)
-
-            index = index + 1
-        end
-        self.lastUpdate = 0
-    end
-end
-
-local function FindFirstNameplate(self, elapsed)
-    frames = select('#', WorldFrame:GetChildren())
-    if (frames ~= total) then
-        for i = 1, frames do
-            namePlate = select(i, WorldFrame:GetChildren())
-            if (IsNameplate(namePlate)) then
-                index = index and (index < namePlate:GetName():match('%d+')) and index or namePlate:GetName():match('%d+')
-            end
-
-            total = frames
-        end
-
-        if (index) then
-            f:SetScript('OnUpdate', OnUpdate)
-        end
-    end
-end
-
-f:SetScript('OnUpdate', FindFirstNameplate)
-]]--
