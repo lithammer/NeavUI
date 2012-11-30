@@ -851,6 +851,7 @@ local function CreateUnitLayout(self, unit)
             WarlockPowerFrame:SetParent(oUF_Neav_Player)
             WarlockPowerFrame:SetScale(config.units.player.scale * 0.8)
             WarlockPowerFrame_OnLoad(WarlockPowerFrame)
+            WarlockPowerFrame:SetFrameLevel(1)
 
             ShardBarFrame:SetScale(config.units.player.scale * 0.8)
             ShardBarFrame:ClearAllPoints()
