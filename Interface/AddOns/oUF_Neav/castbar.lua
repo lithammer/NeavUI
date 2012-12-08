@@ -3,10 +3,10 @@ local _, ns = ...
 
 local function UpdateCastbarColor(self, unit, config)
     if (self.interrupt) then
-        ns.ColorBorder(self, 'white', unpack(config.interruptColor or {1, 0, 1}))
+        ns.ColorBorder(self, 'white', unpack(config and config.interruptColor or {1, 0, 1}))
 
         if (self.IconOverlay) then
-            ns.ColorBorder(self.IconOverlay, 'white', unpack(config.interruptColor or {1, 0, 1}))
+            ns.ColorBorder(self.IconOverlay, 'white', unpack(config and config.interruptColor or {1, 0, 1}))
         end
     else
         ns.ColorBorder(self, 'default', 1, 1, 1, 0)

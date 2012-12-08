@@ -260,6 +260,7 @@ ns.Config = {
 
             castbar = {
                 color = {1, 0, 0},
+                interruptColor = {1, 0, 1},
 
                 icon = {
                     size = 22,
