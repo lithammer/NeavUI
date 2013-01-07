@@ -1,9 +1,15 @@
-local AddOn = CreateFrame('Frame')
 
-AddOn:RegisterEvent('START_LOOT_ROLL')
-AddOn:SetScript('OnEvent', function(_, _, RollID)
-    local _, Name, _, Quality, BoP, _, _, CanDisenchant = GetLootRollItemInfo(RollID)
-    if (Quality == 2 and not BoP) then
-        RollOnLoot(RollID, CanDisenchant and 3 or 2)
+-- A skip list for green stuff you might not wanna auto-greed on
+local skipList = {
+    --['Stone Scarab'] = true,
+    --['Silver Scarab'] = true,
+}
+
+local f = CreateFrame('Frame')
+f:RegisterEvent('START_LOOT_ROLL')
+f:SetScript('OnEvent', function(_, _, rollID)
+    local _, name, _, quality, BoP, _, _, canDisenchant = GetLootRollItemInfo(rollID)
+    if (quality == 2 and not BoP and not skipList[name]) then
+        RollOnLoot(rollID, canDisenchant and 3 or 2)
     end
 end)
