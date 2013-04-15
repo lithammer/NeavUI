@@ -42,6 +42,8 @@ ns.cUnit = function(unit)
         return 'arena'
     elseif (unit:match('boss%d')) then
         return 'boss'
+    elseif (unit:match('partypet%d')) then
+        return 'pet'
     else
         return unit
     end
