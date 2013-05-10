@@ -310,7 +310,7 @@ end
 
 local function SkinPlate(self, nameFrame)
     self.Health, self.Castbar = self:GetChildren()
-    _, self.Castbar.Overlay, self.Castbar.Shield, self.Castbar.Icon = self.Castbar:GetRegions()
+    self.Castbar.Overlay, self.Castbar.Shield, self.Castbar.Icon = select(2, self.Castbar:GetRegions())
     self.Glow, self.Overlay, self.Highlight, self.Level, self.BossIcon, self.RaidIcon, self.EliteIcon = self:GetRegions()
     self.Name = nameFrame:GetRegions()
 
