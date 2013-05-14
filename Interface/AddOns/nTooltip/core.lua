@@ -198,7 +198,7 @@ local function GetItemLevel(unit)
     end
 
     if (item > 0) then
-        return floor(total / item)
+        return floor(total / item + 0.5)
     end
 
     return 0

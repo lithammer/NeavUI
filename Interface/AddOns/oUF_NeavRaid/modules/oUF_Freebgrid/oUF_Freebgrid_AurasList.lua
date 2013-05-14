@@ -23,6 +23,7 @@ end
     -- Note: Just must be in this instance, when you run the script above
 
 local L = {
+    ['Throne of Thunder'] = 930,
     ['Terrace of Endless Spring'] = 886,
     ['Heart of Fear'] = 897,
     ['Mogu\'shan Vaults'] = 896,
@@ -84,6 +85,151 @@ ns.auras = {
         -- Raid Debuffs
 
     instances = {
+        [L['Throne of Thunder']] = {
+
+                -- Jin'rokh the Breaker
+
+            [GetSpellInfo(138006)] = 4, -- Electrified Waters
+            [GetSpellInfo(137399)] = 6, -- Focused Lightning fixate
+            [GetSpellInfo(138732)] = 5, -- Ionization
+            [GetSpellInfo(138349)] = 2, -- Static Wound (tank only)
+            [GetSpellInfo(137371)] = 2, -- Thundering Throw (tank only)
+
+                -- Horridon
+
+            [GetSpellInfo(136769)] = 6, -- Charge
+            [GetSpellInfo(136767)] = 6, -- Triple Puncture (tanks only)
+            [GetSpellInfo(136708)] = 3, -- Stone Gaze
+            [GetSpellInfo(136723)] = 5, -- Sand Trap
+            [GetSpellInfo(136587)] = 5, -- Venom Bolt Volley (dispellable)
+            [GetSpellInfo(136710)] = 5, -- Deadly Plague (disease)
+            [GetSpellInfo(136670)] = 4, -- Mortal Strike
+            [GetSpellInfo(136573)] = 6, -- Frozen Bolt (Debuff used by frozen orb)
+            [GetSpellInfo(136512)] = 5, -- Hex of Confusion
+            [GetSpellInfo(136719)] = 6, -- Blazing Sunlight
+            [GetSpellInfo(136654)] = 4, -- Rending Charge
+            [GetSpellInfo(140946)] = 7, -- Dire Fixation (Heroic Only)
+
+                -- Council of Elders
+
+            [GetSpellInfo(136922)] = 6, -- Frostbite
+            [GetSpellInfo(137084)] = 3, -- Body Heat
+            [GetSpellInfo(137641)] = 6, -- Soul Fragment (Heroic only)
+            [GetSpellInfo(136878)] = 5, -- Ensnared
+            [GetSpellInfo(136857)] = 6, -- Entrapped (Dispell)
+            [GetSpellInfo(137650)] = 5, -- Shadowed Soul
+            [GetSpellInfo(137359)] = 6, -- Shadowed Loa Spirit fixate target
+            [GetSpellInfo(137972)] = 6, -- Twisted Fate (Heroic only)
+            [GetSpellInfo(136860)] = 5, -- Quicksand
+
+                -- Tortos
+
+            [GetSpellInfo(134030)] = 6, -- Kick Shell
+            [GetSpellInfo(134920)] = 6, -- Quake Stomp
+            [GetSpellInfo(136751)] = 6, -- Sonic Screech
+            [GetSpellInfo(136753)] = 2, -- Slashing Talons (tank only)
+            [GetSpellInfo(137633)] = 5, -- Crystal Shell (heroic only)
+
+                -- Megaera
+
+            [GetSpellInfo(139822)] = 6, -- Cinder (Dispell)
+            [GetSpellInfo(134396)] = 6, -- Consuming Flames (Dispell)
+            [GetSpellInfo(137731)] = 5, -- Ignite Flesh
+            [GetSpellInfo(136892)] = 6, -- Frozen Solid
+            [GetSpellInfo(139909)] = 5, -- Icy Ground
+            [GetSpellInfo(137746)] = 6, -- Consuming Magic
+            [GetSpellInfo(139843)] = 4, -- Artic Freeze
+            [GetSpellInfo(139840)] = 4, -- Rot Armor
+            [GetSpellInfo(140179)] = 6, -- Suppression (stun)
+
+                -- Ji-Kun
+
+            [GetSpellInfo(138309)] = 4, -- Slimed
+            [GetSpellInfo(138319)] = 5, -- Feed Pool
+            [GetSpellInfo(140571)] = 3, -- Feed Pool
+            [GetSpellInfo(134372)] = 3, -- Screech
+
+                -- Durumu the Forgotten
+
+            [GetSpellInfo(133768)] = 2, -- Arterial Cut (tank only)
+            [GetSpellInfo(133767)] = 2, -- Serious Wound (Tank only)
+            [GetSpellInfo(136932)] = 7, -- Force of Will
+            [GetSpellInfo(134122)] = 6, -- Blue Beam
+            [GetSpellInfo(134123)] = 6, -- Red Beam
+            [GetSpellInfo(134124)] = 6, -- Yellow Beam
+            [GetSpellInfo(133795)] = 4, -- Life Drain
+            [GetSpellInfo(133597)] = 6, -- Dark Parasite
+            [GetSpellInfo(133732)] = 5, -- Infrared Light (the stacking red debuff)
+            [GetSpellInfo(133677)] = 5, -- Blue Rays (the stacking blue debuff)
+            [GetSpellInfo(133738)] = 5, -- Bright Light (the stacking yellow debuff)
+            [GetSpellInfo(133737)] = 6, -- Bright Light (The one that says you are actually in a beam)
+            [GetSpellInfo(133675)] = 6, -- Blue Rays (The one that says you are actually in a beam)
+            [GetSpellInfo(134626)] = 6, -- Lingering Gaze
+
+                -- Primordius
+
+            [GetSpellInfo(140546)] = 6, -- Fully Mutated
+            [GetSpellInfo(136180)] = 3, -- Keen Eyesight (Helpful)
+            [GetSpellInfo(136181)] = 4, -- Impared Eyesight (Harmful)
+            [GetSpellInfo(136182)] = 3, -- Improved Synapses (Helpful)
+            [GetSpellInfo(136183)] = 4, -- Dulled Synapses (Harmful)
+            [GetSpellInfo(136184)] = 3, -- Thick Bones (Helpful)
+            [GetSpellInfo(136185)] = 4, -- Fragile Bones (Harmful)
+            [GetSpellInfo(136186)] = 3, -- Clear Mind (Helpful)
+            [GetSpellInfo(136187)] = 4, -- Clouded Mind (Harmful)
+            [GetSpellInfo(136050)] = 2, -- Malformed Blood(Tank Only)
+
+                -- Dark Animus
+
+            [GetSpellInfo(138569)] = 2, -- Explosive Slam (tank only)
+            [GetSpellInfo(138659)] = 6, -- Touch of the Animus
+            [GetSpellInfo(138609)] = 6, -- Matter Swap
+            [GetSpellInfo(138691)] = 4, -- Anima Font
+            [GetSpellInfo(136962)] = 5, -- Anima Ring
+            [GetSpellInfo(138480)] = 6, -- Crimson Wake Fixate
+
+                -- Iron Qon
+
+            [GetSpellInfo(134647)] = 5, -- Scorched
+            [GetSpellInfo(136193)] = 6, -- Arcing Lightning
+            [GetSpellInfo(135147)] = 2, -- Dead Zone
+            [GetSpellInfo(134691)] = 2, -- Impale (tank only)
+            [GetSpellInfo(135145)] = 6, -- Freeze
+            [GetSpellInfo(136520)] = 5, -- Frozen Blood
+            [GetSpellInfo(137669)] = 3, -- Storm Cloud
+            [GetSpellInfo(137668)] = 5, -- Burning Cinders
+            [GetSpellInfo(137654)] = 5, -- Rushing Winds
+            [GetSpellInfo(136577)] = 4, -- Wind Storm
+            [GetSpellInfo(136192)] = 4, -- Lightning Storm
+
+                -- Twin Consorts
+
+            [GetSpellInfo(137440)] = 6, -- Icy Shadows (tank only)
+            [GetSpellInfo(137417)] = 6, -- Flames of Passion
+            [GetSpellInfo(138306)] = 5, -- Serpent's Vitality
+            [GetSpellInfo(137408)] = 2, -- Fan of Flames (tank only)
+            [GetSpellInfo(137360)] = 6, -- Corrupted Healing (tanks and healers only?)
+            [GetSpellInfo(137375)] = 3, -- Beast of Nightmares
+            [GetSpellInfo(136722)] = 6, -- Slumber Spores
+
+                -- Lei Shen
+
+            [GetSpellInfo(135695)] = 6, -- Static Shock
+            [GetSpellInfo(136295)] = 6, -- Overcharged
+            [GetSpellInfo(135000)] = 2, -- Decapitate (Tank only)
+            [GetSpellInfo(136478)] = 5, -- Fusion Slash
+            [GetSpellInfo(136543)] = 6, -- Ball Lightning
+            [GetSpellInfo(134821)] = 6, -- Discharged Energy
+            [GetSpellInfo(136326)] = 6, -- Overcharge
+            [GetSpellInfo(137176)] = 6, -- Overloaded Circuits
+            [GetSpellInfo(136853)] = 6, -- Lightning Bolt
+            [GetSpellInfo(135153)] = 6, -- Crashing Thunder
+            [GetSpellInfo(136914)] = 2, -- Electrical Shock
+            [GetSpellInfo(135001)] = 2, -- Maim
+
+            -- Ra-Den (Heroic only)
+        },
+
         [L['Terrace of Endless Spring']] = {
 
                 -- Protectors of the Endless
