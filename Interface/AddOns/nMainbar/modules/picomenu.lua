@@ -20,15 +20,15 @@ local menuList = {
     {
         text = CHARACTER_BUTTON,
         icon = 'Interface\\PaperDollInfoFrame\\UI-EquipmentManager-Toggle',
-        func = function() 
-            securecall(ToggleCharacter, 'PaperDollFrame') 
+        func = function()
+            securecall(ToggleCharacter, 'PaperDollFrame')
         end,
         notCheckable = true,
     },
     {
         text = SPELLBOOK_ABILITIES_BUTTON,
         icon = 'Interface\\MINIMAP\\TRACKING\\Class',
-        func = function() 
+        func = function()
             securecall(ToggleSpellBook, BOOKTYPE_SPELL)
         end,
         tooltipTitle = securecall(MicroButtonTooltipText, SPELLBOOK_ABILITIES_BUTTON, 'TOGGLESPELLBOOK'),
@@ -39,14 +39,14 @@ local menuList = {
         text = TALENTS_BUTTON,
         icon = 'Interface\\MINIMAP\\TRACKING\\Ammunition',
         -- icon = 'Interface\\AddOns\\nMainbar\\media\\picomenu\\picomenuTalents',
-        func = function() 
-            if (not PlayerTalentFrame) then 
-                LoadAddOn('Blizzard_TalentUI') 
+        func = function()
+            if (not PlayerTalentFrame) then
+                LoadAddOn('Blizzard_TalentUI')
             end
 
-            if (not GlyphFrame) then 
-                LoadAddOn('Blizzard_GlyphUI') 
-            end 
+            if (not GlyphFrame) then
+                LoadAddOn('Blizzard_GlyphUI')
+            end
 
             --PlayerTalentFrame_Toggle()
             securecall(ToggleTalentFrame)
@@ -58,8 +58,8 @@ local menuList = {
     {
         text = ACHIEVEMENT_BUTTON,
         icon = 'Interface\\AddOns\\nMainbar\\media\\picomenu\\picomenuAchievement',
-        func = function() 
-            securecall(ToggleAchievementFrame) 
+        func = function()
+            securecall(ToggleAchievementFrame)
         end,
         tooltipTitle = securecall(MicroButtonTooltipText, ACHIEVEMENT_BUTTON, 'TOGGLEACHIEVEMENT'),
         tooltipText = NEWBIE_TOOLTIP_ACHIEVEMENT,
@@ -68,8 +68,8 @@ local menuList = {
     {
         text = QUESTLOG_BUTTON,
         icon = 'Interface\\GossipFrame\\ActiveQuestIcon',
-        func = function() 
-            securecall(ToggleFrame, QuestLogFrame) 
+        func = function()
+            securecall(ToggleFrame, QuestLogFrame)
         end,
         tooltipTitle = securecall(MicroButtonTooltipText, QUESTLOG_BUTTON, 'TOGGLEQUESTLOG'),
         tooltipText = NEWBIE_TOOLTIP_QUESTLOG,
@@ -79,7 +79,7 @@ local menuList = {
         text = GUILD,
         icon = 'Interface\\GossipFrame\\TabardGossipIcon',
         arg1 = IsInGuild('player'),
-        func = function() 
+        func = function()
             if (IsTrialAccount()) then
                 UIErrorsFrame:AddMessage(ERR_RESTRICTED_ACCOUNT, 1, 0, 0)
             else
@@ -91,8 +91,8 @@ local menuList = {
     {
         text = SOCIAL_BUTTON,
         icon = 'Interface\\FriendsFrame\\PlusManz-BattleNet',
-        func = function() 
-            securecall(ToggleFriendsFrame, 1) 
+        func = function()
+            securecall(ToggleFriendsFrame, 1)
         end,
         notCheckable = true,
     },
@@ -112,7 +112,7 @@ local menuList = {
     {
         text = DUNGEONS_BUTTON,
         icon = 'Interface\\LFGFRAME\\BattleNetWorking0',
-        func = function() 
+        func = function()
             securecall(PVEFrame_ToggleFrame, 'GroupFinderFrame', LFDParentFrame)
         end,
         tooltipTitle = securecall(MicroButtonTooltipText, DUNGEONS_BUTTON, 'TOGGLELFGPARENT'),
@@ -122,7 +122,7 @@ local menuList = {
     {
         text = CHALLENGES,
         icon = 'Interface\\BUTTONS\\UI-GroupLoot-DE-Up',
-        func = function() 
+        func = function()
             securecall(PVEFrame_ToggleFrame, 'ChallengesFrame')
         end,
         notCheckable = true,
@@ -130,7 +130,7 @@ local menuList = {
     {
         text = RAID_FINDER,
         icon = 'Interface\\TARGETINGFRAME\\UI-TargetingFrame-Skull',
-        func = function() 
+        func = function()
             securecall(PVEFrame_ToggleFrame, 'GroupFinderFrame', RaidFinderFrame)
         end,
         notCheckable = true,
@@ -138,7 +138,7 @@ local menuList = {
     {
         text = RAID,
         icon = 'Interface\\TARGETINGFRAME\\UI-TargetingFrame-Skull',
-        func = function() 
+        func = function()
             securecall(ToggleFriendsFrame, 4)
         end,
         notCheckable = true,
@@ -146,7 +146,7 @@ local menuList = {
     {
         text = MOUNTS_AND_PETS,
         icon = 'Interface\\MINIMAP\\TRACKING\\StableMaster',
-        func = function() 
+        func = function()
             securecall(TogglePetJournal)
         end,
         tooltipTitle = securecall(MicroButtonTooltipText, MOUNTS_AND_PETS, 'TOGGLEPETJOURNAL'),
@@ -156,7 +156,7 @@ local menuList = {
     {
         text = ENCOUNTER_JOURNAL,
         icon = 'Interface\\MINIMAP\\TRACKING\\Profession',
-        func = function() 
+        func = function()
             securecall(ToggleEncounterJournal)
         end,
         tooltipTitle = securecall(MicroButtonTooltipText, ENCOUNTER_JOURNAL, 'TOGGLEENCOUNTERJOURNAL'),
@@ -166,8 +166,8 @@ local menuList = {
     {
         text = GM_EMAIL_NAME,
         icon = 'Interface\\CHATFRAME\\UI-ChatIcon-Blizz',
-        func = function() 
-            securecall(ToggleHelpFrame) 
+        func = function()
+            securecall(ToggleHelpFrame)
         end,
         tooltipTitle = HELP_BUTTON,
         tooltipText = NEWBIE_TOOLTIP_HELP,
@@ -176,8 +176,8 @@ local menuList = {
     {
         text = BATTLEFIELD_MINIMAP,
         colorCode = '|cff999999',
-        func = function() 
-            securecall(ToggleBattlefieldMinimap) 
+        func = function()
+            securecall(ToggleBattlefieldMinimap)
         end,
         notCheckable = true,
     },
@@ -189,16 +189,16 @@ local addonMenuTable = {
         isTitle = true,
         notCheckable = true,
     },
-    {   text = ADDONS, 
+    {   text = ADDONS,
         hasArrow = true,
         notCheckable = true,
         menuList = {
-            { 
-                text = ADDONS, 
+            {
+                text = ADDONS,
                 isTitle = true,
                 notCheckable = true,
             },
-        } 
+        }
     }
 }
 
@@ -235,9 +235,9 @@ local function UpdateAddOnTable()
         x = true
         n = (#addonMenuTable[2].menuList)+1
         v3 = true
-        addonMenuTable[2].menuList[n] = { 
-            text = 'Grid', 
-            func = function() 
+        addonMenuTable[2].menuList[n] = {
+            text = 'Grid',
+            func = function()
                 if (IsAddOnLoaded('Grid2')) then
                     ToggleFrame(Grid2LayoutFrame)
                 elseif (IsAddOnLoaded('Grid')) then
@@ -249,12 +249,12 @@ local function UpdateAddOnTable()
         }
     end
 
-    if (IsAddOnLoaded('Omen') and not v4) then   
+    if (IsAddOnLoaded('Omen') and not v4) then
         x = true
         n = (#addonMenuTable[2].menuList)+1
         v4 = true
-        addonMenuTable[2].menuList[n] = { 
-            text = 'Omen', 
+        addonMenuTable[2].menuList[n] = {
+            text = 'Omen',
             func = function()
                 if (IsShiftKeyDown()) then
                     Omen:Toggle()
@@ -267,15 +267,15 @@ local function UpdateAddOnTable()
         }
     end
 
-    if (IsAddOnLoaded('PhoenixStyle') and not v5) then   
+    if (IsAddOnLoaded('PhoenixStyle') and not v5) then
         x = true
         n = (#addonMenuTable[2].menuList)+1
         v5 = true
-        addonMenuTable[2].menuList[n] = { 
-                text = 'PhoenixStyle', 
-                func = function() 
-                    ToggleFrame(PSFmain1) 
-                    ToggleFrame(PSFmain2) 
+        addonMenuTable[2].menuList[n] = {
+                text = 'PhoenixStyle',
+                func = function()
+                    ToggleFrame(PSFmain1)
+                    ToggleFrame(PSFmain2)
                     ToggleFrame(PSFmain3)
                 end,
                 notCheckable = true,
@@ -283,13 +283,13 @@ local function UpdateAddOnTable()
             }
     end
 
-    if (IsAddOnLoaded('DBM-Core') and not v6) then  
+    if (IsAddOnLoaded('DBM-Core') and not v6) then
         x = true
         n = (#addonMenuTable[2].menuList)+1
         v6 = true
-        addonMenuTable[2].menuList[n] = { 
-            text = 'DBM', 
-            func = function() 
+        addonMenuTable[2].menuList[n] = {
+            text = 'DBM',
+            func = function()
                 DBM:LoadGUI()
             end,
             notCheckable = true,
@@ -297,13 +297,13 @@ local function UpdateAddOnTable()
         }
     end
 
-    if (IsAddOnLoaded('Skada') and not v7) then  
+    if (IsAddOnLoaded('Skada') and not v7) then
         x = true
         n = (#addonMenuTable[2].menuList)+1
         v7 = true
-        addonMenuTable[2].menuList[n] = { 
-            text = 'Skada', 
-            func = function() 
+        addonMenuTable[2].menuList[n] = {
+            text = 'Skada',
+            func = function()
                 Skada:ToggleWindow()
             end,
             notCheckable = true,
@@ -311,13 +311,13 @@ local function UpdateAddOnTable()
         }
     end
 
-    if (IsAddOnLoaded('Recount') and not v8) then  
+    if (IsAddOnLoaded('Recount') and not v8) then
         x = true
         n = (#addonMenuTable[2].menuList)+1
         v8 = true
-        addonMenuTable[2].menuList[n] = { 
-            text = 'Recount', 
-            func = function() 
+        addonMenuTable[2].menuList[n] = {
+            text = 'Recount',
+            func = function()
                 ToggleFrame(Recount.MainWindow)
                 if (Recount.MainWindow:IsShown()) then
                     Recount:RefreshMainWindow()
@@ -328,13 +328,13 @@ local function UpdateAddOnTable()
         }
     end
 
-    if (IsAddOnLoaded('TinyDPS') and not v9) then  
+    if (IsAddOnLoaded('TinyDPS') and not v9) then
         x = true
         n = (#addonMenuTable[2].menuList)+1
         v9 = true
-        addonMenuTable[2].menuList[n] = { 
-            text = 'TinyDPS', 
-            func = function() 
+        addonMenuTable[2].menuList[n] = {
+            text = 'TinyDPS',
+            func = function()
                 ToggleFrame(tdpsFrame)
             end,
             notCheckable = true,
@@ -342,17 +342,17 @@ local function UpdateAddOnTable()
         }
     end
 
-    if (IsAddOnLoaded('Numeration') and not v10) then  
+    if (IsAddOnLoaded('Numeration') and not v10) then
         x = true
         n = (#addonMenuTable[2].menuList)+1
         v10 = true
-        addonMenuTable[2].menuList[n] = { 
-            text = 'Numeration', 
-            func = function() 
+        addonMenuTable[2].menuList[n] = {
+            text = 'Numeration',
+            func = function()
                 if (not IsShiftKeyDown()) then
                     ToggleFrame(NumerationFrame)
                 else
-                    NumerationFrame:ShowResetWindow() 
+                    NumerationFrame:ShowResetWindow()
                 end
             end,
             notCheckable = true,
@@ -360,13 +360,13 @@ local function UpdateAddOnTable()
         }
     end
 
-    if (IsAddOnLoaded('AtlasLoot') and not v11) then  
+    if (IsAddOnLoaded('AtlasLoot') and not v11) then
         x = true
         n = (#addonMenuTable[2].menuList)+1
         v11 = true
-        addonMenuTable[2].menuList[n] = { 
-            text = 'AtlasLoot', 
-            func = function() 
+        addonMenuTable[2].menuList[n] = {
+            text = 'AtlasLoot',
+            func = function()
                 ToggleFrame(AtlasLootDefaultFrame)
             end,
             notCheckable = true,
@@ -374,13 +374,13 @@ local function UpdateAddOnTable()
         }
     end
 
-    if (IsAddOnLoaded('Altoholic') and not v12) then  
+    if (IsAddOnLoaded('Altoholic') and not v12) then
         x = true
         n = (#addonMenuTable[2].menuList)+1
         v12 = true
-        addonMenuTable[2].menuList[n] = { 
-            text = 'Altoholic', 
-            func = function() 
+        addonMenuTable[2].menuList[n] = {
+            text = 'Altoholic',
+            func = function()
                 ToggleFrame(AltoholicFrame)
             end,
             notCheckable = true,
@@ -441,13 +441,13 @@ f:SetScript('OnMouseUp', function(self, button)
     GameTooltip:Hide()
 end)
 
-f:SetScript('OnEnter', function(self) 
+f:SetScript('OnEnter', function(self)
     GameTooltip:SetOwner(self, 'ANCHOR_TOPLEFT', 25, -5)
     GameTooltip:AddLine(MAINMENU_BUTTON)
     GameTooltip:Show()
 end)
 
-f:SetScript('OnLeave', function() 
+f:SetScript('OnLeave', function()
     GameTooltip:Hide()
 end)
 
