@@ -80,7 +80,6 @@ local menuList = {
         icon = 'Interface\\GossipFrame\\TabardGossipIcon',
         arg1 = IsInGuild('player'),
         func = function() 
-            --ToggleGuildFrame()
             if (IsTrialAccount()) then
                 UIErrorsFrame:AddMessage(ERR_RESTRICTED_ACCOUNT, 1, 0, 0)
             else
@@ -100,9 +99,11 @@ local menuList = {
     {
         text = PLAYER_V_PLAYER,
         icon = 'Interface\\MINIMAP\\TRACKING\\BattleMaster',
-        func = function() 
-            --securecall(ToggleFrame, PVPFrame) 
-            securecall(TogglePVPFrame)
+        func = function()
+            if (not PVPUIFrame) then
+                securecall(PVP_LoadUI)
+            end
+            securecall(PVPUIFrame_ShowFrame)
         end,
         tooltipTitle = securecall(MicroButtonTooltipText, PLAYER_V_PLAYER, 'TOGGLECHARACTER4'),
         tooltipText = NEWBIE_TOOLTIP_PVP,
@@ -112,7 +113,6 @@ local menuList = {
         text = DUNGEONS_BUTTON,
         icon = 'Interface\\LFGFRAME\\BattleNetWorking0',
         func = function() 
-            --securecall(ToggleLFDParentFrame)
             securecall(PVEFrame_ToggleFrame, 'GroupFinderFrame', LFDParentFrame)
         end,
         tooltipTitle = securecall(MicroButtonTooltipText, DUNGEONS_BUTTON, 'TOGGLELFGPARENT'),
