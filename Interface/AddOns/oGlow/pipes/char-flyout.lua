@@ -6,7 +6,7 @@ local hook
 local _E
 
 local getID = function(loc)
-	local player, bank, bags, slot, bag = EquipmentManager_UnpackLocation(loc)
+	local player, bank, bags, _, slot, bag = EquipmentManager_UnpackLocation(loc)
 	if(not player and not bank and not bags) then return end
 
 	if(not bags) then

@@ -8,16 +8,14 @@ local hook
 local slots = {
 	"Head", "Neck", "Shoulder", "Shirt", "Chest", "Waist", "Legs", "Feet", "Wrist",
 	"Hands", "Finger0", "Finger1", "Trinket0", "Trinket1", "Back", "MainHand",
-	"SecondaryHand", "Tabard",
+	"SecondaryHand", [19] = "Tabard",
 }
 
 local update = function(self)
 	if(CharacterFrame:IsShown()) then
-		for key, slotName in ipairs(slots) do
-			-- Ammo is located at 0.
-			local slotID = key % 20
+		for key, slotName in pairs(slots) do
 			local slotFrame = _G['Character' .. slotName .. 'Slot']
-			local slotLink = GetInventoryItemLink('player', slotID)
+			local slotLink = GetInventoryItemLink('player', key)
 
 			oGlow:CallFilters('char', slotFrame, _E and slotLink)
 		end

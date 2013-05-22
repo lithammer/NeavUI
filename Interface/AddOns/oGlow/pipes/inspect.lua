@@ -8,7 +8,7 @@ local _E
 local slots = {
 	"Head", "Neck", "Shoulder", "Shirt", "Chest", "Waist", "Legs", "Feet", "Wrist",
 	"Hands", "Finger0", "Finger1", "Trinket0", "Trinket1", "Back", "MainHand",
-	"SecondaryHand", "Tabard",
+	"SecondaryHand", [19] = "Tabard",
 }
 
 local _MISSING = {}
