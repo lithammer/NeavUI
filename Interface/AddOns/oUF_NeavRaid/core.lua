@@ -15,13 +15,13 @@ do
             {33763, 'BOTTOM', {0.5, 1, 0.5}, false, false, true}, -- Lifebloom
             {48438, 'BOTTOMLEFT', {0.7, 1, 0}}, -- Wild Growth
         },
-		MONK = {
-			{119611, 'BOTTOMRIGHT', {0, 1, 0}}, -- Renewing Mist
-			{124682, 'BOTTOMLEFT', {0.15, 0.98, 0.64}}, -- Enveloping Mist
-			{115175, 'TOPRIGHT', {0.15, 0.98, 0.64}}, -- Soothing Mist
-			{116849, 'TOPLEFT', {1, 1, 0}}, -- Life Cocoon
-			{124081, 'BOTTOMLEFT', {0.7, 0.8, 1}}, -- Zen Sphere
-		},
+        MONK = {
+            {119611, 'BOTTOMRIGHT', {0, 1, 0}}, -- Renewing Mist
+            {124682, 'BOTTOMLEFT', {0.15, 0.98, 0.64}}, -- Enveloping Mist
+            {115175, 'TOPRIGHT', {0.15, 0.98, 0.64}}, -- Soothing Mist
+            {116849, 'TOPLEFT', {1, 1, 0}}, -- Life Cocoon
+            {124081, 'BOTTOMLEFT', {0.7, 0.8, 1}}, -- Zen Sphere
+        },
         PALADIN = {
             {53563, 'BOTTOMRIGHT', {0, 1, 0}}, -- Beacon of Light
             {20925, 'BOTTOMRIGHT', {1, 1, 0}}, -- Sacred Shield
@@ -439,7 +439,7 @@ local function CreateRaidLayout(self, unit)
         UpdatePower(self, _, unit)
     end
 
-        -- Heal prediction, new healcomm
+        -- Heal prediction
 
     local myBar = CreateFrame('StatusBar', nil, self)
     myBar:SetStatusBarTexture(config.media.statusbar, 'OVERLAY')
@@ -481,9 +481,30 @@ local function CreateRaidLayout(self, unit)
         otherBar:SetHeight(self:GetHeight())
     end
 
+    local absorbBar = CreateFrame('StatusBar', nil, self)
+    absorbBar:SetStatusBarTexture(config.media.statusbar, 'OVERLAY')
+    absorbBar:SetStatusBarColor(1, 1, 0, 0.35)
+
+    if (config.units.raid.smoothUpdates) then
+        absorbBar.Smooth = true
+    end
+
+    if (config.units.raid.horizontalHealthBars) then
+        absorbBar:SetOrientation('HORIZONTAL')
+        absorbBar:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
+        absorbBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
+        absorbBar:SetWidth(self:GetWidth())
+    else
+        absorbBar:SetOrientation('VERTICAL')
+        absorbBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'TOPLEFT')
+        absorbBar:SetPoint('BOTTOMRIGHT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
+        absorbBar:SetHeight(self:GetHeight())
+    end
+
     self.HealPrediction = {
         myBar = myBar,
         otherBar = otherBar,
+        absorbBar = absorbBar,
         maxOverflow = 1.2,
     }
 
