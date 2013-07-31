@@ -24,6 +24,19 @@ watchHead:SetScript('OnDragStop', function(self)
     self:GetParent():StopMovingOrSizing()
 end)
 
+watchHead:SetScript('OnEnter', function()
+    if (not InCombatLockdown()) then
+		GameTooltip:SetOwner(watchHead, 'ANCHOR_TOPLEFT', 0, 10)
+		GameTooltip:ClearLines()
+		GameTooltip:AddLine('Shift + left-click to Drag')
+        GameTooltip:Show()
+    end
+end)
+
+watchHead:SetScript('OnLeave', function()
+    GameTooltip:Hide()
+end)
+
 local classColor = RAID_CLASS_COLORS[select(2, UnitClass('player'))]
 
 local watchHeadTitle = _G['WatchFrameTitle']
