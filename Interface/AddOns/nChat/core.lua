@@ -504,3 +504,19 @@ local function FCF_Tab_OnClickHook(chatTab, ...)
     UIDropDownMenu_AddButton(chatLog)
 end
 FCF_Tab_OnClick = FCF_Tab_OnClickHook
+
+if (cfg.enableChatWindowBorder) then
+    for i = 1, NUM_CHAT_WINDOWS do
+        local cf = _G['ChatFrame'..i]
+        if (cf) then
+            cf:CreateBeautyBorder(12)
+            cf:SetBeautyBorderPadding(5, 5, 5, 5, 5, 8, 5, 8)
+        end
+    end
+
+    local ct = _G['ChatFrame2']
+    if (ct) then
+        ct:CreateBeautyBorder(12)
+        ct:SetBeautyBorderPadding(5, 29, 5, 29, 5, 8, 5, 8)
+    end
+end

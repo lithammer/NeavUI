@@ -5,6 +5,8 @@ nChat.Config = {
     disableFade = false,
     chatOutline = false,
 
+    enableChatWindowBorder = false,
+
     enableBottomButton = false, 
     enableHyperlinkTooltip = false, 
     enableBorderColoring = true,
