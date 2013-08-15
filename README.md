@@ -1,6 +1,6 @@
 # Neav UI
 
-This is a Github mirror of Neav UI on WoWInterface.
+This is a development repository for Neav UI on WoWInterface.
 
 ## Addons included
 
