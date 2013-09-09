@@ -1,4 +1,4 @@
-## Interface: 50300
+## Interface: 50400
 ## Title: |cffCC3333 n|rCore
 ## OptionalDeps: !Beautycase, Recount, Omen, DBM, PitBull4, Skada, TinyDPS
 
