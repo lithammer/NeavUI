@@ -11,6 +11,7 @@ nTooltip.Config = {
 
     disableFade = false,                        -- Can cause errors or a buggy tooltip!
     showOnMouseover = false,
+    hideInCombat = false,                       -- Hide unit frame tooltips during combat
 
     reactionBorderColor = false,
     itemqualityBorderColor = true,

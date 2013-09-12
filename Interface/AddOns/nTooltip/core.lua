@@ -360,6 +360,11 @@ GameTooltip.inspectCache = {}
 GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
     local unit = GetRealUnit(self)
 
+    if (cfg.hideInCombat and InCombatLockdown()) then
+        self:Hide()
+        return
+    end
+
     if (UnitExists(unit) and UnitName(unit) ~= UNKNOWN) then
 
         local ilvl = 0
