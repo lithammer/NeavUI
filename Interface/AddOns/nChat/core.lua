@@ -339,9 +339,12 @@ local function ModChat(self)
     end
 
     _G[self..'EditBox']:SetAltArrowKeyMode(false)
-    _G[self..'EditBox']:ClearAllPoints()
-    _G[self..'EditBox']:SetPoint('BOTTOMLEFT', self, 'TOPLEFT', 2, 33)
-    _G[self..'EditBox']:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT', 0, 33)
+
+    if (cfg.showInputBoxAbove) then
+        _G[self..'EditBox']:ClearAllPoints()
+        _G[self..'EditBox']:SetPoint('BOTTOMLEFT', self, 'TOPLEFT', 2, 33)
+        _G[self..'EditBox']:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT', 0, 33)
+    end
     _G[self..'EditBox']:SetBackdrop({
         bgFile = 'Interface\\Buttons\\WHITE8x8',
         insets = {
