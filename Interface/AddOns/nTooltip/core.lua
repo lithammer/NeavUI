@@ -420,6 +420,24 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             end
         end
 
+            -- Hide coalesced/interactive realm information
+
+        if (cfg.hideRealmText) then
+            for i = 3, GameTooltip:NumLines() do
+                local currentLine = _G['GameTooltipTextLeft'..(i + 1)];
+                local nextLine = _G['GameTooltipTextLeft'..(i + 1)];
+
+                if (nextLine) then
+                    local nextText = nextLine:GetText()
+
+                    if (nextText == COALESCED_REALM_TOOLTIP or nextText == INTERACTIVE_REALM_TOOLTIP) then
+                        currentLine:SetText(nil)
+                        nextLine:SetText(nil)
+                    end
+                end
+            end
+        end
+
             -- Role text
 
         if (cfg.showUnitRole) then
