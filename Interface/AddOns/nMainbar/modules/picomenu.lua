@@ -103,7 +103,7 @@ local menuList = {
             if (not PVPUIFrame) then
                 securecall(PVP_LoadUI)
             end
-            securecall(PVPUIFrame_ShowFrame)
+            securecall(PVPUIFrame_ToggleFrame, 'PVPQueueFrame')
         end,
         tooltipTitle = securecall(MicroButtonTooltipText, PLAYER_V_PLAYER, 'TOGGLECHARACTER4'),
         tooltipText = NEWBIE_TOOLTIP_PVP,
