@@ -420,24 +420,6 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             end
         end
 
-            -- Hide coalesced/interactive realm information
-
-        if (cfg.hideRealmText) then
-            for i = 3, GameTooltip:NumLines() do
-                local currentLine = _G['GameTooltipTextLeft'..(i + 1)];
-                local nextLine = _G['GameTooltipTextLeft'..(i + 1)];
-
-                if (nextLine) then
-                    local nextText = nextLine:GetText()
-
-                    if (nextText == COALESCED_REALM_TOOLTIP or nextText == INTERACTIVE_REALM_TOOLTIP) then
-                        currentLine:SetText(nil)
-                        nextLine:SetText(nil)
-                    end
-                end
-            end
-        end
-
             -- Role text
 
         if (cfg.showUnitRole) then
@@ -564,6 +546,35 @@ GameTooltip:HookScript('OnTooltipCleared', function(self)
         self:SetBeautyBorderColor(1, 1, 1)
     end
 end)
+
+
+    -- Hide coalesced/interactive realm information
+
+if (cfg.hideRealmText) then
+    local COALESCED_REALM_TOOLTIP1 = string.split(FOREIGN_SERVER_LABEL, COALESCED_REALM_TOOLTIP)
+    local INTERACTIVE_REALM_TOOLTIP1 = string.split(INTERACTIVE_SERVER_LABEL, INTERACTIVE_REALM_TOOLTIP)
+    -- Dirty checking of the coalesced realm text because it's added
+    -- after the initial OnShow
+    GameTooltip:HookScript('OnUpdate', function(self)
+        for i = 3, self:NumLines() do
+            local row = _G['GameTooltipTextLeft'..i]
+            local rowText = row:GetText()
+
+            if (rowText) then
+                if (rowText:find(COALESCED_REALM_TOOLTIP1) or rowText:find(INTERACTIVE_REALM_TOOLTIP1)) then
+                    row:SetText(nil)
+                    row:Hide()
+
+                    local previousRow = _G['GameTooltipTextLeft'..(i - 1)]
+                    previousRow:SetText(nil)
+                    previousRow:Hide()
+
+                    self:Show()
+                end
+            end
+        end
+    end)
+end
 
 hooksecurefunc('GameTooltip_SetDefaultAnchor', function(self, parent)
     if (cfg.showOnMouseover) then
