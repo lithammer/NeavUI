@@ -548,6 +548,7 @@ local function CreateUnitLayout(self, unit)
         myBar = myBar,
         otherBar = otherBar,
         maxOverflow = 1.0,
+        frequentUpdates = true
     }
 
         -- Health text
