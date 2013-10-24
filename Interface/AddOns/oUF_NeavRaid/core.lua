@@ -506,6 +506,7 @@ local function CreateRaidLayout(self, unit)
         otherBar = otherBar,
         absorbBar = absorbBar,
         maxOverflow = 1.2,
+        frequentUpdates = true
     }
 
         -- Afk /offline timer, using frequentUpdates function from oUF tags
