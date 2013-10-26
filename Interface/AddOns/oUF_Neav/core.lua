@@ -544,9 +544,21 @@ local function CreateUnitLayout(self, unit)
     otherBar:SetPoint('BOTTOMLEFT', myBar:GetStatusBarTexture(), 'BOTTOMRIGHT')
     otherBar:SetWidth(self.Health:GetWidth())
 
+    local absorbBar = CreateFrame('StatusBar', nil, self)
+    absorbBar:SetStatusBarTexture(config.media.statusbar, 'OVERLAY')
+    absorbBar:SetStatusBarColor(1, 1, 0, 0.35)
+
+    absorbBar.Smooth = true
+
+    absorbBar:SetOrientation('HORIZONTAL')
+    absorbBar:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
+    absorbBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
+    absorbBar:SetWidth(self.Health:GetWidth())
+
     self.HealPrediction = {
         myBar = myBar,
         otherBar = otherBar,
+        absorbBar = absorbBar,
         maxOverflow = 1.0,
         frequentUpdates = true
     }
