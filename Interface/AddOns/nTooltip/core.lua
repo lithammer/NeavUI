@@ -262,6 +262,9 @@ end
 
 local function GetFormattedUnitString(unit, specIcon)
     if (UnitIsPlayer(unit)) then
+        if (not UnitRace(unit)) then
+            return nil
+        end
         return GetFormattedUnitLevel(unit)..UnitRace(unit)..GetFormattedUnitClass(unit)..(cfg.showSpecializationIcon and specIcon or '')
     else
         return GetFormattedUnitLevel(unit)..GetFormattedUnitClassification(unit)..GetFormattedUnitType(unit)
