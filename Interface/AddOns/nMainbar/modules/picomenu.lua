@@ -181,14 +181,6 @@ local menuList = {
         end,
         notCheckable = true,
     },
-    {
-        text = BLIZZARD_STORE,
-        icon = 'Interface\\MINIMAP\\TRACKING\\Auctioneer',
-        func = function()
-            StoreMicroButton:Click()
-        end,
-        notCheckable = true,
-    }
 }
 
 local addonMenuTable = {
