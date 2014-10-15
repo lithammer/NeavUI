@@ -43,7 +43,6 @@ local totemData = {
     -- Air
     [TotemName(8177)] = {TotemIcon(8177)}, -- Grounding Totem
     [TotemName(108269)] = {TotemIcon(108269)}, -- Capacitor Totem
-    [TotemName(120668)] = {TotemIcon(120668)}, -- Stormlash Totem
     [TotemName(98009)] = {TotemIcon(98008)}, -- Spirit Link Totem
 
     -- Earth
@@ -57,7 +56,6 @@ local totemData = {
     [TotemName(3599)] = {TotemIcon(3599)}, -- Searing Totem
 
     -- Water
-    [TotemName(16190)] = {TotemIcon(16190)}, -- Mana Tide Totem
     [TotemName(5394)] = {TotemIcon(5394)}, -- Healing Stream Totem
 }
 
