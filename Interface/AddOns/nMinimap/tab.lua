@@ -31,7 +31,6 @@ local totalGuildOnline = 0
 local totalFriendsOnline = 0
 local totalBattleNetOnline = 0
 
-local guildXP = {}
 local guildTable = {}
 
 local BNTable = {}
@@ -394,21 +393,6 @@ local function BuildGuildTable()
     end)
 end
 
-local function UpdateGuildXP()
-    local currentXP, remainingXP = UnitGetGuildXP('player')
-    local nextLevelXP = currentXP + remainingXP
-    if (nextLevelXP == 0) then
-        nextLevelXP = 1
-    end
-    local percentTotal = tostring(ceil((currentXP / nextLevelXP) * 100))
-
-    guildXP = {
-        currentXP,
-        nextLevelXP,
-        percentTotal
-    }
-end
-
 local function GuildTip(self)
     if (not IsInGuild()) then
         return
@@ -423,11 +407,6 @@ local function GuildTip(self)
     GameTooltip:AddLine(GUILD_MOTD, nil, nil, nil)
     GameTooltip:AddLine(GetGuildRosterMOTD() or '-', 1, 1, 1, true)
     GameTooltip:AddLine(' ')
-
-    if (GetGuildLevel() ~= 25) then
-        local currentXP, nextLevelXP, percentTotal = unpack(guildXP)
-        GameTooltip:AddLine(format(GUILD_EXPERIENCE_CURRENT, '|r |cFFFFFFFF'..ShortValue(currentXP), ShortValue(nextLevelXP), percentTotal))
-    end
 
     if (online > 1) then
         GameTooltip:AddLine(' ')
@@ -475,7 +454,6 @@ end
 local function UpdateGuildText()
     if (IsInGuild()) then
         BuildGuildTable()
-        UpdateGuildXP()
 
         f.Left.Text:SetFormattedText(format('%s|cffffffff%d|r', guildIcon, (totalGuildOnline == 1 and 0) or totalGuildOnline))
     else
