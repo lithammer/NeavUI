@@ -1,4 +1,4 @@
-## Interface: 50400
+## Interface: 60000
 ## Title: oGlow
 ## Author: Haste
 ## Version: 2.2.4
