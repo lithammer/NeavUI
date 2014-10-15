@@ -21,26 +21,20 @@ ns.PortraitTimerDB = {
     '853',      -- Hammer of Justice
     '44572',    -- Deep Freeze
     '5211',     -- Bash
-    '19503',    -- Scatter Shot
     '30283',    -- Shadowfury
     '89766',    -- Axe Toss
     '22570',    -- Maim
-    '9005',     -- Pounce
     '47481',    -- Gnaw
     '1776',     -- Gouge
     '6770',     -- Sap
     '87195',    -- Paralysis
     '88625',    -- Holy Word: Chastise   
-    '90337',    -- Bad Manner (monkey stun)   
     '65929',    -- Charge Stun
     '91797',    -- Monstrous Blow (Gnaw with DT)
 
         -- CC
 
     '91807',    -- Shambling Rush (Leap with DT)
-    '87100',    -- Sin and Punishment
-    '1513',     -- Scare Beast
-    '2637',     -- Hibernate
     '605',      -- Mind Control
     '64044',    -- Psychic Horror
     '2094',     -- Blind
@@ -57,9 +51,7 @@ ns.PortraitTimerDB = {
     '339',      -- Entangling Roots
     '8377',     -- Earthgrab
     '31661',    -- Dragon's Breath
-    '16689',    -- Nature's Grasp
     '82691',    -- Ring of Frost
-    '76780',    -- Bind Elemental
     '19387',    -- Entrapment
 
         -- CC immune
@@ -89,33 +81,22 @@ ns.PortraitTimerDB = {
 
     '47476',    -- Strangulate
     '1330',     -- Garrote - Silence
-    '55021',    -- Silenced - Improved Counterspell
     '15487',    -- Silence (priest)
     '19647',    -- Spell Lock
-    '34490',    -- Silencing Shot
     '28730',    -- Arcane Torrent
-
-        -- Disarms
-
-    '676',      -- Disarm
-    '51722',    -- Dismantle
 
         -- Dmg buffs  
 
-    '34692',    -- The Beast Within
     '31884',    -- Avenging Wrath
     '51713',    -- Shadow Dance 
 
         -- Helpful buffs
 
     '6940',     -- Hand of Sacrifice
-    '89488',    -- Strength of Soul
     '23920',    -- Spell Reflection (warrior)
     '68992',    -- Darkflight (Worgen racial)
-    '54428',    -- Divine Plea
     '2983',     -- Sprint
     '1850',     -- Dash
-    '29166',    -- Innervate
 }
 
 local GetTime = GetTime
