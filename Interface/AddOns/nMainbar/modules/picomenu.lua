@@ -154,6 +154,16 @@ local menuList = {
         notCheckable = true,
     },
     {
+        text = TOY_BOX,
+        icon = 'Interface\\MINIMAP\\TRACKING\\Reagents',
+        func = function()
+            securecall(TogglePetJournal, 3)
+        end,
+        tooltipTitle = securecall(MicroButtonTooltipText, TOY_BOX, 'TOGGLETOYBOX'),
+        tooltipText = TOY_BOX,
+        notCheckable = true,
+    },
+    {
         text = ENCOUNTER_JOURNAL,
         icon = 'Interface\\MINIMAP\\TRACKING\\Profession',
         func = function()
