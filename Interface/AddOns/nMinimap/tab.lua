@@ -402,7 +402,7 @@ local function GuildTip(self)
     local online = totalGuildOnline
 
     GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMLEFT')
-    GameTooltip:AddLine(GetGuildInfo('player')..' - '..LEVEL..' '..GetGuildLevel())
+    GameTooltip:AddLine(GetGuildInfo('player')..' - '..LEVEL)
     GameTooltip:AddLine(' ')
     GameTooltip:AddLine(GUILD_MOTD, nil, nil, nil)
     GameTooltip:AddLine(GetGuildRosterMOTD() or '-', 1, 1, 1, true)
@@ -601,7 +601,7 @@ local function BuildBNTable(total)
 
     for i = 1, total do
         local presenceID, presenceName, battleTag, _, toonName, toonID, client, isOnline, _, isAFK, isDND, _, noteText = BNGetFriendInfo(i)
-        local _, _, _, realmName, faction, _, race, class, _, zoneName, level = BNGetToonInfo(presenceID)
+        local _, _, _, realmName, _, faction, race, class, _, zoneName, level = BNGetToonInfo(presenceID)
 
         for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
             if (class == v) then
@@ -649,7 +649,7 @@ local function UpdateBNTable(total)
 
     for i = 1, #BNTable do
         local presenceID, presenceName, battleTag, _, toonName, toonID, client, isOnline, _, isAFK, isDND, _, noteText = BNGetFriendInfo(i)
-        local _, _, _, realmName, faction, _, race, class, _, zoneName, level = BNGetToonInfo(presenceID)
+        local _, _, _, realmName, _, faction, race, class, _, zoneName, level = BNGetToonInfo(presenceID)
 
         for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
             if (class == v) then
@@ -666,7 +666,7 @@ local function UpdateBNTable(total)
         BNTable[index][7] = isOnline
         if (isOnline) then
             BNTable[index][2] = presenceName
-            BNTable[index][3] = battleTag or ''
+            BNTable[index][3] = battleTag
             BNTable[index][4] = toonName
             BNTable[index][5] = toonID
             BNTable[index][6] = client
@@ -858,9 +858,15 @@ local function FriendsOnEnter(self)
                         end
 
                         classc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[BNTable[i][14]]
-                        levelc = GetQuestDifficultyColor(BNTable[i][16])
-                        if (classc == nil) then
-                            classc = GetQuestDifficultyColor(BNTable[i][16])
+                        -- XXX: Stupid challengeLevel bug/error
+                        if (type(BNTable[i][16]) == 'string') then
+                            levelc = {r = 1, g = 1, b = 1}
+                        else
+                            levelc = GetQuestDifficultyColor(BNTable[i][16])
+
+                            if (classc == nil) then
+                                classc = GetQuestDifficultyColor(BNTable[i][16])
+                            end
                         end
 
                         if (UnitInParty(BNTable[i][4]) or UnitInRaid(BNTable[i][4])) then
