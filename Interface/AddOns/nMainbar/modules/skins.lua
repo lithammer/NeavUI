@@ -303,9 +303,9 @@ function ActionButton_OnUpdate(self, elapsed)
     local rangeTimer = self.rangeTimer
     if (rangeTimer) then
         rangeTimer = rangeTimer - elapsed
-        if (rangeTimer <= 0.1) then
+        if (rangeTimer <= 0) then
             local isInRange = false
-            if (ActionHasRange(self.action) and IsActionInRange(self.action) == 0) then
+            if (IsActionInRange(self.action) == false) then
                 _G[self:GetName()..'Icon']:SetVertexColor(unpack(cfg.color.OutOfRange))
                 isInRange = true
             end
