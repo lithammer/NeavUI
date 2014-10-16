@@ -869,6 +869,10 @@ local function FriendsOnEnter(self)
                             end
                         end
 
+                        if (not classc) then
+                            classc = {r = 1, g = 1, b = 1}
+                        end
+
                         if (UnitInParty(BNTable[i][4]) or UnitInRaid(BNTable[i][4])) then
                             grouped = 1
                         else
