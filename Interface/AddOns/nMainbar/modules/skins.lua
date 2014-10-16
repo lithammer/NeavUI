@@ -273,7 +273,9 @@ end)
 function ActionButton_OnUpdate(self, elapsed)
     if (IsAddOnLoaded('RedRange') or IsAddOnLoaded('GreenRange') or IsAddOnLoaded('tullaRange') or IsAddOnLoaded('RangeColors')) then
         return
-    end     
+    end
+
+    ActionButton_UpdateHotkeys(self)
 
     if (ActionButton_IsFlashing(self)) then
         local flashtime = self.flashtime
