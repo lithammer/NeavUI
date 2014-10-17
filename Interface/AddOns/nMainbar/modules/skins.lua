@@ -107,7 +107,8 @@ hooksecurefunc('ActionButton_Update', function(self)
             'MultiCastSummonSpellButton',
         }) do
             local button = _G[icon]
-            button:SetNormalTexture(nil)
+            -- XXX: Causes an error on 6.0.2
+            -- button:SetNormalTexture(nil)
 
             if (not button.Shadow) then
                 local icon = _G[self:GetName()..'Icon']
