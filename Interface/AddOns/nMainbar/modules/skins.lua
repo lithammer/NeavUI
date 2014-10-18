@@ -271,40 +271,15 @@ hooksecurefunc('ActionButton_UpdateHotkeys', function(self)
     end
 end)
 
-function ActionButton_OnUpdate(self, elapsed)
-    if (IsAddOnLoaded('RedRange') or IsAddOnLoaded('GreenRange') or IsAddOnLoaded('tullaRange') or IsAddOnLoaded('RangeColors')) then
+hooksecurefunc('ActionButton_OnUpdate', function(self, elapsed)
+    ActionButton_UpdateHotkeys(self)
+
+    if (IsAddOnLoaded('tullaRange') or IsAddOnLoaded('RangeColors')) then
         return
     end
 
-    ActionButton_UpdateHotkeys(self)
-
-    if (ActionButton_IsFlashing(self)) then
-        local flashtime = self.flashtime
-        flashtime = flashtime - elapsed
-
-        if (flashtime <= 0) then
-            local overtime = - flashtime
-            if (overtime >= ATTACK_BUTTON_FLASH_TIME) then
-                overtime = 0
-            end
-
-            flashtime = ATTACK_BUTTON_FLASH_TIME - overtime
-
-            local flashTexture = _G[self:GetName()..'Flash']
-            if (flashTexture:IsShown()) then
-                flashTexture:Hide()
-            else
-                flashTexture:Show()
-            end
-        end
-
-        self.flashtime = flashtime
-    end
-
-    local rangeTimer = self.rangeTimer
-    if (rangeTimer) then
-        rangeTimer = rangeTimer - elapsed
-        if (rangeTimer <= 0) then
+    if (self.rangeTimer) then
+        if (self.rangeTimer - elapsed <= 0) then
             local isInRange = false
             if (IsActionInRange(self.action) == false) then
                 _G[self:GetName()..'Icon']:SetVertexColor(unpack(cfg.color.OutOfRange))
@@ -314,31 +289,6 @@ function ActionButton_OnUpdate(self, elapsed)
             if (self.isInRange ~= isInRange) then
                 self.isInRange = isInRange
                 ActionButton_UpdateUsable(self)
-            end
-
-            rangeTimer = TOOLTIP_UPDATE_TIME
-        end
-
-        self.rangeTimer = rangeTimer
-    end
-end
-
-local f = CreateFrame('Frame', MainMenuBar)
-f:RegisterEvent('ADDON_LOADED')
-f:SetScript('OnEvent', function()
-    if (IsAddOnLoaded('tullaRange')) then
-        if (not tullaRange) then
-            return
-        end
-
-        function tullaRange.SetButtonColor(button, colorType)
-            if (button.tullaRangeColor ~= colorType) then
-                button.tullaRangeColor = colorType
-
-                local r, g, b = tullaRange:GetColor(colorType)
-
-                local icon =  _G[button:GetName()..'Icon']
-                icon:SetVertexColor(r, g, b)
             end
         end
     end
