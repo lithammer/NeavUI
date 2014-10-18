@@ -17,6 +17,13 @@ local function EnableMouseOver(self, bar, min, max, alpha, hiddenAlpha)
         f:SetPoint('TOPLEFT', self..min, -5, 5)
         f:SetPoint('BOTTOMRIGHT', self..max, 5, 5)
 
+        if (button.cooldown) then
+            hooksecurefunc(bar, 'SetAlpha', function(self, alpha)
+                button.cooldown:SetSwipeColor(0, 0, 0, alpha)
+                button.cooldown:SetDrawBling(alpha > 0)
+            end)
+        end
+
         bar:SetAlpha(minAlpha)
 
         f:SetScript('OnEnter', function()
