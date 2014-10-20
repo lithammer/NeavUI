@@ -100,6 +100,9 @@ end)
 securecall('PetActionBar_Update')
 
 hooksecurefunc('ActionButton_Update', function(self)
+    -- Force an initial update because it isn't triggered on login (v6.0.2)
+    ActionButton_UpdateHotkeys(self)
+
     if (IsSpecificButton(self, 'MultiCast')) then
         for _, icon in pairs({
             self:GetName(),
@@ -272,8 +275,6 @@ hooksecurefunc('ActionButton_UpdateHotkeys', function(self)
 end)
 
 hooksecurefunc('ActionButton_OnUpdate', function(self, elapsed)
-    ActionButton_UpdateHotkeys(self)
-
     if (IsAddOnLoaded('tullaRange') or IsAddOnLoaded('RangeColors')) then
         return
     end
