@@ -5,6 +5,8 @@ local cfg = nMainbar.Config
 MultiBarRight:SetAlpha(cfg.multiBarRight.alpha)
 MultiBarRight:SetScale(cfg.MainMenuBar.scale)
 
+MultiBarRight:SetParent(UIParent)
+
 if (cfg.multiBarRight.orderHorizontal) then
     for i = 2, 12 do
         button = _G['MultiBarRightButton'..i]
