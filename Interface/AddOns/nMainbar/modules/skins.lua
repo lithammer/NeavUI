@@ -101,7 +101,7 @@ securecall('PetActionBar_Update')
 
 hooksecurefunc('ActionButton_Update', function(self)
     -- Force an initial update because it isn't triggered on login (v6.0.2)
-    ActionButton_UpdateHotkeys(self)
+    ActionButton_UpdateHotkeys(self, self.buttonType)
 
     if (IsSpecificButton(self, 'MultiCast')) then
         for _, icon in pairs({
@@ -256,7 +256,7 @@ hooksecurefunc('ActionButton_UpdateUsable', function(self)
     end
 end)
 
-hooksecurefunc('ActionButton_UpdateHotkeys', function(self)
+hooksecurefunc('ActionButton_UpdateHotkeys', function(self, actionButtonType)
     local hotkey = _G[self:GetName()..'HotKey']
 
     if (not IsSpecificButton(self, 'OverrideActionBarButton')) then
