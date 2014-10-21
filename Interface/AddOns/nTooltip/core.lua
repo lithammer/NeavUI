@@ -79,6 +79,14 @@ local function ApplyTooltipStyle(self)
         self:SetBackdropColor(0, 0, 0, 0.7)
     end)
 
+    self:HookScript('OnHide', function(self)
+        self:SetBackdropColor(0, 0, 0, 0.7)
+    end)
+
+    self:HookScript('OnUpdate', function(self)
+        self:SetBackdropColor(0, 0, 0, 0.7)
+    end)
+
     if (IsAddOnLoaded('!Beautycase')) then
         self:CreateBeautyBorder(bsize)
     end
