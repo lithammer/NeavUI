@@ -6,7 +6,6 @@ This is a development repository for Neav UI on WoWInterface.
 
 - !Beautycase
 - !Colorz
-- [ActionButtonText](http://www.wowinterface.com/downloads/info11009-ActionButtonText.html) (heavily modified)
 - [evl_RaidStatus](http://www.wowinterface.com/downloads/info15178-RaidStatus.html)
 - nBuff
 - nChat
