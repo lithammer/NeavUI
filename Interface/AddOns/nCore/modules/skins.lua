@@ -71,15 +71,6 @@ f:SetScript('OnEvent', function(self)
                 icon2:SetSize(tbar:GetHeight(), tbar:GetHeight() - 1)
             end
         end)
-
-            -- hide the pesky range check
-
-        DBM.RangeCheck:Show()
-        DBM.RangeCheck:Hide()
-        DBMRangeCheck:HookScript('OnShow', function(self)
-            self:Hide()
-            self.Show = function() end
-        end)
     end
 
     if (IsAddOnLoaded('TinyDPS')) then
