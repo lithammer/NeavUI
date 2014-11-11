@@ -36,7 +36,7 @@ nTooltip.Config = {
         showOutline = true,
         textPos = 'CENTER',                     -- Possible 'TOP' 'BOTTOM' 'CENTER'
 
-        reactionColoring = false,               -- Overrides customColor 
+        reactionColoring = true,               -- Overrides customColor 
         customColor = {
             apply = false, 
             r = 0, 
