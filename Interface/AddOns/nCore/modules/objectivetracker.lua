@@ -1,4 +1,5 @@
 local objectiveTrackerFrame = _G['ObjectiveTrackerFrame']
+objectiveTrackerFrame:SetHeight(400)
 objectiveTrackerFrame.ClearAllPoints = function() end
 objectiveTrackerFrame:SetClampedToScreen(true)
 objectiveTrackerFrame:SetMovable(true)
@@ -10,13 +11,13 @@ local minimizeButton = objectiveTrackerFrame.HeaderMenu.MinimizeButton
 minimizeButton:EnableMouse(true)
 minimizeButton:RegisterForDrag('LeftButton')
 minimizeButton:SetHitRectInsets(-15, 0, -5, -5)
-minimizeButton:SetScript('OnDragStart', function(self) 
+minimizeButton:SetScript('OnDragStart', function(self)
     if (IsShiftKeyDown()) then
         objectiveTrackerFrame:StartMoving()
     end
 end)
 
-minimizeButton:SetScript('OnDragStop', function(self) 
+minimizeButton:SetScript('OnDragStop', function(self)
     objectiveTrackerFrame:StopMovingOrSizing()
 end)
 
