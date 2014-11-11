@@ -4,7 +4,7 @@ local _, nMinimap = ...
 nMinimap.Config = {
     tab = {
         show = true,
-        showAlways = false,
+        showAlways = true,
 
         alphaMouseover = 1,
         alphaNoMouseover = 0.5,
