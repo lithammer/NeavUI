@@ -114,8 +114,9 @@ end
 
 local function AuraIcon(self, icon)
     if (icon.cd) then
-        icon.cd:SetReverse()
+        icon.cd:SetReverse(true)
         icon.cd:SetAllPoints(icon.icon)
+        icon.cd:SetHideCountdownNumbers(true)
     end
 end
 
