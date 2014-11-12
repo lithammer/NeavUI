@@ -48,8 +48,7 @@ local menuList = {
                 LoadAddOn('Blizzard_GlyphUI')
             end
 
-            --PlayerTalentFrame_Toggle()
-            securecall(ToggleTalentFrame)
+            securecall(ToggleFrame, PlayerTalentFrame)
         end,
         tooltipTitle = securecall(MicroButtonTooltipText, TALENTS_BUTTON, 'TOGGLETALENTS'),
         tooltipText = NEWBIE_TOOLTIP_TALENTS,
@@ -69,7 +68,7 @@ local menuList = {
         text = QUESTLOG_BUTTON,
         icon = 'Interface\\GossipFrame\\ActiveQuestIcon',
         func = function()
-            securecall(ToggleFrame, QuestLogFrame)
+            securecall(ToggleFrame, WorldMapFrame)
         end,
         tooltipTitle = securecall(MicroButtonTooltipText, QUESTLOG_BUTTON, 'TOGGLEQUESTLOG'),
         tooltipText = NEWBIE_TOOLTIP_QUESTLOG,
@@ -100,10 +99,7 @@ local menuList = {
         text = PLAYER_V_PLAYER,
         icon = 'Interface\\MINIMAP\\TRACKING\\BattleMaster',
         func = function()
-            if (not PVPUIFrame) then
-                securecall(PVP_LoadUI)
-            end
-            securecall(PVPUIFrame_ToggleFrame, 'PVPQueueFrame')
+            securecall(PVEFrame_ToggleFrame, 'PVPUIFrame', HonorFrame)
         end,
         tooltipTitle = securecall(MicroButtonTooltipText, PLAYER_V_PLAYER, 'TOGGLECHARACTER4'),
         tooltipText = NEWBIE_TOOLTIP_PVP,
@@ -113,7 +109,7 @@ local menuList = {
         text = DUNGEONS_BUTTON,
         icon = 'Interface\\LFGFRAME\\BattleNetWorking0',
         func = function()
-            securecall(PVEFrame_ToggleFrame, 'GroupFinderFrame', LFDParentFrame)
+            securecall(PVEFrame_ToggleFrame, 'GroupFinderFrame')
         end,
         tooltipTitle = securecall(MicroButtonTooltipText, DUNGEONS_BUTTON, 'TOGGLELFGPARENT'),
         tooltipText = NEWBIE_TOOLTIP_LFGPARENT,
@@ -124,14 +120,6 @@ local menuList = {
         icon = 'Interface\\BUTTONS\\UI-GroupLoot-DE-Up',
         func = function()
             securecall(PVEFrame_ToggleFrame, 'ChallengesFrame')
-        end,
-        notCheckable = true,
-    },
-    {
-        text = RAID_FINDER,
-        icon = 'Interface\\TARGETINGFRAME\\UI-TargetingFrame-Skull',
-        func = function()
-            securecall(PVEFrame_ToggleFrame, 'GroupFinderFrame', RaidFinderFrame)
         end,
         notCheckable = true,
     },
@@ -147,7 +135,7 @@ local menuList = {
         text = MOUNTS_AND_PETS,
         icon = 'Interface\\MINIMAP\\TRACKING\\StableMaster',
         func = function()
-            securecall(TogglePetJournal)
+            securecall(TogglePetJournal, 1)
         end,
         tooltipTitle = securecall(MicroButtonTooltipText, MOUNTS_AND_PETS, 'TOGGLEPETJOURNAL'),
         tooltipText = NEWBIE_TOOLTIP_MOUNTS_AND_PETS,
