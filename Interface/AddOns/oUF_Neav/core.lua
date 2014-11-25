@@ -642,7 +642,7 @@ local function CreateUnitLayout(self, unit)
         self.Level = self:CreateFontString(nil, 'ARTWORK')
         self.Level:SetFont('Interface\\AddOns\\oUF_Neav\\media\\fontNumber.ttf', 17, 'THINOUTLINE')
         self.Level:SetShadowOffset(0, 0)
-        self.Level:SetPoint('CENTER', self.Texture, (unit == 'player' and -63) or 63, -16)
+        self.Level:SetPoint('CENTER', self.Texture, (unit == 'player' and -61) or 61, -16)
         self:Tag(self.Level, '[level]')
     end
 
