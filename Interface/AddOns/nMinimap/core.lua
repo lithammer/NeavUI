@@ -42,6 +42,12 @@ QueueStatusMinimapButton.Text:SetPoint('TOP', QueueStatusMinimapButton)
 QueueStatusMinimapButton.Text:SetTextColor(1, 0.4, 0)
 QueueStatusMinimapButton.Text:SetText('Q')
 
+    -- Garrison button
+
+GarrisonLandingPageMinimapButton:SetSize(36, 36)
+GarrisonLandingPageMinimapButton:ClearAllPoints()
+GarrisonLandingPageMinimapButton:SetPoint('BOTTOMLEFT', Minimap, 0, 0)
+
     -- Hide all unwanted things
 
 MinimapZoomIn:Hide()
@@ -120,11 +126,11 @@ TicketStatusFrame:ClearAllPoints()
 TicketStatusFrame:SetPoint('BOTTOMRIGHT', UIParent, -25, -33)
 TicketStatusFrameButton:HookScript('OnShow', function(self)
     self:SetBackdrop({
-        bgFile = 'Interface\\Buttons\\WHITE8x8', 
+        bgFile = 'Interface\\Buttons\\WHITE8x8',
         insets = {
-            left = 3, 
-            right = 3, 
-            top = 3, 
+            left = 3,
+            right = 3,
+            top = 3,
             bottom = 3
         }
     })
