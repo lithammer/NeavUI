@@ -113,6 +113,8 @@ for _, tooltip in pairs({
     VoiceMacroMenu,
 
     FriendsTooltip,
+
+    FloatingGarrisonFollowerTooltip,
 }) do
     ApplyTooltipStyle(tooltip)
 end
