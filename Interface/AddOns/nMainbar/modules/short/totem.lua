@@ -14,13 +14,13 @@ f:SetPoint('CENTER', UIParent)
 f:SetMovable(true)
 f:SetUserPlaced(true)
 f:SetScript('OnEvent', function(self, event)
-    MultiCastActionBarFrame:ClearAllPoints()   
-    MultiCastActionBarFrame:SetPoint('CENTER', MultiCastActionBarFrameAnchor) 
+    MultiCastActionBarFrame:ClearAllPoints()
+    MultiCastActionBarFrame:SetPoint('CENTER', MultiCastActionBarFrameAnchor)
     MultiCastActionBarFrame.SetPoint = function() end
 end)
 
 for i = 1, 12 do
-    for _, button in pairs({        
+    for _, button in pairs({
         _G['MultiCastSlotButton1'],
         _G['MultiCastSlotButton2'],
         _G['MultiCastSlotButton3'],
@@ -38,11 +38,11 @@ for i = 1, 12 do
         button:RegisterForDrag('LeftButton')
         button:HookScript('OnDragStart', function()
             if (IsControlKeyDown()) then
-                MultiCastActionBarFrameAnchor:StartMoving() 
+                MultiCastActionBarFrameAnchor:StartMoving()
             end
         end)
 
-        button:HookScript('OnDragStop', function() 
+        button:HookScript('OnDragStop', function()
             MultiCastActionBarFrameAnchor:StopMovingOrSizing()
         end)
     end

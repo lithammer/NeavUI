@@ -101,7 +101,7 @@ GameTooltipStatusBar:HookScript('OnValueChanged', function(self, value)
     local fullString = GetHealthTag(cfg.healthbar.healthFullFormat, value, max)
     local normalString = GetHealthTag(cfg.healthbar.healthFormat, value, max)
 
-    local perc = (value/max)*100 
+    local perc = (value/max)*100
     if (perc >= 100 and currentValue ~= 1) then
         self.Text:SetText(fullString)
     elseif (perc < 100 and currentValue ~= 1) then

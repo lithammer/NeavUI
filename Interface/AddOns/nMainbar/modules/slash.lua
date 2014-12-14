@@ -1,6 +1,6 @@
 
 SlashCmdList['GM'] = function()
-    ToggleHelpFrame() 
+    ToggleHelpFrame()
 end
 
 SLASH_GM1 = '/gm'

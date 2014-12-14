@@ -44,7 +44,7 @@ local function IsMerchantButtonOver()
 end
 
 GameTooltip:HookScript('OnTooltipSetItem', function(self)
-    if (MerchantFrame:IsShown() and IsMerchantButtonOver()) then 
+    if (MerchantFrame:IsShown() and IsMerchantButtonOver()) then
         for i = 2, GameTooltip:NumLines() do
             if (_G['GameTooltipTextLeft'..i]:GetText():find('<[sS]hift')) then
                 GameTooltip:AddLine('|cff00ffcc'..GetAltClickString()..'|r')

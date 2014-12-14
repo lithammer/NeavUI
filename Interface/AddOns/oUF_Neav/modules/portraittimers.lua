@@ -28,7 +28,7 @@ ns.PortraitTimerDB = {
     '1776',     -- Gouge
     '6770',     -- Sap
     '87195',    -- Paralysis
-    '88625',    -- Holy Word: Chastise   
+    '88625',    -- Holy Word: Chastise
     '65929',    -- Charge Stun
     '91797',    -- Monstrous Blow (Gnaw with DT)
 
@@ -41,7 +41,7 @@ ns.PortraitTimerDB = {
     '118',      -- Polymorph
     '51514',    -- Hex
     '6789',     -- Death Coil
-    '5246',     -- Intimidating Shout 
+    '5246',     -- Intimidating Shout
     '8122',     -- Psychic Scream
     '5484',     -- Howl of Terror
     '5782',     -- Fear
@@ -65,14 +65,14 @@ ns.PortraitTimerDB = {
         -- Dmg reductions
 
     '48707',    -- Anti-Magic Shell
-    '30823',    -- Shamanistic Rage 
+    '30823',    -- Shamanistic Rage
     '33206',    -- Pain Suppression
     '47585',    -- Dispersion
     '871',      -- Shield Wall
     '48792',    -- Icebound Fortitude
     '498',      -- Divine Protection
     '22812',    -- Barkskin
-    '61336',    -- Survival Instincts	
+    '61336',    -- Survival Instincts
     '5277',     -- Evasion
     '74001',    -- Combat Readiness
     '47788',    -- Guardian Spirit
@@ -85,10 +85,10 @@ ns.PortraitTimerDB = {
     '19647',    -- Spell Lock
     '28730',    -- Arcane Torrent
 
-        -- Dmg buffs  
+        -- Dmg buffs
 
     '31884',    -- Avenging Wrath
-    '51713',    -- Shadow Dance 
+    '51713',    -- Shadow Dance
 
         -- Helpful buffs
 
@@ -122,8 +122,8 @@ end
 local function AuraTimer(self, elapsed)
     self.elapsed = (self.elapsed or 0) + elapsed
 
-    if (self.elapsed < 0.1) then 
-        return 
+    if (self.elapsed < 0.1) then
+        return
     end
 
     self.elapsed = 0
@@ -149,8 +149,8 @@ local function UpdateIcon(self, texture, duration, expires)
 end
 
 local Update = function(self, event, unit)
-    if (self.unit ~= unit) then 
-        return 
+    if (self.unit ~= unit) then
+        return
     end
 
     local pt = self.PortraitTimer

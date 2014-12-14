@@ -4,7 +4,7 @@ local _, nMainbar = ...
 nMainbar.Config = {
     showPicomenu = true,
 
-    button = { 
+    button = {
         showVehicleKeybinds = true,
         showKeybinds = false,
         showMacronames = false,

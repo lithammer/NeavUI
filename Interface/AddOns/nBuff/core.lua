@@ -99,10 +99,10 @@ hooksecurefunc('BuffFrame_UpdatePositions', function()
     end
 end)
 
-hooksecurefunc('BuffFrame_UpdateAllBuffAnchors', function()  
+hooksecurefunc('BuffFrame_UpdateAllBuffAnchors', function()
     local previousBuff, aboveBuff
     local numBuffs = 0
-    local numTotal = BuffFrame.numEnchants 
+    local numTotal = BuffFrame.numEnchants
 
     for i = 1, BUFF_ACTUAL_DISPLAY do
         local buff = _G['BuffButton'..i]
@@ -185,7 +185,7 @@ for i = 1, NUM_TEMP_ENCHANT_FRAMES do
     local border = _G['TempEnchant'..i..'Border']
     border:ClearAllPoints()
     border:SetPoint('TOPRIGHT', button, 1, 1)
-    border:SetPoint('BOTTOMLEFT', button, -1, -1)    
+    border:SetPoint('BOTTOMLEFT', button, -1, -1)
     border:SetTexture(cfg.borderDebuff)
     border:SetTexCoord(0, 1, 0, 1)
     border:SetVertexColor(0.9, 0.25, 0.9)

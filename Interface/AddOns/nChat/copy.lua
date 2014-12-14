@@ -32,7 +32,7 @@ f.b:SetMultiLine(true)
 f.b:SetMaxLetters(20000)
 f.b:SetSize(450, 270)
 f.b:SetScript('OnEscapePressed', function()
-    f:Hide() 
+    f:Hide()
 end)
 
 f.s = CreateFrame('ScrollFrame', '$parentScrollBar', f, 'UIPanelScrollFrameTemplate')
@@ -92,7 +92,7 @@ local function CreateCopyButton(self)
     hooksecurefunc(tab, 'SetAlpha', function()
         self.Copy:SetAlpha(tab:GetAlpha()*0.55)
     end)
-    
+
     self.Copy:SetScript('OnMouseDown', function(self)
         self:GetNormalTexture():ClearAllPoints()
         self:GetNormalTexture():SetPoint('CENTER', 1, -1)
@@ -101,7 +101,7 @@ local function CreateCopyButton(self)
     self.Copy:SetScript('OnMouseUp', function()
         self.Copy:GetNormalTexture():ClearAllPoints()
         self.Copy:GetNormalTexture():SetPoint('CENTER')
-        
+
         if (self.Copy:IsMouseOver()) then
             copyChat(self)
         end

@@ -17,7 +17,7 @@ f.Cursor:SetPoint('BOTTOMLEFT', f.Player, 'TOPLEFT')
 f.Cursor:SetTextColor(1, 0.82, 0)
 
 f:SetScript('OnUpdate', function(self, elapsed)
-    local width = WorldMapDetailFrame:GetWidth() 
+    local width = WorldMapDetailFrame:GetWidth()
     local height = WorldMapDetailFrame:GetHeight()
     local mx, my = WorldMapDetailFrame:GetCenter()
     local px, py = GetPlayerMapPosition('player')

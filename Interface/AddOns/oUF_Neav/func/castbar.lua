@@ -21,10 +21,10 @@ function ns.CreateCastbarStrings(self, size)
 
     if (size) then
         self.Castbar.Time:SetFont(config.font.normal, 21)
-        self.Castbar.Time:SetPoint('RIGHT', self.Castbar, -2, 0)  
+        self.Castbar.Time:SetPoint('RIGHT', self.Castbar, -2, 0)
     else
         self.Castbar.Time:SetFont(config.font.normal, config.font.normalSize)
-        self.Castbar.Time:SetPoint('RIGHT', self.Castbar, -5, 0)  
+        self.Castbar.Time:SetPoint('RIGHT', self.Castbar, -5, 0)
     end
 
     self.Castbar.Time:SetShadowOffset(1, -1)
@@ -34,7 +34,7 @@ function ns.CreateCastbarStrings(self, size)
 
     self.Castbar.Text = self.Castbar:CreateFontString(nil, 'OVERLAY')
     self.Castbar.Text:SetFont(config.font.normal, config.font.normalSize)
-    self.Castbar.Text:SetPoint('LEFT', self.Castbar, 4, 0)  
+    self.Castbar.Text:SetPoint('LEFT', self.Castbar, 4, 0)
 
     if (size) then
         self.Castbar.Text:SetPoint('RIGHT', self.Castbar.Time, 'LEFT', -7, 0)
@@ -45,5 +45,5 @@ function ns.CreateCastbarStrings(self, size)
     self.Castbar.Text:SetShadowOffset(1, -1)
     self.Castbar.Text:SetHeight(10)
     self.Castbar.Text:SetJustifyH('LEFT')
-    self.Castbar.Text:SetParent(self.Castbar)  
+    self.Castbar.Text:SetParent(self.Castbar)
 end

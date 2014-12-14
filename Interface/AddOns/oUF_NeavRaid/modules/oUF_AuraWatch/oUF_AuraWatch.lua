@@ -5,7 +5,7 @@ Please leave comments, suggestions, and bug reports on this addon's WoWInterface
 To setup, create a table named AuraWatch in your unit frame. There are several options
 you can specify, as explained below.
 
-    icons 
+    icons
         Mandatory!
         A table of frames to be used as icons. oUF_Aurawatch does not position
         these frames, so you must do so yourself. Each icon needs a spellID entry,
@@ -44,7 +44,7 @@ you can specify, as explained below.
         and 'true' be the values.
     anyUnit
         Default false
-        Set to true for oUF_AW to to show an aura no matter what unit it 
+        Set to true for oUF_AW to to show an aura no matter what unit it
         originates from. This will override any fromUnits setting.
     PostCreateIcon
         Default nil
@@ -81,7 +81,7 @@ Here is an example of how to set oUF_AW up:
 
     local createAuraWatch = function(self, unit)
         local auras = {}
-        
+
         -- A table of spellIDs to create icons for
         -- To find spellIDs, look up a spell on www.wowhead.com and look at the URL
         -- http://www.wowhead.com/?spell=SPELL_ID
@@ -120,7 +120,7 @@ local PLAYER_UNITS = {
 }
 
 local setupGUID
-do 
+do
     local cache = setmetatable({}, {__type = 'k'})
 
     local frame = CreateFrame('Frame')
@@ -181,42 +181,42 @@ local function expireIcon(icon, frame)
     if (icon.onlyShowPresent) then
         icon:Hide()
     else
-        if (icon.cd) then 
-            icon.cd:Hide() 
+        if (icon.cd) then
+            icon.cd:Hide()
         end
-        
-        if (icon.count) then 
-            icon.count:SetText() 
+
+        if (icon.count) then
+            icon.count:SetText()
         end
-        
+
         icon:SetAlpha(frame.missingAlpha)
-        
+
         if (icon.overlay) then
             icon.overlay:Show()
         end
-        
+
         icon:Show()
     end
 end
 
 local found = {}
 local function Update(frame, event, unit)
-    if (frame.unit ~= unit) then 
-        return 
+    if (frame.unit ~= unit) then
+        return
     end
 
     local watch = frame.AuraWatch
     local index, icons = 1, watch.watched
-    local _, name, texture, count, duration, remaining, caster, key, icon, spellid 
+    local _, name, texture, count, duration, remaining, caster, key, icon, spellid
     local filter = 'HELPFUL'
     local guid = UnitGUID(unit)
-    
-    if (not guid) then 
-        return 
+
+    if (not guid) then
+        return
     end
-    
+
     if (not GUIDs[guid]) then
-        setupGUID(guid) 
+        setupGUID(guid)
     end
 
     for key, icon in pairs(icons) do
@@ -225,7 +225,7 @@ local function Update(frame, event, unit)
 
     while true do
         name, _, texture, count, _, duration, remaining, caster, _, _, spellid = UnitAura(unit, index, filter)
-        if (not name) then 
+        if (not name) then
             if (filter == 'HELPFUL') then
                 filter = 'HARMFUL'
                 index = 1
@@ -238,15 +238,15 @@ local function Update(frame, event, unit)
             else
                 key = name..texture
             end
-            
+
             icon = icons[key]
-            
+
             if (icon and (icon.anyUnit or (caster and icon.fromUnits[caster]))) then
                 resetIcon(icon, watch, count, duration, remaining)
                 GUIDs[guid][key] = true
                 found[key] = true
             end
-            
+
             index = index + 1
         end
 
@@ -278,19 +278,19 @@ local function setupIcons(self)
     local watch = self.AuraWatch
     local icons = watch.icons
     watch.watched = {}
-    
-    if (not watch.missingAlpha) then 
-        watch.missingAlpha = 0.75 
+
+    if (not watch.missingAlpha) then
+        watch.missingAlpha = 0.75
     end
-    
-    if (not watch.presentAlpha) then 
-        watch.presentAlpha = 1 
+
+    if (not watch.presentAlpha) then
+        watch.presentAlpha = 1
     end
 
     for _,icon in pairs(icons) do
         local name, _, image = GetSpellInfo(icon.spellID)
         if (not name) then
-            error('oUF_AuraWatch error: no spell with '..tostring(icon.spellID)..' spell ID exists') 
+            error('oUF_AuraWatch error: no spell with '..tostring(icon.spellID)..' spell ID exists')
         end
         icon.name = name
 
@@ -306,7 +306,7 @@ local function setupIcons(self)
             tex:SetTexture(image)
             icon.icon = tex
             icon.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-            
+
             if (not icon.overlay) then
                 local overlay = icon:CreateTexture(nil, 'OVERLAY')
                 overlay:SetTexture'Interface\\Buttons\\UI-Debuff-Overlays'

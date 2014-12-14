@@ -37,7 +37,7 @@ for _, button in pairs({
         end
     end)
 
-    button:HookScript('OnDragStop', function(self) 
+    button:HookScript('OnDragStop', function(self)
         self:StopMovingOrSizing()
     end)
 end

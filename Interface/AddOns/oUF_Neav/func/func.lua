@@ -62,10 +62,10 @@ ns.FormatTime = function(time)
 end
 
 local function GetUnitStatus(unit)
-    if (UnitIsDead(unit)) then 
+    if (UnitIsDead(unit)) then
         return DEAD
     elseif (UnitIsGhost(unit)) then
-        return 'Ghost' 
+        return 'Ghost'
     elseif (not UnitIsConnected(unit)) then
         return PLAYER_OFFLINE
     else
@@ -140,7 +140,7 @@ ns.GetPowerText = function(unit, cur, max)
         powerString = GetFormattedText(uconf.powerTagFull, cur, max, alt)
     elseif (uconf and uconf.powerTag) then
         powerString = GetFormattedText(uconf.powerTag, cur, max, alt)
-        
+
     else
         if (cur == max) then
             powerString = FormatValue(cur)
@@ -154,8 +154,8 @@ end
 
 ns.MultiCheck = function(what, ...)
     for i = 1, select('#', ...) do
-        if (what == select(i, ...)) then 
-            return true 
+        if (what == select(i, ...)) then
+            return true
         end
     end
 

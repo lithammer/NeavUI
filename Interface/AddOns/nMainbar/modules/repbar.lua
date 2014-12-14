@@ -1,7 +1,7 @@
 
 local _, nMainbar = ...
 local cfg = nMainbar.Config
- 
+
     -- reputation bar mouseover text
 
 ReputationWatchStatusBarText:SetFont(cfg.repBar.font, cfg.repBar.fontsize, 'THINOUTLINE')
@@ -15,7 +15,7 @@ if (cfg.repBar.mouseover) then
     end)
 
     ReputationWatchBar:HookScript('OnLeave', function()
-        securecall('UIFrameFadeOut', ReputationWatchStatusBarText, 0.2, ReputationWatchStatusBarText:GetAlpha(), 0) 
+        securecall('UIFrameFadeOut', ReputationWatchStatusBarText, 0.2, ReputationWatchStatusBarText:GetAlpha(), 0)
     end)
 else
     ReputationWatchStatusBarText:Show()

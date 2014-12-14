@@ -11,7 +11,7 @@ local function Smooth(self, value)
     else
         smoothing[self] = value
     end
-    
+
     self._max = max
 end
 
@@ -25,7 +25,7 @@ local function hook(frame)
     if (frame.Health and frame.Health.Smooth) then
         frame:SmoothBar(frame.Health)
     end
-    
+
     if (frame.Power and frame.Power.Smooth) then
         frame:SmoothBar(frame.Power)
     end
@@ -34,7 +34,7 @@ local function hook(frame)
 		if (frame.HealPrediction.myBar and frame.HealPrediction.myBar.Smooth) then
 			frame:SmoothBar(frame.HealPrediction.myBar)
 		end
-		
+
 		if (frame.HealPrediction.otherBar and frame.HealPrediction.myBar.otherBar) then
 			frame:SmoothBar(frame.HealPrediction.otherBar)
 		end
@@ -44,7 +44,7 @@ end
 for i, frame in ipairs(oUF.objects) do hook(frame) end
 oUF:RegisterInitCallback(hook)
 
-local f, min, max = CreateFrame('Frame'), math.min, math.max 
+local f, min, max = CreateFrame('Frame'), math.min, math.max
 f:SetScript('OnUpdate', function()
     local limit = 40/GetFramerate()
     for bar, value in pairs(smoothing) do
@@ -53,7 +53,7 @@ f:SetScript('OnUpdate', function()
         if (new ~= new) then
             new = value
         end
-        
+
         bar:SetValue_(new)
         if (cur == value or abs(new - value) < 2) then
             bar:SetValue_(value)

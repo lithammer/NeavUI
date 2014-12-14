@@ -5,8 +5,8 @@ local cfg = nChat.Config
     -- Mouseover Itemlinks in the chat
     -- Code provided by the Tukui crew (Tukui.org)
 
-if (not cfg.enableHyperlinkTooltip) then 
-    return 
+if (not cfg.enableHyperlinkTooltip) then
+    return
 end
 
 local _G = getfenv(0)
@@ -14,13 +14,13 @@ local orig1, orig2 = {}, {}
 local GameTooltip = GameTooltip
 
 local linktypes = {
-    item = true, 
-    enchant = true, 
-    spell = true, 
-    quest = true, 
-    unit = true, 
-    talent = true, 
-    achievement = true, 
+    item = true,
+    enchant = true,
+    spell = true,
+    quest = true,
+    unit = true,
+    talent = true,
+    achievement = true,
     glyph = true
 }
 
@@ -34,16 +34,16 @@ local function OnHyperlinkEnter(frame, link, ...)
         GameTooltip:Hide()
     end
 
-    if (orig1[frame]) then 
-        return orig1[frame](frame, link, ...) 
+    if (orig1[frame]) then
+        return orig1[frame](frame, link, ...)
     end
 end
 
 local function OnHyperlinkLeave(frame, ...)
     GameTooltip:Hide()
 
-    if (orig2[frame]) then 
-        return orig2[frame](frame, ...) 
+    if (orig2[frame]) then
+        return orig2[frame](frame, ...)
     end
 end
 

@@ -20,8 +20,8 @@ end
 
 ns.UpdateAuraTimer = function(self, elapsed)
     self.elapsed = (self.elapsed or 0) + elapsed
-    if (self.elapsed < 0.1) then 
-        return 
+    if (self.elapsed < 0.1) then
+        return
     end
 
     self.elapsed = 0
@@ -58,7 +58,7 @@ ns.PostUpdateIcon = function(icons, unit, icon, index, offset)
     end
 
     if (config.units.target.colorPlayerDebuffsOnly) then
-        if (unit == 'target') then 
+        if (unit == 'target') then
             if (icon.isDebuff) then
                 if (not IsMine(icon.owner)) then
                     icon.overlay:SetVertexColor(0.45, 0.45, 0.45)

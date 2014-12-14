@@ -8,7 +8,7 @@ local totalMoney = 0
 local processing = false
 local function OnEvent()
     if (not MailFrame:IsShown()) then
-        return 
+        return
     end
 
     local num = GetInboxNumItems()
@@ -42,14 +42,14 @@ end
 
 f:RegisterEvent('MAIL_INBOX_UPDATE')
 f:SetScript('OnEvent', OnEvent)
-f:SetScript('OnClick', function(self) 
-    if (not processing) then 
+f:SetScript('OnClick', function(self)
+    if (not processing) then
         totalMoney = 0
-        processing = true 
-        OnEvent() 
-    end 
+        processing = true
+        OnEvent()
+    end
 end)
 
-f:SetScript('OnHide', function(self) 
-    processing = false 
+f:SetScript('OnHide', function(self)
+    processing = false
 end)

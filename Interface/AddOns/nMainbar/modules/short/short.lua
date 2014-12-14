@@ -59,7 +59,7 @@ for i = 2, 3 do
 
         _G['PossessBackground1'],
         _G['PossessBackground2'],
-    }) do 
+    }) do
         if (object:IsObjectType('Frame') or object:IsObjectType('Button')) then
             object:UnregisterAllEvents()
             object:SetScript('OnEnter', nil)

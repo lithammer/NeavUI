@@ -34,7 +34,7 @@ oUF.Tags.Methods['level'] = function(unit)
     local level = UnitLevel(unit)
     local colorL = GetQuestDifficultyColor(level)
 
-    if (level < 0) then 
+    if (level < 0) then
         r, g, b = 1, 0, 0
         level = '??'
     elseif (level == 0) then

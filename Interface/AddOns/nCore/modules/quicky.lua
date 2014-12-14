@@ -1,12 +1,12 @@
 
 local f = CreateFrame('Frame')
 
---local leftRotate = CharacterModelFrameControlFrameRotateLeftButton 
---leftRotate:ClearAllPoints() 
---leftRotate:SetPoint('BOTTOMLEFT', CharacterModelFrame, 7, 0) 
+--local leftRotate = CharacterModelFrameControlFrameRotateLeftButton
+--leftRotate:ClearAllPoints()
+--leftRotate:SetPoint('BOTTOMLEFT', CharacterModelFrame, 7, 0)
 --
---local rightRotate = CharacterModelFrameControlFrameRotateRightButton 
---rightRotate:ClearAllPoints() 
+--local rightRotate = CharacterModelFrameControlFrameRotateRightButton
+--rightRotate:ClearAllPoints()
 --rightRotate:SetPoint('BOTTOMRIGHT', CharacterModelFrame, -7, 0)
 
 f.Head = CreateFrame('Button', nil, CharacterHeadSlot)
@@ -15,17 +15,17 @@ f.Head:SetFrameStrata('HIGH')
 f.Head:SetSize(16, 32)
 f.Head:SetPoint('LEFT', CharacterHeadSlot, 'CENTER', 9, 0)
 
-f.Head:SetScript('OnClick', function() 
-    ShowHelm(not ShowingHelm()) 
+f.Head:SetScript('OnClick', function()
+    ShowHelm(not ShowingHelm())
 end)
 
-f.Head:SetScript('OnEnter', function(self) 
+f.Head:SetScript('OnEnter', function(self)
     GameTooltip:SetOwner(self, 'ANCHOR_TOPLEFT', 13, -10)
     GameTooltip:AddLine(SHOW_HELM)
     GameTooltip:Show()
 end)
 
-f.Head:SetScript('OnLeave', function() 
+f.Head:SetScript('OnLeave', function()
     GameTooltip:Hide()
 end)
 
@@ -49,17 +49,17 @@ f.Cloak:SetFrameStrata('HIGH')
 f.Cloak:SetSize(16, 32)
 f.Cloak:SetPoint('LEFT', CharacterBackSlot, 'CENTER', 9, 0)
 
-f.Cloak:SetScript('OnClick', function() 
-    ShowCloak(not ShowingCloak()) 
+f.Cloak:SetScript('OnClick', function()
+    ShowCloak(not ShowingCloak())
 end)
 
-f.Cloak:SetScript('OnEnter', function(self) 
+f.Cloak:SetScript('OnEnter', function(self)
     GameTooltip:SetOwner(self, 'ANCHOR_TOPLEFT', 13, -10)
     GameTooltip:AddLine(SHOW_CLOAK)
     GameTooltip:Show()
 end)
 
-f.Cloak:SetScript('OnLeave', function() 
+f.Cloak:SetScript('OnLeave', function()
     GameTooltip:Hide()
 end)
 

@@ -4,7 +4,7 @@ local _, nBuff = ...
 nBuff.Config = {
     buffSize = 36,
     buffScale = 1,
-    buffBorderColor = {1, 1, 1}, 
+    buffBorderColor = {1, 1, 1},
 
     buffFontSize = 14,
     buffCountSize = 16,

@@ -75,7 +75,7 @@ for _, font in pairs({
     font:SetFont('Fonts\\ARIALN.ttf', 13)
     font:SetShadowOffset(1, -1)
 end
-   
+
 for _, font in pairs({
     AchievementPointsFont,
     AchievementPointsFontSmall,

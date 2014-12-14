@@ -64,7 +64,7 @@ ns.StartFlash = function(frame, fadeInTime, fadeOutTime, flashInHoldTime, flashO
             index = index + 1
         end
 
-        frame.flashTimer = 0 
+        frame.flashTimer = 0
         frame.fadeInTime = fadeInTime
         frame.fadeOutTime = fadeOutTime
         frame.flashInHoldTime = flashInHoldTime

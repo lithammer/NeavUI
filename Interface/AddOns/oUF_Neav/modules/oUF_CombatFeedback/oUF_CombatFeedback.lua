@@ -6,7 +6,7 @@ local maxAlpha = 0.6
 local updateFrame
 local feedback = {}
 local originalHeight = {}
-local color 
+local color
 local colors = {
 	STANDARD		= { 1, 1, 1 }, -- color for everything not in the list below
 	-- damage colors
@@ -51,7 +51,7 @@ local function createUpdateFrame()
 				object.CombatFeedbackText:Hide()
 				feedback[object] = nil
 			end
-		end		
+		end
 	end)
 end
 

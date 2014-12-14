@@ -1,11 +1,11 @@
 
 local events = {
-    CHAT_MSG_SAY = 'chatBubbles', 
+    CHAT_MSG_SAY = 'chatBubbles',
     CHAT_MSG_YELL = 'chatBubbles',
-    CHAT_MSG_PARTY = 'chatBubblesParty', 
+    CHAT_MSG_PARTY = 'chatBubblesParty',
     CHAT_MSG_PARTY_LEADER = 'chatBubblesParty',
-    CHAT_MSG_MONSTER_SAY = 'chatBubbles', 
-    CHAT_MSG_MONSTER_YELL = 'chatBubbles', 
+    CHAT_MSG_MONSTER_SAY = 'chatBubbles',
+    CHAT_MSG_MONSTER_YELL = 'chatBubbles',
     CHAT_MSG_MONSTER_PARTY = 'chatBubblesParty',
 }
 
@@ -39,14 +39,14 @@ local function SkinFrame(frame)
     frame.sender:SetPoint('BOTTOMLEFT', frame.text, 'TOPLEFT', 0, 4)
     frame.sender:SetJustifyH('LEFT')
 
-    frame:HookScript('OnHide', function() 
-        frame.inUse = false 
+    frame:HookScript('OnHide', function()
+        frame.inUse = false
     end)
 end
 
 local function UpdateFrame(frame, guid, name)
-    if (not frame.text) then 
-        SkinFrame(frame) 
+    if (not frame.text) then
+        SkinFrame(frame)
     end
     frame.inUse = true
 
@@ -79,8 +79,8 @@ local function FindFrame(msg)
 end
 
 local f = CreateFrame('Frame')
-for event, cvar in pairs(events) do 
-    f:RegisterEvent(event) 
+for event, cvar in pairs(events) do
+    f:RegisterEvent(event)
 end
 
 f:SetScript('OnEvent', function(self, event, msg, sender, _, _, _, _, _, _, _, _, _, guid)
@@ -91,8 +91,8 @@ f:SetScript('OnEvent', function(self, event, msg, sender, _, _, _, _, _, _, _, _
             local frame = FindFrame(msg)
             if (frame or self.elapsed > 0.3) then
                 f:SetScript('OnUpdate', nil)
-                if (frame) then 
-                    UpdateFrame(frame, guid, sender) 
+                if (frame) then
+                    UpdateFrame(frame, guid, sender)
                 end
             end
         end)

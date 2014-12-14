@@ -33,8 +33,8 @@ end
 hooksecurefunc('PetActionBar_Update', function()
     for _, name in pairs({
         'PetActionButton',
-        'PossessButton',    
-        'StanceButton', 
+        'PossessButton',
+        'StanceButton',
     }) do
         for i = 1, 12 do
             local button = _G[name..i]
@@ -85,7 +85,7 @@ hooksecurefunc('PetActionBar_Update', function()
                         button.Shadow = true
                     else
                         button.Shadow = button:CreateTexture(nil, 'BACKGROUND')
-                        button.Shadow:SetParent(button)  
+                        button.Shadow:SetParent(button)
                         button.Shadow:SetPoint('TOPRIGHT', normal, 4, 4)
                         button.Shadow:SetPoint('BOTTOMLEFT', normal, -4, -4)
                         button.Shadow:SetTexture(path..'textureShadow')
@@ -118,7 +118,7 @@ hooksecurefunc('ActionButton_Update', function(self)
                 icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
 
                 button.Shadow = button:CreateTexture(nil, 'BACKGROUND')
-                button.Shadow:SetParent(button)  
+                button.Shadow:SetParent(button)
                 button.Shadow:SetPoint('TOPRIGHT', button, 4.5, 4.5)
                 button.Shadow:SetPoint('BOTTOMLEFT', button, -4.5, -4.5)
                 button.Shadow:SetTexture(path..'textureShadow')
@@ -232,18 +232,18 @@ end)
 hooksecurefunc('ActionButton_ShowGrid', function(self)
     local normal = _G[self:GetName()..'NormalTexture']
     if (normal) then
-        normal:SetVertexColor(cfg.color.Normal[1], cfg.color.Normal[2], cfg.color.Normal[3], 1) 
+        normal:SetVertexColor(cfg.color.Normal[1], cfg.color.Normal[2], cfg.color.Normal[3], 1)
     end
 end)
 
 hooksecurefunc('ActionButton_UpdateUsable', function(self)
     if (IsAddOnLoaded('RedRange') or IsAddOnLoaded('GreenRange') or IsAddOnLoaded('tullaRange') or IsAddOnLoaded('RangeColors')) then
         return
-    end  
+    end
 
     local normal = _G[self:GetName()..'NormalTexture']
     if (normal) then
-        normal:SetVertexColor(cfg.color.Normal[1], cfg.color.Normal[2], cfg.color.Normal[3], 1) 
+        normal:SetVertexColor(cfg.color.Normal[1], cfg.color.Normal[2], cfg.color.Normal[3], 1)
     end
 
     local isUsable, notEnoughMana = IsUsableAction(self.action)
@@ -267,7 +267,7 @@ hooksecurefunc('ActionButton_UpdateHotkeys', function(self, actionButtonType)
             hotkey:SetFont(cfg.button.hotkeyFont, cfg.button.hotkeyFontsize, 'OUTLINE')
             hotkey:SetVertexColor(cfg.color.HotKeyText[1], cfg.color.HotKeyText[2], cfg.color.HotKeyText[3])
         else
-            hotkey:Hide()    
+            hotkey:Hide()
         end
     else
         UpdateVehicleButton()

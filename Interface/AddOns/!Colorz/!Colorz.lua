@@ -20,7 +20,7 @@ function GameTooltip_UnitColor(unit)
     if (UnitIsDead(unit) or UnitIsGhost(unit) or UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit)) then
         r = 0.5
         g = 0.5
-        b = 0.5 
+        b = 0.5
     elseif (UnitIsPlayer(unit)) then
         if (UnitIsFriend(unit, 'player')) then
             local _, class = UnitClass(unit)
@@ -72,5 +72,5 @@ function GameTooltip_UnitColor(unit)
 
     return r, g, b
 end
-  
+
 UnitSelectionColor = GameTooltip_UnitColor

@@ -13,7 +13,7 @@ if (cfg.multiBarBottomRight.orderVertical) then
 
     MultiBarBottomRightButton1:HookScript('OnShow', function(self)
         self:ClearAllPoints()
-        
+
         if (cfg.multiBarBottomRight.verticalPosition == 'RIGHT') then
             self:SetPoint('TOPRIGHT', MultiBarLeftButton1, 'TOPLEFT', -6, 0)
         else

@@ -108,7 +108,7 @@ local function CreateBossLayout(self, unit)
     self.Name.Bg:SetHeight(18)
     self.Name.Bg:SetTexCoord(0.2, 0.8, 0.3, 0.85)
     self.Name.Bg:SetPoint('BOTTOMRIGHT', self.Health, 'TOPRIGHT')
-    self.Name.Bg:SetPoint('BOTTOMLEFT', self.Health, 'TOPLEFT') 
+    self.Name.Bg:SetPoint('BOTTOMLEFT', self.Health, 'TOPLEFT')
     self.Name.Bg:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\nameBackground')
 
         -- level
@@ -155,7 +155,7 @@ local function CreateBossLayout(self, unit)
     self:SetSize(132, 46)
     self:SetScale(config.units.boss.scale)
 
-    if (config.units.boss.castbar.show) then  
+    if (config.units.boss.castbar.show) then
         self.Castbar = CreateFrame('StatusBar', self:GetName()..'Castbar', self)
         self.Castbar:SetStatusBarTexture(config.media.statusbar)
         self.Castbar:SetSize(150, 18)

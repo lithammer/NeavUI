@@ -1,7 +1,7 @@
 
 local gradientColor = {
-    1, 0, 0, 
-    1, 1, 0, 
+    1, 0, 0,
+    1, 1, 0,
     0, 1, 0
 }
 
@@ -18,7 +18,7 @@ local slotInfo = {
     [10] = {17, 'SecondaryHand'},
 }
 
-local charString = CharacterLevelText 
+local charString = CharacterLevelText
 charString:SetFont('Fonts\\ARIALN.ttf', 14)
 
 local f = CreateFrame('Button', 'PaperDollFrameDurabilityTab', PaperDollSidebarTab1, 'CharacterFrameTabButtonTemplate')
@@ -37,7 +37,7 @@ _G[f:GetName()..'MiddleDisabled']:SetTexture(nil)
 
 local function ColorGradient(perc, ...)
     if (perc >= 1) then
-        local r, g, b = select(select('#', ...) - 2, ...) 
+        local r, g, b = select(select('#', ...) - 2, ...)
         return r, g, b
     elseif (perc < 0) then
         local r, g, b = ... return r, g, b
@@ -56,7 +56,7 @@ f:SetScript('OnEvent', function(event)
     local overAll = 1
 
     for i = 1, #slotInfo do
-        local id = GetInventorySlotInfo(slotInfo[i][2] .. 'Slot') 
+        local id = GetInventorySlotInfo(slotInfo[i][2] .. 'Slot')
         local curr, max = GetInventoryItemDurability(slotInfo[i][1])
         local itemSlot = _G['Character'..slotInfo[i][2]..'Slot']
 

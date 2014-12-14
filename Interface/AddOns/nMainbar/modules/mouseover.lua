@@ -34,7 +34,7 @@ local function EnableMouseOver(self, bar, min, max, alpha, hiddenAlpha)
             bar:SetAlpha(alpha)
         end)
 
-        f:SetScript('OnLeave', function() 
+        f:SetScript('OnLeave', function()
             if (not MouseIsOver(button)) then
                 bar:SetAlpha(minAlpha)
             end
@@ -44,7 +44,7 @@ local function EnableMouseOver(self, bar, min, max, alpha, hiddenAlpha)
             bar:SetAlpha(alpha)
         end)
 
-        button:HookScript('OnLeave', function() 
+        button:HookScript('OnLeave', function()
             if (not MouseIsOver(f)) then
                 bar:SetAlpha(minAlpha)
             end

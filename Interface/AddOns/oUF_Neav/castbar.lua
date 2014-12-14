@@ -22,13 +22,13 @@ end
 function ns.CreateCastbars(self, unit)
     local config = ns.Config.units[ns.cUnit(unit)].castbar
 
-    if (ns.MultiCheck(unit, 'player', 'target', 'focus', 'pet') and config and config.show) then 
+    if (ns.MultiCheck(unit, 'player', 'target', 'focus', 'pet') and config and config.show) then
         self.Castbar = CreateFrame('StatusBar', self:GetName()..'Castbar', self)
         self.Castbar:SetStatusBarTexture(ns.Config.media.statusbar)
         self.Castbar:SetScale(config.scale)
         self.Castbar:SetSize(config.width, config.height)
-        self.Castbar:SetStatusBarColor(unpack(config.color))  
-        
+        self.Castbar:SetStatusBarColor(unpack(config.color))
+
         if (unit == 'focus') then
             self.Castbar:SetPoint('BOTTOM', self, 'TOP', 0, 25)
         else
@@ -49,7 +49,7 @@ function ns.CreateCastbars(self, unit)
             end
 
             if (config.showSafezone) then
-                self.Castbar.SafeZone = self.Castbar:CreateTexture(nil, 'BORDER') 
+                self.Castbar.SafeZone = self.Castbar:CreateTexture(nil, 'BORDER')
                 self.Castbar.SafeZone:SetTexture(unpack(config.safezoneColor))
             end
 
@@ -100,7 +100,7 @@ function ns.CreateCastbars(self, unit)
                     local avgLag = (lagHome + lagWorld) / 2
 
                     self.Latency:ClearAllPoints()
-                    self.Latency:SetPoint('RIGHT', self, 'BOTTOMRIGHT', -1, -2) 
+                    self.Latency:SetPoint('RIGHT', self, 'BOTTOMRIGHT', -1, -2)
                     self.Latency:SetText(string.format('%.0f', avgLag)..'ms')
                 end
             end
@@ -146,10 +146,10 @@ function ns.CreateCastbars(self, unit)
                 end
             end
         end
-        
+
         self.Castbar.PostCastInterruptible = UpdateCastbarColor
         self.Castbar.PostCastNotInterruptible = UpdateCastbarColor
-        
+
         self.Castbar.CustomDelayText = ns.CustomDelayText
         self.Castbar.CustomTimeText = ns.CustomTimeText
     end
@@ -162,7 +162,7 @@ for i = 1, MIRRORTIMER_NUMTIMERS do
     bar:SetParent(UIParent)
     bar:SetScale(1.132)
     bar:SetSize(220, 18)
-    
+
     bar:CreateBeautyBorder(11)
     bar:SetBeautyBorderPadding(3)
 
