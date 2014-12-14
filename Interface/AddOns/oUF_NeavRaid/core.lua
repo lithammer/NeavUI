@@ -6,14 +6,14 @@ local playerClass = select(2, UnitClass('player'))
 
     -- oUF_AuraWatch
     -- Class buffs { spell ID, position [, {r, g, b, a}][, anyUnit][, hideCooldown][, hideCount] }
-    
+
 local indicatorList
 do
     indicatorList = {
         DRUID = {
             {774, 'BOTTOMRIGHT', {1, 0.2, 1}}, -- Rejuvenation
-            {33763, 'BOTTOM', {0.5, 1, 0.5}, false, false, true}, -- Lifebloom
             {155777, 'RIGHT', {0.4, 0.9, 0.4}}, -- Rejuvenation (Germination)
+            {33763, 'BOTTOM', {0.5, 1, 0.5}}, -- Lifebloom
             {48438, 'BOTTOMLEFT', {0.7, 1, 0}}, -- Wild Growth
         },
         MONK = {
