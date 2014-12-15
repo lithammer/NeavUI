@@ -41,8 +41,9 @@ do
             {20707, 'BOTTOMRIGHT', {0.7, 0, 1}, true, true}, -- Soulstone
         },
         ALL = {
-            {23333, 'TOPLEFT', {1, 0, 0}}, -- Warsong flag, Horde
-            {23335, 'TOPLEFT', {0, 0, 1}}, -- Warsong flag, Alliance
+            {23333, 'TOPLEFT', {1, 0, 0}, true}, -- Warsong flag, Horde
+            {23335, 'TOPLEFT', {0, 0, 1}, true}, -- Warsong flag, Alliance
+            {34976, 'TOPLEFT', {1, 0, 1}, true}, -- Netherstorm Flag
         },
     }
 end
