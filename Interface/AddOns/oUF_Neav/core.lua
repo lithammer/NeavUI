@@ -545,6 +545,7 @@ local function CreateUnitLayout(self, unit)
     otherBar:SetWidth(self.Health:GetWidth())
 
     local absorbBar = CreateFrame('StatusBar', nil, self)
+    absorbBar:SetFrameLevel(self:GetFrameLevel() - 1)
     absorbBar:SetStatusBarTexture(config.media.statusbar, 'OVERLAY')
     absorbBar:SetStatusBarColor(1, 1, 0, 0.35)
 
