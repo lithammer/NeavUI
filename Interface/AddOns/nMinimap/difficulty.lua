@@ -18,6 +18,7 @@ function GetDifficultyText()
 
     local instanceText = ''
     local guildStyle
+    local mythicStyle = '|cffff0000M|r'
     local heroStyle = '|cffff00ffH|r'
     local lookingForRaidStyle = '|cffffffffLFR'
 
@@ -27,18 +28,36 @@ function GetDifficultyText()
         guildStyle = ''
     end
 
+    local isMythicIndex = {
+        [DIFFICULTY_PRIMARYRAID_MYTHIC] = true
+    }
+
     local isHeroicIndex = {
         [DIFFICULTY_DUNGEON_HEROIC] = true,
+        [DIFFICULTY_PRIMARYRAID_HEROIC] = true,
         [DIFFICULTY_RAID10_HEROIC] = true,
         [DIFFICULTY_RAID25_HEROIC] = true,
-        [DIFFICULTY_DUNGEON_CHALLENGE] = true,
+        [DIFFICULTY_DUNGEON_CHALLENGE] = true
+    }
+
+    local isLookingForRaidIndex = {
+        [DIFFICULTY_PRIMARYRAID_LFR] = true,
+        [DIFFICULTY_RAID_LFR] = true
     }
 
     if (inInstance) then
         instanceText = maxPlayers..guildStyle
 
+        if (isMythicIndex[difficultyIndex]) then
+            instanceText = instanceText..mythicStyle
+        end
+
         if (isHeroicIndex[difficultyIndex]) then
             instanceText = instanceText..heroStyle
+        end
+
+        if (isLookingForRaidIndex[difficultyIndex]) then
+            instanceText = instanceText..lookingForRaidStyle
         end
     end
 
