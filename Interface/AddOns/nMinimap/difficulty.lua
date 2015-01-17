@@ -57,7 +57,7 @@ function GetDifficultyText()
         end
 
         if (isLookingForRaidIndex[difficultyIndex]) then
-            instanceText = instanceText..lookingForRaidStyle
+            instanceText = lookingForRaidStyle
         end
     end
 
