@@ -1,4 +1,4 @@
-## Interface: 60000
+## Interface: 60100
 ## Author: Neav
 ## Title: oUF_|cffCC3333N|r|cffE53300e|r|cffFF4D00a|r|cffFF6633v|r
 ## RequiredDeps: oUF, !Beautycase
