@@ -132,10 +132,10 @@ local menuList = {
         notCheckable = true,
     },
     {
-        text = MOUNTS_AND_PETS,
+        text = MOUNTS,
         icon = 'Interface\\MINIMAP\\TRACKING\\StableMaster',
         func = function()
-            securecall(TogglePetJournal, 1)
+            securecall(ToggleCollectionsJournal, 1)
         end,
         tooltipTitle = securecall(MicroButtonTooltipText, MOUNTS_AND_PETS, 'TOGGLEPETJOURNAL'),
         tooltipText = NEWBIE_TOOLTIP_MOUNTS_AND_PETS,
@@ -145,7 +145,7 @@ local menuList = {
         text = TOY_BOX,
         icon = 'Interface\\MINIMAP\\TRACKING\\Reagents',
         func = function()
-            securecall(TogglePetJournal, 3)
+            securecall(ToggleCollectionsJournal, 3)
         end,
         tooltipTitle = securecall(MicroButtonTooltipText, TOY_BOX, 'TOGGLETOYBOX'),
         tooltipText = TOY_BOX,
