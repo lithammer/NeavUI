@@ -402,7 +402,7 @@ local function GuildTip(self)
     local online = totalGuildOnline
 
     GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMLEFT')
-    GameTooltip:AddLine(GetGuildInfo('player')..' - '..LEVEL)
+    GameTooltip:AddLine(GetGuildInfo('player'))
     GameTooltip:AddLine(' ')
     GameTooltip:AddLine(GUILD_MOTD, nil, nil, nil)
     GameTooltip:AddLine(GetGuildRosterMOTD() or '-', 1, 1, 1, true)
