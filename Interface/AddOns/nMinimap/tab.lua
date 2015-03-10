@@ -369,6 +369,12 @@ local function BuildGuildTable()
 
     for i = 1, GetNumGuildMembers() do
         local name, rank, _, level, _, zone, note, officernote, connected, status, class, reputationStanding = GetGuildRosterInfo(i)
+        local statusText = {
+            [0] = '',
+            [1] = 'Away',
+            [2] = 'DND'
+        }
+
         guildTable[i] = {
             name,
             rank,
@@ -377,7 +383,7 @@ local function BuildGuildTable()
             note,
             officernote,
             connected,
-            status,
+            statusText[status],
             class
         }
 
