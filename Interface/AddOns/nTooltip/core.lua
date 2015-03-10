@@ -476,14 +476,6 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             end
         end
 
-            -- Custom healthbar coloring
-
-        if (cfg.healthbar.reactionColoring or cfg.healthbar.customColor.apply) then
-            GameTooltipStatusBar:HookScript('OnValueChanged', function()
-                SetHealthBarColor(unit)
-            end)
-        end
-
             -- Show player item lvl
 
         if (cfg.showItemLevel and ilvl > 1) then
@@ -504,6 +496,14 @@ GameTooltip:HookScript('OnTooltipCleared', function(self)
     end
 end)
 
+    -- Custom healthbar coloring
+
+if (cfg.healthbar.reactionColoring or cfg.healthbar.customColor.apply) then
+    GameTooltipStatusBar:HookScript('OnValueChanged', function(self)
+        local unit = GetRealUnit(self:GetParent())
+        SetHealthBarColor(unit)
+    end)
+end
 
     -- Hide coalesced/interactive realm information
 
