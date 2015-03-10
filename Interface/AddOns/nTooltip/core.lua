@@ -538,6 +538,7 @@ hooksecurefunc('GameTooltip_SetDefaultAnchor', function(self, parent)
         self:SetOwner(parent, 'ANCHOR_CURSOR')
     else
         self:SetOwner(parent, 'ANCHOR_NONE')
+        self:ClearAllPoints()
         self:SetPoint(unpack(cfg.position))
     end
 end)
