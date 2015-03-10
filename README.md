@@ -6,7 +6,7 @@ This is a development repository for Neav UI on WoWInterface.
 
 - !Beautycase
 - !Colorz
-- [evl_RaidStatus](http://www.wowinterface.com/downloads/info15178-RaidStatus.html)
+- [evl\_RaidStatus](http://www.wowinterface.com/downloads/info15178-RaidStatus.html)
 - nBuff
 - nChat
 - nCore
@@ -16,8 +16,8 @@ This is a development repository for Neav UI on WoWInterface.
 - nPower
 - nTooltip
 - [oUF](http://www.wowinterface.com/downloads/info9994-oUF.html)
-- oUF_Neav
-- oUF_NeavRaid
+- oUF\_Neav
+- oUF\_NeavRaid
 
 ## Known issues
 
@@ -27,3 +27,7 @@ Known issues
   the value of the global table, ignore this or delete
   `PowerBarColor['MANA'] = {r = 0/255, g = 0.55, b = 1}` in the
   `!Colorz.lua` file.
+
+## License
+
+MIT
