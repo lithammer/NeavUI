@@ -2,7 +2,7 @@
 local _, nMainbar = ...
 local cfg = nMainbar.Config
 
-PetActionBarFrame:SetFrameStrata('HIGH')
+PetActionBarFrame:SetFrameStrata('MEDIUM')
 
 PetActionBarFrame:SetScale(cfg.petBar.scale)
 PetActionBarFrame:SetAlpha(cfg.petBar.alpha)

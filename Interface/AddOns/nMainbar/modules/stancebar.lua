@@ -2,7 +2,7 @@
 local _, nMainbar = ...
 local cfg = nMainbar.Config
 
-StanceBarFrame:SetFrameStrata('HIGH')
+StanceBarFrame:SetFrameStrata('MEDIUM')
 
 StanceBarFrame:SetScale(cfg.stanceBar.scale)
 StanceBarFrame:SetAlpha(cfg.stanceBar.alpha)
