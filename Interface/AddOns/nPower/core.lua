@@ -74,7 +74,7 @@ if (playerClass == 'MONK') then
     f.Chi = {}
     f.Chi.maxChi = 4
 
-    for i = 1, 5 do
+    for i = 1, 6 do
         f.Chi[i] = f:CreateFontString(nil, 'ARTWORK')
 
         f.Chi[i]:SetFont(config.energy.comboFont, config.energy.comboFontSize, 'THINOUTLINE')
@@ -90,8 +90,9 @@ if (playerClass == 'MONK') then
     f.Chi[2]:SetPoint('CENTER', -13, yOffset)
     f.Chi[3]:SetPoint('CENTER', 13, yOffset)
     f.Chi[4]:SetPoint('CENTER', 39, yOffset)
-    f.Chi[5]:SetPoint('CENTER', 52, yOffset)
+
     f.Chi[5]:Hide()
+    f.Chi[6]:Hide()
 end
 
 if (playerClass == 'WARLOCK' and config.showSoulshards or playerClass == 'PALADIN' and config.showHolypower or playerClass == 'PRIEST' and config.showShadowOrbs) then
@@ -136,8 +137,6 @@ if (playerClass == 'DEATHKNIGHT' and config.rune.showRuneCooldown) then
     f.Rune[2]:SetPoint('CENTER', -39, 0)
     f.Rune[3]:SetPoint('CENTER', 39, 0)
     f.Rune[4]:SetPoint('CENTER', 65, 0)
-    f.Rune[5]:SetPoint('CENTER', -13, 0)
-    f.Rune[6]:SetPoint('CENTER', 13, 0)
 end
 
 f.Power = CreateFrame('StatusBar', nil, UIParent)
@@ -254,20 +253,24 @@ local function UpdateChi()
     local yOffset = config.energy.comboPointsBelow and -35 or 0
 
     if (f.Chi.maxChi ~= maxChi) then
-        if (maxChi == 4) then
-            f.Chi[1]:SetPoint('CENTER', -39, yOffset)
-            f.Chi[2]:SetPoint('CENTER', -13, yOffset)
-            f.Chi[3]:SetPoint('CENTER', 13, yOffset)
-            f.Chi[4]:SetPoint('CENTER', 39, yOffset)
-            f.Chi[5]:Hide()
-            f.Chi.maxChi = 4
-        else
-            f.Chi[1]:SetPoint('CENTER', -52, yOffset)
-            f.Chi[2]:SetPoint('CENTER', -26, yOffset)
-            f.Chi[3]:SetPoint('CENTER', 0, yOffset)
-            f.Chi[4]:SetPoint('CENTER', 26, yOffset)
+        f.Chi.maxChi = maxChi
+
+        local startX = -39
+        if (maxChi == 6) then
+            startX = -65
             f.Chi[5]:Show()
-            f.Chi.maxChi = 5
+            f.Chi[6]:Show()
+        elseif (maxChi == 5) then
+            startX = -52
+            f.Chi[5]:Show()
+            f.Chi[6]:Hide()
+        else
+            f.Chi[5]:Hide()
+            f.Chi[6]:Hide()
+        end
+
+        for i = 1, 6 do
+            f.Chi[i]:SetPoint('CENTER', startX + (i + 1) * 26, yOffset)
         end
     end
 
