@@ -270,7 +270,7 @@ local function UpdateChi()
         end
 
         for i = 1, 6 do
-            f.Chi[i]:SetPoint('CENTER', startX + (i + 1) * 26, yOffset)
+            f.Chi[i]:SetPoint('CENTER', startX + (i - 1) * 26, yOffset)
         end
     end
 
