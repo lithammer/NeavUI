@@ -21,6 +21,7 @@ function GetDifficultyText()
     local mythicStyle = '|cffff0000M|r'
     local heroStyle = '|cffff00ffH|r'
     local lookingForRaidStyle = '|cffffffffLFR'
+    local timewalkerStyle = '|cffffffffTW'
 
     if (isGuildGroup or GuildInstanceDifficulty:IsShown()) then
         guildStyle = '|cffffff00G|r'
@@ -28,8 +29,12 @@ function GetDifficultyText()
         guildStyle = ''
     end
 
+    local DIFFICULTY_DUNGEON_MYTHIC = 23      -- TODO: Use Blizzard constant
+    local DIFFICULTY_DUNGEON_TIMEWALKER = 24  -- TODO: Use Blizzard constant
+
     local isMythicIndex = {
-        [DIFFICULTY_PRIMARYRAID_MYTHIC] = true
+        [DIFFICULTY_PRIMARYRAID_MYTHIC] = true,
+        [DIFFICULTY_DUNGEON_MYTHIC] = true
     }
 
     local isHeroicIndex = {
@@ -45,6 +50,10 @@ function GetDifficultyText()
         [DIFFICULTY_RAID_LFR] = true
     }
 
+    local isTimewalkerIndex = {
+        [DIFFICULTY_DUNGEON_TIMEWALKER] = true
+    }
+
     if (inInstance) then
         instanceText = maxPlayers..guildStyle
 
@@ -58,6 +67,10 @@ function GetDifficultyText()
 
         if (isLookingForRaidIndex[difficultyIndex]) then
             instanceText = lookingForRaidStyle
+        end
+
+        if (isTimewalkerIndex[difficultyIndex]) then
+            instanceText = timewalkerStyle
         end
     end
 
