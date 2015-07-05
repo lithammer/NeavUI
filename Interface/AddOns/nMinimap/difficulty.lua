@@ -20,8 +20,8 @@ function GetDifficultyText()
     local guildStyle
     local mythicStyle = '|cffff0000M|r'
     local heroStyle = '|cffff00ffH|r'
-    local lookingForRaidStyle = '|cffffffffLFR'
-    local timewalkerStyle = '|cffffffffTW'
+    local lookingForRaidStyle = '|cffffffffLFR|r'
+    local timewalkerStyle = '|cffffffffTW|r'
 
     if (isGuildGroup or GuildInstanceDifficulty:IsShown()) then
         guildStyle = '|cffffff00G|r'
