@@ -14,7 +14,7 @@ end
 
 function GetDifficultyText()
     local inInstance, instancetype = IsInInstance()
-    local _, _, difficultyIndex, _, maxPlayers, playerDifficulty, _ = GetInstanceInfo()
+    local _, _, difficultyIndex, _, _, _, _, _, instanceGroupSize = GetInstanceInfo()
 
     local instanceText = ''
     local guildStyle
@@ -55,7 +55,7 @@ function GetDifficultyText()
     }
 
     if (inInstance) then
-        instanceText = maxPlayers..guildStyle
+        instanceText = instanceGroupSize..guildStyle
 
         if (isMythicIndex[difficultyIndex]) then
             instanceText = instanceText..mythicStyle
