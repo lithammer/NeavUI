@@ -279,18 +279,12 @@ hooksecurefunc('ActionButton_OnUpdate', function(self, elapsed)
         return
     end
 
-    if (self.rangeTimer) then
-        if (self.rangeTimer - elapsed <= 0) then
-            local isInRange = false
-            if (IsActionInRange(self.action) == false) then
-                _G[self:GetName()..'Icon']:SetVertexColor(unpack(cfg.color.OutOfRange))
-                isInRange = true
-            end
-
-            if (self.isInRange ~= isInRange) then
-                self.isInRange = isInRange
-                ActionButton_UpdateUsable(self)
-            end
+    if (self.rangeTimer == TOOLTIP_UPDATE_TIME) then
+        local isInRange = IsActionInRange(self.action)
+        if (isInRange == false) then
+            _G[self:GetName()..'Icon']:SetVertexColor(unpack(cfg.color.OutOfRange))
+        else
+            ActionButton_UpdateUsable(self)
         end
     end
 end)
