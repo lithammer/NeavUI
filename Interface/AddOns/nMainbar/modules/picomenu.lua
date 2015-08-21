@@ -29,7 +29,7 @@ local menuList = {
         text = SPELLBOOK_ABILITIES_BUTTON,
         icon = 'Interface\\MINIMAP\\TRACKING\\Class',
         func = function()
-            securecall(ToggleSpellBook, BOOKTYPE_SPELL)
+            securecall(ToggleFrame, SpellBookFrame)
         end,
         tooltipTitle = securecall(MicroButtonTooltipText, SPELLBOOK_ABILITIES_BUTTON, 'TOGGLESPELLBOOK'),
         tooltipText = NEWBIE_TOOLTIP_SPELLBOOK,
