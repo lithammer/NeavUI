@@ -23,6 +23,10 @@ end
     -- Note: Just must be in this instance, when you run the script above
 
 local L = {
+    ['Hellfire Citadel'] = 1026,
+    ['Blackrock Foundry'] = 988,
+    ['Highmaul'] = 994,
+
     ['Siege of Orgrimmar'] = 953,
     ['Throne of Thunder'] = 930,
     ['Terrace of Endless Spring'] = 886,
@@ -85,6 +89,267 @@ ns.auras = {
         -- Raid Debuffs
 
     instances = {
+        [L['Hellfire Citadel']] = {
+
+                -- Hellfire Assault
+
+            [GetSpellInfo(184243)] = 7, -- Slam
+            [GetSpellInfo(185806)] = 7, -- Conducted Shock Pulse
+
+                -- Iron Reaper
+
+            [GetSpellInfo(182022)] = 7, -- Pounding
+            [GetSpellInfo(182001)] = 7, -- Unstable Orb
+            [GetSpellInfo(182074)] = 7, -- Immolation
+            [GetSpellInfo(179897)] = 7, -- Blitz
+
+                -- Kormork
+
+            [GetSpellInfo(180244)] = 7, -- Pound
+            [GetSpellInfo(181306)] = 7, -- Explosive Eruption
+            [GetSpellInfo(181321)] = 7, -- Fel Touch
+            [GetSpellInfo(187819)] = 7, -- Crush
+
+                -- Hellfire High Council
+
+            [GetSpellInfo(184450)] = 7, -- Mal of Necro
+            [GetSpellInfo(184358)] = 7, -- Fel Rage
+            [GetSpellInfo(184355)] = 7, -- Bloodboil
+            [GetSpellInfo(184847)] = 7, -- Acidic Wound
+            [GetSpellInfo(184357)] = 7, -- Tainted Blood
+            [GetSpellInfo(184652)] = 7, -- Reap
+
+                -- Kilrogg Deadeye
+
+            [GetSpellInfo(180372)] = 7, -- Heart Seeker
+            [GetSpellInfo(180224)] = 7, -- Death Throes
+            [GetSpellInfo(182159)] = 7, -- Fel Corruption
+            [GetSpellInfo(183917)] = 7, -- Verwundender Schrei
+            [GetSpellInfo(180199)] = 7, -- Shredded Armor
+
+                -- Gorefiend
+
+            [GetSpellInfo(179864)] = 7, -- Shadow of Death
+            [GetSpellInfo(179978)] = 7, -- Touch of Doom
+            [GetSpellInfo(179909)] = 7, -- Shared Fate
+
+                -- Shadow-Lord Iskar
+
+            [GetSpellInfo(179202)] = 7, -- Eye of Anzu
+            [GetSpellInfo(181956)] = 7, -- Phantasmal Winds
+            [GetSpellInfo(182323)] = 7, -- Phantasmal Wounds
+            [GetSpellInfo(179202)] = 7, -- Eye of Anzu
+            [GetSpellInfo(182173)] = 7, -- Fel Chakram
+            [GetSpellInfo(181753)] = 7, -- Fel Bomb
+            [GetSpellInfo(179218)] = 7, -- Phantasmal Obliteration
+            [GetSpellInfo(185239)] = 7, -- Radiance-of-anzu
+
+                -- Fel Lord Zakuun
+
+            [GetSpellInfo(181508)] = 7, -- Seed of destruction
+            [GetSpellInfo(189260)] = 7, -- Cloven Soul
+            [GetSpellInfo(179711)] = 7, -- Befouled
+            [GetSpellInfo(182008)] = 7, -- Latent Energy
+            [GetSpellInfo(179620)] = 7, -- Fel Crystal
+
+                -- Xhul'horac
+
+            [GetSpellInfo(186490)] = 7, -- Chains of Fel
+            [GetSpellInfo(186333)] = 7, -- Void Surge
+            [GetSpellInfo(186063)] = 7, -- Wasting Void
+            [GetSpellInfo(186546)] = 7, -- Black Hole
+
+                -- Socrethar the Eternal
+
+            [GetSpellInfo(182038)] = 7, -- Shattered Defenses
+            [GetSpellInfo(182635)] = 7, -- Reverberating Blow
+            [GetSpellInfo(184239)] = 7, -- Shadow Word Agony
+            [GetSpellInfo(136913)] = 7, -- Overwhelming Power
+
+                -- Tyrant Velhari
+
+            [GetSpellInfo(180166)] = 7, -- Touch of Harm
+            [GetSpellInfo(180128)] = 7, -- Edict of Condemnation
+            [GetSpellInfo(179999)] = 7, -- Seal of decay
+            [GetSpellInfo(180300)] = 7, -- Infernal tempest
+            [GetSpellInfo(180526)] = 7, -- Font of corruption
+
+                -- Mannoroth
+
+            [GetSpellInfo(181099)] = 7, -- Mark of Doom
+            [GetSpellInfo(181597)] = 7, -- Mannoroth's Gaze
+            [GetSpellInfo(181359)] = 7, -- Massive Blast
+            [GetSpellInfo(184252)] = 7, -- Puncture Wound
+            [GetSpellInfo(181116)] = 7, -- Doom Spike
+
+                -- Archimonde
+
+            [GetSpellInfo(189891)] = 7, -- Nether Tear
+            [GetSpellInfo(185590)] = 7, -- Desecrate
+            [GetSpellInfo(183864)] = 7, -- Shadow Blast
+            [GetSpellInfo(183828)] = 7, -- Death Brand
+            [GetSpellInfo(184931)] = 7, -- Shackled Torment
+            [GetSpellInfo(182879)] = 7, -- Doomfire Fixate
+        },
+        [L['Blackrock Foundry']] = {
+
+                -- Gruul
+
+            [GetSpellInfo(155080)] = 7, -- Inferno Slice
+            [GetSpellInfo(143962)] = 7, -- Inferno Strike
+            [GetSpellInfo(155078)] = 7, -- Overwhelming Blows
+            [GetSpellInfo(36240)]  = 7, -- Cave in
+            [GetSpellInfo(165300)] = 7, -- Flare (Mythic)
+
+                -- Oregorger
+
+            [GetSpellInfo(156309)] = 7, -- Acid Torrent
+            [GetSpellInfo(156203)] = 7, -- Retched Blackrock
+            [GetSpellInfo(173471)] = 7, -- Acid Maw
+
+                -- Beastlord Darmac
+
+            [GetSpellInfo(155365)] = 7, -- Pinned Down
+            [GetSpellInfo(155061)] = 7, -- Rend and Tear
+            [GetSpellInfo(155030)] = 7, -- Seared Flesh
+            [GetSpellInfo(155236)] = 7, -- Crush Armor
+            [GetSpellInfo(159044)] = 7, -- Epicentre
+            [GetSpellInfo(162276)] = 7, -- Unsteady (Mythic)
+            [GetSpellInfo(155657)] = 7, -- Flame Infusion
+
+                -- Flamebender Ka'graz
+
+            [GetSpellInfo(155318)] = 7, -- Lava Slash
+            [GetSpellInfo(155277)] = 7, -- Blazing Radiance
+            [GetSpellInfo(154952)] = 7, -- Fixate
+            [GetSpellInfo(155074)] = 7, -- Charring Breath
+            [GetSpellInfo(163284)] = 7, -- Rising Flame
+            [GetSpellInfo(162293)] = 7, -- Empowered Armament
+
+                -- Hans'gar and Franzok
+
+            [GetSpellInfo(157139)] = 7, -- Shattered Vertebrae
+            [GetSpellInfo(161570)] = 7, -- Searing Plates
+            [GetSpellInfo(157853)] = 7, -- Aftershock
+
+                -- Operator Thogar
+
+            [GetSpellInfo(155921)] = 7, -- Enkindle
+            [GetSpellInfo(165195)] = 7, -- Prototype Pulse Grenade
+            [GetSpellInfo(155701)] = 7, -- Serrated Slash
+            [GetSpellInfo(156310)] = 7, -- Lava Shock
+            [GetSpellInfo(164380)] = 7, -- Burning
+
+                -- The Blast Furnace
+
+            [GetSpellInfo(155240)] = 7, -- Tempered
+            [GetSpellInfo(155242)] = 7, -- Heat
+            [GetSpellInfo(176133)] = 7, -- Bomb
+            [GetSpellInfo(156934)] = 7, -- Rupture
+            [GetSpellInfo(175104)] = 7, -- Melt Armor
+            [GetSpellInfo(176121)] = 7, -- Volatile Fire
+            [GetSpellInfo(158702)] = 7, -- Fixate
+            [GetSpellInfo(155225)] = 7, -- Melt
+
+                -- Kromog
+
+            [GetSpellInfo(157060)] = 7, -- Rune of Grasping Earth
+            [GetSpellInfo(156766)] = 7, -- Warped Armor
+            [GetSpellInfo(161839)] = 7, -- Rune of Crushing Earth
+
+                -- The Iron Maidens
+
+            [GetSpellInfo(164271)] = 7, -- Penetrating Shot
+            [GetSpellInfo(158315)] = 7, -- Dark Hunt
+            [GetSpellInfo(156601)] = 7, -- Sanguine Strikes
+            [GetSpellInfo(170395)] = 7, -- Sorka's Prey
+            [GetSpellInfo(170405)] = 7, -- Marak's Blood Calling
+            [GetSpellInfo(158692)] = 7, -- Deadly Throw
+            [GetSpellInfo(158702)] = 7, -- Fixate
+            [GetSpellInfo(158686)] = 7, -- Expose Armor
+            [GetSpellInfo(158683)] = 7, -- Corrupted Blood
+
+                -- Blackhand
+
+            [GetSpellInfo(156096)] = 7, -- Marked For Death
+            [GetSpellInfo(156107)] = 7, -- Impaled
+            [GetSpellInfo(156047)] = 7, -- Slagged
+            [GetSpellInfo(156401)] = 7, -- Molten Slag
+            [GetSpellInfo(156404)] = 7, -- Burned
+            [GetSpellInfo(158054)] = 7, -- Shattering Smash 158054 155992 159142
+            [GetSpellInfo(156888)] = 7, -- Overheated
+            [GetSpellInfo(157000)] = 7, -- Attach Slag Bombs
+        },
+        [L['Highmaul']] = {
+
+                -- Kargath Bladefist
+
+            [GetSpellInfo(159113)] = 5, -- Impale
+            [GetSpellInfo(159178)] = 6, -- Open Wounds
+            [GetSpellInfo(159213)] = 7, -- Monsters Brawl
+            [GetSpellInfo(159410)] = 7, -- Mauling Brew
+            [GetSpellInfo(160521)] = 7, -- Vile Breath
+            [GetSpellInfo(159386)] = 7, -- Iron Bomb
+            [GetSpellInfo(159188)] = 7, -- Grapple
+            [GetSpellInfo(162497)] = 7, -- On The Hunt
+            [GetSpellInfo(159202)] = 7, -- Flame Jet
+
+                -- The Butcher
+
+            [GetSpellInfo(156152)] = 7, -- Gushing Wounds
+            [GetSpellInfo(156151)] = 7, -- The Tenderizer
+            [GetSpellInfo(156143)] = 7, -- The Cleaver
+            [GetSpellInfo(163046)] = 7, -- Pale Vitriol
+
+                -- Tectus
+
+            [GetSpellInfo(162892)] = 7, -- Infesting Spores
+
+                -- Brackenspore
+
+            [GetSpellInfo(163242)] = 7, -- Infesting Spores
+            [GetSpellInfo(163590)] = 7, -- Creeping Moss
+            [GetSpellInfo(163241)] = 7, -- Rot
+            [GetSpellInfo(159220)] = 7, -- Necrotic Breath
+            [GetSpellInfo(160179)] = 7, -- Mind Fungus
+            [GetSpellInfo(159972)] = 7, -- Flesh Eater
+
+                -- Twin Ogron
+
+            [GetSpellInfo(158026)] = 7, -- Enfeebling Roar
+            [GetSpellInfo(158241)] = 5, -- Blaze
+            [GetSpellInfo(155569)] = 7, -- Injured
+            [GetSpellInfo(167200)] = 7, -- Arcane Wound
+            [GetSpellInfo(159709)] = 7, -- Weakened Defenses 159709 167179
+            [GetSpellInfo(163374)] = 7, -- Arcane Volatility
+
+                -- Ko'ragh
+
+            [GetSpellInfo(161242)] = 7, -- Caustic Energy
+            [GetSpellInfo(161358)] = 7, -- Suppression Field
+            [GetSpellInfo(162184)] = 7, -- Expel Magic: Shadow
+            [GetSpellInfo(162186)] = 7, -- Expel Magic: Arcane
+            [GetSpellInfo(161411)] = 7, -- Expel Magic: Frost
+            [GetSpellInfo(163472)] = 7, -- Dominating Power
+            [GetSpellInfo(162185)] = 7, -- Expel Magic: Fel
+
+                -- Imperator Mar'gok
+
+            [GetSpellInfo(156238)] = 7, -- Branded 156238 163990 163989 163988
+            [GetSpellInfo(156467)] = 7, -- Destructive Resonance 156467 164075 164076 164077
+            [GetSpellInfo(157349)] = 7, -- Force Nova 157349 164232 164235 164240
+            [GetSpellInfo(158605)] = 7, -- Mark of Chaos 158605 164176 164178 164191
+            [GetSpellInfo(157763)] = 7, -- Fixate
+            [GetSpellInfo(158553)] = 7, -- Crush Armor
+
+                -- Trash
+
+            [GetSpellInfo(175601)] = 7, -- Trash: Tainted Claws
+            [GetSpellInfo(172069)] = 7, -- Trash: Radiating Poison
+            [GetSpellInfo(56037)]  = 7, -- Trash: Rune of Destruction
+            [GetSpellInfo(175654)] = 7, -- Trash: Rune of Disintegration
+        },
+
         [L['Siege of Orgrimmar']] = {
 
                 -- Immerseus
