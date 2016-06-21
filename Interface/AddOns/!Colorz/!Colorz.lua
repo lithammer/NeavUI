@@ -17,7 +17,7 @@ CUSTOM_FACTION_BAR_COLORS = {
 function GameTooltip_UnitColor(unit)
     local r, g, b
 
-    if (UnitIsDead(unit) or UnitIsGhost(unit) or UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit)) then
+    if (UnitIsDead(unit) or UnitIsGhost(unit) or UnitIsTapDenied(unit)) then
         r = 0.5
         g = 0.5
         b = 0.5
