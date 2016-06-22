@@ -606,8 +606,11 @@ local function BuildBNTable(total)
     wipe(BNTable)
 
     for i = 1, total do
-        local presenceID, presenceName, battleTag, _, toonName, toonID, client, isOnline, _, isAFK, isDND, _, noteText = BNGetFriendInfo(i)
-        local _, _, _, realmName, _, faction, race, class, _, zoneName, level = BNGetToonInfo(presenceID)
+		local bnetIDAccount, accountName, battleTag, isBattleTag, characterName, bnetIDGameAccount, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText = BNGetFriendInfo(i)
+		
+		if (bnetIDGameAccount == nil) then return end 
+		
+		local _, _, _, realmName, realmID, faction, race, class, _, zoneName, level, gameText = BNGetGameAccountInfo(bnetIDGameAccount)
 
         for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
             if (class == v) then
@@ -616,11 +619,11 @@ local function BuildBNTable(total)
         end
 
         BNTable[i] = {
-            presenceID,
-            presenceName,
+            bnetIDAccount,
+            accountName,
             battleTag or '',
-            toonName,
-            toonID,
+            characterName,
+            bnetIDGameAccount,
             client,
             isOnline,
             isAFK,
@@ -654,8 +657,11 @@ local function UpdateBNTable(total)
     totalBattleNetOnline = 0
 
     for i = 1, #BNTable do
-        local presenceID, presenceName, battleTag, _, toonName, toonID, client, isOnline, _, isAFK, isDND, _, noteText = BNGetFriendInfo(i)
-        local _, _, _, realmName, _, faction, race, class, _, zoneName, level = BNGetToonInfo(presenceID)
+		local bnetIDAccount, accountName, battleTag, isBattleTag, characterName, bnetIDGameAccount, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText = BNGetFriendInfo(i)
+
+		if (bnetIDGameAccount == nil) then return end 
+		
+		local hasFocus, _, _, realmName, realmID, faction, race, class, _, zoneName, level, gameText = BNGetGameAccountInfo(bnetIDGameAccount)
 
         for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
             if (class == v) then
@@ -663,7 +669,7 @@ local function UpdateBNTable(total)
             end
         end
 
-        local index = GetTableIndex(BNTable, 1, presenceID)
+        local index = GetTableIndex(BNTable, 1, bnetIDAccount)
         if (index == -1) then
             BuildBNTable(total)
             return
@@ -671,10 +677,10 @@ local function UpdateBNTable(total)
 
         BNTable[index][7] = isOnline
         if (isOnline) then
-            BNTable[index][2] = presenceName
+            BNTable[index][2] = accountName
             BNTable[index][3] = battleTag
-            BNTable[index][4] = toonName
-            BNTable[index][5] = toonID
+            BNTable[index][4] = characterName
+            BNTable[index][5] = bnetIDGameAccount
             BNTable[index][6] = client
             BNTable[index][8] = isAFK
             BNTable[index][9] = isDND
@@ -792,7 +798,7 @@ end)
 
 local function FriendsOnEvent(self, event)
     if (event:match('BN_FRIEND') or  event == 'PLAYER_ENTERING_WORLD') then
-        local BNTotal = BNGetNumFriends()
+        local BNTotal, BNNetOnline = BNGetNumFriends()
         if (BNTotal == #BNTable) then
             UpdateBNTable(BNTotal)
         else
@@ -887,7 +893,7 @@ local function FriendsOnEnter(self)
 
                         GameTooltip:AddDoubleLine(format('%s (|cff%02x%02x%02x%d|r |cff%02x%02x%02x%s|r%s) |cff%02x%02x%02x%s|r', BNTable[i][6], levelc.r*255, levelc.g*255, levelc.b*255, BNTable[i][16], classc.r*255, classc.g*255, classc.b*255, BNTable[i][4], groupedTable[grouped], 255, 0, 0, statusTable[status]), BNTable[i][2], 238, 238, 238, 238, 238, 238)
                     else
-                        GameTooltip:AddDoubleLine('|cffeeeeee'..BNTable[i][6]..' ('..BNTable[i][4]..')|r', '|cffeeeeee'..BNTable[i][2]..'|r')
+                        GameTooltip:AddDoubleLine('|cffeeeeee'..BNTable[i][6]..' ('..BNTable[i][3]..')|r', '|cffeeeeee'..BNTable[i][2]..'|r')
                     end
                 end
             end
