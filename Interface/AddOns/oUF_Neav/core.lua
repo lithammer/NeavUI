@@ -1079,63 +1079,9 @@ local function CreateUnitLayout(self, unit)
             self.PvPTimer = self:CreateFontString(nil, 'OVERLAY')
             self.PvPTimer:SetFont(config.font.normal, config.font.normalSize)
             self.PvPTimer:SetShadowOffset(1, -1)
-            self.PvPTimer:SetPoint('BOTTOM', self.PvP, 'TOP', -12, -3   )
+            self.PvPTimer:SetPoint('BOTTOM', self.PvP, 'TOP', 0, -3   )
             self.PvPTimer.frequentUpdates = 0.5
             self:Tag(self.PvPTimer, '[pvptimer]')
-        end
-
-            -- oUF_Swing support
-
-        if (config.units.player.showSwingTimer) then
-            self.Swing = CreateFrame('Frame', nil, self)
-            self.Swing:SetFrameStrata('LOW')
-            -- self.Swing:SetSize(200, 7)
-            self.Swing:SetHeight(7)
-            self.Swing:SetPoint('TOPLEFT', self.Castbar, 'BOTTOMLEFT', 0, -10)
-            self.Swing:SetPoint('TOPRIGHT', self.Castbar, 'BOTTOMRIGHT', 0, -10)
-            self.Swing:Hide()
-
-            self.Swing.texture = config.media.statusbar
-            self.Swing.color = {0, 0.8, 1, 1}
-
-            self.Swing.textureBG = config.media.statusbar
-            self.Swing.colorBG = {0, 0, 0, 0.55}
-
-            self.Swing:CreateBeautyBorder(11)
-            self.Swing:SetBeautyBorderPadding(3)
-
-            self.Swing.f = CreateFrame('Frame', nil, self.Swing)
-            self.Swing.f:SetFrameStrata('HIGH')
-
-            self.Swing.Text = self.Swing.f:CreateFontString(nil, 'OVERLAY')
-            self.Swing.Text:SetFont(config.font.normal, config.font.normalSize)
-            self.Swing.Text:SetPoint('CENTER', self.Swing)
-
-            self.Swing.disableMelee = false
-            self.Swing.disableRanged = false
-            self.Swing.hideOoc = true
-        end
-
-            -- oUF_Vengeance support
-
-        if (config.units.player.showVengeance) then
-            self.Vengeance = CreateFrame('StatusBar', nil, self)
-            self.Vengeance:SetHeight(7)
-            self.Vengeance:SetPoint('TOPLEFT', self.Castbar, 'BOTTOMLEFT', 0, -10)
-            self.Vengeance:SetPoint('TOPRIGHT', self.Castbar, 'BOTTOMRIGHT', 0, -10)
-            self.Vengeance:SetStatusBarTexture(config.media.statusbar)
-            self.Vengeance:SetStatusBarColor(1, 0, 0)
-
-            self.Vengeance:CreateBeautyBorder(11)
-            self.Vengeance:SetBeautyBorderPadding(3)
-
-            self.Vengeance.Bg = self.Vengeance:CreateTexture(nil, 'BACKGROUND')
-            self.Vengeance.Bg:SetAllPoints(self.Vengeance)
-            self.Vengeance.Bg:SetTexture(0, 0, 0, 0.55)
-
-            self.Vengeance.Text = self.Vengeance:CreateFontString(nil, 'OVERLAY')
-            self.Vengeance.Text:SetFont(config.font.normal, config.font.normalSize)
-            self.Vengeance.Text:SetPoint('CENTER', self.Vengeance)
         end
 
             -- Combat text
