@@ -727,15 +727,21 @@ local function CreateUnitLayout(self, unit)
 
     if (config.show.pvpicons) then
         self.PvP = self:CreateTexture(nil, 'OVERLAY')
-
+        local Prestige = self:CreateTexture(nil, 'ARTWORK')
+		self.PvP.Prestige = Prestige
+		
         if (unit == 'player') then
-            self.PvP:SetSize(64, 64)
+            self.PvP:SetSize(40, 42)
+			Prestige:SetSize(40, 42)
+			Prestige:SetPoint('CENTER', self.PvP, 'CENTER')            
         elseif (unit == 'pet') then
-            self.PvP:SetSize(50, 50)
-            self.PvP:SetPoint('CENTER', self.Portrait, 'LEFT', 7, -7)
+				self.PvP:SetSize(35, 35)
+				self.PvP:SetPoint('CENTER', self.Portrait, 'LEFT', -7, -7)
         elseif (unit == 'target' or unit == 'focus') then
-            self.PvP:SetSize(64, 64)
-            self.PvP:SetPoint('TOPRIGHT', self.Texture, 3, -20)
+            self.PvP:SetSize(40, 42)
+            self.PvP:SetPoint('TOPRIGHT', self.Texture, -16, -23)
+			Prestige:SetSize(40, 42)
+			Prestige:SetPoint('TOPRIGHT', self.Texture, -16, -23)            
         elseif (self.IsPartyFrame) then
             self.PvP:SetSize(40, 40)
             self.PvP:SetPoint('TOPLEFT', self.Texture, -9, -10)
