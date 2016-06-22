@@ -1167,6 +1167,7 @@ local function CreateUnitLayout(self, unit)
         self:RegisterEvent('UNIT_ENTERING_VEHICLE', CheckVehicleStatus)
         self:RegisterEvent('UNIT_EXITING_VEHICLE', CheckVehicleStatus)
         self:RegisterEvent('UNIT_EXITED_VEHICLE', CheckVehicleStatus)
+        self:RegisterEvent('PET_UI_UPDATE', CheckVehicleStatus)
     end
 
         -- Petframe
