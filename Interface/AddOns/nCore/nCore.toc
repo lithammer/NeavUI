@@ -1,4 +1,4 @@
-## Interface: 60200
+## Interface: 70000
 ## Title: |cffCC3333 n|rCore
 ## OptionalDeps: !Beautycase, Recount, Omen, DBM, PitBull4, Skada, TinyDPS
 
@@ -13,7 +13,6 @@ modules\errors.lua
 modules\fonts.lua
 modules\mail.lua
 modules\objectivetracker.lua
-modules\quicky.lua
 modules\skins.lua
 modules\spellid.lua
 modules\warning.lua
