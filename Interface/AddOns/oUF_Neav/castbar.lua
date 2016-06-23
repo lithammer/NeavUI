@@ -50,7 +50,7 @@ function ns.CreateCastbars(self, unit)
 
             if (config.showSafezone) then
                 self.Castbar.SafeZone = self.Castbar:CreateTexture(nil, 'BORDER')
-                self.Castbar.SafeZone:SetTexture(unpack(config.safezoneColor))
+                self.Castbar.SafeZone:SetColorTexture(unpack(config.safezoneColor))
             end
 
             if (config.showLatency) then
