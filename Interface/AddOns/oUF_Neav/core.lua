@@ -865,58 +865,45 @@ local function CreateUnitLayout(self, unit)
         self.Name.Bg:SetTexture('Interface\\Buttons\\WHITE8x8')
         self.Name.Bg:SetVertexColor(0, 0, 0, 0.55)
 
-            -- Warlock power Bars
+			-- Warlock Soul Shards
 
         if (playerClass == 'WARLOCK') then
             WarlockPowerFrame:SetParent(oUF_Neav_Player)
             WarlockPowerFrame:SetScale(config.units.player.scale * 0.8)
-            WarlockPowerFrame_OnLoad(WarlockPowerFrame)
             WarlockPowerFrame:SetFrameLevel(1)
-
-            ShardBarFrame:SetScale(config.units.player.scale * 0.8)
-            ShardBarFrame:ClearAllPoints()
-            ShardBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, -2)
-
-            BurningEmbersBarFrame:SetScale(config.units.player.scale * 0.8)
-            BurningEmbersBarFrame:ClearAllPoints()
-            BurningEmbersBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, 0)
-
-            DemonicFuryBarFrame:SetScale(config.units.player.scale * 0.8)
-            DemonicFuryBarFrame:ClearAllPoints()
-            DemonicFuryBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 35, 12)
+			WarlockPowerFrame:ClearAllPoints()
+			WarlockPowerFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, -2)
         end
 
-            -- Priest bar
-
-        if (playerClass == 'PRIEST') then
-            PriestBarFrame:SetParent(oUF_Neav_Player)
-            PriestBarFrame_OnLoad(PriestBarFrame)
-            PriestBarFrame:ClearAllPoints()
-            PriestBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 33, 0)
-        end
-
-            -- Holy power bar
+			-- Holy Power Bar (Retribution Only)
 
         if (playerClass == 'PALADIN') then
-            PaladinPowerBar:SetParent(oUF_Neav_Player)
-            PaladinPowerBar:SetScale(config.units.player.scale * 0.81)
-            PaladinPowerBar_OnLoad(PaladinPowerBar)
-            PaladinPowerBar:ClearAllPoints()
-            PaladinPowerBar:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 25, 2)
-            PaladinPowerBar:Show()
+            PaladinPowerBarFrame:SetParent(oUF_Neav_Player)
+            PaladinPowerBarFrame:SetScale(config.units.player.scale * 0.81)
+            PaladinPowerBarFrame:ClearAllPoints()
+            PaladinPowerBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 25, 2)
+            PaladinPowerBarFrame:Show()
         end
 
-            -- Monk harmony bar
+			-- Monk Harmony Bar (Windwalker Only)
 
         if (playerClass == 'MONK') then
-            MonkHarmonyBar:SetParent(oUF_Neav_Player)
-            MonkHarmonyBar:SetScale(config.units.player.scale * 0.81)
-            MonkHarmonyBar_OnLoad(MonkHarmonyBar)
-            MonkHarmonyBar:ClearAllPoints()
-            MonkHarmonyBar:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, 18)
+            MonkHarmonyBarFrame:SetParent(oUF_Neav_Player)
+            MonkHarmonyBarFrame:SetScale(config.units.player.scale * 0.81)
+            MonkHarmonyBarFrame:ClearAllPoints()
+            MonkHarmonyBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, 18)
         end
 
-            -- Deathknight runebar
+			-- Brewmaster Monk Stagger Bar
+
+		if (playerClass == 'MONK') then
+			MonkStaggerBar:SetParent(oUF_Neav_Player)
+			MonkStaggerBar:SetScale(config.units.player.scale * 0.81)
+			MonkStaggerBar:ClearAllPoints()
+            MonkStaggerBar:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, -2)
+		end
+
+			-- Deathknight Runebar
 
         if (playerClass == 'DEATHKNIGHT') then
             RuneFrame:ClearAllPoints()
@@ -924,9 +911,44 @@ local function CreateUnitLayout(self, unit)
             RuneFrame:SetParent(self)
         end
 
+			-- Arcane Mage
+
+		if (playerClass == 'MAGE') then
+			MageArcaneChargesFrame:SetParent(oUF_Neav_Player)
+			MageArcaneChargesFrame:SetScale(config.units.player.scale * 0.81)
+			MageArcaneChargesFrame:ClearAllPoints()
+            MageArcaneChargesFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, -2)
+		end
+
+			-- Alt Mana Frame for Druids, Shaman, and Shadow Priest
+
+        if (playerClass == 'DRUID' or playerClass == 'SHAMAN' or playerClass == 'PRIEST') then
+			self.DruidMana = CreateFrame('StatusBar', nil, self)
+			self.DruidMana:SetPoint('TOP', self.Power, 'BOTTOM', 0, -1)
+			self.DruidMana:SetStatusBarTexture(config.media.statusbar, 'BORDER')
+			self.DruidMana:SetSize(99, 9)
+			self.DruidMana:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
+			self.DruidMana:SetBackdropColor(0, 0, 0, 0.55)
+			self.DruidMana.colorPower = true
+
+			self.DruidMana.Value = self.DruidMana:CreateFontString(nil, 'OVERLAY')
+			self.DruidMana.Value:SetFont(config.font.normal, config.font.normalSize)
+			self.DruidMana.Value:SetShadowOffset(1, -1)
+			self.DruidMana.Value:SetPoint('CENTER', self.DruidMana, 0, 0.5)
+
+			self:Tag(self.DruidMana.Value, '[druidmana]')
+
+			self.DruidMana.Texture = self.DruidMana:CreateTexture(nil, 'ARTWORK')
+			self.DruidMana.Texture:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\DruidManaTexture')
+			self.DruidMana.Texture:SetSize(104, 28)
+			self.DruidMana.Texture:SetPoint('TOP', self.Power, 'BOTTOM', 0, 6)
+		end
+
+			-- Shaman Totems
+
         if (playerClass == 'SHAMAN') then
-            TotemFrame:ClearAllPoints()
-            TotemFrame:SetPoint('TOP', self.Power, 'BOTTOM', -2, 0)
+			TotemFrame:ClearAllPoints()
+            TotemFrame:SetPoint('TOP', self.DruidMana, 'BOTTOM', -2, 0)
             TotemFrame:SetParent(oUF_Neav_Player)
             TotemFrame:SetScale(config.units.player.scale * 0.65)
             TotemFrame:Show()
@@ -943,98 +965,6 @@ local function CreateUnitLayout(self, unit)
                 _G['TotemFrameTotem'..i..'Duration']:SetFont(config.font.normal, 10, 'OUTLINE')
                 _G['TotemFrameTotem'..i..'Duration']:SetShadowOffset(0, 0)
             end
-        end
-
-        if (playerClass == 'DRUID') then
-
-                -- Druid eclipse bar
-
-            EclipseBarFrame:SetParent(oUF_Neav_Player)
-            EclipseBarFrame:SetScale(config.units.player.scale * 0.82)
-            EclipseBar_OnLoad(EclipseBarFrame)
-            EclipseBarFrame:ClearAllPoints()
-            EclipseBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, 3)
-            EclipseBarFrame:Show()
-
-                -- Druid mushroom timer
-
-            TotemFrame:ClearAllPoints()
-            TotemFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 50, 20)
-            TotemFrame:SetParent(oUF_Neav_Player)
-            TotemFrame:SetScale(config.units.player.scale * 0.65)
-            TotemFrame:Show()
-
-            for i = 1, 3 do
-                _G['TotemFrameTotem'..i]:EnableMouse(false)
-                _G['TotemFrameTotem'..i]:SetAlpha(0)
-                _G['TotemFrameTotem'..i..'Duration']:SetParent(self)
-                _G['TotemFrameTotem'..i..'Duration']:SetDrawLayer('OVERLAY')
-                _G['TotemFrameTotem'..i..'Duration']:SetFont(config.font.normal, 12)
-                _G['TotemFrameTotem'..i..'Duration']:SetTextColor(0.3, 1, 0)
-                -- _G['TotemFrameTotem'..i..'Duration']:SetTextColor(0.3, 1, 0)
-                -- _G['TotemFrameTotem'..i..'Duration']:SetAlpha(0.75)
-            end
-
-            TotemFrameTotem3Duration:ClearAllPoints()
-            TotemFrameTotem3Duration:SetPoint('LEFT', TotemFrameTotem2Duration, 'RIGHT', 5, 0)
-
-            TotemFrameTotem1Duration:ClearAllPoints()
-            TotemFrameTotem1Duration:SetPoint('RIGHT', TotemFrameTotem2Duration, 'LEFT', -6, 0)
-
-                -- Druid powerbar
-
-            self.DruidMana = CreateFrame('StatusBar', nil, self)
-            self.DruidMana:SetPoint('TOP', self.Power, 'BOTTOM', 0, -1)
-            self.DruidMana:SetStatusBarTexture(config.media.statusbar, 'BORDER')
-            self.DruidMana:SetSize(99, 9)
-            self.DruidMana:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
-            self.DruidMana:SetBackdropColor(0, 0, 0, 0.55)
-            self.DruidMana.colorPower = true
-
-            self.DruidMana.Value = self.DruidMana:CreateFontString(nil, 'OVERLAY')
-            self.DruidMana.Value:SetFont(config.font.normal, config.font.normalSize)
-            self.DruidMana.Value:SetShadowOffset(1, -1)
-            self.DruidMana.Value:SetPoint('CENTER', self.DruidMana, 0, 0.5)
-
-            self:Tag(self.DruidMana.Value, '[druidmana]')
-
-            self.DruidMana.Texture = self.DruidMana:CreateTexture(nil, 'ARTWORK')
-            self.DruidMana.Texture:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\druidmanaTexture')
-            self.DruidMana.Texture:SetSize(104, 28)
-            self.DruidMana.Texture:SetPoint('TOP', self.Power, 'BOTTOM', 0, 6)
-
-            local function MoveShrooms(self)
-                if (EclipseBarFrame:IsVisible()) then
-                    TotemFrameTotem2Duration:ClearAllPoints()
-                    TotemFrameTotem2Duration:SetPoint('TOP', self.Power, 'BOTTOM', 0, -27)
-                elseif (self.DruidMana:IsVisible()) then
-                    TotemFrameTotem2Duration:ClearAllPoints()
-                    TotemFrameTotem2Duration:SetPoint('TOP', self.Power, 'BOTTOM', 0, -15)
-                else
-                    TotemFrameTotem2Duration:ClearAllPoints()
-                    TotemFrameTotem2Duration:SetPoint('TOP', self.Power, 'BOTTOM', 0, -4)
-                end
-            end
-
-                -- Move the shroomtimer if the eclipsebar or druid manabar is shown
-
-            self.DruidMana:HookScript('OnHide', function()
-                MoveShrooms(self)
-            end)
-
-            self.DruidMana:HookScript('OnShow', function()
-                MoveShrooms(self)
-            end)
-
-            EclipseBarFrame:SetScript('OnHide', function()
-                MoveShrooms(self)
-            end)
-
-            EclipseBarFrame:SetScript('OnShow', function()
-                MoveShrooms(self)
-            end)
-
-            MoveShrooms(self)
         end
 
             -- Raidgroup indicator
