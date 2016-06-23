@@ -10,7 +10,6 @@ ns.PortraitTimerDB = {
     '33786',    -- Cyclone
     '642',      -- Divine Shield
     '1022',     -- Hand of Protection
-    '19263',    -- Deterrence
     '46924',    -- Bladestorm
 
         -- Stuns
@@ -19,7 +18,6 @@ ns.PortraitTimerDB = {
     '1833',     -- Cheap Shot
     '46968',    -- Shockwave
     '853',      -- Hammer of Justice
-    '44572',    -- Deep Freeze
     '5211',     -- Bash
     '30283',    -- Shadowfury
     '89766',    -- Axe Toss
@@ -27,16 +25,12 @@ ns.PortraitTimerDB = {
     '47481',    -- Gnaw
     '1776',     -- Gouge
     '6770',     -- Sap
-    '87195',    -- Paralysis
     '88625',    -- Holy Word: Chastise
-    '65929',    -- Charge Stun
     '91797',    -- Monstrous Blow (Gnaw with DT)
 
         -- CC
 
-    '91807',    -- Shambling Rush (Leap with DT)
     '605',      -- Mind Control
-    '64044',    -- Psychic Horror
     '2094',     -- Blind
     '118',      -- Polymorph
     '51514',    -- Hex
@@ -46,13 +40,10 @@ ns.PortraitTimerDB = {
     '5484',     -- Howl of Terror
     '5782',     -- Fear
     '6358',     -- Seduction
-    '1499',     -- Freezing Trap
+    '187650',   -- Freezing Trap
     '20066',    -- Repentance
     '339',      -- Entangling Roots
-    '8377',     -- Earthgrab
     '31661',    -- Dragon's Breath
-    '82691',    -- Ring of Frost
-    '19387',    -- Entrapment
 
         -- CC immune
 
@@ -60,12 +51,10 @@ ns.PortraitTimerDB = {
     '1044',     -- Hand of Freedom
     '31224',    -- Cloak of Shadows
     '51271',    -- Pillar of Frost
-    '31821',    -- Aura Mastery
 
         -- Dmg reductions
 
     '48707',    -- Anti-Magic Shell
-    '30823',    -- Shamanistic Rage
     '33206',    -- Pain Suppression
     '47585',    -- Dispersion
     '871',      -- Shield Wall
@@ -74,7 +63,6 @@ ns.PortraitTimerDB = {
     '22812',    -- Barkskin
     '61336',    -- Survival Instincts
     '5277',     -- Evasion
-    '74001',    -- Combat Readiness
     '47788',    -- Guardian Spirit
 
         -- Silences
@@ -88,7 +76,6 @@ ns.PortraitTimerDB = {
         -- Dmg buffs
 
     '31884',    -- Avenging Wrath
-    '51713',    -- Shadow Dance
 
         -- Helpful buffs
 
