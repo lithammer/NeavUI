@@ -477,12 +477,6 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
                 SetHealthBarColor(unit)
             end
         end
-
-            -- Show player item lvl
-
-        if (cfg.showItemLevel and ilvl > 1) then
-            GameTooltip:AddLine(STAT_AVERAGE_ITEM_LEVEL .. ': ' .. '|cffFFFFFF'..ilvl..'|r')
-        end
     end
 end)
 
@@ -570,14 +564,12 @@ GameTooltip:SetScript('OnEvent', function(self, event, GUID)
     end
 
     local _, _, _, icon = GetSpecializationInfoByID(GetInspectSpecialization(unit))
-    local ilvl = GetItemLevel(unit)
     local now = GetTime()
 
     local matchFound
     for index, _ in pairs(self.inspectCache) do
         local inspectCache = self.inspectCache[index]
         if (inspectCache.GUID == GUID) then
-            inspectCache.itemLevel = ilvl
             inspectCache.specIcon = icon and ' |T'..icon..':0|t' or ''
             inspectCache.lastUpdate = math.floor(now)
             matchFound = true
