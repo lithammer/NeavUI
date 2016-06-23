@@ -731,20 +731,20 @@ local function CreateUnitLayout(self, unit)
 	self.PvP.Prestige = Prestige
 		
         if (unit == 'player') then
-        	self.PvP:SetSize(40, 42)
-		Prestige:SetSize(40, 42)
-		Prestige:SetPoint('CENTER', self.PvP, 'CENTER')            
+            self.PvP:SetSize(40, 42)
+	    Prestige:SetSize(40, 42)
+	    Prestige:SetPoint('CENTER', self.PvP, 'CENTER')            
         elseif (unit == 'pet') then
-		self.PvP:SetSize(35, 35)
-		self.PvP:SetPoint('CENTER', self.Portrait, 'LEFT', -7, -7)
+	    self.PvP:SetSize(35, 35)
+	    self.PvP:SetPoint('CENTER', self.Portrait, 'LEFT', -7, -7)
         elseif (unit == 'target' or unit == 'focus') then
-        	self.PvP:SetSize(40, 42)
-        	self.PvP:SetPoint('TOPRIGHT', self.Texture, -16, -23)
-		Prestige:SetSize(40, 42)
-		Prestige:SetPoint('TOPRIGHT', self.Texture, -16, -23)            
+            self.PvP:SetSize(40, 42)
+            self.PvP:SetPoint('TOPRIGHT', self.Texture, -16, -23)
+	    Prestige:SetSize(40, 42)
+	    Prestige:SetPoint('TOPRIGHT', self.Texture, -16, -23)            
         elseif (self.IsPartyFrame) then
-        	self.PvP:SetSize(40, 40)
-        	self.PvP:SetPoint('TOPLEFT', self.Texture, -9, -10)
+            self.PvP:SetSize(40, 40)
+            self.PvP:SetPoint('TOPLEFT', self.Texture, -9, -10)
         end
     end
 
@@ -865,17 +865,17 @@ local function CreateUnitLayout(self, unit)
         self.Name.Bg:SetTexture('Interface\\Buttons\\WHITE8x8')
         self.Name.Bg:SetVertexColor(0, 0, 0, 0.55)
 
-			-- Warlock Soul Shards
+	    -- Warlock Soul Shards
 
         if (playerClass == 'WARLOCK') then
             WarlockPowerFrame:SetParent(oUF_Neav_Player)
             WarlockPowerFrame:SetScale(config.units.player.scale * 0.8)
             WarlockPowerFrame:SetFrameLevel(1)
-			WarlockPowerFrame:ClearAllPoints()
-			WarlockPowerFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, -2)
+	    WarlockPowerFrame:ClearAllPoints()
+	    WarlockPowerFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, -2)
         end
 
-			-- Holy Power Bar (Retribution Only)
+	    -- Holy Power Bar (Retribution Only)
 
         if (playerClass == 'PALADIN') then
             PaladinPowerBarFrame:SetParent(oUF_Neav_Player)
@@ -885,7 +885,7 @@ local function CreateUnitLayout(self, unit)
             PaladinPowerBarFrame:Show()
         end
 
-			-- Monk Harmony Bar (Windwalker Only)
+	    -- Monk Harmony Bar (Windwalker Only)
 
         if (playerClass == 'MONK') then
             MonkHarmonyBarFrame:SetParent(oUF_Neav_Player)
@@ -894,16 +894,16 @@ local function CreateUnitLayout(self, unit)
             MonkHarmonyBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, 18)
         end
 
-			-- Brewmaster Monk Stagger Bar
+	-- Brewmaster Monk Stagger Bar
 
-		if (playerClass == 'MONK') then
-			MonkStaggerBar:SetParent(oUF_Neav_Player)
-			MonkStaggerBar:SetScale(config.units.player.scale * 0.81)
-			MonkStaggerBar:ClearAllPoints()
+	if (playerClass == 'MONK') then
+	    MonkStaggerBar:SetParent(oUF_Neav_Player)
+	    MonkStaggerBar:SetScale(config.units.player.scale * 0.81)
+	    MonkStaggerBar:ClearAllPoints()
             MonkStaggerBar:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, -2)
-		end
+	end
 
-			-- Deathknight Runebar
+	    -- Deathknight Runebar
 
         if (playerClass == 'DEATHKNIGHT') then
             RuneFrame:ClearAllPoints()
@@ -911,43 +911,43 @@ local function CreateUnitLayout(self, unit)
             RuneFrame:SetParent(self)
         end
 
-			-- Arcane Mage
+	-- Arcane Mage
 
-		if (playerClass == 'MAGE') then
-			MageArcaneChargesFrame:SetParent(oUF_Neav_Player)
-			MageArcaneChargesFrame:SetScale(config.units.player.scale * 0.81)
-			MageArcaneChargesFrame:ClearAllPoints()
+	if (playerClass == 'MAGE') then
+	    MageArcaneChargesFrame:SetParent(oUF_Neav_Player)
+	    MageArcaneChargesFrame:SetScale(config.units.player.scale * 0.81)
+	    MageArcaneChargesFrame:ClearAllPoints()
             MageArcaneChargesFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, -2)
-		end
+	end
 
-			-- Alt Mana Frame for Druids, Shaman, and Shadow Priest
+	-- Alt Mana Frame for Druids, Shaman, and Shadow Priest
 
         if (playerClass == 'DRUID' or playerClass == 'SHAMAN' or playerClass == 'PRIEST') then
-			self.DruidMana = CreateFrame('StatusBar', nil, self)
-			self.DruidMana:SetPoint('TOP', self.Power, 'BOTTOM', 0, -1)
-			self.DruidMana:SetStatusBarTexture(config.media.statusbar, 'BORDER')
-			self.DruidMana:SetSize(99, 9)
-			self.DruidMana:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
-			self.DruidMana:SetBackdropColor(0, 0, 0, 0.55)
-			self.DruidMana.colorPower = true
+	    self.DruidMana = CreateFrame('StatusBar', nil, self)
+	    self.DruidMana:SetPoint('TOP', self.Power, 'BOTTOM', 0, -1)
+	    self.DruidMana:SetStatusBarTexture(config.media.statusbar, 'BORDER')
+	    self.DruidMana:SetSize(99, 9)
+	    self.DruidMana:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
+	    self.DruidMana:SetBackdropColor(0, 0, 0, 0.55)
+	    self.DruidMana.colorPower = true
 
-			self.DruidMana.Value = self.DruidMana:CreateFontString(nil, 'OVERLAY')
-			self.DruidMana.Value:SetFont(config.font.normal, config.font.normalSize)
-			self.DruidMana.Value:SetShadowOffset(1, -1)
-			self.DruidMana.Value:SetPoint('CENTER', self.DruidMana, 0, 0.5)
+	    self.DruidMana.Value = self.DruidMana:CreateFontString(nil, 'OVERLAY')
+	    self.DruidMana.Value:SetFont(config.font.normal, config.font.normalSize)
+	    self.DruidMana.Value:SetShadowOffset(1, -1)
+	    self.DruidMana.Value:SetPoint('CENTER', self.DruidMana, 0, 0.5)
 
-			self:Tag(self.DruidMana.Value, '[druidmana]')
+	    self:Tag(self.DruidMana.Value, '[druidmana]')
 
-			self.DruidMana.Texture = self.DruidMana:CreateTexture(nil, 'ARTWORK')
-			self.DruidMana.Texture:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\DruidManaTexture')
-			self.DruidMana.Texture:SetSize(104, 28)
-			self.DruidMana.Texture:SetPoint('TOP', self.Power, 'BOTTOM', 0, 6)
-		end
+	    self.DruidMana.Texture = self.DruidMana:CreateTexture(nil, 'ARTWORK')
+	    self.DruidMana.Texture:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\DruidManaTexture')
+	    self.DruidMana.Texture:SetSize(104, 28)
+	    self.DruidMana.Texture:SetPoint('TOP', self.Power, 'BOTTOM', 0, 6)
+	end
 
-			-- Shaman Totems
+	    -- Shaman Totems
 
         if (playerClass == 'SHAMAN') then
-			TotemFrame:ClearAllPoints()
+	    TotemFrame:ClearAllPoints()
             TotemFrame:SetPoint('TOP', self.DruidMana, 'BOTTOM', -2, 0)
             TotemFrame:SetParent(oUF_Neav_Player)
             TotemFrame:SetScale(config.units.player.scale * 0.65)
@@ -955,9 +955,7 @@ local function CreateUnitLayout(self, unit)
 
             for i = 1, MAX_TOTEMS do
                 _G['TotemFrameTotem'..i]:SetFrameStrata('LOW')
-
                 _G['TotemFrameTotem'..i..'IconCooldown']:SetAlpha(0)
-
                 _G['TotemFrameTotem'..i..'Duration']:SetParent(self)
                 _G['TotemFrameTotem'..i..'Duration']:SetDrawLayer('OVERLAY')
                 _G['TotemFrameTotem'..i..'Duration']:ClearAllPoints()
@@ -1056,7 +1054,6 @@ local function CreateUnitLayout(self, unit)
 
     if (unit == 'pet') then
         self:SetSize(175, 42)
-
 
         if (not config.units[ns.cUnit(unit)].disableAura) then
             self.Debuffs = CreateFrame('Frame', nil, self)
