@@ -334,16 +334,16 @@ local function ModChat(self)
 
         -- Modify the editbox
 
-    for k = 6, 11 do
-        select(k, _G[self..'EditBox']:GetRegions()):SetTexture(nil)
+    for k = 2, 10 do
+        select(k, _G[self..'EditBox']:GetRegions()):Hide()
     end
 
     _G[self..'EditBox']:SetAltArrowKeyMode(false)
 
     if (cfg.showInputBoxAbove) then
         _G[self..'EditBox']:ClearAllPoints()
-        _G[self..'EditBox']:SetPoint('BOTTOMLEFT', self, 'TOPLEFT', 2, 33)
-        _G[self..'EditBox']:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT', 0, 33)
+        _G[self..'EditBox']:SetPoint('BOTTOMLEFT', GeneralDockManager, 'TOPLEFT', 2, 5)
+        _G[self..'EditBox']:SetPoint('BOTTOMRIGHT', GeneralDockManager, 'TOPRIGHT', 0, 5)
     end
     _G[self..'EditBox']:SetBackdrop({
         bgFile = 'Interface\\Buttons\\WHITE8x8',
