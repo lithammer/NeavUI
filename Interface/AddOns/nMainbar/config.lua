@@ -45,6 +45,12 @@ nMainbar.Config = {
         font = 'Fonts\\ARIALN.ttf',
     },
 
+    artifactBar = {
+        mouseover = true,
+        fontsize = 14,
+        font = 'Fonts\\ARIALN.ttf',
+    },
+	
     MainMenuBar = {
         scale = 1,
         hideGryphons = false,
