@@ -29,7 +29,7 @@ local menuList = {
         text = SPELLBOOK_ABILITIES_BUTTON,
         icon = 'Interface\\MINIMAP\\TRACKING\\Class',
         func = function()
-            securecall(ToggleFrame, SpellBookFrame)
+            securecall(ToggleFrame, BOOKTYPE_SPELL)
         end,
         tooltipTitle = securecall(MicroButtonTooltipText, SPELLBOOK_ABILITIES_BUTTON, 'TOGGLESPELLBOOK'),
         tooltipText = NEWBIE_TOOLTIP_SPELLBOOK,
@@ -37,8 +37,7 @@ local menuList = {
     },
     {
         text = TALENTS_BUTTON,
-        icon = 'Interface\\MINIMAP\\TRACKING\\Ammunition',
-        -- icon = 'Interface\\AddOns\\nMainbar\\media\\picomenu\\picomenuTalents',
+        icon = 'Interface\\AddOns\\nMainbar\\media\\picomenu\\picomenuTalents',
         func = function()
             if (not PlayerTalentFrame) then
                 LoadAddOn('Blizzard_TalentUI')
@@ -116,14 +115,6 @@ local menuList = {
         notCheckable = true,
     },
     {
-        text = CHALLENGES,
-        icon = 'Interface\\BUTTONS\\UI-GroupLoot-DE-Up',
-        func = function()
-            securecall(PVEFrame_ToggleFrame, 'ChallengesFrame')
-        end,
-        notCheckable = true,
-    },
-    {
         text = RAID,
         icon = 'Interface\\TARGETINGFRAME\\UI-TargetingFrame-Skull',
         func = function()
@@ -141,6 +132,16 @@ local menuList = {
         tooltipText = NEWBIE_TOOLTIP_MOUNTS_AND_PETS,
         notCheckable = true,
     },
+	{
+        text = PETS,
+        icon = 'Interface\\MINIMAP\\TRACKING\\StableMaster',
+        func = function()
+            securecall(ToggleCollectionsJournal, 2)
+        end,
+        tooltipTitle = securecall(MicroButtonTooltipText, MOUNTS_AND_PETS, 'TOGGLEPETJOURNAL'),
+        tooltipText = NEWBIE_TOOLTIP_MOUNTS_AND_PETS,
+        notCheckable = true,
+    },
     {
         text = TOY_BOX,
         icon = 'Interface\\MINIMAP\\TRACKING\\Reagents',
@@ -149,6 +150,26 @@ local menuList = {
         end,
         tooltipTitle = securecall(MicroButtonTooltipText, TOY_BOX, 'TOGGLETOYBOX'),
         tooltipText = TOY_BOX,
+        notCheckable = true,
+    },
+    {
+        text = HEIRLOOMS,
+        icon = 'Interface\\PaperDollInfoFrame\\UI-EquipmentManager-Toggle',
+        func = function()
+            securecall(ToggleCollectionsJournal, 4)
+        end,
+        tooltipTitle = securecall(MicroButtonTooltipText, HEIRLOOMS, 'TOGGLEHEIRLOOMS'),
+        tooltipText = HEIRLOOMS,
+        notCheckable = true,
+    },	
+    {
+        text = WARDROBE,
+        icon = 'Interface\\PaperDollInfoFrame\\UI-EquipmentManager-Toggle',
+        func = function()
+            securecall(ToggleCollectionsJournal, 5)
+        end,
+        tooltipTitle = securecall(MicroButtonTooltipText, WARDROBE, 'TOGGLEHEIRLOOMS'),
+        tooltipText = WARDROBE,
         notCheckable = true,
     },
     {
@@ -183,7 +204,7 @@ local menuList = {
 
 local addonMenuTable = {
     {
-        text = '',
+        text = '                               ',
         isTitle = true,
         notCheckable = true,
     },
