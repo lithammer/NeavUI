@@ -334,8 +334,8 @@ local function ModChat(self)
 
         -- Modify the editbox
 
-    for k = 2, 10 do
-        select(k, _G[self..'EditBox']:GetRegions()):Hide()
+    for k = 3, 8 do
+        select(k, _G[self..'EditBox']:GetRegions()):SetTexture(nil)
     end
 
     _G[self..'EditBox']:SetAltArrowKeyMode(false)
