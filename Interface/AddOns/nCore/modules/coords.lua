@@ -1,19 +1,17 @@
 
 local f = CreateFrame('Frame', nil, WorldMapFrame)
-f:SetParent(WorldMapButton)
+f:SetParent(WorldMapScrollFrame)
 
 f.Player = f:CreateFontString(nil, 'OVERLAY')
-f.Player:SetFont('Fonts\\ARIALN.ttf', 26)
-f.Player:SetShadowOffset(1, -1)
+f.Player:SetFont('Fonts\\ARIALN.ttf', 15, 'THINOUTLINE')
 f.Player:SetJustifyH('LEFT')
-f.Player:SetPoint('BOTTOMLEFT', WorldMapButton, 7, 4)
+f.Player:SetPoint('BOTTOMLEFT', WorldMapScrollFrame, "BOTTOMLEFT", 5, 5)
 f.Player:SetTextColor(1, 0.82, 0)
 
 f.Cursor = f:CreateFontString(nil, 'OVERLAY')
-f.Cursor:SetFont('Fonts\\ARIALN.ttf', 26)
-f.Cursor:SetShadowOffset(1, -1)
+f.Cursor:SetFont('Fonts\\ARIALN.ttf', 15, 'THINOUTLINE')
 f.Cursor:SetJustifyH('LEFT')
-f.Cursor:SetPoint('BOTTOMLEFT', f.Player, 'TOPLEFT')
+f.Cursor:SetPoint('BOTTOMLEFT', WorldMapScrollFrame, "BOTTOMLEFT", 115, 5)
 f.Cursor:SetTextColor(1, 0.82, 0)
 
 f:SetScript('OnUpdate', function(self, elapsed)
