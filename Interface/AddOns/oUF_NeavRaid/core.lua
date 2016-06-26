@@ -17,25 +17,25 @@ do
             {48438, 'BOTTOMLEFT', {0.7, 1, 0}}, -- Wild Growth
         },
         MONK = {
-            {119611, 'BOTTOMRIGHT', {0, 1, 0}}, -- Renewing Mist
+            {115151, 'BOTTOMRIGHT', {0, 1, 0}}, -- Renewing Mist
             {124682, 'BOTTOMLEFT', {0.15, 0.98, 0.64}}, -- Enveloping Mist
-            {115175, 'TOPRIGHT', {0.15, 0.98, 0.64}}, -- Soothing Mist
             {116849, 'TOPLEFT', {1, 1, 0}}, -- Life Cocoon
             {124081, 'BOTTOMLEFT', {0.7, 0.8, 1}}, -- Zen Sphere
         },
         PALADIN = {
             {53563, 'BOTTOMRIGHT', {0, 1, 0}}, -- Beacon of Light
-            {20925, 'BOTTOMRIGHT', {1, 1, 0}}, -- Sacred Shield
+			{156910, 'BOTTOMRIGHT', {0, 1, 0}}, -- Beacon of Faith 
+			{200025, 'BOTTOMRIGHT', {0, 1, 0}}, -- Beacon of Virtue
         },
         PRIEST = {
-            {6788, 'BOTTOMRIGHT', {0.6, 0, 0}, true}, -- Weakened Soul
             {17, 'BOTTOMRIGHT', {1, 1, 0}, true}, -- Power Word: Shield
             {33076, 'TOPRIGHT', {1, 0.6, 0.6}, true, true}, -- Prayer of Mending
             {139, 'BOTTOMLEFT', {0, 1, 0}}, -- Renew
+			{194384, 'TOPLEFT', {1, 0, 0}}, --Atonement
         },
         SHAMAN = {
             {61295, 'TOPLEFT', {0.7, 0.3, 0.7}}, -- Riptide
-            {974, 'BOTTOMRIGHT', {0.7, 0.4, 0}, false, true}, -- Earth Shield
+            {204288, 'BOTTOMRIGHT', {0.7, 0.4, 0}, false, true}, -- Earth Shield (PvP Only)
         },
         WARLOCK = {
             {20707, 'BOTTOMRIGHT', {0.7, 0, 1}, true, true}, -- Soulstone
@@ -431,7 +431,7 @@ local function CreateRaidLayout(self, unit)
 
         self.Power.bg = self.Power:CreateTexture(nil, 'BORDER')
         self.Power.bg:SetAllPoints(self.Power)
-        self.Power.bg:SetTexture(1, 1, 1)
+        self.Power.bg:SetColorTexture(1, 1, 1)
 
         self.Power.bg.multiplier = 0.3
 
