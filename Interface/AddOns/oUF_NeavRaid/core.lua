@@ -24,14 +24,14 @@ do
         },
         PALADIN = {
             {53563, 'BOTTOMRIGHT', {0, 1, 0}}, -- Beacon of Light
-			{156910, 'BOTTOMRIGHT', {0, 1, 0}}, -- Beacon of Faith 
-			{200025, 'BOTTOMRIGHT', {0, 1, 0}}, -- Beacon of Virtue
+            {156910, 'BOTTOMRIGHT', {0, 1, 0}}, -- Beacon of Faith 
+            {200025, 'BOTTOMRIGHT', {0, 1, 0}}, -- Beacon of Virtue
         },
         PRIEST = {
             {17, 'BOTTOMRIGHT', {1, 1, 0}, true}, -- Power Word: Shield
             {33076, 'TOPRIGHT', {1, 0.6, 0.6}, true, true}, -- Prayer of Mending
             {139, 'BOTTOMLEFT', {0, 1, 0}}, -- Renew
-			{194384, 'TOPLEFT', {1, 0, 0}}, --Atonement
+            {194384, 'TOPLEFT', {1, 0, 0}}, --Atonement
         },
         SHAMAN = {
             {61295, 'TOPLEFT', {0.7, 0.3, 0.7}}, -- Riptide
