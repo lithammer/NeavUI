@@ -87,7 +87,6 @@ end
 
 ReputationWatchBar:SetWidth(512)
 ReputationWatchBar.StatusBar:SetWidth(512)
-ReputationWatchBar.OverlayFrame:SetWidth(512)
 
 ReputationWatchBar.StatusBar.WatchBarTexture0:SetWidth(128)
 ReputationWatchBar.StatusBar.WatchBarTexture1:SetWidth(128)
@@ -96,7 +95,6 @@ ReputationWatchBar.StatusBar.WatchBarTexture3:SetWidth(128)
 
 ArtifactWatchBar:SetWidth(512)
 ArtifactWatchBar.StatusBar:SetWidth(512)
-ArtifactWatchBar.OverlayFrame:SetWidth(512)
 
 ArtifactWatchBar.StatusBar.WatchBarTexture0:SetWidth(128)
 ArtifactWatchBar.StatusBar.WatchBarTexture1:SetWidth(128)
@@ -105,14 +103,13 @@ ArtifactWatchBar.StatusBar.WatchBarTexture3:SetWidth(128)
 
 HonorWatchBar:SetWidth(512)
 HonorWatchBar.StatusBar:SetWidth(512)
-HonorWatchBar.OverlayFrame:SetWidth(512)
 
 HonorWatchBar.StatusBar.WatchBarTexture0:SetWidth(128)
 HonorWatchBar.StatusBar.WatchBarTexture1:SetWidth(128)
 HonorWatchBar.StatusBar.WatchBarTexture2:SetWidth(128)
 HonorWatchBar.StatusBar.WatchBarTexture3:SetWidth(128)
 
-    -- Only shown at max level.
+-- Only shown when tracker is in place of MainMenuExpBar.
 ReputationWatchBar.StatusBar.XPBarTexture0:SetWidth(128)
 ReputationWatchBar.StatusBar.XPBarTexture1:SetWidth(128)
 ReputationWatchBar.StatusBar.XPBarTexture2:SetWidth(128)
