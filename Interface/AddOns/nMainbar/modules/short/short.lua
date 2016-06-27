@@ -81,12 +81,52 @@ for _, object in pairs({
     _G['MainMenuBar'],
     _G['MainMenuExpBar'],
     _G['MainMenuBarMaxLevelBar'],
-
-    _G['ReputationWatchBar'],
-    _G['ReputationWatchStatusBar'],
 }) do
     object:SetWidth(512)
 end
+
+ReputationWatchBar:SetWidth(512)
+ReputationWatchBar.StatusBar:SetWidth(512)
+ReputationWatchBar.OverlayFrame:SetWidth(512)
+
+ReputationWatchBar.StatusBar.WatchBarTexture0:SetWidth(128)
+ReputationWatchBar.StatusBar.WatchBarTexture1:SetWidth(128)
+ReputationWatchBar.StatusBar.WatchBarTexture2:SetWidth(128)
+ReputationWatchBar.StatusBar.WatchBarTexture3:SetWidth(128)
+
+ArtifactWatchBar:SetWidth(512)
+ArtifactWatchBar.StatusBar:SetWidth(512)
+ArtifactWatchBar.OverlayFrame:SetWidth(512)
+
+ArtifactWatchBar.StatusBar.WatchBarTexture0:SetWidth(128)
+ArtifactWatchBar.StatusBar.WatchBarTexture1:SetWidth(128)
+ArtifactWatchBar.StatusBar.WatchBarTexture2:SetWidth(128)
+ArtifactWatchBar.StatusBar.WatchBarTexture3:SetWidth(128)
+
+HonorWatchBar:SetWidth(512)
+HonorWatchBar.StatusBar:SetWidth(512)
+HonorWatchBar.OverlayFrame:SetWidth(512)
+
+HonorWatchBar.StatusBar.WatchBarTexture0:SetWidth(128)
+HonorWatchBar.StatusBar.WatchBarTexture1:SetWidth(128)
+HonorWatchBar.StatusBar.WatchBarTexture2:SetWidth(128)
+HonorWatchBar.StatusBar.WatchBarTexture3:SetWidth(128)
+
+    -- Only shown at max level.
+ReputationWatchBar.StatusBar.XPBarTexture0:SetWidth(128)
+ReputationWatchBar.StatusBar.XPBarTexture1:SetWidth(128)
+ReputationWatchBar.StatusBar.XPBarTexture2:SetWidth(128)
+ReputationWatchBar.StatusBar.XPBarTexture3:SetWidth(128)
+
+ArtifactWatchBar.StatusBar.XPBarTexture0:SetWidth(128)
+ArtifactWatchBar.StatusBar.XPBarTexture1:SetWidth(128)
+ArtifactWatchBar.StatusBar.XPBarTexture2:SetWidth(128)
+ArtifactWatchBar.StatusBar.XPBarTexture3:SetWidth(128)
+
+HonorWatchBar.StatusBar.XPBarTexture0:SetWidth(128)
+HonorWatchBar.StatusBar.XPBarTexture1:SetWidth(128)
+HonorWatchBar.StatusBar.XPBarTexture2:SetWidth(128)
+HonorWatchBar.StatusBar.XPBarTexture3:SetWidth(128)
 
     -- remove divider
 
