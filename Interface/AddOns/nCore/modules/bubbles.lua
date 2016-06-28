@@ -1,6 +1,5 @@
 local next = next
-local select, unpack, type = select, unpack, type
-local strlower = strlower
+local select = select
 local CreateFrame = CreateFrame
 
 local frame = CreateFrame("Frame", nil, UIParent)
