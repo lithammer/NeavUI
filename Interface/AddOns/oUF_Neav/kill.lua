@@ -10,9 +10,9 @@ for _, button in pairs({
     'CombatPanelTargetOfTarget',
     --'CombatPanelTOTDropDown',
     --'CombatPanelTOTDropDownButton',
-    'CombatPanelEnemyCastBarsOnPortrait',
+    --'CombatPanelEnemyCastBarsOnPortrait',
 
-    'DisplayPanelShowAggroPercentage',
+    --'DisplayPanelShowAggroPercentage',
     --'DisplayPanelemphasizeMySpellEffects'
 }) do
     _G['InterfaceOptions'..button]:SetAlpha(0.35)
