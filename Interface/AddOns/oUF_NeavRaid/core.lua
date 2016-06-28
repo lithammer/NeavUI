@@ -180,7 +180,7 @@ local function CreateIndicators(self, unit)
     Auras.presentAlpha = 1
     Auras.missingAlpha = 0
     Auras.PostCreateIcon = AuraIcon
-        
+
     local buffs = {}
     
     if (indicatorList['ALL']) then
@@ -197,19 +197,19 @@ local function CreateIndicators(self, unit)
 
     if (buffs) then
         for key, spell in pairs(buffs) do
-        
+
             local icon = CreateFrame('Frame', nil, self.AuraWatch)
             icon:SetWidth(config.units.raid.indicatorSize)
             icon:SetHeight(config.units.raid.indicatorSize)
             icon:SetPoint(spell[2], self.Health, unpack(offsets[spell[2]].icon))
-                    
+            
             icon.spellID = spell[1]
             icon.anyUnit = spell[4]
             icon.hideCount = spell[5]
             
             local cd = CreateFrame("Cooldown", nil, icon, "CooldownFrameTemplate")
-			cd:SetAllPoints(icon)
-			icon.cd = cd
+            cd:SetAllPoints(icon)
+            icon.cd = cd
             
                 -- Icon / Indicator
 
