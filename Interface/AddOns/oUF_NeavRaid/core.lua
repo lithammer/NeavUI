@@ -5,7 +5,7 @@ local config = ns.Config
 local playerClass = select(2, UnitClass('player'))
 
     -- oUF_AuraWatch
-    -- Class buffs { spell ID, position [, {r, g, b, a}][, anyUnit][, hideCooldown][, hideCount] }
+    -- Class buffs { spell ID, position [, {r, g, b, a}][, anyUnit][, hideCount] }
 
 local indicatorList
 do
@@ -117,7 +117,7 @@ end
 local function AuraIcon(self, icon)
     if (icon.cd) then
         icon.cd:SetReverse(true)
-        icon.cd:SetDrawEdge(false)
+        icon.cd:SetDrawEdge(true)
         icon.cd:SetAllPoints(icon.icon)
         icon.cd:SetHideCountdownNumbers(true)
     end
@@ -171,16 +171,18 @@ do
 end
 
 local function CreateIndicators(self, unit)
+
     self.AuraWatch = CreateFrame('Frame', nil, self)
-    self.AuraWatch.presentAlpha = 1
-    self.AuraWatch.missingAlpha = 0
-    self.AuraWatch.hideCooldown = false
-    self.AuraWatch.noCooldownCount = true
-    self.AuraWatch.icons = {}
-    self.AuraWatch.PostCreateIcon = AuraIcon
 
+    local Auras = {}
+    Auras.icons = {}
+    Auras.customIcons = true
+    Auras.presentAlpha = 1
+    Auras.missingAlpha = 0
+    Auras.PostCreateIcon = AuraIcon
+        
     local buffs = {}
-
+    
     if (indicatorList['ALL']) then
         for key, value in pairs(indicatorList['ALL']) do
             tinsert(buffs, value)
@@ -195,45 +197,69 @@ local function CreateIndicators(self, unit)
 
     if (buffs) then
         for key, spell in pairs(buffs) do
+        
             local icon = CreateFrame('Frame', nil, self.AuraWatch)
             icon:SetWidth(config.units.raid.indicatorSize)
             icon:SetHeight(config.units.raid.indicatorSize)
             icon:SetPoint(spell[2], self.Health, unpack(offsets[spell[2]].icon))
-
+                    
             icon.spellID = spell[1]
             icon.anyUnit = spell[4]
-            icon.hideCooldown = spell[5]
-            icon.hideCount = spell[6]
+            icon.hideCount = spell[5]
+            
+            local cd = CreateFrame("Cooldown", nil, icon, "CooldownFrameTemplate")
+			cd:SetAllPoints(icon)
+			icon.cd = cd
+            
+                -- Icon / Indicator
 
-                -- exception to place PW:S above Weakened Soul
+            local tex = icon:CreateTexture(nil, 'BACKGROUND')
+            tex:SetAllPoints(icon)    
 
-            if (spell[1] == 17) then
-                icon:SetFrameLevel(icon:GetFrameLevel() + 5)
-            end
 
-                -- indicator icon
-
-            icon.icon = icon:CreateTexture(nil, 'OVERLAY')
-            icon.icon:SetAllPoints(icon)
-            icon.icon:SetTexture('Interface\\AddOns\\oUF_NeavRaid\\media\\borderIndicator')
-
-            if (spell[3]) then
-                icon.icon:SetVertexColor(unpack(spell[3]))
+            if (config.units.raid.useSpellIcon) then
+            
+                    -- Sets Spell Icon by SpellID
+                
+                tex:SetTexture(GetSpellTexture(icon.spellID))
+                icon.icon = tex
+                
+                    -- Icon Border
+                    
+                local Shadow = icon:CreateTexture(nil, 'OVERLAY')
+                Shadow:SetPoint('TOPLEFT', tex, 'TOPLEFT', -1,1)
+                Shadow:SetPoint('BOTTOMRIGHT', tex, 'BOTTOMRIGHT', 1, -1)
+                Shadow:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\borderBackground')
+                Shadow:SetVertexColor(0, 0, 0, 1)
             else
-                icon.icon:SetVertexColor(0.8, 0.8, 0.8)
+            
+                    -- Indicator Icon
+                
+                tex:SetTexture('Interface\\AddOns\\oUF_NeavRaid\\media\\borderIndicator')
+                icon.icon = tex
+                
+                    -- Color Overlay
+            
+                if (spell[3]) then
+                    icon.icon:SetVertexColor(unpack(spell[3]))
+                else
+                    icon.icon:SetVertexColor(0.8, 0.8, 0.8)
+                end
             end
-
+            
             if (not icon.hideCount) then
-                icon.count = icon:CreateFontString(nil, 'OVERLAY')
-                icon.count:SetShadowColor(0, 0, 0)
-                icon.count:SetShadowOffset(1, -1)
-                icon.count:SetPoint(unpack(offsets[spell[2]].count))
-                icon.count:SetFont('Interface\\AddOns\\oUF_NeavRaid\\media\\fontVisitor.ttf', 13)
+                local count = icon:CreateFontString(nil, 'OVERLAY')
+                count:SetShadowColor(0, 0, 0)
+                count:SetShadowOffset(1, -1)
+                count:SetPoint(unpack(offsets[spell[2]].count))
+                count:SetFont('Interface\\AddOns\\oUF_NeavRaid\\media\\fontVisitor.ttf', 8)
+                icon.count = count
             end
 
-            self.AuraWatch.icons[spell[1]] = icon
+             Auras.icons[spell[1]] = icon
         end
     end
+    self.AuraWatch = Auras
 end
 
 local function UpdateThreat(self, _, unit)
@@ -402,7 +428,7 @@ local function CreateRaidLayout(self, unit)
         -- Name text
 
     self.Name = self.Health:CreateFontString(nil, 'OVERLAY')
-    self.Name:SetPoint('BOTTOM', self.Health, 'CENTER', 0, 3)
+    self.Name:SetPoint('BOTTOM', self.Health, 'CENTER', 0, 1)
     self.Name:SetFont(config.font.fontBig,config.font.fontBigSize)
     self.Name:SetShadowOffset(1, -1)
     self.Name:SetTextColor(1, 1, 1)
