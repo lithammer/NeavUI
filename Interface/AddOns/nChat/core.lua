@@ -339,6 +339,10 @@ local function ModChat(self)
     end
 
     _G[self..'EditBox']:SetAltArrowKeyMode(false)
+	
+		-- Hide editbox on login
+
+	_G[self..'EditBox']:Hide()
 
     if (cfg.showInputBoxAbove) then
         _G[self..'EditBox']:ClearAllPoints()
