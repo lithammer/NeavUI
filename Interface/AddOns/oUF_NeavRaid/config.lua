@@ -19,10 +19,10 @@ ns.Config = {
             showSolo = true,
             showParty = true,
 
-            nameLength = 4,
+            nameLength = 5,
 
-            width = 42,
-            height = 40,
+            width = 52,
+            height = 50,
             scale = 1.1,
 
             layout = {
@@ -45,8 +45,9 @@ ns.Config = {
             targetBorderColor = {1, 1, 1},
 
             iconSize = 22,                                                                  -- The size of the debufficon
-            indicatorSize = 7,
-
+            indicatorSize = 10,                                                             -- Player buffs
+            useSpellIcon = true,                                                            -- Uses spell texture or indicator icon.
+            
             horizontalHealthBars = false,
             deficitThreshold = 0.95,
 
