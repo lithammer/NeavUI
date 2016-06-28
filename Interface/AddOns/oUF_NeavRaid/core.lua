@@ -246,7 +246,7 @@ local function CreateIndicators(self, unit)
                     icon.icon:SetVertexColor(0.8, 0.8, 0.8)
                 end
             end
-            
+
             if (not icon.hideCount) then
                 local count = icon:CreateFontString(nil, 'OVERLAY')
                 count:SetShadowColor(0, 0, 0)
