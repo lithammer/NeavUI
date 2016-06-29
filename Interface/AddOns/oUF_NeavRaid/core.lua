@@ -211,40 +211,19 @@ local function CreateIndicators(self, unit)
             cd:SetAllPoints(icon)
             icon.cd = cd
             
-                -- Icon / Indicator
+                -- Indicator
 
             local tex = icon:CreateTexture(nil, 'BACKGROUND')
-            tex:SetAllPoints(icon)    
-
-
-            if (config.units.raid.useSpellIcon) then
+            tex:SetAllPoints(icon)
+            tex:SetTexture('Interface\\AddOns\\oUF_NeavRaid\\media\\borderIndicator')
+            icon.icon = tex
             
-                    -- Sets Spell Icon by SpellID
-                
-                tex:SetTexture(GetSpellTexture(icon.spellID))
-                icon.icon = tex
-                
-                    -- Icon Border
-                    
-                local Shadow = icon:CreateTexture(nil, 'OVERLAY')
-                Shadow:SetPoint('TOPLEFT', tex, 'TOPLEFT', -1,1)
-                Shadow:SetPoint('BOTTOMRIGHT', tex, 'BOTTOMRIGHT', 1, -1)
-                Shadow:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\borderBackground')
-                Shadow:SetVertexColor(0, 0, 0, 1)
+                -- Color Overlay
+            
+            if (spell[3]) then
+                icon.icon:SetVertexColor(unpack(spell[3]))
             else
-            
-                    -- Indicator Icon
-                
-                tex:SetTexture('Interface\\AddOns\\oUF_NeavRaid\\media\\borderIndicator')
-                icon.icon = tex
-                
-                    -- Color Overlay
-            
-                if (spell[3]) then
-                    icon.icon:SetVertexColor(unpack(spell[3]))
-                else
-                    icon.icon:SetVertexColor(0.8, 0.8, 0.8)
-                end
+                icon.icon:SetVertexColor(0.8, 0.8, 0.8)
             end
 
             if (not icon.hideCount) then
