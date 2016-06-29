@@ -202,7 +202,7 @@ local function CreateIndicators(self, unit)
             icon:SetWidth(config.units.raid.indicatorSize)
             icon:SetHeight(config.units.raid.indicatorSize)
             icon:SetPoint(spell[2], self.Health, unpack(offsets[spell[2]].icon))
-            
+
             icon.spellID = spell[1]
             icon.anyUnit = spell[4]
             icon.hideCount = spell[5]
