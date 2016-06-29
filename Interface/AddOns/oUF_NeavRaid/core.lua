@@ -206,20 +206,20 @@ local function CreateIndicators(self, unit)
             icon.spellID = spell[1]
             icon.anyUnit = spell[4]
             icon.hideCount = spell[5]
-            
+
             local cd = CreateFrame("Cooldown", nil, icon, "CooldownFrameTemplate")
             cd:SetAllPoints(icon)
             icon.cd = cd
-            
+
                 -- Indicator
 
             local tex = icon:CreateTexture(nil, 'BACKGROUND')
             tex:SetAllPoints(icon)
             tex:SetTexture('Interface\\AddOns\\oUF_NeavRaid\\media\\borderIndicator')
             icon.icon = tex
-            
+
                 -- Color Overlay
-            
+
             if (spell[3]) then
                 icon.icon:SetVertexColor(unpack(spell[3]))
             else
