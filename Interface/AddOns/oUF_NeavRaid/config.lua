@@ -21,8 +21,8 @@ ns.Config = {
 
             nameLength = 5,
 
-            width = 52,
-            height = 50,
+            width = 45,
+            height = 43,
             scale = 1.1,
 
             layout = {
