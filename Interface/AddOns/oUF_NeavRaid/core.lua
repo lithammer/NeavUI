@@ -213,7 +213,7 @@ local function CreateIndicators(self, unit)
 
                 -- Indicator
 
-            local tex = icon:CreateTexture(nil, 'BACKGROUND')
+            local tex = icon:CreateTexture(nil, 'OVERLAY')
             tex:SetAllPoints(icon)
             tex:SetTexture('Interface\\AddOns\\oUF_NeavRaid\\media\\borderIndicator')
             icon.icon = tex
@@ -231,7 +231,7 @@ local function CreateIndicators(self, unit)
                 count:SetShadowColor(0, 0, 0)
                 count:SetShadowOffset(1, -1)
                 count:SetPoint(unpack(offsets[spell[2]].count))
-                count:SetFont('Interface\\AddOns\\oUF_NeavRaid\\media\\fontVisitor.ttf', 8)
+                count:SetFont('Interface\\AddOns\\oUF_NeavRaid\\media\\fontVisitor.ttf', 13)
                 icon.count = count
             end
 
