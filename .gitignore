@@ -1,0 +1,13 @@
+/Cache
+/Data
+/Logs
+/Utils
+/WTF
+
+.build.info
+.patch.result
+
+*.exe
+*.db
+*.dll
+*.mfil
