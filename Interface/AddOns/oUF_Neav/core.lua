@@ -947,22 +947,26 @@ local function CreateUnitLayout(self, unit)
 	    -- Shaman Totems
 
         if (playerClass == 'SHAMAN') then
-	    TotemFrame:ClearAllPoints()
-            TotemFrame:SetPoint('TOP', self.DruidMana, 'BOTTOM', -2, 0)
+            TotemFrame:ClearAllPoints()
+            if (GetSpecialization() ~= 3) then
+                TotemFrame:SetPoint('TOP', self.DruidMana, 'BOTTOM', -2, -2)
+            else
+                TotemFrame:SetPoint('TOP', self.Power, 'BOTTOM', -2, 0)
+            end
             TotemFrame:SetParent(oUF_Neav_Player)
             TotemFrame:SetScale(config.units.player.scale * 0.65)
+            TotemFrame:SetFrameStrata("LOW")
             TotemFrame:Show()
+        end
 
-            for i = 1, MAX_TOTEMS do
-                _G['TotemFrameTotem'..i]:SetFrameStrata('LOW')
-                _G['TotemFrameTotem'..i..'IconCooldown']:SetAlpha(0)
-                _G['TotemFrameTotem'..i..'Duration']:SetParent(self)
-                _G['TotemFrameTotem'..i..'Duration']:SetDrawLayer('OVERLAY')
-                _G['TotemFrameTotem'..i..'Duration']:ClearAllPoints()
-                _G['TotemFrameTotem'..i..'Duration']:SetPoint('BOTTOM', _G['TotemFrameTotem'..i], 0, 3)
-                _G['TotemFrameTotem'..i..'Duration']:SetFont(config.font.normal, 10, 'OUTLINE')
-                _G['TotemFrameTotem'..i..'Duration']:SetShadowOffset(0, 0)
-            end
+            -- Druid Efflorescnce Timer
+
+        if (playerClass == 'DRUID') then
+            TotemFrame:ClearAllPoints()
+            TotemFrame:SetPoint('TOP', self.DruidMana, 'BOTTOM', -2, 0)
+            TotemFrame:SetParent(self)
+            TotemFrame:SetFrameStrata("LOW")
+            TotemFrame:Show()
         end
 
             -- Raidgroup indicator
