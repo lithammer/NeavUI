@@ -41,22 +41,20 @@ end
 
 local totemData = {
     -- Air
-    [TotemName(8177)] = {TotemIcon(8177)}, -- Grounding Totem
-    [TotemName(108269)] = {TotemIcon(108269)}, -- Capacitor Totem
-    [TotemName(98009)] = {TotemIcon(98008)}, -- Spirit Link Totem
+    [TotemName(34079)] = {TotemIcon(34079)}, -- Grounding Totem
+    [TotemName(98008)] = {TotemIcon(98008)}, -- Spirit Link Totem
+    [TotemName(192058)] = {TotemIcon(192058)}, -- Lightning Surge Totem
 
     -- Earth
-    [TotemName(2062)] = {TotemIcon(2062)}, -- Earth Elemental Totem
-    [TotemName(2484)] = {TotemIcon(2484)}, -- Earthbind Totem
-    [TotemName(8143)] = {TotemIcon(8143)}, -- Tremor Totem
+    [TotemName(61882)] = {TotemIcon(61882)}, -- Earthquake Totem
+    [TotemName(51485)] = {TotemIcon(51485)}, -- Earthgrab Totem
 
     -- Fire
-    [TotemName(2894)] = {TotemIcon(2894)}, -- Fire Elemental Totem
-    [TotemName(8190)] = {TotemIcon(8190)}, -- Magma Totem
-    [TotemName(3599)] = {TotemIcon(3599)}, -- Searing Totem
+    [TotemName(192222)] = {TotemIcon(192222)}, -- Liquid Magma Totem
 
     -- Water
     [TotemName(5394)] = {TotemIcon(5394)}, -- Healing Stream Totem
+    [TotemName(108280)] = {TotemIcon(108280)}, -- Healing Tide Totem
 }
 
     -- Some general functions
