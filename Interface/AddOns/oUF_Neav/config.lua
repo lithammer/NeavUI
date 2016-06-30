@@ -92,7 +92,8 @@ ns.Config = {
             scale = 1.193,
 
             auraSize = 22,
-
+            disableAura = false,                                                            -- Disable Auras on this unitframe
+            
             mouseoverText = true,
             healthTag = '$cur/$max',
             healthTagFull = '$cur',
