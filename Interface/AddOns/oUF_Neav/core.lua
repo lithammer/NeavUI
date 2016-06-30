@@ -729,11 +729,11 @@ local function CreateUnitLayout(self, unit)
         self.PvP = self:CreateTexture(nil, 'OVERLAY')
         local Prestige = self:CreateTexture(nil, 'ARTWORK')
 	self.PvP.Prestige = Prestige
-		
+
         if (unit == 'player') then
             self.PvP:SetSize(40, 42)
 	    Prestige:SetSize(40, 42)
-	    Prestige:SetPoint('CENTER', self.PvP, 'CENTER')            
+	    Prestige:SetPoint('CENTER', self.PvP, 'CENTER')
         elseif (unit == 'pet') then
 	    self.PvP:SetSize(35, 35)
 	    self.PvP:SetPoint('CENTER', self.Portrait, 'LEFT', -7, -7)
@@ -741,7 +741,7 @@ local function CreateUnitLayout(self, unit)
             self.PvP:SetSize(40, 42)
             self.PvP:SetPoint('TOPRIGHT', self.Texture, -16, -23)
 	    Prestige:SetSize(40, 42)
-	    Prestige:SetPoint('TOPRIGHT', self.Texture, -16, -23)            
+	    Prestige:SetPoint('TOPRIGHT', self.Texture, -16, -23)
         elseif (self.IsPartyFrame) then
             self.PvP:SetSize(40, 40)
             self.PvP:SetPoint('TOPLEFT', self.Texture, -9, -10)
@@ -1382,7 +1382,7 @@ oUF:Factory(function(self)
 
     local pet = self:Spawn('pet', 'oUF_Neav_Pet')
     pet:SetPoint('TOPLEFT', player, 'BOTTOMLEFT', unpack(config.units.pet.position))
-    pet:SetFrameStrat("LOW")
+    pet:SetFrameStrata("LOW")
 
         -- Target frame spawn
 
