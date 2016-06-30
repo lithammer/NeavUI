@@ -1382,6 +1382,7 @@ oUF:Factory(function(self)
 
     local pet = self:Spawn('pet', 'oUF_Neav_Pet')
     pet:SetPoint('TOPLEFT', player, 'BOTTOMLEFT', unpack(config.units.pet.position))
+    pet:SetFrameStrat("LOW")
 
         -- Target frame spawn
 
