@@ -202,10 +202,6 @@ local function GetWarlockPower()
 
     if (IsPlayerSpell(WARLOCK_SOULBURN)) then
         powerType = SPELL_POWER_SOUL_SHARDS
-    elseif (IsPlayerSpell(WARLOCK_BURNING_EMBERS)) then
-        powerType = SPELL_POWER_BURNING_EMBERS
-    elseif (IsPlayerSpell(WARLOCK_METAMORPHOSIS)) then
-        powerType = SPELL_POWER_DEMONIC_FURY
     end
 
     if (powerType ~= SPELL_POWER_MANA) then
