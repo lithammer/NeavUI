@@ -33,36 +33,48 @@ local _, playerClass = UnitClass('player')
 -- Note: Spells probably shouldn't have minimum ranges!
 
 local HelpIDs = ({
-    DEATHKNIGHT = { 47541 }, -- Death Coil (40yd) - Starter
-    DRUID = { 5185 }, -- Healing Touch (40yd) - Lvl 3
+    DEATHKNIGHT = {
+        47541,                  -- Death Coil (40yd) - Starter
+        61999,                  -- Raise Ally (40yd) - Lvl 72
+    },
+    DRUID = { 8921 },           -- Revive (40yd) - Lvl 14
     -- HUNTER = {},
-    MAGE = { 475 }, -- Remove Curse (40yd) - Lvl 30
-    MONK = { 115450 }, -- Detox (40yd) - Lvl 20
-    PALADIN = { 85673 }, -- Word of Glory (40yd) - Lvl 9
-    PRIEST = { 2061 }, -- Flash Heal (40yd) - Lvl 3
+    -- MAGE = { },
+    MONK = { 116694 },          -- Effuse (40yd) - Lvl 8
+    PALADIN = { 19750 },        -- Flash of Light (40yd) - Lvl 9
+    PRIEST = { 2006 },          -- Resurrection (40yd) - Lvl 14
     -- ROGUE = {},
-    SHAMAN = { 8004 }, -- Healing Surge (40yd) - Lvl 7
-    WARLOCK = { 5697 }, -- Unending Breath (30yd) - Lvl 16
+    SHAMAN = { 8004,188070 },   -- Healing Surge (40yd) - Lvl 7
+    WARLOCK = { 20707 },        -- Soulstone (40yd) - Lvl 18
     -- WARRIOR = {},
 })[playerClass]
 
 local HarmIDs = ({
-    DEATHKNIGHT = { 47541 }, -- Death Coil (30yd) - Starter
-    DRUID = { 5176 }, -- Wrath (40yd) - Starter
-    HUNTER = { 75 }, -- Auto Shot (5-40yd) - Starter
-    MAGE = { 133 }, -- Fireball (40yd) - Starter
-    MONK = { 115546 }, -- Provoke (40yd) - Lvl 14
-    PALADIN = {
-        62124, -- Hand of Reckoning (30yd) - Lvl 14
-        879, -- Exorcism (30yd) - Lvl 18
+    DEATHKNIGHT = { 47541 },    -- Dark Command (30yd) - Starter
+    DRUID = { 5176 },           -- Moonfire (40yd) - Lvl 10
+    HUNTER = {
+        75,                     -- Auto Shot (40yd) - Starter
+        193265                  -- Hatchet Toss (30yd) - Lvl 19
     },
-    PRIEST = { 589 }, -- Shadow Word: Pain (40yd) - Lvl 4
+    MAGE = { 116,133,44425 },   -- Frostbolt, Fireball, Arcane Barrage (40yd)
+    MONK = { 115546 },          -- Provoke (40yd) - Lvl 13
+    PALADIN = { 62124 },        -- Hand of Reckoning (30yd) - Lvl 13
+    PRIEST = {
+        589,                    -- Shadow Word: Pain (40yd) - Lvl 4
+        585                     -- Smite (40yd) - Starter
+    },
     -- ROGUE = {},
-    SHAMAN = { 403 }, -- Lightning Bolt (30yd) - Starter
-    WARLOCK = { 686 }, -- Shadow Bolt (40yd) - Starter
-    WARRIOR = { 355 }, -- Taunt (30yd) - Lvl 12
+    SHAMAN = {                  -- Lightning Bolt (40yd)
+        403,
+        187837,
+        188196
+    },
+    WARLOCK = {                 -- Shadow Bolt (40yd)
+        686,
+        196657,
+    },
+    WARRIOR = { 355 },          -- Taunt (30yd) - Lvl 14
 })[playerClass]
-
 local IsInRange
 do
     local UnitIsConnected = UnitIsConnected
