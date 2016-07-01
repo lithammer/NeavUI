@@ -1270,16 +1270,36 @@ local function CreateUnitLayout(self, unit)
         end)
 
         if (not config.units[ns.cUnit(unit)].disableAura) then
-            self.Debuffs = CreateFrame('Frame', nil, self)
-            self.Debuffs.size = 26
-            self.Debuffs:SetHeight(self.Debuffs.size * 3)
-            self.Debuffs:SetWidth(self.Debuffs.size * 3)
-            self.Debuffs:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', -2, -5)
-            self.Debuffs.initialAnchor = 'TOPLEFT'
-            self.Debuffs['growth-x'] = 'RIGHT'
-            self.Debuffs['growth-y'] = 'DOWN'
-            self.Debuffs.num = config.units.focus.numDebuffs
-            self.Debuffs.spacing = 4
+            if (config.units[ns.cUnit(unit)].debuffsOnly) then
+                self.Debuffs = CreateFrame('Frame', nil, self)
+                self.Debuffs.size = 26
+                self.Debuffs:SetHeight(self.Debuffs.size * 3)
+                self.Debuffs:SetWidth(self.Debuffs.size * 3)
+                self.Debuffs:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', -2, -5)
+                self.Debuffs.initialAnchor = 'TOPLEFT'
+                self.Debuffs['growth-x'] = 'RIGHT'
+                self.Debuffs['growth-y'] = 'DOWN'
+                self.Debuffs.num = config.units.focus.numDebuffs
+                self.Debuffs.spacing = 4
+            else
+                self.Auras = CreateFrame('Frame', nil, self)
+                self.Auras.gap = true
+                self.Auras.size = 20
+                self.Auras:SetHeight(self.Auras.size * 3)
+                self.Auras:SetWidth(self.Auras.size * 5)
+                self.Auras:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', -2, -5)
+                self.Auras.initialAnchor = 'TOPLEFT'
+                self.Auras['growth-x'] = 'RIGHT'
+                self.Auras['growth-y'] = 'DOWN'
+                self.Auras.numBuffs = config.units.target.numBuffs
+                self.Auras.numDebuffs = config.units.target.numDebuffs
+                self.Auras.spacing = 4.5
+                self.Auras.showStealableBuffs = true
+
+                self.Auras.PostUpdateGapIcon = function(self, unit, icon, visibleBuffs)
+                    icon:Hide()
+                end
+            end
         end
     end
 
