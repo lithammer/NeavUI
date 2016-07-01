@@ -145,6 +145,12 @@ ns.UpdateAuraIcons = function(auras, button)
             button.Shadow:SetVertexColor(0, 0, 0, 1)
         end
 
+        if (button.stealable) then
+            local stealable = button:CreateTexture(nil, 'OVERLAY')
+            stealable:SetPoint('TOPLEFT', -4, 4)
+            stealable:SetPoint('BOTTOMRIGHT', 4, -4)
+        end
+        
         button.overlay.Hide = function(self)
             self:SetVertexColor(0.5, 0.5, 0.5, 1)
         end
