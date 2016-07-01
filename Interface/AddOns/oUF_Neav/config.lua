@@ -189,6 +189,8 @@ ns.Config = {
             scale = 1.193,
 
             numDebuffs = 6,
+            disableAura = false,
+            debuffsOnly = false,
 
             mouseoverText = false,
             healthTag = '$cur - $perc',
