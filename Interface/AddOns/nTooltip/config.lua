@@ -9,7 +9,6 @@ nTooltip.Config = {
         'BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT', -27.35, 27.35
     },
 
-    disableFade = false,                        -- Can cause errors or a buggy tooltip!
     showOnMouseover = false,
     hideInCombat = false,                       -- Hide unit frame tooltips during combat
 
