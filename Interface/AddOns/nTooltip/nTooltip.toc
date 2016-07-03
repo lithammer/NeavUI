@@ -5,5 +5,4 @@
 config.lua
 config_custom.lua
 core.lua
-fade.lua
 health.lua
