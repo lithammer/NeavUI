@@ -114,6 +114,14 @@ local menuList = {
         tooltipText = NEWBIE_TOOLTIP_LFGPARENT,
         notCheckable = true,
     },
+        {
+        text = CHALLENGES,
+        icon = 'Interface\\BUTTONS\\UI-GroupLoot-DE-Up',
+        func = function()
+            securecall(PVEFrame_ToggleFrame, 'ChallengesFrame')
+        end,
+        notCheckable = true,
+    },
     {
         text = RAID,
         icon = 'Interface\\TARGETINGFRAME\\UI-TargetingFrame-Skull',
