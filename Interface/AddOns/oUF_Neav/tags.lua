@@ -22,7 +22,7 @@ oUF.Tags.Methods['druidmana'] = function(unit)
 end
 
 oUF.Tags.Methods['pvptimer'] = function(unit)
-    if (not IsPVPTimerRunning() and GetPVPTimer() >= 0) then
+    if (not IsPVPTimerRunning()) then
         return ''
     end
 
