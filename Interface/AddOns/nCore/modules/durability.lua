@@ -92,6 +92,6 @@ f:SetScript('OnEvent', function(event)
             r, g, b = 0, 1, 0
         end
 
-        f:SetText(format('|cff%02x%02x%02x%d%%|r', r*255, g*255, b*255, (overAll/total)*100)..' '..DURABILITY)
+        f:SetText(format('|cff%02x%02x%02x%d%%|r', r*255, g*255, b*255, (overAll/total)*100)..' '..DURABILITY..' ')
     end
 end)
