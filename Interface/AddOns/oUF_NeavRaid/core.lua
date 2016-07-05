@@ -823,5 +823,6 @@ oUF:Factory(function(self)
         end
 
         raid[i]:SetScale(config.units.raid.scale)
+        raid[i]:SetFrameStrata("LOW")
     end
 end)
