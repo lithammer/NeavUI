@@ -51,6 +51,7 @@ local HelpIDs = ({
 
 local HarmIDs = ({
     DEATHKNIGHT = { 47541 },    -- Dark Command (30yd) - Starter
+    DEMONHUNTER = { 204157 }, -- Throw Glaive
     DRUID = { 5176 },           -- Moonfire (40yd) - Lvl 10
     HUNTER = {
         75,                     -- Auto Shot (40yd) - Starter
