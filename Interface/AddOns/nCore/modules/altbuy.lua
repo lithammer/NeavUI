@@ -13,10 +13,9 @@ local function MerchantItemButton_OnModifiedClickHook(self, ...)
     if (IsAltKeyDown()) then
         local maxStack = select(8, GetItemInfo(GetMerchantItemLink(self:GetID())))
 
-        local numAvailable = select(5,GetMerchantItemInfo(self:GetID()))
+        local numAvailable = select(5, GetMerchantItemInfo(self:GetID()))
 
-            -- -1 means an item has unlimited supply.
-
+        -- -1 means an item has unlimited supply.
         if (numAvailable ~= -1) then
             BuyMerchantItem(self:GetID(), numAvailable)
         else

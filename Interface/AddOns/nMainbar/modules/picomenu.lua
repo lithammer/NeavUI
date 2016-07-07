@@ -114,7 +114,7 @@ local menuList = {
         tooltipText = NEWBIE_TOOLTIP_LFGPARENT,
         notCheckable = true,
     },
-        {
+    {
         text = CHALLENGES,
         icon = 'Interface\\BUTTONS\\UI-GroupLoot-DE-Up',
         func = function()
@@ -169,7 +169,7 @@ local menuList = {
         tooltipTitle = securecall(MicroButtonTooltipText, HEIRLOOMS, 'TOGGLEHEIRLOOMS'),
         tooltipText = HEIRLOOMS,
         notCheckable = true,
-    },	
+    },
     {
         text = WARDROBE,
         icon = 'Interface\\PaperDollInfoFrame\\UI-EquipmentManager-Toggle',
