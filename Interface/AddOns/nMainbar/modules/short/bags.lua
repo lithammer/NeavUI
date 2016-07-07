@@ -71,9 +71,9 @@ end
 -- Hides or shows bags on statup depending on saved variable.
 local function onEvent(self, event)
     if shown then
-            BagShow()
-        else
-            BagHide()
+        BagShow()
+    else
+        BagHide()
     end
 end
 
