@@ -407,7 +407,7 @@ local function CreateRaidLayout(self, unit)
         -- Name text
 
     self.Name = self.Health:CreateFontString(nil, 'OVERLAY')
-    self.Name:SetPoint('BOTTOM', self.Health, 'CENTER', 0, -2)
+    self.Name:SetPoint('BOTTOM', self.Health, 'CENTER', 0, 3)
     self.Name:SetFont(config.font.fontBig,config.font.fontBigSize)
     self.Name:SetShadowOffset(1, -1)
     self.Name:SetTextColor(1, 1, 1)
