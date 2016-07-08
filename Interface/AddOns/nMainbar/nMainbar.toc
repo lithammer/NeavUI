@@ -1,9 +1,11 @@
 ## Interface: 70000
 ## Title: |cffCC3333 n|rMainBar
 ## Notes: Yet another Blizzbar mod
+## SavedVariables: shown
 
 config.lua
 config_custom.lua
+Bindings.xml
 
 modules\core.lua
 modules\bottomLeft.lua
@@ -25,3 +27,4 @@ modules\honorbar.lua
 
 modules\short\short.lua
 modules\short\extras.lua
+modules\short\bags.lua
