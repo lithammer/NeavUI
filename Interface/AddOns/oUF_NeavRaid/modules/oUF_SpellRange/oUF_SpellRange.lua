@@ -33,10 +33,10 @@ local _, playerClass = UnitClass('player')
 -- Note: Spells probably shouldn't have minimum ranges!
 
 local HelpIDs = ({
-    DEATHKNIGHT = {
-        47541,                  -- Death Coil (40yd) - Starter
-        61999,                  -- Raise Ally (40yd) - Lvl 72
-    },
+    --DEATHKNIGHT = {
+        --47541,                  -- Death Coil (40yd) - Starter
+        --61999,                  -- Raise Ally (40yd) - Lvl 72
+    --},
     DRUID = { 8921 },           -- Revive (40yd) - Lvl 14
     -- HUNTER = {},
     -- MAGE = { },
