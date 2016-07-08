@@ -36,11 +36,6 @@ for i = 2, 3 do
         _G['MainMenuBarBackpackButton'],
         _G['KeyRingButton'],
 
-        _G['CharacterBag0Slot'],
-        _G['CharacterBag1Slot'],
-        _G['CharacterBag2Slot'],
-        _G['CharacterBag3Slot'],
-
         _G['MainMenuBarTexture'..i],
         _G['MainMenuMaxLevelBar'..i],
         _G['MainMenuXPBarTexture'..i],
