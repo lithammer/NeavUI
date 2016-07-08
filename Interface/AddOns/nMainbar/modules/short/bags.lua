@@ -6,39 +6,35 @@ if (not cfg.MainMenuBar.shortBar) then
     return
 end
 
---Binding Info
+    -- Binding Info (Used in keybinding ui.)
+
 BINDING_HEADER_NBAGS = "nBags"
 BINDING_NAME_NBAGS_TOGGLE = "Toggle Bags"
 
--- Saved Variable Setup
-if shown == nil then
-    shown = false
+    -- Saved Variable Setup
+
+if BagsShown == nil then
+    BagsShown = false
 end
 
--- Clear frame position.
+    -- Clear frame position.
+
 MainMenuBarBackpackButton:ClearAllPoints()
 CharacterBag0Slot:ClearAllPoints()
 CharacterBag1Slot:ClearAllPoints()
 CharacterBag2Slot:ClearAllPoints()
 CharacterBag3Slot:ClearAllPoints()
 
--- Set new frame position.
+    -- Set new frame position.
+
 MainMenuBarBackpackButton:SetPoint('BOTTOMRIGHT', WorldFrame, 'BOTTOMRIGHT',0, 0)
 CharacterBag0Slot:SetPoint('RIGHT', MainMenuBarBackpackButton, 'LEFT',0, 0)
 CharacterBag1Slot:SetPoint('RIGHT', CharacterBag0Slot, 'LEFT',0, 0)
 CharacterBag2Slot:SetPoint('RIGHT', CharacterBag1Slot, 'LEFT',0, 0)
 CharacterBag3Slot:SetPoint('RIGHT', CharacterBag2Slot, 'LEFT',0, 0)
 
--- Set !BeautyBorder Settings
-if IsAddOnLoaded('!Beautycase') then
-    MainMenuBarBackpackButton:CreateBeautyBorder(8)
-    CharacterBag0Slot:CreateBeautyBorder(8)
-    CharacterBag1Slot:CreateBeautyBorder(8)
-    CharacterBag2Slot:CreateBeautyBorder(8)
-    CharacterBag3Slot:CreateBeautyBorder(8)
-end
+    -- Show Bags
 
--- Show Bags
 local function BagShow()
     MainMenuBarBackpackButton:Show()
     CharacterBag0Slot:Show()
@@ -47,7 +43,8 @@ local function BagShow()
     CharacterBag3Slot:Show()
 end
 
--- Hide Bags
+    -- Hide Bags
+
 local function BagHide()
     MainMenuBarBackpackButton:Hide()
     CharacterBag0Slot:Hide()
@@ -56,21 +53,22 @@ local function BagHide()
     CharacterBag3Slot:Hide()
 end
 
--- Used to toggle bag with keybind.
+    -- Used to toggle bag with keybind.
+
 function ToggleBags()
-    --print("Shown:"..tostring(shown))
-    if not shown then
+    if not BagsShown then
         BagShow()
-        shown = true
+        BagsShown = true
     else
         BagHide()
-        shown = false
+        BagsShown = false
     end
 end
 
--- Hides or shows bags on statup depending on saved variable.
+    -- Hides or shows bags on statup depending on saved variable.
+
 local function onEvent(self, event)
-    if shown then
+    if BagsShown then
         BagShow()
     else
         BagHide()
