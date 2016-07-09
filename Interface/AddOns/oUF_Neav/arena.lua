@@ -162,7 +162,7 @@ local function CreateArenaLayout(self, unit)
         self.Buffs.initialAnchor = 'TOPRIGHT'
         self.Buffs['growth-x'] = 'LEFT'
         self.Buffs['growth-y'] = 'DOWN'
-        self.Buffs.num = 2
+        self.Buffs.num = 8
         self.Buffs.spacing = 4.5
 
         if (config.units.arena.filterBuffs) then
