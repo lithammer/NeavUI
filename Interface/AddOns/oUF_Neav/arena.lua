@@ -39,6 +39,17 @@ local function UpdatePower(Power, unit, cur, max)
     Power.Value:SetText(ns.GetPowerText(unit, cur, max))
 end
 
+local function FilterArenaBuffs(...)
+
+    local icons, unit, icon, name, rank, texture, count, dtype, duration, timeLeft, caster = ...
+    local buffList = config.units.arena.buffList
+
+    if (buffList[name]) then
+        return true
+    end
+    return false
+end
+
 local function CreateArenaLayout(self, unit)
     self:RegisterForClicks('AnyUp')
     self:EnableMouse(true)
@@ -46,7 +57,7 @@ local function CreateArenaLayout(self, unit)
     self:SetScript('OnEnter', UnitFrame_OnEnter)
     self:SetScript('OnLeave', UnitFrame_OnLeave)
 
-    self:SetFrameStrata('MEDIUM')
+    self:SetFrameStrata('LOW')
 
     if (unit:match('arena%dtarget')) then
         self.targetUnit = true
@@ -144,25 +155,22 @@ local function CreateArenaLayout(self, unit)
         self.RaidIcon:SetSize(26, 26)
 
         self.Buffs = CreateFrame('Frame', nil, self)
-        self.Buffs.size = 28
+        self.Buffs.size = 22
         self.Buffs:SetHeight(self.Buffs.size * 3)
         self.Buffs:SetWidth(self.Buffs.size * 4)
         self.Buffs:SetPoint('TOPRIGHT', self.Power, 'BOTTOMRIGHT', 2, -6)
         self.Buffs.initialAnchor = 'TOPRIGHT'
         self.Buffs['growth-x'] = 'LEFT'
         self.Buffs['growth-y'] = 'DOWN'
-        self.Buffs.num = 8
+        self.Buffs.num = 2
         self.Buffs.spacing = 4.5
+
+        if (config.units.arena.filterBuffs) then
+            self.Buffs.CustomFilter = FilterArenaBuffs
+        end
 
         self.Buffs.PostCreateIcon = ns.UpdateAuraIcons
         self.Buffs.PostUpdateIcon = ns.PostUpdateIcon
-
-        self.Buffs.CustomFilter = function(icons, unit, icon, name, rank, texture, count, dtype, duration, timeLeft, caster)
-            if (config.units.arena.buffList and config.units.arena.buffList[name]) then
-                return true
-            end
-            return false
-        end
 
         self.Debuffs = CreateFrame('Frame', nil, self)
         self.Debuffs.size = 22
@@ -197,7 +205,7 @@ local function CreateArenaLayout(self, unit)
         self.Castbar.Icon = self.Castbar:CreateTexture(nil, 'BACKGROUND')
         self.Castbar.Icon:SetSize(config.units.arena.castbar.icon.size, config.units.arena.castbar.icon.size)
         self.Castbar.Icon:SetPoint('TOPRIGHT', self.Castbar, 'TOPLEFT', -10, 0.45)
-        self.Castbar.Icon:SetTexture(1, 1, 1)
+        self.Castbar.Icon:SetColorTexture(1, 1, 1)
 
         self.Castbar.Icon.Overlay = self.Castbar:CreateTexture(nil, 'ARTWORK')
         self.Castbar.Icon.Overlay:SetPoint('TOPRIGHT', self.Castbar.Icon, 3, 3)
@@ -246,8 +254,9 @@ local function CreateArenaLayout(self, unit)
         self.Texture:SetPoint('CENTER', self, 0, -2)
         self.Texture:SetSize(128, 64)
 
-        self.Name:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', 2, -4)
+        self.Name:SetPoint('TOPLEFT', self.Portrait, 'BOTTOMRIGHT', 2, -7)
         self.Name:SetJustifyH('LEFT')
+        self.Name:SetJustifyV('BOTTOM')
         self.Name:SetSize(75, 10)
 
         self.Health:SetSize(50, 5)

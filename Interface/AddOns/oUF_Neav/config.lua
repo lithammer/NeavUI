@@ -257,7 +257,7 @@ ns.Config = {
             powerTagFull = '$cur',
             powerTagNoMana = '$cur',
 
-            position = {'TOPRIGHT', UIParent, 'TOPRIGHT', -50, -250},
+            position = {'TOPRIGHT', UIParent, 'TOPRIGHT', -95, -250},
 
             castbar = {
                 color = {1, 0, 0},
@@ -276,6 +276,7 @@ ns.Config = {
             scale = 1,
 
             auraSize = 22,
+            filterBuffs = true,
 
             mouseoverText = true,
             healthTag = '$cur/$max',
@@ -284,7 +285,7 @@ ns.Config = {
             powerTagFull = '$cur',
             powerTagNoMana = '$cur',
 
-            position = {'TOPRIGHT', UIParent, 'TOPRIGHT', -80, -300},
+            position = {'TOPRIGHT', UIParent, 'TOPRIGHT', -95, -300},
 
             castbar = {
                 icon = {
@@ -295,7 +296,7 @@ ns.Config = {
             },
 
             buffList = { -- A whitelist for buffs to display on arena frames
-                'Power Word: Shield',
+                ['Power Word: Shield'] = true,
             },
         },
     },
