@@ -33,16 +33,13 @@ local _, playerClass = UnitClass('player')
 -- Note: Spells probably shouldn't have minimum ranges!
 
 local HelpIDs = ({
-    DEATHKNIGHT = {
-        47541,                  -- Death Coil (40yd) - Starter
-        61999,                  -- Raise Ally (40yd) - Lvl 72
-    },
-    DRUID = { 8921 },           -- Revive (40yd) - Lvl 14
+    -- DEATHKNIGHT = {},
+    DRUID = { 2782,88423 },     -- Remove Corruption, Nature's Cure (40yd) - Lvl 18
     -- HUNTER = {},
     -- MAGE = { },
     MONK = { 116694 },          -- Effuse (40yd) - Lvl 8
     PALADIN = { 19750 },        -- Flash of Light (40yd) - Lvl 9
-    PRIEST = { 2006 },          -- Resurrection (40yd) - Lvl 14
+    PRIEST = { 213634 },        -- Purify Disease (40yd) - Lvl 14
     -- ROGUE = {},
     SHAMAN = { 8004,188070 },   -- Healing Surge (40yd) - Lvl 7
     WARLOCK = { 20707 },        -- Soulstone (40yd) - Lvl 18
@@ -50,7 +47,7 @@ local HelpIDs = ({
 })[playerClass]
 
 local HarmIDs = ({
-    DEATHKNIGHT = { 47541 },    -- Dark Command (30yd) - Starter
+    DEATHKNIGHT = { 49576 },    -- Dark Command (30yd) - Starter
     DEMONHUNTER = { 204157 },   -- Throw Glaive
     DRUID = { 5176 },           -- Moonfire (40yd) - Lvl 10
     HUNTER = {

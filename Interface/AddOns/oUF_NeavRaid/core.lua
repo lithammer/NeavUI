@@ -24,14 +24,15 @@ do
         },
         PALADIN = {
             {53563, 'BOTTOMRIGHT', {0, 1, 0}}, -- Beacon of Light
-            {156910, 'BOTTOMRIGHT', {0, 1, 0}}, -- Beacon of Faith 
+            {156910, 'BOTTOMRIGHT', {0, 1, 0}}, -- Beacon of Faith
             {200025, 'BOTTOMRIGHT', {0, 1, 0}}, -- Beacon of Virtue
         },
         PRIEST = {
             {17, 'BOTTOMRIGHT', {1, 1, 0}, true}, -- Power Word: Shield
-            {33076, 'TOPRIGHT', {1, 0.6, 0.6}, true, true}, -- Prayer of Mending
+            {41635, 'TOPRIGHT', {1, 0.6, 0.6}, true}, -- Prayer of Mending
             {139, 'BOTTOMLEFT', {0, 1, 0}}, -- Renew
-            {194384, 'TOPLEFT', {1, 0, 0}}, --Atonement
+            {194384, 'TOPLEFT', {1, 0, 0}}, -- Atonement
+            {47788, 'TOPLEFT', {0, 1,0 }}, -- Guardian Spirit
         },
         SHAMAN = {
             {61295, 'TOPLEFT', {0.7, 0.3, 0.7}}, -- Riptide
@@ -182,7 +183,7 @@ local function CreateIndicators(self, unit)
     Auras.PostCreateIcon = AuraIcon
 
     local buffs = {}
-    
+
     if (indicatorList['ALL']) then
         for key, value in pairs(indicatorList['ALL']) do
             tinsert(buffs, value)
@@ -254,11 +255,9 @@ local function UpdateThreat(self, _, unit)
     end
 
     if (threatStatus and threatStatus >= 2) then
-        -- self.Bg:SetVertexColor(0.75, 0, 0)
         local r, g, b = GetThreatStatusColor(threatStatus)
         self.ThreatGlow:SetBackdropBorderColor(r, g, b, 1)
     else
-        -- self.Bg:SetVertexColor(0, 0, 0)
         self.ThreatGlow:SetBackdropBorderColor(0, 0, 0, 0)
 
         if (self.ThreatText) then
@@ -569,20 +568,11 @@ local function CreateRaidLayout(self, unit)
     self.MasterLooter:SetSize(11, 11)
     self.MasterLooter:SetPoint('RIGHT', self, 'TOPRIGHT', -1, 1)
 
-        -- Main tank icon
-
-    if (config.units.raid.showMainTankIcon) then
-        self.MainTank = self.Health:CreateTexture(nil, 'OVERLAY')
-        self.MainTank:SetSize(12, 11)
-        self.MainTank:SetPoint('CENTER', self, 'TOP', 0, 1)
-        self.MainTank:Hide()
-    end
-
         -- Leader icons
 
     self.Leader = self.Health:CreateTexture(nil, 'OVERLAY', self)
     self.Leader:SetSize(12, 12)
-    self.Leader:SetPoint('LEFT', self.Health, 'TOPLEFT', 1, 0)
+    self.Leader:SetPoint('LEFT', self.Health, 'TOPLEFT', 1, 2)
 
         -- Raid icons
 
@@ -609,12 +599,6 @@ local function CreateRaidLayout(self, unit)
     CreateIndicators(self, unit)
 
         -- Role indicator
-
-    --[[
-    self.LFDRole = self.Health:CreateTexture(nil, 'OVERLAY')
-    self.LFDRole:SetSize(12, 12)
-    self.LFDRole:SetPoint('TOPLEFT', self.Health, -5, -5)
-    --]]
 
     if (config.units.raid.showRolePrefix) then
         self.LFDRoleText = self.Health:CreateFontString(nil, 'ARTWORK')
@@ -658,8 +642,6 @@ local function CreateRaidLayout(self, unit)
 
     if (config.units.raid.showTargetBorder) then
         self.TargetBorder = self.Health:CreateTexture(nil, 'OVERLAY', self)
-        -- self.TargetBorder:SetPoint('TOPRIGHT', self, 5, 5)
-        -- self.TargetBorder:SetPoint('BOTTOMLEFT', self, -5, -5)
         self.TargetBorder:SetAllPoints(self.Health)
         self.TargetBorder:SetTexture('Interface\\Addons\\oUF_NeavRaid\\media\\borderTarget')
         self.TargetBorder:SetVertexColor(unpack(config.units.raid.targetBorderColor))
@@ -689,140 +671,167 @@ local function CreateRaidLayout(self, unit)
     return self
 end
 
-local f = CreateFrame('Frame', 'oUF_Neav_Raid_Anchor', UIParent)
-f:SetSize(80, 80)
-f:SetPoint('CENTER')
-f:SetFrameStrata('HIGH')
-f:SetMovable(true)
-f:SetClampedToScreen(true)
-f:SetUserPlaced(true)
-f:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
-f:SetBackdropColor(0, 1, 0, 0.55)
-f:EnableMouse(true)
-f:RegisterForDrag('LeftButton')
-f:Hide()
+local raidFrames = CreateFrame('Frame', 'oUF_Neav_Raid_Anchor', UIParent)
+raidFrames:SetSize(80, 80)
+raidFrames:SetPoint('CENTER')
+raidFrames:SetFrameStrata('HIGH')
+raidFrames:SetMovable(true)
+raidFrames:SetClampedToScreen(true)
+raidFrames:SetUserPlaced(true)
+raidFrames:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
+raidFrames:SetBackdropColor(0, 1, 0, 0.55)
+raidFrames:EnableMouse(true)
+raidFrames:RegisterForDrag('LeftButton')
+raidFrames:Hide()
 
-f.t = f:CreateFontString(nil, 'OVERLAY')
-f.t:SetAllPoints(f)
-f.t:SetFont('Fonts\\ARIALN.ttf', 13)
-f.t:SetText('oUF_Neav Raid_Anchor "'..config.units.raid.layout.initialAnchor..'"')
+raidFrames.text = raidFrames:CreateFontString(nil, 'OVERLAY')
+raidFrames.text:SetAllPoints(raidFrames)
+raidFrames.text:SetFont('Fonts\\ARIALN.ttf', 13)
+raidFrames.text:SetText('oUF_Neav Raid_Anchor "'..config.units.raid.layout.initialAnchor..'"')
 
-f:SetScript('OnDragStart', function(self)
+raidFrames:SetScript('OnDragStart', function(self)
     self:StartMoving()
 end)
 
-f:SetScript('OnDragStop', function(self)
+raidFrames:SetScript('OnDragStop', function(self)
+    self:StopMovingOrSizing()
+end)
+
+local tankFrames = CreateFrame('Frame', 'oUF_Neav_Assist_Anchor', UIParent)
+tankFrames:SetSize(80, 80)
+tankFrames:SetPoint('CENTER')
+tankFrames:SetFrameStrata('HIGH')
+tankFrames:SetMovable(true)
+tankFrames:SetClampedToScreen(true)
+tankFrames:SetUserPlaced(true)
+tankFrames:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
+tankFrames:SetBackdropColor(0, 1, 0, 0.55)
+tankFrames:EnableMouse(true)
+tankFrames:RegisterForDrag('LeftButton')
+tankFrames:Hide()
+
+tankFrames.text = tankFrames:CreateFontString(nil, 'OVERLAY')
+tankFrames.text:SetAllPoints(tankFrames)
+tankFrames.text:SetFont('Fonts\\ARIALN.ttf', 13)
+tankFrames.text:SetText('oUF_Neav Assit_Anchor')
+
+tankFrames:SetScript('OnDragStart', function(self)
+    self:StartMoving()
+end)
+
+tankFrames:SetScript('OnDragStop', function(self)
     self:StopMovingOrSizing()
 end)
 
 SlashCmdList['oUF_Neav_Raid_AnchorToggle'] = function()
     if (InCombatLockdown()) then
-        f:Hide()
+        raidFrames:Hide()
+        tankFrames:Hide()
         print('oUF_NeavRaid: You cant do this in combat!')
         return
     end
 
-    if (not f:IsShown()) then
-        f:Show()
+    if (not raidFrames:IsShown()) then
+        raidFrames:Show()
+        tankFrames:Show()
     else
-        f:Hide()
+        raidFrames:Hide()
+        tankFrames:Hide()
     end
 end
 SLASH_oUF_Neav_Raid_AnchorToggle1 = '/neavrt'
 
 oUF:RegisterStyle('oUF_Neav_Raid', CreateRaidLayout)
+oUF:RegisterStyle('oUF_Neav_Raid_MT', CreateRaidLayout)
 oUF:Factory(function(self)
     self:SetActiveStyle('oUF_Neav_Raid')
 
     local rlayout = config.units.raid.layout
-    local relpoint, anchpoint, offset
+    local relpoint, anchpoint, xOffset, yOffset
 
     if (rlayout.orientation == 'HORIZONTAL') then
         if (rlayout.initialAnchor == 'TOPRIGHT' or rlayout.initialAnchor == 'TOPLEFT') then
-            relpoint = 'TOP'
+            relpoint = 'LEFT'
             anchpoint = 'TOP'
-            offset = -rlayout.frameSpacing
+            xOffset = rlayout.frameSpacing
+            yOffset = rlayout.frameSpacing
         elseif (rlayout.initialAnchor == 'BOTTOMLEFT' or rlayout.initialAnchor == 'BOTTOMRIGHT') then
             relpoint = 'BOTTOM'
-            anchpoint = 'BOTTOM'
-            offset = rlayout.frameSpacing
+            anchpoint = 'LEFT'
+            xOffset = -rlayout.frameSpacing
+            yOffset = rlayout.frameSpacing
         end
     elseif (rlayout.orientation == 'VERTICAL') then
         if (rlayout.initialAnchor == 'TOPRIGHT') then
             relpoint = 'TOP'
             anchpoint = 'RIGHT'
-            offset = -rlayout.frameSpacing
+            xOffset = -rlayout.frameSpacing
+            yOffset = -rlayout.frameSpacing
         elseif (rlayout.initialAnchor == 'TOPLEFT') then
             relpoint = 'TOP'
             anchpoint = 'LEFT'
-            offset = rlayout.frameSpacing
+            xOffset = rlayout.frameSpacing
+            yOffset = -rlayout.frameSpacing
         elseif (rlayout.initialAnchor == 'BOTTOMLEFT') then
             relpoint = 'BOTTOM'
             anchpoint = 'LEFT'
-            offset = rlayout.frameSpacing
+            xOffset = rlayout.frameSpacing
+            yOffset = rlayout.frameSpacing
         elseif (rlayout.initialAnchor == 'BOTTOMRIGHT') then
             relpoint = 'BOTTOM'
             anchpoint = 'RIGHT'
-            offset = -rlayout.frameSpacing
+            xOffset = -rlayout.frameSpacing
+            yOffset = rlayout.frameSpacing
         end
     end
 
-    local raid = {}
-    for i = 1, rlayout.numGroups do
-        table.insert(raid, self:SpawnHeader('oUF_Neav_Raid'..i, nil, 'solo,party,raid',
-            'oUF-initialConfigFunction', ([[
+    local raid = self:SpawnHeader('oUF_Raid', nil, 'raid,party,solo',
+    'showSolo', config.units.raid.showSolo,
+    'showParty', config.units.raid.showParty,
+    'showRaid', true,
+    'showPlayer', true,
+    'point', relpoint,
+    'groupFilter', '1,2,3,4,5,6,7,8',
+    'groupingOrder', '1,2,3,4,5,6,7,8',
+    'groupBy', 'GROUP',
+    'maxColumns', 8,
+    'unitsPerColumn', 5,
+    'columnAnchorPoint', anchpoint,
+    'columnSpacing', 7,
+    'yOffset', yOffset,
+    'xOffset', xOffset,
+    'templateType', 'Button',
+    'oUF-initialConfigFunction', ([[
+        self:SetWidth(%d)
+        self:SetHeight(%d)
+    ]]):format(config.units.raid.width, config.units.raid.height))
+
+    raid:SetPoint(rlayout.initialAnchor, raidFrames)
+    raid:SetScale(config.units.raid.scale)
+    raid:SetFrameStrata('LOW')
+
+        -- Main Tank/Assist Frames
+
+    self:SetActiveStyle('oUF_Neav_Raid_MT')
+
+    if config.units.raid.showMainTankFrames then
+
+        local offset = rlayout.frameSpacing
+
+        local tanks = self:SpawnHeader('oUF_Neav_Raid_MT', nil, 'solo,party,raid',
+        'showRaid', true,
+        'showParty', false,
+        'yOffset', -offset,
+        'template', 'oUF_NeavRaid_MT_Target_Template',     -- Target
+        'sortMethod', 'INDEX',
+        'groupFilter', 'MAINTANK,MAINASSIST',
+        'oUF-initialConfigFunction', ([[
             self:SetWidth(%d)
             self:SetHeight(%d)
-            ]]):format(config.units.raid.width, config.units.raid.height),
+        ]]):format(config.units.raid.width, config.units.raid.height))
 
-            'showRaid', true,
-            'showParty', config.units.raid.showParty,
-            'showPlayer', true,
-            'showSolo', config.units.raid.showSolo,
-
-            'xOffset', offset,
-            'yOffset', offset,
-            'columnSpacing', offset,
-
-            'point', anchpoint,
-            'columnAnchorPoint', relpoint,
-
-            'sortMethod', 'INDEX',
-            'groupFilter', i
-            )
-        )
-
-        if (i == 1) then
-            raid[i]:SetPoint(rlayout.initialAnchor, f)
-        else
-            if (rlayout.initialAnchor == 'TOPLEFT') then
-                if (rlayout.orientation == 'HORIZONTAL') then
-                    raid[i]:SetPoint('TOPLEFT', raid[i-1], 'TOPRIGHT', rlayout.frameSpacing, 0)
-                elseif (rlayout.orientation == 'VERTICAL') then
-                    raid[i]:SetPoint('TOPLEFT', raid[i-1], 'BOTTOMLEFT', 0, -rlayout.frameSpacing)
-                end
-            elseif (rlayout.initialAnchor == 'TOPRIGHT') then
-                if (rlayout.orientation == 'HORIZONTAL') then
-                    raid[i]:SetPoint('TOPRIGHT', raid[i-1], 'TOPLEFT', -rlayout.frameSpacing, 0)
-                else
-                    raid[i]:SetPoint('TOPRIGHT', raid[i-1], 'BOTTOMRIGHT', 0, -rlayout.frameSpacing)
-                end
-            elseif (rlayout.initialAnchor == 'BOTTOMLEFT') then
-                if (rlayout.orientation == 'HORIZONTAL') then
-                    raid[i]:SetPoint('BOTTOMLEFT', raid[i-1], 'BOTTOMRIGHT', rlayout.frameSpacing, 0)
-                else
-                    raid[i]:SetPoint('BOTTOMLEFT', raid[i-1], 'TOPLEFT', 0, rlayout.frameSpacing)
-                end
-            elseif (rlayout.initialAnchor == 'BOTTOMRIGHT') then
-                    if (rlayout.orientation == 'HORIZONTAL') then
-                    raid[i]:SetPoint('BOTTOMRIGHT', raid[i-1], 'BOTTOMLEFT', -rlayout.frameSpacing, 0)
-                else
-                    raid[i]:SetPoint('BOTTOMRIGHT', raid[i-1], 'TOPRIGHT', 0, rlayout.frameSpacing)
-                end
-            end
-        end
-
-        raid[i]:SetScale(config.units.raid.scale)
-        raid[i]:SetFrameStrata('LOW')
+        tanks:SetPoint('TOPLEFT', tankFrames, 'TOPLEFT')
+        tanks:SetScale(config.units.raid.scale)
+        tanks:SetFrameStrata('LOW')
     end
 end)

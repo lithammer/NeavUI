@@ -1,7 +1,7 @@
 
 -- function SetUpAnimation(frame) CancelAnimations(frame) end
 
-PowerBarColor['MANA'] = {r = 0/255, g = 0.55, b = 1}
+_G.PowerBarColor['MANA'] = {r = 0/255, g = 0.55, b = 1}
 
 CUSTOM_FACTION_BAR_COLORS = {
     [1] = {r = 1, g = 0, b = 0},

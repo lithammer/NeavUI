@@ -1,26 +1,24 @@
+local noop = function() return end
 
-local frameHider = CreateFrame('Frame')
-frameHider:Hide()
+local function Kill(object)
+    if object.UnregisterAllEvents then
+        object:UnregisterAllEvents()
+    end
+    object.Show = noop
+    object:Hide()
+end
 
-InterfaceOptionsFrameCategoriesButton11:SetScale(0.00001)
-InterfaceOptionsFrameCategoriesButton11:SetAlpha(0)
-
-CompactRaidFrameManager:SetParent(frameHider)
-CompactUnitFrameProfiles:UnregisterAllEvents()
+Kill(CompactRaidFrameManager)
+Kill(CompactUnitFrameProfiles)
 
 for i = 1, MAX_PARTY_MEMBERS do
     local name = 'PartyMemberFrame'..i
     local frame = _G[name]
 
-    frame:SetParent(frameHider)
-
-    _G[name..'HealthBar']:UnregisterAllEvents()
-    _G[name..'ManaBar']:UnregisterAllEvents()
+    Kill(frame)
 
     local pet = name..'PetFrame'
     local petframe = _G[pet]
 
-    petframe:SetParent(frameHider)
-
-    _G[pet]:UnregisterAllEvents()
+    Kill(petframe)
 end
