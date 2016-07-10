@@ -27,7 +27,6 @@ ns.Config = {
 
             layout = {
                 frameSpacing = 7,
-                numGroups = 8,
 
                 initialAnchor = 'TOPLEFT',                                                  -- 'TOPLEFT' 'BOTTOMLEFT' 'TOPRIGHT' 'BOTTOMRIGHT'
                 orientation = 'HORIZONTAL',                                                 -- 'VERTICAL' 'HORIZONTAL'
