@@ -33,7 +33,6 @@ for i = 2, 3 do
         _G['ActionBarUpButton'],
         _G['ActionBarDownButton'],
 
-        _G['MainMenuBarBackpackButton'],
         _G['KeyRingButton'],
 
         _G['MainMenuBarTexture'..i],

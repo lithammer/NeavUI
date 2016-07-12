@@ -32,7 +32,7 @@ local function CreateBossLayout(self, unit)
     self:SetScript('OnEnter', UnitFrame_OnEnter)
     self:SetScript('OnLeave', UnitFrame_OnLeave)
 
-    self:SetFrameStrata('MEDIUM')
+    self:SetFrameStrata('LOW')
 
         -- healthbar
 
@@ -188,7 +188,11 @@ oUF:Factory(function(self)
         boss[i] = self:Spawn('boss'..i, 'oUF_Neav_BossFrame'..i)
 
         if (i == 1) then
-            boss[i]:SetPoint(unpack(config.units.boss.position))
+            if (_G['ObjectiveTrackerFrame']:IsShown()) then
+                boss[i]:SetPoint('TOPLEFT',ObjectiveTrackerBlocksFrame,'BOTTOMLEFT',0, -10)
+            else
+                boss[i]:SetPoint(unpack(config.units.boss.position))
+            end
         else
             boss[i]:SetPoint('TOPLEFT', boss[i-1], 'BOTTOMLEFT', 0, (config.units.boss.castbar.show and -80) or -50)
         end
