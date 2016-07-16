@@ -172,6 +172,56 @@ local function UpdateThreat(self)
     end
 end
 
+local function HideAltResources(self)
+    local playerSpec = GetSpecialization()
+
+    if ( playerClass == 'SHAMAN' ) then
+        TotemFrame:Hide()
+        self.DruidMana:SetAlpha(0)
+    elseif ( playerClass == 'DEATHKNIGHT' ) then
+        RuneFrame:Hide()
+    elseif ( playerClass == 'MAGE' and playerSpec == SPEC_MAGE_ARCANE) then
+        MageArcaneChargesFrame:Hide()
+    elseif (playerClass == 'MONK') then
+        if ( playerSpec == SPEC_MONK_BREWMASTER) then
+            MonkStaggerBar:Hide()
+        elseif ( playerSpec == SPEC_MONK_WINDWALKER ) then
+            MonkHarmonyBarFrame:Hide()
+        end
+    elseif (playerClass == 'PALADIN' and playerSpec == SPEC_PALADIN_RETRIBUTION) then
+        PaladinPowerBarFrame:Hide()
+    elseif (playerClass == 'WARLOCK') then
+        WarlockPowerFrame:Hide()
+    elseif ( playerClass == 'DRUID' or playerClass == 'PRIEST' ) then
+        self.DruidMana:SetAlpha(0)
+    end
+end
+
+local function ShowAltResources(self)
+    local playerSpec = GetSpecialization()
+
+    if ( playerClass == 'SHAMAN' ) then
+        TotemFrame:Show()
+        self.DruidMana:SetAlpha(1)
+    elseif ( playerClass == 'DEATHKNIGHT' ) then
+        RuneFrame:Show()
+    elseif ( playerClass == 'MAGE' and playerSpec == SPEC_MAGE_ARCANE) then
+        MageArcaneChargesFrame:Show()
+    elseif (playerClass == 'MONK') then
+        if ( playerSpec == SPEC_MONK_BREWMASTER) then
+            MonkStaggerBar:Show()
+        elseif ( playerSpec == SPEC_MONK_WINDWALKER ) then
+            MonkHarmonyBarFrame:Show()
+        end
+    elseif (playerClass == 'PALADIN' and playerSpec == SPEC_PALADIN_RETRIBUTION) then
+        PaladinPowerBarFrame:Show()
+    elseif (playerClass == 'WARLOCK') then
+        WarlockPowerFrame:Show()
+    elseif (self.DruidMana) then
+        self.DruidMana:SetAlpha(1)
+    end
+end
+
 local function PlayerToVehicleTexture(self, event, unit)
     self.Texture:SetSize(240, 121)
     self.Texture:SetPoint('CENTER', self, 0, -8)
@@ -211,7 +261,7 @@ local function PlayerToVehicleTexture(self, event, unit)
     self.RaidIcon:SetPoint('CENTER', self.Portrait, 'TOP', 0, -5)
     self.T[1]:SetPoint('BOTTOM', self.Name, 'TOP', 0, 8)
 
-    securecall('PlayerFrame_ShowVehicleTexture')
+    HideAltResources(self)
 end
 
 local function VehicleToPlayerTexture(self, event, unit)
@@ -256,7 +306,7 @@ local function VehicleToPlayerTexture(self, event, unit)
     self.RaidIcon:SetPoint('CENTER', self.Portrait, 'TOP', 0, -1)
     self.T[1]:SetPoint('BOTTOM', self.Name.Bg, 'TOP', -1, 0)
 
-    securecall('PlayerFrame_HideVehicleTexture')
+    ShowAltResources(self)
 end
 
 local function CreateTab(self, text)
@@ -436,6 +486,27 @@ local function UpdatePower(Power, unit, cur, max)
     Power.Value:SetText(ns.GetPowerText(unit, cur, max))
 end
 
+local function CustomTotemFrame_AdjustPetFrame(self)
+    TotemFrame:ClearAllPoints()
+    local hasPet = UnitExists('pet')
+    if ( playerClass == 'WARLOCK' ) then
+        if ( hasPet ) then
+            TotemFrame:SetPoint('TOPLEFT', oUF_Neav_Player, 'BOTTOMLEFT', 0, -75)
+        else
+            TotemFrame:SetPoint('TOPLEFT', oUF_Neav_Player, 'TOPLEFT', 0, -75)
+        end
+    end
+    if ( playerClass == 'SHAMAN' ) then
+        if (GetSpecialization() ~= SPEC_SHAMAN_RESTORATION) then
+            TotemFrame:ClearAllPoints()
+            TotemFrame:SetPoint('TOP', self.DruidMana, 'BOTTOM', -2, -2)
+        else
+            TotemFrame:ClearAllPoints()
+            TotemFrame:SetPoint('TOP', self.Power, 'BOTTOM', -2, 0)
+        end
+    end
+end
+
 local function CreateUnitLayout(self, unit)
     self.IsMainFrame = ns.MultiCheck(unit, 'player', 'target', 'focus')
     self.IsTargetFrame = ns.MultiCheck(unit, 'targettarget', 'focustarget')
@@ -460,7 +531,7 @@ local function CreateUnitLayout(self, unit)
             self:SetAttribute(config.units.focus.focusToggleKey, 'focus')
         end
     end
-        -- Create the castbars
+        -- Create the castbars.
 
     if (config.show.castbars) then
         ns.CreateCastbars(self, unit)
@@ -518,7 +589,7 @@ local function CreateUnitLayout(self, unit)
         self.Health:SetSize(70, 7)
     end
 
-        -- Heal prediction, new healcomm
+        -- Heal Prediction
 
     local myBar = CreateFrame('StatusBar', nil, self)
     myBar:SetFrameLevel(self:GetFrameLevel() - 1)
@@ -564,7 +635,7 @@ local function CreateUnitLayout(self, unit)
         frequentUpdates = true
     }
 
-        -- Health text
+        -- Health Text
 
     self.Health.Value = self:CreateFontString(nil, 'OVERLAY')
     self.Health.Value:SetShadowOffset(1, -1)
@@ -599,7 +670,7 @@ local function CreateUnitLayout(self, unit)
         self.Power:SetHeight(self.Health:GetHeight() - 1)
     end
 
-        -- Power text
+        -- Power Text
 
     if (not self.IsTargetFrame) then
         self.Power.Value = self:CreateFontString(nil, 'OVERLAY')
@@ -709,7 +780,7 @@ local function CreateUnitLayout(self, unit)
         end
     end
 
-        -- Portrait timer
+        -- Portrait Timer
 
     if (config.show.portraitTimer) then
         self.PortraitTimer = CreateFrame('Frame', nil, self.Health)
@@ -723,32 +794,32 @@ local function CreateUnitLayout(self, unit)
         self.PortraitTimer.Remaining:SetTextColor(1, 1, 1)
     end
 
-        -- Pvp icons
+        -- PvP/Prestige Icons
 
     if (config.show.pvpicons) then
         self.PvP = self:CreateTexture(nil, 'OVERLAY')
         local Prestige = self:CreateTexture(nil, 'ARTWORK')
-	self.PvP.Prestige = Prestige
+        self.PvP.Prestige = Prestige
 
         if (unit == 'player') then
             self.PvP:SetSize(40, 42)
-	    Prestige:SetSize(40, 42)
-	    Prestige:SetPoint('CENTER', self.PvP, 'CENTER')
+            Prestige:SetSize(40, 42)
+            Prestige:SetPoint('CENTER', self.PvP, 'CENTER')
         elseif (unit == 'pet') then
-	    self.PvP:SetSize(35, 35)
-	    self.PvP:SetPoint('CENTER', self.Portrait, 'LEFT', -7, -7)
+            self.PvP:SetSize(35, 35)
+            self.PvP:SetPoint('CENTER', self.Portrait, 'LEFT', -7, -7)
         elseif (unit == 'target' or unit == 'focus') then
             self.PvP:SetSize(40, 42)
             self.PvP:SetPoint('TOPRIGHT', self.Texture, -16, -23)
-	    Prestige:SetSize(40, 42)
-	    Prestige:SetPoint('TOPRIGHT', self.Texture, -16, -23)
+            Prestige:SetSize(40, 42)
+            Prestige:SetPoint('TOPRIGHT', self.Texture, -16, -23)
         elseif (self.IsPartyFrame) then
             self.PvP:SetSize(40, 40)
             self.PvP:SetPoint('TOPLEFT', self.Texture, -9, -10)
         end
     end
 
-        -- Masterlooter icon
+        -- Master Looter Icon
 
     self.MasterLooter = self:CreateTexture(nil, 'OVERLAY')
     self.MasterLooter:SetSize(16, 16)
@@ -762,7 +833,7 @@ local function CreateUnitLayout(self, unit)
         self.MasterLooter:SetPoint('TOPLEFT', self.Texture, 29, 0)
     end
 
-        -- Groupleader icon
+        -- Group Leader Icon
 
     self.Leader = self:CreateTexture(nil, 'OVERLAY')
     self.Leader:SetSize(16, 16)
@@ -776,7 +847,7 @@ local function CreateUnitLayout(self, unit)
         self.Leader:SetPoint('CENTER', self.Portrait, 'TOPLEFT', 1, -1)
     end
 
-        -- Raidicons
+        -- Raid Icons
 
     self.RaidIcon = self:CreateTexture(nil, 'OVERLAY')
     self.RaidIcon:SetPoint('CENTER', self.Portrait, 'TOP', 0, -1)
@@ -784,7 +855,7 @@ local function CreateUnitLayout(self, unit)
     local s1 = (self.Portrait.Bg and self.Portrait.Bg:GetSize() / 3) or (self.Portrait:GetSize() / 3)
     self.RaidIcon:SetSize(s1, s1)
 
-        -- Phase icon
+        -- Phase Icon
 
     if (not IsTargetFrame) then
         self.PhaseIcon = self:CreateTexture(nil, 'OVERLAY')
@@ -797,13 +868,13 @@ local function CreateUnitLayout(self, unit)
         end
     end
 
-        -- Offline icons
+        -- Offline Icons
 
     self.OfflineIcon = self:CreateTexture(nil, 'OVERLAY')
     self.OfflineIcon:SetPoint('TOPRIGHT', self.Portrait, 7, 7)
     self.OfflineIcon:SetPoint('BOTTOMLEFT', self.Portrait, -7, -7)
 
-        -- Ready check icons
+        -- Ready Check Icons
 
     if (unit == 'player' or self.IsPartyFrame) then
         self.ReadyCheck = self:CreateTexture(nil, 'OVERLAY')
@@ -813,7 +884,7 @@ local function CreateUnitLayout(self, unit)
         self.ReadyCheck.fadeTime = 0.5
     end
 
-        -- Threat textures
+        -- Threat Textures
 
     self.ThreatGlow = self:CreateTexture(nil, 'BACKGROUND')
 
@@ -838,7 +909,7 @@ local function CreateUnitLayout(self, unit)
         self.ThreatGlow:SetTexture(tarTexPath..'UI-PartyFrame-Flash')
     end
 
-        -- Lfd role icon
+        -- LFD Role Icon
 
     if (self.IsPartyFrame or unit == 'player' or unit == 'target') then
         self.LFDRole = self:CreateTexture(nil, 'ARTWORK')
@@ -853,7 +924,7 @@ local function CreateUnitLayout(self, unit)
         end
     end
 
-        -- Playerframe
+        -- Player Frame
 
     if (unit == 'player') then
         self:SetSize(175, 42)
@@ -865,110 +936,92 @@ local function CreateUnitLayout(self, unit)
         self.Name.Bg:SetTexture('Interface\\Buttons\\WHITE8x8')
         self.Name.Bg:SetVertexColor(0, 0, 0, 0.55)
 
-	    -- Warlock Soul Shards
+            -- Warlock Soul Shards
 
         if (playerClass == 'WARLOCK') then
+            WarlockPowerFrame:ClearAllPoints()
             WarlockPowerFrame:SetParent(oUF_Neav_Player)
             WarlockPowerFrame:SetScale(config.units.player.scale * 0.8)
-            WarlockPowerFrame:SetFrameLevel(1)
-	    WarlockPowerFrame:ClearAllPoints()
-	    WarlockPowerFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, -2)
+            WarlockPowerFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, -2)
         end
 
-	    -- Holy Power Bar (Retribution Only)
+            -- Holy Power Bar (Retribution Only)
 
-        if (playerClass == 'PALADIN') then
+        if (playerClass == 'PALADIN' and GetSpecialization() == SPEC_PALADIN_RETRIBUTION) then
+            PaladinPowerBarFrame:ClearAllPoints()
             PaladinPowerBarFrame:SetParent(oUF_Neav_Player)
             PaladinPowerBarFrame:SetScale(config.units.player.scale * 0.81)
-            PaladinPowerBarFrame:ClearAllPoints()
             PaladinPowerBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 25, 2)
             PaladinPowerBarFrame:Show()
         end
 
-	    -- Monk Harmony Bar (Windwalker Only)
+            -- Monk Chi / Stagger Bar
 
         if (playerClass == 'MONK') then
+            -- Windwalker Chi
+            MonkHarmonyBarFrame:ClearAllPoints()
             MonkHarmonyBarFrame:SetParent(oUF_Neav_Player)
             MonkHarmonyBarFrame:SetScale(config.units.player.scale * 0.81)
-            MonkHarmonyBarFrame:ClearAllPoints()
             MonkHarmonyBarFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, 18)
+
+            -- Brewmaster Stagger Bar
+            MonkStaggerBar:ClearAllPoints()
+            MonkStaggerBar:SetParent(oUF_Neav_Player)
+            MonkStaggerBar:SetScale(config.units.player.scale * 0.81)
+            MonkStaggerBar:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, -2)
         end
 
-	-- Brewmaster Monk Stagger Bar
-
-	if (playerClass == 'MONK') then
-	    MonkStaggerBar:SetParent(oUF_Neav_Player)
-	    MonkStaggerBar:SetScale(config.units.player.scale * 0.81)
-	    MonkStaggerBar:ClearAllPoints()
-            MonkStaggerBar:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, -2)
-	end
-
-	    -- Deathknight Runebar
+            -- Deathknight Runebar
 
         if (playerClass == 'DEATHKNIGHT') then
             RuneFrame:ClearAllPoints()
+            RuneFrame:SetParent(oUF_Neav_Player)
             RuneFrame:SetPoint('TOP', self.Power, 'BOTTOM', 2, -2)
-            RuneFrame:SetParent(self)
         end
 
-	-- Arcane Mage
+            -- Arcane Mage
 
-	if (playerClass == 'MAGE') then
-	    MageArcaneChargesFrame:SetParent(oUF_Neav_Player)
-	    MageArcaneChargesFrame:SetScale(config.units.player.scale * 0.81)
-	    MageArcaneChargesFrame:ClearAllPoints()
+        if (playerClass == 'MAGE') then
+            MageArcaneChargesFrame:ClearAllPoints()
+            MageArcaneChargesFrame:SetParent(oUF_Neav_Player)
+            MageArcaneChargesFrame:SetScale(config.units.player.scale * 0.81)
             MageArcaneChargesFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, -2)
-	end
+        end
 
-	-- Alt Mana Frame for Druids, Shaman, and Shadow Priest
+            -- Alt Mana Frame for Druids, Shaman, and Shadow Priest
 
         if (playerClass == 'DRUID' or playerClass == 'SHAMAN' or playerClass == 'PRIEST') then
-	    self.DruidMana = CreateFrame('StatusBar', nil, self)
-	    self.DruidMana:SetPoint('TOP', self.Power, 'BOTTOM', 0, -1)
-	    self.DruidMana:SetStatusBarTexture(config.media.statusbar, 'BORDER')
-	    self.DruidMana:SetSize(99, 9)
-	    self.DruidMana:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
-	    self.DruidMana:SetBackdropColor(0, 0, 0, 0.55)
-	    self.DruidMana.colorPower = true
+            self.DruidMana = CreateFrame('StatusBar', nil, self)
+            self.DruidMana:SetPoint('TOP', self.Power, 'BOTTOM', 0, -1)
+            self.DruidMana:SetStatusBarTexture(config.media.statusbar, 'BORDER')
+            self.DruidMana:SetSize(99, 9)
+            self.DruidMana:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
+            self.DruidMana:SetBackdropColor(0, 0, 0, 0.55)
+            self.DruidMana.colorPower = true
 
-	    self.DruidMana.Value = self.DruidMana:CreateFontString(nil, 'OVERLAY')
-	    self.DruidMana.Value:SetFont(config.font.normal, config.font.normalSize)
-	    self.DruidMana.Value:SetShadowOffset(1, -1)
-	    self.DruidMana.Value:SetPoint('CENTER', self.DruidMana, 0, 0.5)
+            self.DruidMana.Value = self.DruidMana:CreateFontString(nil, 'OVERLAY')
+            self.DruidMana.Value:SetFont(config.font.normal, config.font.normalSize)
+            self.DruidMana.Value:SetShadowOffset(1, -1)
+            self.DruidMana.Value:SetPoint('CENTER', self.DruidMana, 0, 0.5)
 
-	    self:Tag(self.DruidMana.Value, '[druidmana]')
+            self:Tag(self.DruidMana.Value, '[druidmana]')
 
-	    self.DruidMana.Texture = self.DruidMana:CreateTexture(nil, 'ARTWORK')
-	    self.DruidMana.Texture:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\DruidManaTexture')
-	    self.DruidMana.Texture:SetSize(104, 28)
-	    self.DruidMana.Texture:SetPoint('TOP', self.Power, 'BOTTOM', 0, 6)
-	end
+            self.DruidMana.Texture = self.DruidMana:CreateTexture(nil, 'ARTWORK')
+            self.DruidMana.Texture:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\DruidManaTexture')
+            self.DruidMana.Texture:SetSize(104, 28)
+            self.DruidMana.Texture:SetPoint('TOP', self.Power, 'BOTTOM', 0, 6)
+        end
 
-	    -- Shaman Totems
+            -- Totem Frame
 
-        if (playerClass == 'SHAMAN') then
-            TotemFrame:ClearAllPoints()
-            if (GetSpecialization() ~= 3) then
-                TotemFrame:SetPoint('TOP', self.DruidMana, 'BOTTOM', -2, -2)
-            else
-                TotemFrame:SetPoint('TOP', self.Power, 'BOTTOM', -2, 0)
-            end
-            TotemFrame:SetParent(oUF_Neav_Player)
+        if (playerClass == 'SHAMAN' or playerClass == 'WARLOCK' or playerClass == 'DRUID' ) then
             TotemFrame:SetScale(config.units.player.scale * 0.65)
-            TotemFrame:SetFrameStrata("LOW")
-            TotemFrame:Show()
+            TotemFrame:SetFrameStrata('LOW')
+            TotemFrame:SetParent(oUF_Neav_Player)
+            CustomTotemFrame_AdjustPetFrame(self)
         end
 
-            -- Druid Efflorescnce Timer
-
-        if (playerClass == 'DRUID') then
-            TotemFrame:ClearAllPoints()
-            TotemFrame:SetPoint('TOP', self.DruidMana, 'BOTTOM', -2, 0)
-            TotemFrame:SetParent(self)
-            TotemFrame:SetFrameStrata("LOW")
-            TotemFrame:Show()
-        end
-
+        self:RegisterEvent('PLAYER_TOTEM_UPDATE', CustomTotemFrame_AdjustPetFrame)
             -- Raidgroup indicator
 
         local function UpdatePartyTab(self)
@@ -1037,7 +1090,7 @@ local function CreateUnitLayout(self, unit)
         self.Combat:SetPoint('CENTER', self.Level, 1, 0)
         self.Combat:SetSize(31, 33)
 
-           -- Resting icon
+           -- Resting Icon
 
         self.Resting = self:CreateTexture(nil, 'OVERLAY')
         self.Resting:SetPoint('CENTER', self.Level, -0.5, 0)
@@ -1051,7 +1104,7 @@ local function CreateUnitLayout(self, unit)
         self:RegisterEvent('UNIT_ENTERING_VEHICLE', CheckVehicleStatus)
         self:RegisterEvent('UNIT_EXITING_VEHICLE', CheckVehicleStatus)
         self:RegisterEvent('UNIT_EXITED_VEHICLE', CheckVehicleStatus)
-        self:RegisterEvent('PET_UI_UPDATE', CheckVehicleStatus)
+        self:RegisterEvent('UPDATE_VEHICLE_ACTIONBAR', CheckVehicleStatus)
     end
 
         -- Petframe
@@ -1387,6 +1440,7 @@ oUF:Factory(function(self)
 
     local player = self:Spawn('player', 'oUF_Neav_Player')
     player:SetPoint('TOPLEFT', __pa)
+    player:SetFrameStrata('LOW')
 
     player:SetScript('OnDragStart', function()
         __pa:StartMoving()
@@ -1406,12 +1460,13 @@ oUF:Factory(function(self)
 
     local pet = self:Spawn('pet', 'oUF_Neav_Pet')
     pet:SetPoint('TOPLEFT', player, 'BOTTOMLEFT', unpack(config.units.pet.position))
-    pet:SetFrameStrata("LOW")
+    pet:SetFrameStrata('LOW')
 
         -- Target frame spawn
 
     local target = self:Spawn('target', 'oUF_Neav_Target')
     target:SetPoint('TOPLEFT', __ta)
+    target:SetFrameStrata('LOW')
 
     target:SetScript('OnDragStart', function()
         __ta:StartMoving()
@@ -1431,11 +1486,14 @@ oUF:Factory(function(self)
 
     local targettarget = self:Spawn('targettarget', 'oUF_Neav_TargetTarget')
     targettarget:SetPoint('TOPLEFT', target, 'BOTTOMRIGHT', -78, -15)
+    targettarget:SetFrameStrata('LOW')
 
         -- Focus frame spawn
 
     local focus = self:Spawn('focus', 'oUF_Neav_Focus')
     focus:SetPoint('TOPLEFT', __fa)
+    focus:SetFrameStrata('LOW')
+    
     focus:RegisterForDrag('LeftButton')
 
     focus:SetScript('OnDragStart', function()
@@ -1458,6 +1516,7 @@ oUF:Factory(function(self)
 
     local focustarget = self:Spawn('focustarget', 'oUF_Neav_FocusTarget')
     focustarget:SetPoint('TOPLEFT', focus, 'BOTTOMRIGHT', -78, -15)
+    focustarget:SetFrameStrata('LOW')
 
         -- Party frame spawn
 
@@ -1471,5 +1530,6 @@ oUF:Factory(function(self)
             'yOffset', -30
         )
         party:SetPoint(unpack(config.units.party.position))
+        party:SetFrameStrata('LOW')
     end
 end)
