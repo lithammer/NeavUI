@@ -56,7 +56,7 @@ nMainbar.Config = {
         fontsize = 14,
         font = 'Fonts\\ARIALN.ttf',
     },
-    
+
     MainMenuBar = {
         scale = 1,
         hideGryphons = false,
@@ -93,14 +93,14 @@ nMainbar.Config = {
     },
 
     multiBarLeft = {
-        mouseover = true,
+        mouseover = false,
         hiddenAlpha = 0,
         alpha = 1,
         orderHorizontal = false,
     },
 
     multiBarRight = {
-        mouseover = true,
+        mouseover = false,
         hiddenAlpha = 0,
         alpha = 1,
         orderHorizontal = false,
