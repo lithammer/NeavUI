@@ -498,10 +498,8 @@ local function CustomTotemFrame_AdjustPetFrame(self)
     end
     if ( playerClass == 'SHAMAN' ) then
         if (GetSpecialization() ~= SPEC_SHAMAN_RESTORATION) then
-            TotemFrame:ClearAllPoints()
             TotemFrame:SetPoint('TOP', self.DruidMana, 'BOTTOM', -2, -2)
         else
-            TotemFrame:ClearAllPoints()
             TotemFrame:SetPoint('TOP', self.Power, 'BOTTOM', -2, 0)
         end
     end
@@ -531,6 +529,7 @@ local function CreateUnitLayout(self, unit)
             self:SetAttribute(config.units.focus.focusToggleKey, 'focus')
         end
     end
+
         -- Create the castbars.
 
     if (config.show.castbars) then
