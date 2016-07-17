@@ -3,9 +3,9 @@ if not isLegion then return end
 
     -- Create SmallOrder Frame
 
-local SmallOrder = CreateFrame("Frame", "SmallOrder", UIParent)
-SmallOrder:SetPoint("TOP", WorldFrame, "TOP", 0,5)
-SmallOrder:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background",})
+local SmallOrder = CreateFrame('Frame', 'SmallOrder', UIParent)
+SmallOrder:SetPoint('TOP', WorldFrame, 'TOP', 0,5)
+SmallOrder:SetBackdrop({bgFile = 'Interface/Tooltips/UI-Tooltip-Background',})
 SmallOrder:SetBackdropColor(0, 0, 0, 1)
 SmallOrder:SetWidth(256)
 SmallOrder:SetHeight(30)
@@ -31,12 +31,12 @@ followerDisplay:SetPoint('RIGHT', SmallOrder, 'RIGHT', -7, 0)
 
     -- Invisible Frame (Used for Troops Tooltip)
 
-local TroopsOverlay = CreateFrame("Frame", "TroopsOverlay", UIParent)
+local TroopsOverlay = CreateFrame('Frame', 'TroopsOverlay', UIParent)
 TroopsOverlay:SetHeight(30)
 TroopsOverlay:SetWidth(SmallOrder:GetWidth()/3)
 TroopsOverlay:SetPoint('RIGHT', SmallOrder, 'RIGHT', 0, 0)
 TroopsOverlay:EnableMouse(true)
-TroopsOverlay:SetFrameStrata("HIGH")
+TroopsOverlay:SetFrameStrata('HIGH')
 
 local function onEvent(self, event)
     
@@ -63,7 +63,7 @@ local function onEvent(self, event)
         -- Change Order Resources Text
 
     local name, amount = GetCurrencyInfo(1220)
-    amountDisplay:SetText(name..": "..amount)
+    amountDisplay:SetText(name..': '..amount)
 
         -- Count and display number of troops.
     
@@ -79,7 +79,7 @@ local function onEvent(self, event)
       end
     end
 
-    followerDisplay:SetText("Troops: "..followerTotal)
+    followerDisplay:SetText(FOLLOWERLIST_LABEL_TROOPS..': '..followerTotal)
 end
 
     -- Gets Follower Info and Outputs it in Tooltip when TroopsOverlay is clicked.
@@ -88,14 +88,14 @@ TroopsOverlay:SetScript('OnEnter', function(self)
 
     local followerInfo = C_Garrison.GetFollowers() or {}
     
-    GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
+    GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMRIGHT')
     GameTooltip:ClearLines()
-    GameTooltip:AddLine("Troops", 0, 1, 0)
+    GameTooltip:AddLine(FOLLOWERLIST_LABEL_TROOPS, 0, 1, 0)
     
     for i, follower in ipairs(followerInfo) do
       if follower.isCollected then
         if follower.isTroop then
-            GameTooltip:AddLine(follower.name .. " - Durability: " .. follower.durability .. "/" .. follower.maxDurability)
+            GameTooltip:AddLine(follower.name .. ' - '.. DURABILITY .. ': ' .. follower.durability .. '/' .. follower.maxDurability)
         end
       end
     end
@@ -109,15 +109,15 @@ TroopsOverlay:SetScript('OnLeave', function()
     GameTooltip:Hide()
 end)
 
-SmallOrder:SetScript("OnEvent", onEvent)
+SmallOrder:SetScript('OnEvent', onEvent)
 SmallOrder:RegisterEvent('ADDON_LOADED')
-SmallOrder:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
-SmallOrder:RegisterEvent("DISPLAY_SIZE_CHANGED")
-SmallOrder:RegisterEvent("UI_SCALE_CHANGED")
-SmallOrder:RegisterEvent("GARRISON_TALENT_COMPLETE")
-SmallOrder:RegisterEvent("GARRISON_TALENT_UPDATE")
-SmallOrder:RegisterEvent("GARRISON_FOLLOWER_CATEGORIES_UPDATED")
-SmallOrder:RegisterEvent("GARRISON_FOLLOWER_ADDED")
-SmallOrder:RegisterEvent("GARRISON_FOLLOWER_REMOVED")
-SmallOrder:RegisterEvent("GARRISON_UPDATE")
-SmallOrder:RegisterUnitEvent("UNIT_AURA", "player")
+SmallOrder:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
+SmallOrder:RegisterEvent('DISPLAY_SIZE_CHANGED')
+SmallOrder:RegisterEvent('UI_SCALE_CHANGED')
+SmallOrder:RegisterEvent('GARRISON_TALENT_COMPLETE')
+SmallOrder:RegisterEvent('GARRISON_TALENT_UPDATE')
+SmallOrder:RegisterEvent('GARRISON_FOLLOWER_CATEGORIES_UPDATED')
+SmallOrder:RegisterEvent('GARRISON_FOLLOWER_ADDED')
+SmallOrder:RegisterEvent('GARRISON_FOLLOWER_REMOVED')
+SmallOrder:RegisterEvent('GARRISON_UPDATE')
+SmallOrder:RegisterUnitEvent('UNIT_AURA', 'player')
