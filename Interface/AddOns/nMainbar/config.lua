@@ -93,14 +93,14 @@ nMainbar.Config = {
     },
 
     multiBarLeft = {
-        mouseover = true,
+        mouseover = false,
         hiddenAlpha = 0,
         alpha = 1,
         orderHorizontal = false,
     },
 
     multiBarRight = {
-        mouseover = true,
+        mouseover = false,
         hiddenAlpha = 0,
         alpha = 1,
         orderHorizontal = false,

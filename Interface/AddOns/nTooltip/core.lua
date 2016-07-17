@@ -579,7 +579,6 @@ GameTooltip:SetScript('OnEvent', function(self, event, GUID)
     if not matchFound then
         local GUIDInfo = {
             ['GUID'] = GUID,
-            ['itemLevel'] = ilvl,
             ['specIcon'] = icon and ' |T'..icon..':0|t' or '',
             ['lastUpdate'] = math.floor(now)
         }
