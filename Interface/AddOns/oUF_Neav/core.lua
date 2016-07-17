@@ -21,62 +21,12 @@ local tabCoordTable = {
     [3] = {0, 0.1875, 0, 1},
 }
 
-local function CreateDropDown(self)
-    local dropdown = _G[string.format('%sFrameDropDown', string.gsub(self.unit, '(.)', string.upper, 1))]
-
-    if (dropdown) then
-        ToggleDropDownMenu(1, nil, dropdown, 'cursor')
-    elseif (self.unit:match('party')) then
-        ToggleDropDownMenu(1, nil, _G[format('PartyMemberFrame%dDropDown', self.id)], 'cursor')
-    else
-        FriendsDropDown.unit = self.unit
-        FriendsDropDown.id = self.id
-        FriendsDropDown.initialize = RaidFrameDropDown_Initialize
-        ToggleDropDownMenu(1, nil, FriendsDropDown, 'cursor')
-    end
-end
-
-UnitPopupMenus['MOVE_PLAYER_FRAME'] = {
-    'UNLOCK_PLAYER_FRAME',
-    'LOCK_PLAYER_FRAME',
-    'RESET_PLAYER_FRAME_POSITION'
-}
-
 local __pa = CreateFrame('Frame', 'oUF_Neav_Player_Anchor', UIParent)
 __pa:SetSize(1, 1)
 __pa:SetPoint(unpack(config.units.player.position))
 __pa:SetMovable(true)
 __pa:SetUserPlaced(true)
 __pa:SetClampedToScreen(true)
-
-PLAYER_FRAME_UNLOCKED = false
-function PlayerFrame_SetLocked(locked)
-    PLAYER_FRAME_UNLOCKED = not locked
-
-    if (locked) then
-        if (oUF_Neav_Player) then
-            oUF_Neav_Player:RegisterForDrag()
-        end
-    else
-        if (oUF_Neav_Player) then
-            oUF_Neav_Player:RegisterForDrag('LeftButton')
-        end
-    end
-end
-
-function PlayerFrame_ResetUserPlacedPosition()
-    if (oUF_Neav_Player) then
-        __pa:ClearAllPoints()
-        __pa:SetPoint(unpack(config.units.player.position))
-        PlayerFrame_SetLocked(true)
-    end
-end
-
-UnitPopupMenus['MOVE_TARGET_FRAME'] = {
-    'UNLOCK_TARGET_FRAME',
-    'LOCK_TARGET_FRAME',
-    'RESET_TARGET_FRAME_POSITION'
-}
 
 local __ta = CreateFrame('Frame', 'oUF_Neav_Target_Anchor', UIParent)
 __ta:SetSize(1, 1)
@@ -85,38 +35,9 @@ __ta:SetMovable(true)
 __ta:SetUserPlaced(true)
 __ta:SetClampedToScreen(true)
 
-TARGET_FRAME_UNLOCKED = false
-function TargetFrame_SetLocked(locked)
-    TARGET_FRAME_UNLOCKED = not locked
-
-    if (locked) then
-        if (oUF_Neav_Target) then
-            oUF_Neav_Target:RegisterForDrag()
-        end
-    else
-        if (oUF_Neav_Target) then
-            oUF_Neav_Target:RegisterForDrag('LeftButton')
-        end
-    end
-end
-
-function TargetFrame_ResetUserPlacedPosition()
-    if (oUF_Neav_Target) then
-        __ta:ClearAllPoints()
-        __ta:SetPoint(unpack(config.units.target.position))
-        TargetFrame_SetLocked(true)
-    end
-end
-
-UnitPopupMenus['FOCUS'] = {
-    'LOCK_FOCUS_FRAME',
-    'UNLOCK_FOCUS_FRAME',
-    'RAID_TARGET_ICON',
-    'CANCEL'
-}
 local __fa = CreateFrame('Frame', 'oUF_Neav_Focus_Anchor', UIParent)
 __fa:SetSize(1, 1)
-__fa:SetPoint('LEFT', 30, 0)
+__fa:SetPoint(unpack(config.units.focus.position))
 __fa:SetMovable(true)
 __fa:SetUserPlaced(true)
 __fa:SetClampedToScreen(true)
@@ -515,8 +436,12 @@ local function CreateUnitLayout(self, unit)
     end
 
     self:RegisterForClicks('AnyUp')
-    self.menu = CreateDropDown
-    self:SetAttribute('*type2', 'menu')
+
+    if unit:match('^raid') then
+       self:SetAttribute('type2', 'menu')
+    else
+        self:SetAttribute('type2', 'togglemenu')
+    end
 
     self:SetScript('OnEnter', UnitFrame_OnEnter)
     self:SetScript('OnLeave', UnitFrame_OnLeave)
@@ -1090,7 +1015,7 @@ local function CreateUnitLayout(self, unit)
         self.Combat:SetPoint('CENTER', self.Level, 1, 0)
         self.Combat:SetSize(31, 33)
 
-           -- Resting Icon
+            -- Resting Icon
 
         self.Resting = self:CreateTexture(nil, 'OVERLAY')
         self.Resting:SetPoint('CENTER', self.Level, -0.5, 0)
@@ -1433,6 +1358,38 @@ local function CreateUnitLayout(self, unit)
     return self
 end
 
+    -- Reset Frame Locations
+
+SlashCmdList['oUF_Neav_UnitFrame_Reset_Locations'] = function(msg)
+    if (InCombatLockdown()) then
+        print('oUF_Neav: You cant do this in combat!')
+        return
+    end
+
+    if ( msg == 'player' ) then
+        __pa:ClearAllPoints()
+        __pa:SetPoint(unpack(config.units.player.position))
+    elseif ( msg == 'target' ) then
+        __ta:ClearAllPoints()
+        __ta:SetPoint(unpack(config.units.target.position))
+    elseif ( msg == 'focus' ) then
+        __fa:ClearAllPoints()
+        __fa:SetPoint(unpack(config.units.focus.position))
+    elseif ( msg == 'all' ) then
+        __pa:ClearAllPoints()
+        __pa:SetPoint(unpack(config.units.player.position))
+        __ta:ClearAllPoints()
+        __ta:SetPoint(unpack(config.units.target.position))
+        __fa:ClearAllPoints()
+        __fa:SetPoint(unpack(config.units.focus.position))
+    elseif ( msg == 'help' or msg == '?' ) then
+        print('oUF_Neav: Please enter /neavreset all,player,target, or focus.')
+    else
+        print('oUF_Neav: Please enter /neavreset all,player,target, or focus.')
+    end
+end
+SLASH_oUF_Neav_UnitFrame_Reset_Locations1 = '/neavreset'
+
 oUF:RegisterStyle('oUF_Neav', CreateUnitLayout)
 oUF:Factory(function(self)
 
@@ -1440,10 +1397,13 @@ oUF:Factory(function(self)
 
     local player = self:Spawn('player', 'oUF_Neav_Player')
     player:SetPoint('TOPLEFT', __pa)
+    player:RegisterForDrag('LeftButton')
     player:SetFrameStrata('LOW')
 
     player:SetScript('OnDragStart', function()
-        __pa:StartMoving()
+        if (IsShiftKeyDown() and IsAltKeyDown() and not InCombatLockdown()) then
+            __pa:StartMoving()
+        end
     end)
 
     player:SetScript('OnDragStop', function()
@@ -1466,10 +1426,13 @@ oUF:Factory(function(self)
 
     local target = self:Spawn('target', 'oUF_Neav_Target')
     target:SetPoint('TOPLEFT', __ta)
+    target:RegisterForDrag('LeftButton')
     target:SetFrameStrata('LOW')
 
     target:SetScript('OnDragStart', function()
-        __ta:StartMoving()
+        if (IsShiftKeyDown() and IsAltKeyDown() and not InCombatLockdown()) then
+            __ta:StartMoving()
+        end
     end)
 
     target:SetScript('OnDragStop', function()
@@ -1492,24 +1455,17 @@ oUF:Factory(function(self)
 
     local focus = self:Spawn('focus', 'oUF_Neav_Focus')
     focus:SetPoint('TOPLEFT', __fa)
-    focus:SetFrameStrata('LOW')
-    
     focus:RegisterForDrag('LeftButton')
+    focus:SetFrameStrata('LOW')
 
     focus:SetScript('OnDragStart', function()
-        FOCUS_FRAME_MOVING = false
-
-        if (not FOCUS_FRAME_LOCKED) then
+        if (IsShiftKeyDown() and IsAltKeyDown() and not InCombatLockdown()) then
             __fa:StartMoving()
-            FOCUS_FRAME_MOVING = true
         end
     end)
 
     focus:SetScript('OnDragStop', function()
-        if (not FOCUS_FRAME_LOCKED and FOCUS_FRAME_MOVING) then
             __fa:StopMovingOrSizing()
-            FOCUS_FRAME_MOVING = false
-        end
     end)
 
         -- Focustarget frame spawn

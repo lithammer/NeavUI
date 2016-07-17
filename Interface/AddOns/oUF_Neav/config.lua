@@ -206,6 +206,7 @@ ns.Config = {
             enableFocusToggleKeybind = true,
             focusToggleKey = 'type4',                                                       -- type1, type2 (mousebutton 1 or 2, 3, 4, 5 etc. works too)
 
+            position = {'LEFT', 30, 0},
             castbar = {
                 show = true,
 
