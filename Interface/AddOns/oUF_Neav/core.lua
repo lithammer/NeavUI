@@ -1021,6 +1021,7 @@ local function CreateUnitLayout(self, unit)
         end
 
         self:RegisterEvent('PLAYER_TOTEM_UPDATE', CustomTotemFrame_AdjustPetFrame)
+
             -- Raidgroup indicator
 
         local function UpdatePartyTab(self)
