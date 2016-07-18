@@ -17,10 +17,13 @@ nMainbar.Config = {
 
         hotkeyFontsize = 18,
         hotkeyFont = 'Interface\\AddOns\\nMainbar\\media\\font.ttf',
+
+        petHotKeyFontsize = 14,
+        petHotKeyFont = 'Interface\\AddOns\\nMainbar\\media\\font.ttf',
     },
 
-    color = {   -- Red, Green, Blue
-        Normal = { 1, 1, 1 },
+    color = {   -- Red, Green, Blue, Alpha
+        Normal = { 1, 1, 1, 1 },
         IsEquipped = { 0, 1, 0 },
 
         OutOfRange = { 0.9, 0, 0 },
