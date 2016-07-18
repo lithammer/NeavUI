@@ -93,7 +93,7 @@ ns.Config = {
 
             auraSize = 22,
             disableAura = false,                                                            -- Disable Auras on this unitframe
-            
+
             mouseoverText = true,
             healthTag = '$cur/$max',
             healthTagFull = '$cur',
@@ -189,8 +189,8 @@ ns.Config = {
             scale = 1.193,
 
             numDebuffs = 6,
-            disableAura = false,
-            debuffsOnly = false,
+            disableAura = false,                                                            -- Disable Auras on this unitframe.
+            debuffsOnly = false,                                                            -- Only show debuffs.
 
             mouseoverText = false,
             healthTag = '$cur - $perc',
@@ -205,6 +205,8 @@ ns.Config = {
 
             enableFocusToggleKeybind = true,
             focusToggleKey = 'type4',                                                       -- type1, type2 (mousebutton 1 or 2, 3, 4, 5 etc. works too)
+
+            position = {'LEFT', 30, 0},
 
             castbar = {
                 show = true,
