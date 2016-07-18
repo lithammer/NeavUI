@@ -23,7 +23,7 @@ local function UpdateVehicleButton()
         local hotkey = _G['OverrideActionBarButton'..i..'HotKey']
         if (cfg.button.showVehicleKeybinds) then
             hotkey:SetFont(cfg.button.hotkeyFont, cfg.button.hotkeyFontsize + 3, 'OUTLINE')
-            hotkey:SetVertexColor(cfg.color.HotKeyText[1], cfg.color.HotKeyText[2], cfg.color.HotKeyText[3])
+            hotkey:SetVertexColor(unpack(cfg.color.HotKeyText))
         else
             hotkey:Hide()
         end
@@ -46,7 +46,6 @@ hooksecurefunc('PetActionBar_Update', function()
                     cooldown:ClearAllPoints()
                     cooldown:SetPoint('TOPRIGHT', button, -2, -2)
                     cooldown:SetPoint('BOTTOMLEFT', button, 1, 1)
-                    -- cooldown:SetDrawEdge(true)
                 end
 
                 if (not button.Shadow) then
@@ -66,11 +65,9 @@ hooksecurefunc('PetActionBar_Update', function()
 
                     button:SetCheckedTexture(path..'textureChecked')
                     button:GetCheckedTexture():SetAllPoints(normal)
-                    -- button:GetCheckedTexture():SetDrawLayer('OVERLAY')
 
                     button:SetPushedTexture(path..'texturePushed')
                     button:GetPushedTexture():SetAllPoints(normal)
-                    -- button:GetPushedTexture():SetDrawLayer('OVERLAY')
 
                     button:SetHighlightTexture(path..'textureHighlight')
                     button:GetHighlightTexture():SetAllPoints(normal)
@@ -90,6 +87,14 @@ hooksecurefunc('PetActionBar_Update', function()
                         button.Shadow:SetPoint('BOTTOMLEFT', normal, -4, -4)
                         button.Shadow:SetTexture(path..'textureShadow')
                         button.Shadow:SetVertexColor(0, 0, 0, 1)
+                    end
+
+                    local hotkey = _G[name..i..'HotKey']
+                    if (cfg.button.showKeybinds) then
+                        hotkey:ClearAllPoints()
+                        hotkey:SetPoint('TOPRIGHT', button, 0, -3)
+                        hotkey:SetFont(cfg.button.hotkeyFont, cfg.button.petHotKeyFontsize, 'OUTLINE')
+                        hotkey:SetVertexColor(unpack(cfg.color.HotKeyText))
                     end
                 end
             end
@@ -147,8 +152,7 @@ hooksecurefunc('ActionButton_Update', function(self)
                 normal:ClearAllPoints()
                 normal:SetPoint('TOPRIGHT', button, 1, 1)
                 normal:SetPoint('BOTTOMLEFT', button, -1, -1)
-                normal:SetVertexColor(cfg.color.Normal[1], cfg.color.Normal[2], cfg.color.Normal[3], 1)
-                -- normal:SetDrawLayer('ARTWORK')
+                normal:SetVertexColor(unpack(cfg.color.Normal))
             end
 
             button:SetNormalTexture(path..'textureNormal')
@@ -164,23 +168,12 @@ hooksecurefunc('ActionButton_Update', function(self)
 
             local icon = _G[self:GetName()..'Icon']
             icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-            -- icon:SetPoint('TOPRIGHT', button, -1, -1)
-            -- icon:SetPoint('BOTTOMLEFT', button, 1, 1)
-            -- icon:SetDrawLayer('BORDER')
-
-            local border = _G[self:GetName()..'Border']
-            if (border) then
-                border:SetAllPoints(normal)
-                -- border:SetDrawLayer('OVERLAY')
-                border:SetTexture(path..'textureHighlight')
-                border:SetVertexColor(unpack(cfg.color.IsEquipped))
-            end
 
             local count = _G[self:GetName()..'Count']
             if (count) then
                 count:SetPoint('BOTTOMRIGHT', button, 0, 1)
                 count:SetFont(cfg.button.countFont, cfg.button.countFontsize, 'OUTLINE')
-                count:SetVertexColor(cfg.color.CountText[1], cfg.color.CountText[2], cfg.color.CountText[3], 1)
+                count:SetVertexColor(unpack(cfg.color.CountText))
             end
 
             local macroname = _G[self:GetName()..'Name']
@@ -188,7 +181,6 @@ hooksecurefunc('ActionButton_Update', function(self)
                 if (not cfg.button.showMacronames) then
                     macroname:SetAlpha(0)
                 else
-                    -- macroname:SetDrawLayer('OVERLAY')
                     macroname:SetWidth(button:GetWidth() + 15)
                     macroname:SetFont(cfg.button.macronameFont, cfg.button.macronameFontsize, 'OUTLINE')
                     macroname:SetVertexColor(unpack(cfg.color.MacroText))
@@ -215,13 +207,13 @@ hooksecurefunc('ActionButton_Update', function(self)
             cooldown:ClearAllPoints()
             cooldown:SetPoint('TOPRIGHT', button, -2, -2.5)
             cooldown:SetPoint('BOTTOMLEFT', button, 2, 2)
-            -- cooldown:SetDrawEdge(true)
         end
 
         local border = _G[self:GetName()..'Border']
         if (border) then
             if (IsEquippedAction(self.action)) then
                 _G[self:GetName()..'Border']:SetAlpha(1)
+                _G[self:GetName()..'Border']:SetVertexColor(unpack(cfg.color.IsEquipped))
             else
                 _G[self:GetName()..'Border']:SetAlpha(0)
             end
@@ -232,7 +224,7 @@ end)
 hooksecurefunc('ActionButton_ShowGrid', function(self)
     local normal = _G[self:GetName()..'NormalTexture']
     if (normal) then
-        normal:SetVertexColor(cfg.color.Normal[1], cfg.color.Normal[2], cfg.color.Normal[3], 1)
+        normal:SetVertexColor(unpack(cfg.color.Normal))
     end
 end)
 
@@ -243,7 +235,7 @@ hooksecurefunc('ActionButton_UpdateUsable', function(self)
 
     local normal = _G[self:GetName()..'NormalTexture']
     if (normal) then
-        normal:SetVertexColor(cfg.color.Normal[1], cfg.color.Normal[2], cfg.color.Normal[3], 1)
+        normal:SetVertexColor(unpack(cfg.color.Normal))
     end
 
     local isUsable, notEnoughMana = IsUsableAction(self.action)
@@ -263,9 +255,8 @@ hooksecurefunc('ActionButton_UpdateHotkeys', function(self, actionButtonType)
         if (cfg.button.showKeybinds) then
             hotkey:ClearAllPoints()
             hotkey:SetPoint('TOPRIGHT', self, 0, -3)
-            -- hotkey:SetDrawLayer('OVERLAY')
             hotkey:SetFont(cfg.button.hotkeyFont, cfg.button.hotkeyFontsize, 'OUTLINE')
-            hotkey:SetVertexColor(cfg.color.HotKeyText[1], cfg.color.HotKeyText[2], cfg.color.HotKeyText[3])
+            hotkey:SetVertexColor(unpack(cfg.color.HotKeyText))
         else
             hotkey:Hide()
         end
@@ -280,11 +271,26 @@ hooksecurefunc('ActionButton_OnUpdate', function(self, elapsed)
     end
 
     if (self.rangeTimer == TOOLTIP_UPDATE_TIME) then
-        local isInRange = IsActionInRange(self.action)
-        if (isInRange == false) then
-            _G[self:GetName()..'Icon']:SetVertexColor(unpack(cfg.color.OutOfRange))
+        local hotkey = _G[self:GetName()..'HotKey']
+        local valid = IsActionInRange(self.action)
+        if ( hotkey:GetText() == RANGE_INDICATOR ) then
+            if ( valid == false ) then
+                hotkey:Show()
+                hotkey:SetVertexColor(unpack(cfg.color.OutOfRange))
+            elseif ( valid ) then
+                hotkey:Show()
+                hotkey:SetVertexColor(unpack(cfg.color.HotKeyText))
+                ActionButton_UpdateUsable(self)
+            else
+                hotkey:Hide()
+            end
         else
-            ActionButton_UpdateUsable(self)
+            if ( valid == false ) then
+                hotkey:SetVertexColor(unpack(cfg.color.OutOfRange))
+            else
+                hotkey:SetVertexColor(unpack(cfg.color.HotKeyText))
+                ActionButton_UpdateUsable(self)
+            end
         end
     end
 end)
