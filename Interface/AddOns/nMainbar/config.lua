@@ -18,8 +18,7 @@ nMainbar.Config = {
         hotkeyFontsize = 18,
         hotkeyFont = 'Interface\\AddOns\\nMainbar\\media\\font.ttf',
 
-        petHotKeyFontsize = 14,
-        petHotKeyFont = 'Interface\\AddOns\\nMainbar\\media\\font.ttf',
+        petHotKeyFontsize = 15,
     },
 
     color = {   -- Red, Green, Blue, Alpha

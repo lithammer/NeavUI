@@ -93,7 +93,7 @@ hooksecurefunc('PetActionBar_Update', function()
                     if (cfg.button.showKeybinds) then
                         hotkey:ClearAllPoints()
                         hotkey:SetPoint('TOPRIGHT', button, 0, -3)
-                        hotkey:SetFont(cfg.button.petHotKeyFont, cfg.button.petHotKeyFontsize, 'OUTLINE')
+                        hotkey:SetFont(cfg.button.hotkeyFont, cfg.button.petHotKeyFontsize, 'OUTLINE')
                         hotkey:SetVertexColor(unpack(cfg.color.HotKeyText))
                     end
                 end
