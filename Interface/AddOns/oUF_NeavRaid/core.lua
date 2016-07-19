@@ -811,7 +811,7 @@ oUF:Factory(function(self)
     raid:SetFrameStrata('LOW')
 
         -- Main Tank/Assist Frames
-    
+
     if config.units.raid.showMainTankFrames then
         self:SetActiveStyle('oUF_Neav_Raid_MT')
 
