@@ -100,17 +100,17 @@ local function HideAltResources(self)
         TotemFrame:Hide()
     elseif ( playerClass == 'DEATHKNIGHT' ) then
         RuneFrame:Hide()
-    elseif ( playerClass == 'MAGE' and playerSpec == SPEC_MAGE_ARCANE) then
+    elseif ( playerClass == 'MAGE' and playerSpec == SPEC_MAGE_ARCANE ) then
         MageArcaneChargesFrame:Hide()
-    elseif (playerClass == 'MONK') then
-        if ( playerSpec == SPEC_MONK_BREWMASTER) then
+    elseif ( playerClass == 'MONK' ) then
+        if ( playerSpec == SPEC_MONK_BREWMASTER ) then
             MonkStaggerBar:Hide()
         elseif ( playerSpec == SPEC_MONK_WINDWALKER ) then
             MonkHarmonyBarFrame:Hide()
         end
-    elseif (playerClass == 'PALADIN' and playerSpec == SPEC_PALADIN_RETRIBUTION) then
+    elseif ( playerClass == 'PALADIN' and playerSpec == SPEC_PALADIN_RETRIBUTION ) then
         PaladinPowerBarFrame:Hide()
-    elseif (playerClass == 'WARLOCK') then
+    elseif ( playerClass == 'WARLOCK' ) then
         WarlockPowerFrame:Hide()
     end
 end
@@ -122,17 +122,17 @@ local function ShowAltResources(self)
         TotemFrame:Show()
     elseif ( playerClass == 'DEATHKNIGHT' ) then
         RuneFrame:Show()
-    elseif ( playerClass == 'MAGE' and playerSpec == SPEC_MAGE_ARCANE) then
+    elseif ( playerClass == 'MAGE' and playerSpec == SPEC_MAGE_ARCANE ) then
         MageArcaneChargesFrame:Show()
-    elseif (playerClass == 'MONK') then
-        if ( playerSpec == SPEC_MONK_BREWMASTER) then
+    elseif ( playerClass == 'MONK' ) then
+        if ( playerSpec == SPEC_MONK_BREWMASTER ) then
             MonkStaggerBar:Show()
         elseif ( playerSpec == SPEC_MONK_WINDWALKER ) then
             MonkHarmonyBarFrame:Show()
         end
-    elseif (playerClass == 'PALADIN' and playerSpec == SPEC_PALADIN_RETRIBUTION) then
+    elseif ( playerClass == 'PALADIN' and playerSpec == SPEC_PALADIN_RETRIBUTION ) then
         PaladinPowerBarFrame:Show()
-    elseif (playerClass == 'WARLOCK') then
+    elseif ( playerClass == 'WARLOCK' ) then
         WarlockPowerFrame:Show()
     end
 end
