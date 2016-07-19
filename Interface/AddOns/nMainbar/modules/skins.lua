@@ -276,11 +276,12 @@ hooksecurefunc('ActionButton_OnUpdate', function(self, elapsed)
         if ( hotkey:GetText() == RANGE_INDICATOR ) then
             if ( valid == false ) then
                 hotkey:Show()
-                --if ( cfg.button.OutOfRangeType == 'icon' ) then
-                --    _G[self:GetName()..'Icon']:SetVertexColor(unpack(cfg.color.OutOfRange))
-                --else
+                if ( cfg.button.OutOfRangeType == 'icon' ) then
+                    _G[self:GetName()..'Icon']:SetVertexColor(unpack(cfg.color.OutOfRange))
                     hotkey:SetVertexColor(unpack(cfg.color.OutOfRange))
-                --end
+                else
+                    hotkey:SetVertexColor(unpack(cfg.color.OutOfRange))
+                end
             elseif ( valid ) then
                 hotkey:Show()
                 hotkey:SetVertexColor(unpack(cfg.color.HotKeyText))
@@ -290,11 +291,12 @@ hooksecurefunc('ActionButton_OnUpdate', function(self, elapsed)
             end
         else
             if ( valid == false ) then
-                --if ( cfg.button.OutOfRangeType == 'icon' ) then
-                --    _G[self:GetName()..'Icon']:SetVertexColor(unpack(cfg.color.OutOfRange))
-                --else
+                if ( cfg.button.OutOfRangeType == 'icon' ) then
+                    _G[self:GetName()..'Icon']:SetVertexColor(unpack(cfg.color.OutOfRange))
                     hotkey:SetVertexColor(unpack(cfg.color.OutOfRange))
-                --end
+                else
+                    hotkey:SetVertexColor(unpack(cfg.color.OutOfRange))
+                end
             else
                 hotkey:SetVertexColor(unpack(cfg.color.HotKeyText))
                 ActionButton_UpdateUsable(self)
