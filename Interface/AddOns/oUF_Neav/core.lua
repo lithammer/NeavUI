@@ -98,7 +98,6 @@ local function HideAltResources(self)
 
     if ( playerClass == 'SHAMAN' ) then
         TotemFrame:Hide()
-        self.DruidMana:SetAlpha(0)
     elseif ( playerClass == 'DEATHKNIGHT' ) then
         RuneFrame:Hide()
     elseif ( playerClass == 'MAGE' and playerSpec == SPEC_MAGE_ARCANE) then
@@ -113,8 +112,6 @@ local function HideAltResources(self)
         PaladinPowerBarFrame:Hide()
     elseif (playerClass == 'WARLOCK') then
         WarlockPowerFrame:Hide()
-    elseif ( playerClass == 'DRUID' or playerClass == 'PRIEST' ) then
-        self.DruidMana:SetAlpha(0)
     end
 end
 
@@ -123,7 +120,6 @@ local function ShowAltResources(self)
 
     if ( playerClass == 'SHAMAN' ) then
         TotemFrame:Show()
-        self.DruidMana:SetAlpha(1)
     elseif ( playerClass == 'DEATHKNIGHT' ) then
         RuneFrame:Show()
     elseif ( playerClass == 'MAGE' and playerSpec == SPEC_MAGE_ARCANE) then
@@ -138,8 +134,6 @@ local function ShowAltResources(self)
         PaladinPowerBarFrame:Show()
     elseif (playerClass == 'WARLOCK') then
         WarlockPowerFrame:Show()
-    elseif (self.DruidMana) then
-        self.DruidMana:SetAlpha(1)
     end
 end
 
@@ -407,24 +401,28 @@ local function UpdatePower(Power, unit, cur, max)
     Power.Value:SetText(ns.GetPowerText(unit, cur, max))
 end
 
-local function CustomTotemFrame_AdjustPetFrame(self)
-    TotemFrame:ClearAllPoints()
+local function CustomTotemFrame_Update()
     local hasPet = UnitExists('pet')
     if ( playerClass == 'WARLOCK' ) then
         if ( hasPet ) then
             TotemFrame:SetPoint('TOPLEFT', oUF_Neav_Player, 'BOTTOMLEFT', 0, -75)
         else
-            TotemFrame:SetPoint('TOPLEFT', oUF_Neav_Player, 'TOPLEFT', 0, -75)
+            TotemFrame:SetPoint("TOPLEFT", oUF_Neav_Player, "BOTTOMLEFT", 25, -25)
         end
     end
     if ( playerClass == 'SHAMAN' ) then
-        if (GetSpecialization() ~= SPEC_SHAMAN_RESTORATION) then
-            TotemFrame:SetPoint('TOP', self.DruidMana, 'BOTTOM', -2, -2)
+        if ( hasPet ) then
+            TotemFrame:SetPoint('TOPLEFT', oUF_Neav_Player, 'BOTTOMLEFT', 0, -75)
         else
-            TotemFrame:SetPoint('TOP', self.Power, 'BOTTOM', -2, 0)
+            TotemFrame:SetPoint("TOPLEFT", oUF_Neav_Player, "BOTTOMLEFT", 25, -25)
         end
+        
+    end
+    if ( playerClass == 'PALADIN' or playerClass == 'DEATHKNIGHT' or playerClass == 'DRUID' or playerClass == 'MAGE' or playerClass == 'MONK' ) then
+        TotemFrame:SetPoint("TOPLEFT", oUF_Neav_Player, "BOTTOMLEFT", 25, 0)
     end
 end
+hooksecurefunc('TotemFrame_Update',CustomTotemFrame_Update)
 
 local function CreateUnitLayout(self, unit)
     self.IsMainFrame = ns.MultiCheck(unit, 'player', 'target', 'focus')
@@ -938,14 +936,14 @@ local function CreateUnitLayout(self, unit)
 
             -- Totem Frame
 
-        if (playerClass == 'SHAMAN' or playerClass == 'WARLOCK' or playerClass == 'DRUID' ) then
+        if (playerClass == 'SHAMAN' or playerClass == 'WARLOCK' or playerClass == 'DRUID' or playerClass == 'PALADIN' or playerClass == 'DEATHKNIGHT' or playerClass == 'MAGE' or playerClass == 'MONK' ) then
             TotemFrame:SetScale(config.units.player.scale * 0.65)
             TotemFrame:SetFrameStrata('LOW')
-            TotemFrame:SetParent(oUF_Neav_Player)
-            CustomTotemFrame_AdjustPetFrame(self)
+            TotemFrame:SetParent(oUF_Neav_Player) 
+            CustomTotemFrame_Update(self)
         end
 
-        self:RegisterEvent('PLAYER_TOTEM_UPDATE', CustomTotemFrame_AdjustPetFrame)
+        self:RegisterEvent('PLAYER_TOTEM_UPDATE', CustomTotemFrame_Update)
 
             -- Raidgroup indicator
 
