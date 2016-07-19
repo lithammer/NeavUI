@@ -276,7 +276,7 @@ hooksecurefunc('ActionButton_OnUpdate', function(self, elapsed)
         if ( hotkey:GetText() == RANGE_INDICATOR ) then
             if ( valid == false ) then
                 hotkey:Show()
-                if ( cfg.button.OutOfRangeType == 'icon' ) then
+                if ( cfg.button.outOfRangeType == 'icon' ) then
                     _G[self:GetName()..'Icon']:SetVertexColor(unpack(cfg.color.OutOfRange))
                     hotkey:SetVertexColor(unpack(cfg.color.OutOfRange))
                 else
@@ -291,7 +291,7 @@ hooksecurefunc('ActionButton_OnUpdate', function(self, elapsed)
             end
         else
             if ( valid == false ) then
-                if ( cfg.button.OutOfRangeType == 'icon' ) then
+                if ( cfg.button.outOfRangeType == 'icon' ) then
                     _G[self:GetName()..'Icon']:SetVertexColor(unpack(cfg.color.OutOfRange))
                     hotkey:SetVertexColor(unpack(cfg.color.OutOfRange))
                 else
