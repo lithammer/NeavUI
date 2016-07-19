@@ -8,7 +8,7 @@ nMainbar.Config = {
         showVehicleKeybinds = true,
         showKeybinds = false,
         showMacronames = false,
-        OutOfRangeType = 'icon',     -- Changes how out of range coloring is displayed. Options: icon, hotkey.
+        outOfRangeType = 'icon',     -- Changes how out of range coloring is displayed. Options: icon, hotkey.
 
         countFontsize = 19,
         countFont = 'Interface\\AddOns\\nMainbar\\media\\font.ttf',
