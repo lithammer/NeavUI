@@ -940,7 +940,7 @@ local function CreateUnitLayout(self, unit)
             TotemFrame:SetScale(config.units.player.scale * 0.65)
             TotemFrame:SetFrameStrata('LOW')
             TotemFrame:SetParent(oUF_Neav_Player) 
-            CustomTotemFrame_Update(self)
+            CustomTotemFrame_Update()
         end
 
         self:RegisterEvent('PLAYER_TOTEM_UPDATE', CustomTotemFrame_Update)
