@@ -407,19 +407,19 @@ local function CustomTotemFrame_Update()
         if ( hasPet ) then
             TotemFrame:SetPoint('TOPLEFT', oUF_Neav_Player, 'BOTTOMLEFT', 0, -75)
         else
-            TotemFrame:SetPoint("TOPLEFT", oUF_Neav_Player, "BOTTOMLEFT", 25, -25)
+            TotemFrame:SetPoint('TOPLEFT', oUF_Neav_Player, 'BOTTOMLEFT', 25, -25)
         end
     end
     if ( playerClass == 'SHAMAN' ) then
         if ( hasPet ) then
             TotemFrame:SetPoint('TOPLEFT', oUF_Neav_Player, 'BOTTOMLEFT', 0, -75)
         else
-            TotemFrame:SetPoint("TOPLEFT", oUF_Neav_Player, "BOTTOMLEFT", 25, -25)
+            TotemFrame:SetPoint('TOPLEFT', oUF_Neav_Player, 'BOTTOMLEFT', 25, -25)
         end
         
     end
     if ( playerClass == 'PALADIN' or playerClass == 'DEATHKNIGHT' or playerClass == 'DRUID' or playerClass == 'MAGE' or playerClass == 'MONK' ) then
-        TotemFrame:SetPoint("TOPLEFT", oUF_Neav_Player, "BOTTOMLEFT", 25, 0)
+        TotemFrame:SetPoint('TOPLEFT', oUF_Neav_Player, 'BOTTOMLEFT', 25, 0)
     end
 end
 hooksecurefunc('TotemFrame_Update',CustomTotemFrame_Update)
