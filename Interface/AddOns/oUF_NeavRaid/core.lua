@@ -811,10 +811,9 @@ oUF:Factory(function(self)
     raid:SetFrameStrata('LOW')
 
         -- Main Tank/Assist Frames
-
-    self:SetActiveStyle('oUF_Neav_Raid_MT')
-
+    
     if config.units.raid.showMainTankFrames then
+        self:SetActiveStyle('oUF_Neav_Raid_MT')
 
         local offset = rlayout.frameSpacing
 

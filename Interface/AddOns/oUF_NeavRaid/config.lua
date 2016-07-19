@@ -39,6 +39,8 @@ ns.Config = {
             showMainTankIcon = true,                                                        -- A little shield on the top of a raidframe if the unit is marked as maintank
             showResurrectText = true,                                                       -- Not working atm. just a placeholder
             showMouseoverHighlight = true,
+            
+            showMainTankFrames = true,                                                      -- Show Main Tank/Assist Group
 
             showTargetBorder = true,                                                        -- Ahows a little border on the raid/party frame if this unit is your target
             targetBorderColor = {1, 1, 1},
