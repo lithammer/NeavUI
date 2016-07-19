@@ -110,6 +110,8 @@ local function HideAltResources(self)
         end
     elseif ( playerClass == 'PALADIN' and playerSpec == SPEC_PALADIN_RETRIBUTION ) then
         PaladinPowerBarFrame:Hide()
+    elseif ( playerClass == 'ROGUE' ) then
+        ComboPointPlayerFrame:Hide()
     elseif ( playerClass == 'WARLOCK' ) then
         WarlockPowerFrame:Hide()
     end
@@ -132,6 +134,8 @@ local function ShowAltResources(self)
         end
     elseif ( playerClass == 'PALADIN' and playerSpec == SPEC_PALADIN_RETRIBUTION ) then
         PaladinPowerBarFrame:Show()
+    elseif ( playerClass == 'ROGUE' ) then
+        ComboPointPlayerFrame:Show()
     elseif ( playerClass == 'WARLOCK' ) then
         WarlockPowerFrame:Show()
     end
@@ -574,7 +578,7 @@ local function CreateUnitLayout(self, unit)
 
     self.Power = CreateFrame('StatusBar', nil, self)
     self.Power:SetStatusBarTexture(config.media.statusbar)
-    self.Power:SetFrameLevel(self:GetFrameLevel() - 1)
+    self.Power:SetFrameLevel(self:GetFrameLevel() - 2)
     self.Power:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
     self.Power:SetBackdropColor(0, 0, 0, 0.55)
 
@@ -602,6 +606,19 @@ local function CreateUnitLayout(self, unit)
 
         self.Power.PostUpdate = UpdatePower
     end
+
+        -- Power Prediction Bar
+
+    self.MainPowerPrediction = CreateFrame('StatusBar', '$parentPowerPrediction', self.Power)
+    self.MainPowerPrediction:SetStatusBarTexture(config.media.statusbar)
+    self.MainPowerPrediction:SetStatusBarColor(0.8,0.8,0.8,.50)
+    self.MainPowerPrediction:SetReverseFill(true)
+    self.MainPowerPrediction:SetPoint('TOP')
+    self.MainPowerPrediction:SetPoint('BOTTOM')
+    self.MainPowerPrediction:SetPoint('RIGHT', self.Power:GetStatusBarTexture())
+    self.MainPowerPrediction:SetWidth(119)
+
+    self.PowerPrediction = { mainBar = self.MainPowerPrediction }
 
         -- Name
 
@@ -909,6 +926,15 @@ local function CreateUnitLayout(self, unit)
             MageArcaneChargesFrame:SetScale(config.units.player.scale * 0.81)
             MageArcaneChargesFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, -2)
         end
+        
+            -- Combo Point Frame
+        
+        if (playerClass == 'ROGUE' or playerClass == 'DRUID') then
+            ComboPointPlayerFrame:ClearAllPoints()
+            ComboPointPlayerFrame:SetParent(oUF_Neav_Player)
+            ComboPointPlayerFrame:SetScale(config.units.player.scale * 0.81)
+            ComboPointPlayerFrame:SetPoint('TOPLEFT', self.Power, 'BOTTOMLEFT', -3, 2)
+        end
 
             -- Alt Mana Frame for Druids, Shaman, and Shadow Priest
 
@@ -932,6 +958,17 @@ local function CreateUnitLayout(self, unit)
             self.DruidMana.Texture:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\DruidManaTexture')
             self.DruidMana.Texture:SetSize(104, 28)
             self.DruidMana.Texture:SetPoint('TOP', self.Power, 'BOTTOM', 0, 6)
+
+            self.PowerPredictionAlt = CreateFrame('StatusBar', '$parentAltPowerPrediction', self.DruidMana)
+            self.PowerPredictionAlt:SetStatusBarTexture(config.media.statusbar)
+            self.PowerPredictionAlt:SetStatusBarColor(0.8,0.8,0.8,.50)
+            self.PowerPredictionAlt:SetReverseFill(true)
+            self.PowerPredictionAlt:SetPoint('TOP')
+            self.PowerPredictionAlt:SetPoint('BOTTOM')
+            self.PowerPredictionAlt:SetPoint('RIGHT', self.DruidMana:GetStatusBarTexture(),'RIGHT')
+            self.PowerPredictionAlt:SetWidth(99)
+
+            self.PowerPrediction = { mainBar = self.MainPowerPrediction, altBar = self.PowerPredictionAlt }
         end
 
             -- Totem Frame
@@ -1088,86 +1125,6 @@ local function CreateUnitLayout(self, unit)
         CreateFocusButton(self)
 
         self.T:FadeOut(0)
-
-            -- combo point stuff
-
-        if (config.units.target.showComboPoints) then
-
-                -- owl rotater
-
-            local h = CreateFrame('Frame', nil, self.Health)
-            h:SetSize(55, 55)
-            h:SetPoint('CENTER', self.Portrait.Bg or self.Portrait, 0, -0.5)
-            h:SetAlpha(0.8)
-
-            h.Texture = h:CreateTexture(nil, 'BACKGROUND')
-            h.Texture:SetAllPoints(h)
-            h.Texture:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\owlRotater')
-            h.Texture:SetBlendMode('BLEND')
-            h.Texture.minAlpha = 0.25
-            h.Texture:SetAlpha(0)
-
-            local rotate = h.Texture:CreateAnimationGroup()
-            rotate:SetLooping('REPEAT')
-
-            local path = rotate:CreateAnimation('Rotation')
-            path:SetDegrees(-360)
-            path:SetDuration(9)
-
-            if (config.units.target.showComboPointsAsNumber) then
-                self.ComboPoints = self:CreateFontString(nil, 'OVERLAY')
-                self.ComboPoints:SetFont(DAMAGE_TEXT_FONT, 26, 'OUTLINE')
-                self.ComboPoints:SetShadowOffset(0, 0)
-                self.ComboPoints:SetPoint('LEFT', self.Portrait, 'RIGHT', 8, 4)
-                self.ComboPoints:SetTextColor(unpack(config.units.target.numComboPointsColor))
-                self:Tag(self.ComboPoints, '[combopoints]')
-            else
-                self.CPoints = {}
-
-                for i = 1, 5 do
-                    self.CPoints[i] = self:CreateTexture(nil, 'OVERLAY')
-                    self.CPoints[i]:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\comboPoint')
-                    self.CPoints[i]:SetSize(15, 15)
-                end
-
-                self.CPoints[1]:SetPoint('TOPRIGHT', self.Texture, -42, -8)
-                self.CPoints[2]:SetPoint('TOP', self.CPoints[1], 'BOTTOM', 7.33, 6.66)
-                self.CPoints[3]:SetPoint('TOP', self.CPoints[2], 'BOTTOM', 4.66, 4.33)
-                self.CPoints[4]:SetPoint('TOP', self.CPoints[3], 'BOTTOM', 1.33 , 3.66)
-                self.CPoints[5]:SetPoint('TOP', self.CPoints[4], 'BOTTOM', -1.66, 3.66)
-
-                self.CPointsBG = {}
-                for i = 1, 5 do
-                    self.CPointsBG[i] = self:CreateTexture(nil, 'ARTWORK')
-                    self.CPointsBG[i]:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\comboPointBackground')
-                    self.CPointsBG[i]:SetSize(15, 15)
-                    self.CPointsBG[i]:SetAllPoints(self.CPoints[i])
-                    self.CPointsBG[i]:SetAlpha(0)
-                end
-
-                hooksecurefunc(self.CPoints[1], 'Show', function()
-                    for i = 1, 5 do
-                        securecall('UIFrameFadeIn', self.CPointsBG[i], 0.25, self.CPointsBG[i]:GetAlpha(), 0.9)
-                    end
-                end)
-
-                hooksecurefunc(self.CPoints[1], 'Hide', function()
-                    for i = 1, 5 do
-                        self.CPointsBG[i]:SetAlpha(0)
-                    end
-                end)
-
-                hooksecurefunc(self.CPoints[5], 'Show', function()
-                    rotate:Play()
-                    ns.StartFlash(h.Texture, 0.4, 0.4, 0, 0)
-                end)
-
-                hooksecurefunc(self.CPoints[5], 'Hide', function()
-                    rotate:Stop()
-                    ns.StopFlash(h.Texture)
-                end)
-            end
-        end
 
         if (not config.units[ns.cUnit(unit)].disableAura) then
             self.Auras = CreateFrame('Frame', nil, self)
