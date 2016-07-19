@@ -139,10 +139,6 @@ ns.Config = {
             showAllTimers = false,                                                          -- If false, only the player debuffs have timer
             disableAura = false,                                                            -- Disable Auras on this unitframe
 
-            showComboPoints = true,
-            showComboPointsAsNumber = false,
-            numComboPointsColor = {0.9, 0, 0},                                              -- Textcolor of the combopoints if showComboPointsAsNumber = true
-
             mouseoverText = false,
             healthTag = '$cur - $perc',
             healthTagFull = '$cur',
