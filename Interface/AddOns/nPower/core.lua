@@ -5,7 +5,7 @@ local config = nPower.Config
 local playerClass = select(2, UnitClass('player'))
 
 local f = CreateFrame('Frame', nil, UIParent)
-f:SetScale(1.4)
+f:SetScale(config.scale)
 f:SetSize(18, 18)
 f:SetPoint(unpack(config.position))
 f:EnableMouse(false)
@@ -78,7 +78,7 @@ if (playerClass == 'DEATHKNIGHT' and config.showRunes) then
 end
 
 f.Power = CreateFrame('StatusBar', nil, UIParent)
-f.Power:SetScale(UIParent:GetScale())
+f.Power:SetScale(f:GetScale())
 f.Power:SetSize(config.sizeWidth, 3)
 f.Power:SetPoint('CENTER', f, 0, -23)
 f.Power:SetStatusBarTexture('Interface\\AddOns\\nPower\\media\\statusbarTexture')

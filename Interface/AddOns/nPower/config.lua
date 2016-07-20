@@ -4,6 +4,7 @@ local _, nPower = ...
 nPower.Config = {
     position = {'CENTER', UIParent, 0, -100},
     sizeWidth = 200,
+    scale = 1.0,
 
     showCombatRegen = true,
 
