@@ -8,6 +8,13 @@ end
 
 SetCVar('showArenaEnemyFrames', 0)
 
+local arenaAnchor = CreateFrame('Frame', 'oUF_Neav_Arena_Anchor', UIParent)
+arenaAnchor:SetSize(1, 1)
+arenaAnchor:SetPoint(unpack(config.units.boss.position))
+arenaAnchor:SetMovable(true)
+arenaAnchor:SetUserPlaced(true)
+arenaAnchor:SetClampedToScreen(true)
+
 local function ColorNameBackground(self, unit)
     local _, class = UnitClass(unit)
     local classColor = RAID_CLASS_COLORS[class]
@@ -277,9 +284,10 @@ oUF:Factory(function(self)
     local arenaTarget = {}
     for i = 1, 5 do
         arena[i] = self:Spawn('arena'..i, 'oUF_Neav_ArenaFrame'..i)
+        arena[i]:SetFrameStrata('LOW')
 
         if (i == 1) then
-            arena[i]:SetPoint(unpack(config.units.arena.position))
+            arena[i]:SetPoint('TOPRIGHT', arenaAnchor, 'TOPLEFT',0,0)
         else
             arena[i]:SetPoint('TOPLEFT', arena[i-1], 'BOTTOMLEFT', 0, -80)
         end
@@ -287,4 +295,15 @@ oUF:Factory(function(self)
         arenaTarget[i] = self:Spawn('arena'..i..'target', 'oUF_Neav_ArenaFrame'..i..'Target')
         arenaTarget[i]:SetPoint('TOPRIGHT', arena[i], 'BOTTOMLEFT', 71, -7)
     end
+    arena[1]:RegisterForDrag('LeftButton')
+
+    arena[1]:SetScript('OnDragStart', function()
+    if (IsShiftKeyDown() and IsAltKeyDown()) then
+        arenaAnchor:StartMoving()
+    end
+    end)
+
+    arena[1]:SetScript('OnDragStop', function()
+        arenaAnchor:StopMovingOrSizing()
+    end)
 end)

@@ -2,6 +2,13 @@
 local _, ns = ...
 local config = ns.Config
 
+local bossAnchor = CreateFrame('Frame', 'oUF_Neav_Boss_Anchor', UIParent)
+bossAnchor:SetSize(1, 1)
+bossAnchor:SetPoint(unpack(config.units.boss.position))
+bossAnchor:SetMovable(true)
+bossAnchor:SetUserPlaced(true)
+bossAnchor:SetClampedToScreen(true)
+
 local function UpdateHealth(Health, unit, cur, max)
     if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
         Health:SetStatusBarColor(0.5, 0.5, 0.5)
@@ -186,15 +193,24 @@ oUF:Factory(function(self)
     local boss = {}
     for i = 1, MAX_BOSS_FRAMES do
         boss[i] = self:Spawn('boss'..i, 'oUF_Neav_BossFrame'..i)
+        boss[i]:SetFrameStrata('LOW')
 
         if (i == 1) then
-            if (_G['ObjectiveTrackerFrame']:IsShown()) then
-                boss[i]:SetPoint('TOPLEFT',ObjectiveTrackerBlocksFrame,'BOTTOMLEFT',0, -10)
-            else
-                boss[i]:SetPoint(unpack(config.units.boss.position))
-            end
+            boss[i]:SetPoint('TOPRIGHT', bossAnchor, 'TOPLEFT',0,0)
         else
             boss[i]:SetPoint('TOPLEFT', boss[i-1], 'BOTTOMLEFT', 0, (config.units.boss.castbar.show and -80) or -50)
         end
     end
+    boss[1]:RegisterForDrag('LeftButton')
+
+    boss[1]:SetScript('OnDragStart', function()
+    if (IsShiftKeyDown() and IsAltKeyDown()) then
+        bossAnchor:StartMoving()
+    end
+    end)
+
+    boss[1]:SetScript('OnDragStop', function()
+        bossAnchor:StopMovingOrSizing()
+    end)
+
 end)
