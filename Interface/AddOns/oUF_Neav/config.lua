@@ -139,7 +139,7 @@ ns.Config = {
             disableAura = false,                                                            -- Disable Auras on this unitframe
             colorPlayerDebuffsOnly = true,
             showAllTimers = false,                                                          -- If false, only the player debuffs have timer
-            onlyShowPlayer = true,                                                          -- Only shows player created buffs/debuffs.
+            onlyShowPlayer = false,                                                          -- Only shows player created buffs/debuffs.
 
             -- Debuffs on top options. Overrides onlyShowPlayer option.
             showDebuffsOnTop = false,
