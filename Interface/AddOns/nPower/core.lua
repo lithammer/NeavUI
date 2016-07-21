@@ -69,12 +69,12 @@ if (playerClass == 'DEATHKNIGHT' and config.showRunes) then
         f.Rune[i]:SetParent(f)
     end
 
-    f.Rune[1]:SetPoint('CENTER', -38, 2)
-    f.Rune[2]:SetPoint('CENTER', -23, 2)
-    f.Rune[3]:SetPoint('CENTER', -7, 2)
-    f.Rune[4]:SetPoint('CENTER', 7, 2)
-    f.Rune[5]:SetPoint('CENTER', 23, 2)
-    f.Rune[6]:SetPoint('CENTER', 38, 2)
+    f.Rune[1]:SetPoint('CENTER', -42, 2)
+    f.Rune[2]:SetPoint('CENTER', -26, 2)
+    f.Rune[3]:SetPoint('CENTER', -8, 2)
+    f.Rune[4]:SetPoint('CENTER', 8, 2)
+    f.Rune[5]:SetPoint('CENTER', 26, 2)
+    f.Rune[6]:SetPoint('CENTER', 42, 2)
 end
 
 f.Power = CreateFrame('StatusBar', nil, UIParent)
