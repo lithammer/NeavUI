@@ -146,6 +146,34 @@ local function GetRealMpFive()
     end
 end
 
+local function SetPowerColor()
+    local powerType
+    if ( playerClass == 'ROGUE' or playerClass == 'DRUID' ) then
+        powerType = SPELL_POWER_COMBO_POINTS
+    elseif ( playerClass == 'MONK' ) then
+        powerType = SPELL_POWER_CHI
+    elseif ( playerClass == 'MAGE' ) then
+        powerType = SPELL_POWER_ARCANE_CHARGES
+    elseif ( playerClass == 'PALADIN' ) then
+        powerType = SPELL_POWER_HOLY_POWER
+    elseif ( playerClass == 'WARLOCK' ) then
+        powerType = SPELL_POWER_SOUL_SHARDS
+    end
+        
+    local currentPower = UnitPower("player", powerType)
+    local maxPower = UnitPowerMax("player", powerType)
+
+    if ( UnitIsDeadOrGhost('target') ) then
+        return 1, 1, 1
+    elseif ( currentPower == maxPower-1 ) then
+        return 0.9, 0.7, 0.0
+    elseif ( currentPower == maxPower ) then
+        return 1, 0, 0
+    else
+        return 1, 1, 1
+    end
+end
+
 local function CalcRuneCooldown(self)
     local start, duration, runeReady = GetRuneCooldown(self)
     local time = floor(GetTime() - start)
@@ -249,6 +277,7 @@ f:SetScript('OnEvent', function(self, event, arg1)
                 nump = UnitPower('player', SPELL_POWER_ARCANE_CHARGES)
             end
 
+            f.extraPoints:SetTextColor(SetPowerColor())
             f.extraPoints:SetText(nump == 0 and '' or nump)
 
             if (not f.extraPoints:IsShown()) then
