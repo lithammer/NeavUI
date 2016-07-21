@@ -78,3 +78,8 @@ end
 local addon = CreateFrame('Frame')
 addon:SetScript('OnEvent', onEvent)
 addon:RegisterEvent('ADDON_LOADED')
+
+SlashCmdList['nBag_Toggle'] = function()
+    ToggleBags()
+end
+SLASH_nBag_Toggle1 = '/neavbag'
