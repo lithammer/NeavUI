@@ -135,9 +135,16 @@ ns.Config = {
 
             numBuffs = 20,
             numDebuffs = 20,
+
+            disableAura = false,                                                            -- Disable Auras on this unitframe
             colorPlayerDebuffsOnly = true,
             showAllTimers = false,                                                          -- If false, only the player debuffs have timer
-            disableAura = false,                                                            -- Disable Auras on this unitframe
+            onlyShowPlayer = true,                                                          -- Only shows player created buffs/debuffs.
+
+            -- Debuffs on top options. Overrides onlyShowPlayer option.
+            showDebuffsOnTop = false,
+            onlyShowPlayerDebuffs = true,
+            onlyShowPlayerBuffs = false,
 
             mouseoverText = false,
             healthTag = '$cur - $perc',
