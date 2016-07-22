@@ -20,12 +20,17 @@ This is the development repository for Neav UI on WoWInterface.
 
 ## Known issues
 
-Known issues
-
 - !Colorz cause an ui-block-error (not lua error!), because we change
   the value of the global table, ignore this or delete
   `PowerBarColor['MANA'] = {r = 0/255, g = 0.55, b = 1}` in the
   `!Colorz.lua` file.
+
+## Credits
+
+- [Neav](https://github.com/Neav) for creating Neav UI.
+- [Grimsbain](https://github.com/Grimsbain) for providing most fixes and
+  updates for Legion. And also taking his time to address feature requests from
+  the community.
 
 ## License
 
