@@ -1192,6 +1192,7 @@ local function CreateUnitLayout(self, unit)
             self.NumericalThreat.bg = CreateFrame('StatusBar', nil, self.NumericalThreat)
             self.NumericalThreat.bg:SetStatusBarTexture(config.media.statusbar)
             self.NumericalThreat.bg:SetFrameStrata('LOW')
+            self.NumericalThreat.bg:SetFrameLevel(2)
             self.NumericalThreat.bg:SetPoint('TOP', 0, -3)
             self.NumericalThreat.bg:SetSize(37, 14)
 
