@@ -60,7 +60,7 @@ local function combat(self, event, unit, eventType, flags, amount, dtype)
 	local FeedbackText = self.CombatFeedbackText
 	local fColors = FeedbackText.colors
 	local font, fontHeight, fontFlags = FeedbackText:GetFont()
-	fontHeight = 30
+	fontHeight = 20
 	local text, arg
 	color = fColors and fColors.STANDARD or colors.STANDARD
 	if eventType == "IMMUNE" and not FeedbackText.ignoreImmune then
