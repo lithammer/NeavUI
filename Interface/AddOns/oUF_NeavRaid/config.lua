@@ -3,14 +3,14 @@ local _, ns = ...
 
 ns.Config = {
     media = {
-        statusbar = 'Interface\\AddOns\\oUF_NeavRaid\\media\\statusbarTexture',                 -- Health- and Powerbar texture
+        statusbar = 'Interface\\AddOns\\oUF_NeavRaid\\media\\statusbarTexture',             -- Health- and Powerbar texture
     },
 
     font = {
-        fontSmall = 'Interface\\AddOns\\oUF_NeavRaid\\media\\fontSmall.ttf',                    -- Name font
+        fontSmall = 'Interface\\AddOns\\oUF_NeavRaid\\media\\fontSmall.ttf',                -- Name font
         fontSmallSize = 11,
 
-        fontBig = 'Interface\\AddOns\\oUF_NeavRaid\\media\\fontThick.ttf',                      -- Health, dead/ghost/offline etc. font
+        fontBig = 'Interface\\AddOns\\oUF_NeavRaid\\media\\fontThick.ttf',                  -- Health, dead/ghost/offline etc. font
         fontBigSize = 12,
     },
 

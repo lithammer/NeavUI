@@ -786,25 +786,25 @@ oUF:Factory(function(self)
     end
 
     local raid = self:SpawnHeader('oUF_Raid', nil, 'raid,party,solo',
-    'showSolo', config.units.raid.showSolo,
-    'showParty', config.units.raid.showParty,
-    'showRaid', true,
-    'showPlayer', true,
-    'point', relpoint,
-    'groupFilter', '1,2,3,4,5,6,7,8',
-    'groupingOrder', '1,2,3,4,5,6,7,8',
-    'groupBy', 'GROUP',
-    'maxColumns', 8,
-    'unitsPerColumn', 5,
-    'columnAnchorPoint', anchpoint,
-    'columnSpacing', 7,
-    'yOffset', yOffset,
-    'xOffset', xOffset,
-    'templateType', 'Button',
-    'oUF-initialConfigFunction', ([[
-        self:SetWidth(%d)
-        self:SetHeight(%d)
-    ]]):format(config.units.raid.width, config.units.raid.height))
+        'showSolo', config.units.raid.showSolo,
+        'showParty', config.units.raid.showParty,
+        'showRaid', true,
+        'showPlayer', true,
+        'point', relpoint,
+        'groupFilter', '1,2,3,4,5,6,7,8',
+        'groupingOrder', '1,2,3,4,5,6,7,8',
+        'groupBy', 'GROUP',
+        'maxColumns', 8,
+        'unitsPerColumn', 5,
+        'columnAnchorPoint', anchpoint,
+        'columnSpacing', 7,
+        'yOffset', yOffset,
+        'xOffset', xOffset,
+        'templateType', 'Button',
+        'oUF-initialConfigFunction', ([[
+            self:SetWidth(%d)
+            self:SetHeight(%d)
+        ]]):format(config.units.raid.width, config.units.raid.height))
 
     raid:SetPoint(rlayout.initialAnchor, raidFrames)
     raid:SetScale(config.units.raid.scale)
@@ -818,16 +818,16 @@ oUF:Factory(function(self)
         local offset = rlayout.frameSpacing
 
         local tanks = self:SpawnHeader('oUF_Neav_Raid_MT', nil, 'solo,party,raid',
-        'showRaid', true,
-        'showParty', false,
-        'yOffset', -offset,
-        'template', 'oUF_NeavRaid_MT_Target_Template',     -- Target
-        'sortMethod', 'INDEX',
-        'groupFilter', 'MAINTANK,MAINASSIST',
-        'oUF-initialConfigFunction', ([[
-            self:SetWidth(%d)
-            self:SetHeight(%d)
-        ]]):format(config.units.raid.width, config.units.raid.height))
+            'showRaid', true,
+            'showParty', false,
+            'yOffset', -offset,
+            'template', 'oUF_NeavRaid_MT_Target_Template',     -- Target
+            'sortMethod', 'INDEX',
+            'groupFilter', 'MAINTANK,MAINASSIST',
+            'oUF-initialConfigFunction', ([[
+                self:SetWidth(%d)
+                self:SetHeight(%d)
+            ]]):format(config.units.raid.width, config.units.raid.height))
 
         tanks:SetPoint('TOPLEFT', tankFrames, 'TOPLEFT')
         tanks:SetScale(config.units.raid.scale)
