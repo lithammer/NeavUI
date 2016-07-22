@@ -5,7 +5,6 @@ local heal_format = "+%d"
 local maxAlpha = 0.6
 local updateFrame
 local feedback = {}
-local originalHeight = {}
 local color
 local colors = {
 	STANDARD		= { 1, 1, 1 }, -- color for everything not in the list below
@@ -61,12 +60,12 @@ local function combat(self, event, unit, eventType, flags, amount, dtype)
 	local FeedbackText = self.CombatFeedbackText
 	local fColors = FeedbackText.colors
 	local font, fontHeight, fontFlags = FeedbackText:GetFont()
-	fontHeight = FeedbackText.origHeight -- always start at original height
+	fontHeight = 20
 	local text, arg
 	color = fColors and fColors.STANDARD or colors.STANDARD
 	if eventType == "IMMUNE" and not FeedbackText.ignoreImmune then
 		color = fColors and fColors.IMMUNE or colors.IMMUNE
-		fontHeight = fontHeight * 0.75
+		fontHeight = fontHeight * 0.5
 		text = CombatFeedbackText[eventType]
 	elseif eventType == "WOUND" and not FeedbackText.ignoreDamage then
 		if amount ~= 0 then
@@ -138,9 +137,7 @@ end
 
 local function addCombat(object)
 	if not object.CombatFeedbackText then return end
-	-- store the original starting height
 	local font, fontHeight, fontFlags = object.CombatFeedbackText:GetFont()
-	object.CombatFeedbackText.origHeight = fontHeight
 	object.CombatFeedbackText.maxAlpha = object.CombatFeedbackText.maxAlpha or maxAlpha
 	createUpdateFrame()
 	object:RegisterEvent("UNIT_COMBAT", combat)

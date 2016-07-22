@@ -28,18 +28,18 @@ do
             {200025, 'BOTTOMRIGHT', {0, 1, 0}}, -- Beacon of Virtue
         },
         PRIEST = {
-            {17, 'BOTTOMRIGHT', {1, 1, 0}, true}, -- Power Word: Shield
-            {41635, 'TOPRIGHT', {1, 0.6, 0.6}, true}, -- Prayer of Mending
+            {17, 'BOTTOMRIGHT', {1, 1, 0}}, -- Power Word: Shield
+            {41635, 'TOPRIGHT', {1, 0.6, 0.6}}, -- Prayer of Mending
             {139, 'BOTTOMLEFT', {0, 1, 0}}, -- Renew
             {194384, 'TOPLEFT', {1, 0, 0}}, -- Atonement
             {47788, 'TOPLEFT', {0, 1,0 }}, -- Guardian Spirit
         },
         SHAMAN = {
             {61295, 'TOPLEFT', {0.7, 0.3, 0.7}}, -- Riptide
-            {204288, 'BOTTOMRIGHT', {0.7, 0.4, 0}, false, true}, -- Earth Shield (PvP Only)
+            {204288, 'BOTTOMRIGHT', {0.7, 0.4, 0}}, -- Earth Shield (PvP Only)
         },
         WARLOCK = {
-            {20707, 'BOTTOMRIGHT', {0.7, 0, 1}, true, true}, -- Soulstone
+            {20707, 'BOTTOMRIGHT', {0.7, 0, 1}, true}, -- Soulstone
         },
         ALL = {
             {23333, 'TOPLEFT', {1, 0, 0}, true}, -- Warsong flag, Horde
