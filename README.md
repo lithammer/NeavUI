@@ -1,6 +1,6 @@
 # Neav UI
 
-This is a development repository for Neav UI on WoWInterface.
+This is the development repository for Neav UI on WoWInterface.
 
 ## Addons included
 
@@ -12,7 +12,6 @@ This is a development repository for Neav UI on WoWInterface.
 - nCore
 - nMainbar
 - nMinimap
-- nPlates
 - nPower
 - nTooltip
 - [oUF](http://www.wowinterface.com/downloads/info9994-oUF.html)
