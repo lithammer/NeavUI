@@ -243,7 +243,7 @@ local function CreateIndicators(self, unit)
 end
 
 local function UpdateThreat(self, _, unit)
-    if (self.unit ~= unit) then
+    if (self.unit ~= unit  or self.unit ~= 'player' or self.unit ~= 'pet' or self.unit ~= 'raid') then
         return
     end
 
