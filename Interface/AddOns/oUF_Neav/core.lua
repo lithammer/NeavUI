@@ -42,6 +42,25 @@ __fa:SetMovable(true)
 __fa:SetUserPlaced(true)
 __fa:SetClampedToScreen(true)
 
+local __party = CreateFrame('Frame', 'oUF_Neav_Party_Anchor', UIParent)
+__party:SetSize(150,60)
+__party:SetPoint(unpack(config.units.party.position))
+__party:SetMovable(true)
+__party:SetUserPlaced(true)
+__party:SetClampedToScreen(true)
+__party:EnableMouse(true)
+__party:RegisterForDrag('LeftButton')
+
+__party:SetScript('OnDragStart', function(self)
+    if (IsShiftKeyDown() and IsAltKeyDown() and not InCombatLockdown()) then
+        self:StartMoving()
+    end
+end)
+
+__party:SetScript('OnDragStop', function(self)
+    self:StopMovingOrSizing()
+end)
+
 local function CreateFocusButton(self)
     self.FTarget = CreateFrame('BUTTON', nil, self, 'SecureActionButtonTemplate')
     self.FTarget:EnableMouse(true)
@@ -420,7 +439,7 @@ local function CustomTotemFrame_Update()
         else
             TotemFrame:SetPoint('TOPLEFT', oUF_Neav_Player, 'BOTTOMLEFT', 25, -25)
         end
-        
+
     end
     if ( playerClass == 'PALADIN' or playerClass == 'DEATHKNIGHT' or playerClass == 'DRUID' or playerClass == 'MAGE' or playerClass == 'MONK' ) then
         TotemFrame:SetPoint('TOPLEFT', oUF_Neav_Player, 'BOTTOMLEFT', 25, 0)
@@ -662,6 +681,7 @@ local function CreateUnitLayout(self, unit)
     if (config.show.threeDPortraits) then
         self.Portrait = CreateFrame('PlayerModel', nil, self)
         self.Portrait:SetFrameStrata('BACKGROUND')
+        self.Portrait:SetFrameLevel(1)
 
         self.Portrait.Bg = self.Health:CreateTexture(nil, 'BACKGROUND')
         self.Portrait.Bg:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\portraitBackground')
@@ -926,9 +946,9 @@ local function CreateUnitLayout(self, unit)
             MageArcaneChargesFrame:SetScale(config.units.player.scale * 0.81)
             MageArcaneChargesFrame:SetPoint('TOP', oUF_Neav_Player, 'BOTTOM', 30, -2)
         end
-        
+
             -- Combo Point Frame
-        
+
         if (playerClass == 'ROGUE' or playerClass == 'DRUID') then
             ComboPointPlayerFrame:ClearAllPoints()
             ComboPointPlayerFrame:SetParent(oUF_Neav_Player)
@@ -976,7 +996,7 @@ local function CreateUnitLayout(self, unit)
         if (playerClass == 'SHAMAN' or playerClass == 'WARLOCK' or playerClass == 'DRUID' or playerClass == 'PALADIN' or playerClass == 'DEATHKNIGHT' or playerClass == 'MAGE' or playerClass == 'MONK' ) then
             TotemFrame:SetScale(config.units.player.scale * 0.65)
             TotemFrame:SetFrameStrata('LOW')
-            TotemFrame:SetParent(oUF_Neav_Player) 
+            TotemFrame:SetParent(oUF_Neav_Player)
             CustomTotemFrame_Update()
         end
 
@@ -1143,7 +1163,7 @@ local function CreateUnitLayout(self, unit)
                 self.Debuffs.num = config.units.target.numDebuffs
                 self.Debuffs.onlyShowPlayer = config.units.target.onlyShowPlayerDebuffs
                 self.Debuffs.spacing = 4.5
-                
+
                 -- Buffs
                 self.Buffs = CreateFrame('Frame', nil, self)
                 self.Buffs.gap = true
@@ -1364,6 +1384,9 @@ SlashCmdList['oUF_Neav_UnitFrame_Reset_Locations'] = function(msg)
     elseif ( msg == 'target' ) then
         __ta:ClearAllPoints()
         __ta:SetPoint(unpack(config.units.target.position))
+    elseif ( msg == 'party' ) then
+        __party:ClearAllPoints()
+        __party:SetPoint(unpack(config.units.party.position))
     elseif ( msg == 'focus' ) then
         __fa:ClearAllPoints()
         __fa:SetPoint(unpack(config.units.focus.position))
@@ -1375,9 +1398,9 @@ SlashCmdList['oUF_Neav_UnitFrame_Reset_Locations'] = function(msg)
         __fa:ClearAllPoints()
         __fa:SetPoint(unpack(config.units.focus.position))
     elseif ( msg == 'help' or msg == '?' ) then
-        print('oUF_Neav: Please enter /neavreset all,player,target, or focus.')
+        print('oUF_Neav: Please enter /neavreset all,player,target,party, or focus.')
     else
-        print('oUF_Neav: Please enter /neavreset all,player,target, or focus.')
+        print('oUF_Neav: Please enter /neavreset all,player,target,party, or focus.')
     end
 end
 SLASH_oUF_Neav_UnitFrame_Reset_Locations1 = '/neavreset'
@@ -1477,7 +1500,7 @@ oUF:Factory(function(self)
             'showParty', true,
             'yOffset', -30
         )
-        party:SetPoint(unpack(config.units.party.position))
+        party:SetPoint('TOPLEFT', __party)
         party:SetFrameStrata('LOW')
     end
 end)
