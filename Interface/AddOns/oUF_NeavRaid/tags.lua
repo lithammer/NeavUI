@@ -6,8 +6,8 @@ local timer = {}
 
 oUF.Tags.Events['status:raid'] = 'PLAYER_FLAGS_CHANGED UNIT_CONNECTION'
 oUF.Tags.Methods['status:raid'] = function(unit)
-    local name = UnitName(unit)
-    if (name == nil) then return '' end
+    local name = UnitName(unit) or UNKNOWN
+
     if (UnitIsAFK(unit) or not UnitIsConnected(unit)) then
         if (not timer[name]) then
             timer[name] = GetTime()
@@ -45,7 +45,7 @@ end
 
 oUF.Tags.Events['name:raid'] = 'UNIT_NAME_UPDATE'
 oUF.Tags.Methods['name:raid'] = function(unit)
-    local name = UnitName(unit)
-    if (name == nil) then return '' end
+    local name = UnitName(unit) or UNKNOWN
+
     return ns.utf8sub(name, config.units.raid.nameLength)
 end
