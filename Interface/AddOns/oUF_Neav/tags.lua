@@ -52,7 +52,7 @@ oUF.Tags.Events['name'] = 'UNIT_NAME_UPDATE'
 oUF.Tags.Methods['name'] = function(unit)
     local r, g, b = 1, 1, 1
     local colorA, colorB
-    local unitName, unitRealm = UnitName(unit)
+    local unitName, unitRealm = UnitName(unit) or 'Unknown'
     local _, class = UnitClass(unit)
 
     if (unitRealm) and (unitRealm ~= '') then
