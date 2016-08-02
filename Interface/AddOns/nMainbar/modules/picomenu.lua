@@ -251,7 +251,7 @@ local function UpdateAddOnTable()
         addonMenuTable[2].menuList[n] = {
             text = 'VuhDo',
             func = function()
-                SlashCmdList['VUHDO']('show')
+                SlashCmdList['VUHDO']('toggle')
             end,
             notCheckable = true,
             keepShownOnClick = true,
@@ -379,7 +379,7 @@ local function UpdateAddOnTable()
                 if (not IsShiftKeyDown()) then
                     ToggleFrame(NumerationFrame)
                 else
-                    NumerationFrame:ShowResetWindow()
+                    StaticPopup_Show("RESET_DATA")
                 end
             end,
             notCheckable = true,
@@ -394,7 +394,7 @@ local function UpdateAddOnTable()
         addonMenuTable[2].menuList[n] = {
             text = 'AtlasLoot',
             func = function()
-                ToggleFrame(AtlasLootDefaultFrame)
+                AtlasLoot.GUI:Toggle()
             end,
             notCheckable = true,
             keepShownOnClick = true,

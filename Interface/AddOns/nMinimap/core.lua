@@ -2,6 +2,10 @@
 local _, nMinimap = ...
 local cfg = nMinimap.Config
 
+    -- Texture Fix
+
+Minimap:SetBlipTexture('Interface\\Minimap\\ObjectIconsAtlas')    
+
     -- A 'new' mail notification
 
 MiniMapMailFrame:SetSize(14, 14)
