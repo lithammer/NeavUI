@@ -18,7 +18,11 @@ arenaAnchor:SetClampedToScreen(true)
 local function ColorNameBackground(self, unit)
     local _, class = UnitClass(unit)
     local classColor = RAID_CLASS_COLORS[class]
-    self.Name.Bg:SetVertexColor(classColor.r, classColor.g, classColor.b)
+    if (classColor ~= nil) then
+        self.Name.Bg:SetVertexColor(classColor.r, classColor.g, classColor.b)
+    else
+        self.Name.Bg:SetVertexColor(0, 0, 0, 0.55)
+    end
 end
 
 local function UpdateHealth(Health, unit, cur, max)
