@@ -3,12 +3,31 @@ local _, ns = ...
 local config = ns.Config
 
 local bossAnchor = CreateFrame('Frame', 'oUF_Neav_Boss_Anchor', UIParent)
-bossAnchor:SetSize(1, 1)
+bossAnchor:SetSize(250, 129)
 bossAnchor:SetPoint(unpack(config.units.boss.position))
 bossAnchor:SetMovable(true)
 bossAnchor:SetUserPlaced(true)
 bossAnchor:SetClampedToScreen(true)
+bossAnchor:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
+bossAnchor:SetBackdropColor(0, 1, 0, 0.55)
+bossAnchor:EnableMouse(true)
+bossAnchor:RegisterForDrag('LeftButton')
+bossAnchor:Hide()
+bossAnchor.text = bossAnchor:CreateFontString(nil, 'OVERLAY')
+bossAnchor.text:SetAllPoints(bossAnchor)
+bossAnchor.text:SetFont('Fonts\\ARIALN.ttf', 13)
+bossAnchor.text:SetText('oUF_Neav\nBoss')
 
+bossAnchor:SetScript('OnDragStart', function()
+    if (IsShiftKeyDown() and IsAltKeyDown()) then
+        bossAnchor:StartMoving()
+    end
+end)
+
+bossAnchor:SetScript('OnDragStop', function()
+    bossAnchor:StopMovingOrSizing()
+end)
+    
 local function UpdateHealth(Health, unit, cur, max)
     if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
         Health:SetStatusBarColor(0.5, 0.5, 0.5)
@@ -196,21 +215,9 @@ oUF:Factory(function(self)
         boss[i]:SetFrameStrata('LOW')
 
         if (i == 1) then
-            boss[i]:SetPoint('TOPRIGHT', bossAnchor, 'TOPLEFT',0,0)
+            boss[i]:SetPoint('TOPRIGHT', bossAnchor, 'TOPRIGHT',0,0)
         else
             boss[i]:SetPoint('TOPLEFT', boss[i-1], 'BOTTOMLEFT', 0, (config.units.boss.castbar.show and -80) or -50)
         end
     end
-    boss[1]:RegisterForDrag('LeftButton')
-
-    boss[1]:SetScript('OnDragStart', function()
-    if (IsShiftKeyDown() and IsAltKeyDown()) then
-        bossAnchor:StartMoving()
-    end
-    end)
-
-    boss[1]:SetScript('OnDragStop', function()
-        bossAnchor:StopMovingOrSizing()
-    end)
-
 end)

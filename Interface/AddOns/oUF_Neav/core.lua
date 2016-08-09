@@ -45,14 +45,21 @@ __fa:SetClampedToScreen(true)
 local __party = CreateFrame('Frame', 'oUF_Neav_Party_Anchor', UIParent)
 __party:SetSize(150,60)
 __party:SetPoint(unpack(config.units.party.position))
+__party:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
+__party:SetBackdropColor(0, 1, 0, 0.55)
 __party:SetMovable(true)
 __party:SetUserPlaced(true)
 __party:SetClampedToScreen(true)
 __party:EnableMouse(true)
 __party:RegisterForDrag('LeftButton')
+__party:Hide()
+__party.text = __party:CreateFontString(nil, 'OVERLAY')
+__party.text:SetAllPoints(__party)
+__party.text:SetFont('Fonts\\ARIALN.ttf', 13)
+__party.text:SetText('oUF_Neav\nParty_Anchor')
 
 __party:SetScript('OnDragStart', function(self)
-    if (IsShiftKeyDown() and IsAltKeyDown() and not InCombatLockdown()) then
+    if (IsShiftKeyDown() and IsAltKeyDown()) then
         self:StartMoving()
     end
 end)
@@ -1404,6 +1411,32 @@ SlashCmdList['oUF_Neav_UnitFrame_Reset_Locations'] = function(msg)
     end
 end
 SLASH_oUF_Neav_UnitFrame_Reset_Locations1 = '/neavreset'
+
+SlashCmdList['oUF_Neav_UnitFrame_Setup_Locations'] = function(msg)
+    if (InCombatLockdown()) then
+        print('oUF_Neav: You cant do this in combat!')
+        return
+    end
+
+    if (not oUF_Neav_Party_Anchor:IsShown()) then
+        oUF_Neav_Party_Anchor:Show()
+    else
+        oUF_Neav_Party_Anchor:Hide()
+    end
+
+    if (not oUF_Neav_Arena_Anchor:IsShown()) then
+        oUF_Neav_Arena_Anchor:Show()
+    else
+        oUF_Neav_Arena_Anchor:Hide()
+    end
+
+    if (not oUF_Neav_Boss_Anchor:IsShown()) then
+        oUF_Neav_Boss_Anchor:Show()
+    else
+        oUF_Neav_Boss_Anchor:Hide()
+    end
+end
+SLASH_oUF_Neav_UnitFrame_Setup_Locations1 = '/neavsetup'
 
 oUF:RegisterStyle('oUF_Neav', CreateUnitLayout)
 oUF:Factory(function(self)
