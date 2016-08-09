@@ -7,6 +7,9 @@ local charTexPath = 'Interface\\CharacterFrame\\'
 local tarTexPath = 'Interface\\TargetingFrame\\'
 local texPath = tarTexPath..'UI-TargetingFrame'
 
+local oUF = ns.oUF or oUF
+oUF.colors.power["MANA"] = {0,0.55,1}
+
 local texTable = {
     ['elite'] = texPath..'-Elite',
     ['rareelite'] = texPath..'-Rare-Elite',
