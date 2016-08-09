@@ -241,11 +241,15 @@ local function UpdateBarValue()
 end
 
 local function UpdateBarColor()
-    local _, powerType, altR, altG, altB = UnitPowerType('player')
-    local unitPower = PowerBarColor[powerType]
+    local powerType, powerToken, altR, altG, altB = UnitPowerType('player')
+    local unitPower = PowerBarColor[powerToken]
 
     if (unitPower) then
-        f.Power:SetStatusBarColor(unitPower.r, unitPower.g, unitPower.b)
+        if ( powerType == 0 ) then
+            f.Power:SetStatusBarColor(0,0.55,1)
+        else
+            f.Power:SetStatusBarColor(unitPower.r, unitPower.g, unitPower.b)
+        end
     else
         f.Power:SetStatusBarColor(altR, altG, altB)
     end

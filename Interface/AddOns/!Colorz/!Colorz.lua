@@ -1,7 +1,12 @@
+-- Sets manabar color for default unit frames.
+local function CustomManaColor(manaBar)
+	local powerType = UnitPowerType(manaBar.unit);
 
--- function SetUpAnimation(frame) CancelAnimations(frame) end
-
-_G.PowerBarColor['MANA'] = {r = 0/255, g = 0.55, b = 1}
+    if ( powerType == 0 ) then
+        manaBar:SetStatusBarColor(0,0.55,1)
+    end
+end
+hooksecurefunc('UnitFrameManaBar_UpdateType',CustomManaColor)
 
 CUSTOM_FACTION_BAR_COLORS = {
     [1] = {r = 1, g = 0, b = 0},
@@ -15,6 +20,7 @@ CUSTOM_FACTION_BAR_COLORS = {
 }
 
 function GameTooltip_UnitColor(unit)
+
     local r, g, b
 
     if (UnitIsDead(unit) or UnitIsGhost(unit) or UnitIsTapDenied(unit)) then
@@ -24,9 +30,13 @@ function GameTooltip_UnitColor(unit)
     elseif (UnitIsPlayer(unit)) then
         if (UnitIsFriend(unit, 'player')) then
             local _, class = UnitClass(unit)
-            r = RAID_CLASS_COLORS[class].r
-            g = RAID_CLASS_COLORS[class].g
-            b = RAID_CLASS_COLORS[class].b
+            if ( class ) then
+                r = RAID_CLASS_COLORS[class].r
+                g = RAID_CLASS_COLORS[class].g
+                b = RAID_CLASS_COLORS[class].b
+            else
+                r = 0.60, g = 0.60, b = 0.60
+            end
         elseif (not UnitIsFriend(unit, 'player')) then
             r = 1
             g = 0

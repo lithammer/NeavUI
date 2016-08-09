@@ -2,6 +2,9 @@
 local _, ns = ...
 local config = ns.Config
 
+local oUF = ns.oUF or oUF
+oUF.colors.power["MANA"] = {0,0.55,1}
+
 local playerClass = select(2, UnitClass('player'))
 
     -- oUF_AuraWatch
