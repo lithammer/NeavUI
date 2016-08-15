@@ -800,7 +800,7 @@ oUF:Factory(function(self)
         'maxColumns', 8,
         'unitsPerColumn', 5,
         'columnAnchorPoint', anchpoint,
-        'columnSpacing', 7,
+        'columnSpacing', rlayout.frameSpacing,
         'yOffset', yOffset,
         'xOffset', xOffset,
         'templateType', 'Button',
