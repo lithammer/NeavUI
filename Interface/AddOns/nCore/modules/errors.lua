@@ -46,6 +46,7 @@ local ignoreList = {
     [LE_GAME_ERR_GENERIC_NO_VALID_TARGETS] = true,
     [LE_GAME_ERR_BADATTACKFACING] = true,
     [LE_GAME_ERR_BADATTACKPOS] = true,
+    [LE_GAME_ERR_TOO_FAR_TO_INTERACT] = true,
 
     [LE_GAME_ERR_ITEM_COOLDOWN] = true,
     [LE_GAME_ERR_CANT_USE_ITEM] = true,
