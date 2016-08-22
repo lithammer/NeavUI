@@ -13,6 +13,7 @@ This is the development repository for Neav UI on WoWInterface.
 - nMainbar
 - nMinimap
 - nPower
+- [nPlates](http://www.wowinterface.com/downloads/info24129-nPlates2.0.html)
 - nTooltip
 - [oUF](http://www.wowinterface.com/downloads/info9994-oUF.html)
 - oUF\_Neav
@@ -28,7 +29,8 @@ This is the development repository for Neav UI on WoWInterface.
 ## Credits
 
 - [Neav](https://github.com/Neav) for creating Neav UI.
-- [Grimsbain](https://github.com/Grimsbain) for providing most fixes and
+- [Grimsbain](https://github.com/Grimsbain) for an updated version of
+  [nPlates](https://github.com/Grimsbain/nPlates) and providing most fixes and
   updates for Legion. And also taking his time to address feature requests from
   the community.
 

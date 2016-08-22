@@ -1,3 +1,6 @@
 [submodule "Interface/AddOns/oUF"]
 	path = Interface/AddOns/oUF
 	url = git@github.com:ls-/oUF.git
+[submodule "Interface/AddOns/nPlates"]
+	path = Interface/AddOns/nPlates
+	url = git@github.com:Grimsbain/nPlates.git
