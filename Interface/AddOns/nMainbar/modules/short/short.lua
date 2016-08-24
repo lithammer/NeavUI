@@ -82,26 +82,26 @@ end
 ReputationWatchBar:SetWidth(512)
 ReputationWatchBar.StatusBar:SetWidth(512)
 
-ReputationWatchBar.StatusBar.WatchBarTexture0:SetWidth(128)
-ReputationWatchBar.StatusBar.WatchBarTexture1:SetWidth(128)
-ReputationWatchBar.StatusBar.WatchBarTexture2:SetWidth(128)
-ReputationWatchBar.StatusBar.WatchBarTexture3:SetWidth(128)
+ReputationWatchBar.StatusBar.WatchBarTexture0:SetWidth(256)
+ReputationWatchBar.StatusBar.WatchBarTexture1:SetWidth(256)
+ReputationWatchBar.StatusBar.WatchBarTexture2:SetTexture(nil)
+ReputationWatchBar.StatusBar.WatchBarTexture3:SetTexture(nil)
 
 ArtifactWatchBar:SetWidth(512)
 ArtifactWatchBar.StatusBar:SetWidth(512)
 
-ArtifactWatchBar.StatusBar.WatchBarTexture0:SetWidth(128)
-ArtifactWatchBar.StatusBar.WatchBarTexture1:SetWidth(128)
-ArtifactWatchBar.StatusBar.WatchBarTexture2:SetWidth(128)
-ArtifactWatchBar.StatusBar.WatchBarTexture3:SetWidth(128)
+ArtifactWatchBar.StatusBar.WatchBarTexture0:SetWidth(256)
+ArtifactWatchBar.StatusBar.WatchBarTexture1:SetWidth(256)
+ArtifactWatchBar.StatusBar.WatchBarTexture2:SetTexture(nil)
+ArtifactWatchBar.StatusBar.WatchBarTexture3:SetTexture(nil)
 
 HonorWatchBar:SetWidth(512)
 HonorWatchBar.StatusBar:SetWidth(512)
 
-HonorWatchBar.StatusBar.WatchBarTexture0:SetWidth(128)
-HonorWatchBar.StatusBar.WatchBarTexture1:SetWidth(128)
-HonorWatchBar.StatusBar.WatchBarTexture2:SetWidth(128)
-HonorWatchBar.StatusBar.WatchBarTexture3:SetWidth(128)
+HonorWatchBar.StatusBar.WatchBarTexture0:SetWidth(256)
+HonorWatchBar.StatusBar.WatchBarTexture1:SetWidth(256)
+HonorWatchBar.StatusBar.WatchBarTexture2:SetTexture(nil)
+HonorWatchBar.StatusBar.WatchBarTexture3:SetTexture(nil)
 
 -- Only shown when tracker is in place of MainMenuExpBar.
 ReputationWatchBar.StatusBar.XPBarTexture0:SetWidth(128)
