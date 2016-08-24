@@ -104,20 +104,20 @@ HonorWatchBar.StatusBar.WatchBarTexture2:SetTexture(nil)
 HonorWatchBar.StatusBar.WatchBarTexture3:SetTexture(nil)
 
 -- Only shown when tracker is in place of MainMenuExpBar.
-ReputationWatchBar.StatusBar.XPBarTexture0:SetWidth(128)
-ReputationWatchBar.StatusBar.XPBarTexture1:SetWidth(128)
-ReputationWatchBar.StatusBar.XPBarTexture2:SetWidth(128)
-ReputationWatchBar.StatusBar.XPBarTexture3:SetWidth(128)
+ReputationWatchBar.StatusBar.XPBarTexture0:SetWidth(256)
+ReputationWatchBar.StatusBar.XPBarTexture1:SetWidth(256)
+ReputationWatchBar.StatusBar.XPBarTexture2:SetTexture(nil)
+ReputationWatchBar.StatusBar.XPBarTexture3:SetTexture(nil)
 
-ArtifactWatchBar.StatusBar.XPBarTexture0:SetWidth(128)
-ArtifactWatchBar.StatusBar.XPBarTexture1:SetWidth(128)
-ArtifactWatchBar.StatusBar.XPBarTexture2:SetWidth(128)
-ArtifactWatchBar.StatusBar.XPBarTexture3:SetWidth(128)
+ArtifactWatchBar.StatusBar.XPBarTexture0:SetWidth(256)
+ArtifactWatchBar.StatusBar.XPBarTexture1:SetWidth(256)
+ArtifactWatchBar.StatusBar.XPBarTexture2:SetTexture(nil)
+ArtifactWatchBar.StatusBar.XPBarTexture3:SetTexture(nil)
 
-HonorWatchBar.StatusBar.XPBarTexture0:SetWidth(128)
-HonorWatchBar.StatusBar.XPBarTexture1:SetWidth(128)
-HonorWatchBar.StatusBar.XPBarTexture2:SetWidth(128)
-HonorWatchBar.StatusBar.XPBarTexture3:SetWidth(128)
+HonorWatchBar.StatusBar.XPBarTexture0:SetWidth(256)
+HonorWatchBar.StatusBar.XPBarTexture1:SetWidth(256)
+HonorWatchBar.StatusBar.XPBarTexture2:SetTexture(nil)
+HonorWatchBar.StatusBar.XPBarTexture3:SetTexture(nil)
 
     -- remove divider
 
