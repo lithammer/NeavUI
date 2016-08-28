@@ -192,7 +192,7 @@ end)
 
     -- a new place for the exit vehicle button
 
-MainMenuBarVehicleLeaveButton:HookScript('OnShow', function(self)
-    self:ClearAllPoints()
-    self:SetPoint('LEFT', MainMenuBar, 'RIGHT', 10, 75)
+hooksecurefunc("MainMenuBarVehicleLeaveButton_Update", function()
+    MainMenuBarVehicleLeaveButton:ClearAllPoints()
+    MainMenuBarVehicleLeaveButton:SetPoint('LEFT', MainMenuBar, 'RIGHT', 10, 75)
 end)
