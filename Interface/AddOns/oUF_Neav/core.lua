@@ -8,7 +8,8 @@ local tarTexPath = 'Interface\\TargetingFrame\\'
 local texPath = tarTexPath..'UI-TargetingFrame'
 
 local oUF = ns.oUF or oUF
-oUF.colors.power["MANA"] = {0,0.55,1}
+
+oUF.colors.power['MANA'] = {0, 0.55, 1}
 
 local texTable = {
     ['elite'] = texPath..'-Elite',
@@ -546,45 +547,54 @@ local function CreateUnitLayout(self, unit)
 
         -- Heal Prediction
 
-    local myBar = CreateFrame('StatusBar', nil, self)
+    local myBar = CreateFrame('StatusBar', '$parentMyHealPredictionBar', self)
     myBar:SetFrameLevel(self:GetFrameLevel() - 1)
     myBar:SetStatusBarTexture(config.media.statusbar, 'OVERLAY')
-    myBar:SetStatusBarColor(0, 1, 0.3, 0.5)
-
-    myBar.Smooth = true
-
+    myBar:SetStatusBarColor(0, 0.827, 0.765, 1)
     myBar:SetOrientation('HORIZONTAL')
     myBar:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
     myBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
     myBar:SetWidth(self.Health:GetWidth())
+    myBar.Smooth = true
 
-    local otherBar = CreateFrame('StatusBar', nil, self)
+    local otherBar = CreateFrame('StatusBar', '$parentOtherHealPredictionBar', self)
     otherBar:SetFrameLevel(self:GetFrameLevel() - 1)
     otherBar:SetStatusBarTexture(config.media.statusbar, 'OVERLAY')
-    otherBar:SetStatusBarColor(0, 1, 0, 0.35)
-
-    otherBar.Smooth = true
-
+    otherBar:SetStatusBarColor(0.0, 0.631, 0.557, 1)
     otherBar:SetOrientation('HORIZONTAL')
     otherBar:SetPoint('TOPLEFT', myBar:GetStatusBarTexture(), 'TOPRIGHT')
     otherBar:SetPoint('BOTTOMLEFT', myBar:GetStatusBarTexture(), 'BOTTOMRIGHT')
     otherBar:SetWidth(self.Health:GetWidth())
+    otherBar.Smooth = true
 
-    local absorbBar = CreateFrame('StatusBar', nil, self)
+    local healAbsorbBar = CreateFrame('StatusBar', '$parentHealAbsorbBar', self)
+    healAbsorbBar:SetReverseFill(true)
+    healAbsorbBar:SetFrameLevel(self:GetFrameLevel() - 1)
+    healAbsorbBar:SetStatusBarTexture('Interface\\Buttons\\WHITE8x8', 'OVERLAY')
+    healAbsorbBar:SetStatusBarColor(0.9, 0.1, 0.3, 1)
+    healAbsorbBar:SetOrientation('HORIZONTAL')
+    healAbsorbBar:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
+    healAbsorbBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
+    healAbsorbBar:SetWidth(self.Health:GetWidth())
+    healAbsorbBar.Smooth = true
+
+    local absorbBar = CreateFrame('StatusBar', '$parentTotalAbsorbBar', self)
     absorbBar:SetFrameLevel(self:GetFrameLevel() - 1)
-    absorbBar:SetStatusBarTexture(config.media.statusbar, 'OVERLAY')
-    absorbBar:SetStatusBarColor(1, 1, 0, 0.35)
-
-    absorbBar.Smooth = true
-
+    absorbBar:SetStatusBarTexture('Interface\\Buttons\\WHITE8x8', 'OVERLAY')
+    absorbBar:SetStatusBarColor(0.85, 0.85, 0.9, 1)
     absorbBar:SetOrientation('HORIZONTAL')
     absorbBar:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
     absorbBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
     absorbBar:SetWidth(self.Health:GetWidth())
+    absorbBar.Smooth = true
+
+    absorbBar.Overlay = absorbBar:CreateTexture('$parentOverlay', 'ARTWORK', 'TotalAbsorbBarOverlayTemplate', 1)
+    absorbBar.Overlay:SetAllPoints(absorbBar:GetStatusBarTexture())
 
     self.HealPrediction = {
         myBar = myBar,
         otherBar = otherBar,
+        healAbsorbBar = healAbsorbBar,
         absorbBar = absorbBar,
         maxOverflow = 1.0,
         frequentUpdates = true
