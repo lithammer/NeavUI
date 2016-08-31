@@ -3,7 +3,8 @@ local _, ns = ...
 local config = ns.Config
 
 local oUF = ns.oUF or oUF
-oUF.colors.power["MANA"] = {0,0.55,1}
+
+oUF.colors.power['MANA'] = {0, 0.55, 1}
 
 local playerClass = select(2, UnitClass('player'))
 
@@ -449,9 +450,9 @@ local function CreateRaidLayout(self, unit)
 
         -- Heal prediction
 
-    local myBar = CreateFrame('StatusBar', nil, self)
+    local myBar = CreateFrame('StatusBar', '$parentMyHealPredictionBar', self)
     myBar:SetStatusBarTexture(config.media.statusbar, 'OVERLAY')
-    myBar:SetStatusBarColor(0, 1, 0.3, 0.5)
+    myBar:SetStatusBarColor(0, 0.827, 0.765, 1)
 
     if (config.units.raid.smoothUpdates) then
         myBar.Smooth = true
@@ -469,9 +470,9 @@ local function CreateRaidLayout(self, unit)
         myBar:SetHeight(self:GetHeight())
     end
 
-    local otherBar = CreateFrame('StatusBar', nil, self)
+    local otherBar = CreateFrame('StatusBar', '$parentOtherHealPredictionBar', self)
     otherBar:SetStatusBarTexture(config.media.statusbar, 'OVERLAY')
-    otherBar:SetStatusBarColor(0, 1, 0, 0.35)
+    otherBar:SetStatusBarColor(0.0, 0.631, 0.557, 1)
 
     if (config.units.raid.smoothUpdates) then
         otherBar.Smooth = true
@@ -489,9 +490,29 @@ local function CreateRaidLayout(self, unit)
         otherBar:SetHeight(self:GetHeight())
     end
 
-    local absorbBar = CreateFrame('StatusBar', nil, self)
-    absorbBar:SetStatusBarTexture(config.media.statusbar, 'OVERLAY')
-    absorbBar:SetStatusBarColor(1, 1, 0, 0.35)
+    local healAbsorbBar = CreateFrame('StatusBar', '$parentHealAbsorbBar', self)
+    healAbsorbBar:SetStatusBarTexture('Interface\\Buttons\\WHITE8x8', 'OVERLAY')
+    healAbsorbBar:SetStatusBarColor(0.9, 0.1, 0.3, 1)
+
+    if (config.units.raid.smoothUpdates) then
+        healAbsorbBar.Smooth = true
+    end
+
+    if (config.units.raid.horizontalHealthBars) then
+        healAbsorbBar:SetOrientation('HORIZONTAL')
+        healAbsorbBar:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
+        healAbsorbBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
+        healAbsorbBar:SetWidth(self:GetWidth())
+    else
+        healAbsorbBar:SetOrientation('VERTICAL')
+        healAbsorbBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'TOPLEFT')
+        healAbsorbBar:SetPoint('BOTTOMRIGHT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
+        healAbsorbBar:SetHeight(self:GetHeight())
+    end
+
+    local absorbBar = CreateFrame('StatusBar', '$parentTotalAbsorbBar', self)
+    absorbBar:SetStatusBarTexture('Interface\\Buttons\\WHITE8x8', 'OVERLAY')
+    absorbBar:SetStatusBarColor(0.85, 0.85, 0.9, 1)
 
     if (config.units.raid.smoothUpdates) then
         absorbBar.Smooth = true
@@ -509,11 +530,15 @@ local function CreateRaidLayout(self, unit)
         absorbBar:SetHeight(self:GetHeight())
     end
 
+    absorbBar.Overlay = absorbBar:CreateTexture('$parentOverlay', 'ARTWORK', 'TotalAbsorbBarOverlayTemplate', 1)
+    absorbBar.Overlay:SetAllPoints(absorbBar:GetStatusBarTexture())
+
     self.HealPrediction = {
         myBar = myBar,
         otherBar = otherBar,
+        healAbsorbBar = healAbsorbBar,
         absorbBar = absorbBar,
-        maxOverflow = 1.2,
+        maxOverflow = 1.0,
         frequentUpdates = true
     }
 
