@@ -491,7 +491,7 @@ local function CreateRaidLayout(self, unit)
     end
 
     local healAbsorbBar = CreateFrame('StatusBar', '$parentHealAbsorbBar', self)
-    healAbsorbBar:SetStatusBarTexture('Interface\\Buttons\\WHITE8x8', 'OVERLAY')
+    healAbsorbBar:SetStatusBarTexture('Interface\\Buttons\\WHITE8x8')
     healAbsorbBar:SetStatusBarColor(0.9, 0.1, 0.3, 1)
 
     if (config.units.raid.smoothUpdates) then
@@ -511,7 +511,7 @@ local function CreateRaidLayout(self, unit)
     end
 
     local absorbBar = CreateFrame('StatusBar', '$parentTotalAbsorbBar', self)
-    absorbBar:SetStatusBarTexture('Interface\\Buttons\\WHITE8x8', 'OVERLAY')
+    absorbBar:SetStatusBarTexture('Interface\\Buttons\\WHITE8x8')
     absorbBar:SetStatusBarColor(0.85, 0.85, 0.9, 1)
 
     if (config.units.raid.smoothUpdates) then
