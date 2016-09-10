@@ -1,6 +1,6 @@
 [submodule "Interface/AddOns/oUF"]
 	path = Interface/AddOns/oUF
-	url = git@github.com:haste/oUF.git
+	url = git@github.com:oUF-wow/oUF.git
 [submodule "Interface/AddOns/nPlates"]
 	path = Interface/AddOns/nPlates
 	url = git@github.com:Grimsbain/nPlates.git
