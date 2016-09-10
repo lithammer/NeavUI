@@ -17,4 +17,3 @@ modules\skins.lua
 modules\spellid.lua
 modules\warning.lua
 modules\orderhall.lua
-modules\alertframemover.lua
