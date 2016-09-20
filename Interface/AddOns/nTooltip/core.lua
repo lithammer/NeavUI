@@ -100,7 +100,7 @@ for _, tooltip in pairs({
     ShoppingTooltip2,
     ShoppingTooltip3,
 
-    WorldMapTooltip,
+    WorldMapTooltip.BackdropFrame,
 
     DropDownList1MenuBackdrop,
     DropDownList2MenuBackdrop,
