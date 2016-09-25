@@ -421,7 +421,13 @@ local function UpdateHealth(Health, unit, cur, max)
     if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
         Health:SetStatusBarColor(0.5, 0.5, 0.5)
     else
-        Health:SetStatusBarColor(0, 1, 0)
+        if (UnitIsPlayer(unit) and config.show.classHealth) then
+            local _, englishClass = UnitClass(unit)
+            local classColor = RAID_CLASS_COLORS[englishClass]
+            Health:SetStatusBarColor(classColor.r, classColor.g, classColor.b)
+        else
+            Health:SetStatusBarColor(0, 1, 0)
+        end
     end
 
     Health.Value:SetText(ns.GetHealthText(unit, cur, max))
@@ -648,16 +654,18 @@ local function CreateUnitLayout(self, unit)
 
         -- Power Prediction Bar
 
-    self.MainPowerPrediction = CreateFrame('StatusBar', '$parentPowerPrediction', self.Power)
-    self.MainPowerPrediction:SetStatusBarTexture(config.media.statusbar)
-    self.MainPowerPrediction:SetStatusBarColor(0.8,0.8,0.8,.50)
-    self.MainPowerPrediction:SetReverseFill(true)
-    self.MainPowerPrediction:SetPoint('TOP')
-    self.MainPowerPrediction:SetPoint('BOTTOM')
-    self.MainPowerPrediction:SetPoint('RIGHT', self.Power:GetStatusBarTexture())
-    self.MainPowerPrediction:SetWidth(119)
+    if (unit == 'player') then
+        self.MainPowerPrediction = CreateFrame('StatusBar', '$parentPowerPrediction', self.Power)
+        self.MainPowerPrediction:SetStatusBarTexture(config.media.statusbar)
+        self.MainPowerPrediction:SetStatusBarColor(0.8,0.8,0.8,.50)
+        self.MainPowerPrediction:SetReverseFill(true)
+        self.MainPowerPrediction:SetPoint('TOP')
+        self.MainPowerPrediction:SetPoint('BOTTOM')
+        self.MainPowerPrediction:SetPoint('RIGHT', self.Power:GetStatusBarTexture())
+        self.MainPowerPrediction:SetWidth(119)
 
-    self.PowerPrediction = { mainBar = self.MainPowerPrediction }
+        self.PowerPrediction = { mainBar = self.MainPowerPrediction }
+    end
 
         -- Name
 
@@ -999,16 +1007,18 @@ local function CreateUnitLayout(self, unit)
             self.DruidMana.Texture:SetSize(104, 28)
             self.DruidMana.Texture:SetPoint('TOP', self.Power, 'BOTTOM', 0, 6)
 
-            self.PowerPredictionAlt = CreateFrame('StatusBar', '$parentAltPowerPrediction', self.DruidMana)
-            self.PowerPredictionAlt:SetStatusBarTexture(config.media.statusbar)
-            self.PowerPredictionAlt:SetStatusBarColor(0.8,0.8,0.8,.50)
-            self.PowerPredictionAlt:SetReverseFill(true)
-            self.PowerPredictionAlt:SetPoint('TOP')
-            self.PowerPredictionAlt:SetPoint('BOTTOM')
-            self.PowerPredictionAlt:SetPoint('RIGHT', self.DruidMana:GetStatusBarTexture(),'RIGHT')
-            self.PowerPredictionAlt:SetWidth(99)
+            if (unit == "player") then
+                self.PowerPredictionAlt = CreateFrame('StatusBar', '$parentAltPowerPrediction', self.DruidMana)
+                self.PowerPredictionAlt:SetStatusBarTexture(config.media.statusbar)
+                self.PowerPredictionAlt:SetStatusBarColor(0.8,0.8,0.8,.50)
+                self.PowerPredictionAlt:SetReverseFill(true)
+                self.PowerPredictionAlt:SetPoint('TOP')
+                self.PowerPredictionAlt:SetPoint('BOTTOM')
+                self.PowerPredictionAlt:SetPoint('RIGHT', self.DruidMana:GetStatusBarTexture(),'RIGHT')
+                self.PowerPredictionAlt:SetWidth(99)
 
-            self.PowerPrediction = { mainBar = self.MainPowerPrediction, altBar = self.PowerPredictionAlt }
+                self.PowerPrediction = { mainBar = self.MainPowerPrediction, altBar = self.PowerPredictionAlt }
+            end
         end
 
             -- Totem Frame
