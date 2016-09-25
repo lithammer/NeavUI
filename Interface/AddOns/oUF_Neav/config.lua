@@ -27,6 +27,7 @@ ns.Config = {
     show = {
         castbars = true,
         pvpicons = true,
+        classHealth = true,                                                                 -- Colors health bars by player class color.
         classPortraits = false,
         threeDPortraits = false,                                                            -- 3DPortraits; Overrides classPortraits
         disableCooldown = false,                                                            -- Disable custom cooldown text to use addons like omnicc

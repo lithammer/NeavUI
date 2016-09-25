@@ -21,8 +21,9 @@ oUF.Tags.Methods['druidmana'] = function(unit)
     end
 end
 
+oUF.Tags.Events['pvptimer'] = 'PLAYER_ENTERING_WORLD PLAYER_FLAGS_CHANGED'
 oUF.Tags.Methods['pvptimer'] = function(unit)
-    if (not IsPVPTimerRunning()) then
+    if (not IsPVPTimerRunning() or GetPVPTimer() == 301000 or GetPVPTimer() == 999) then
         return ''
     end
 
