@@ -422,7 +422,7 @@ local function UpdateHealth(Health, unit, cur, max)
         Health:SetStatusBarColor(0.5, 0.5, 0.5)
     else
         if (UnitIsPlayer(unit) and config.show.classHealth) then
-            local localizedClass, englishClass = UnitClass(unit)
+            local _, englishClass = UnitClass(unit)
             local classColor = RAID_CLASS_COLORS[englishClass]
             Health:SetStatusBarColor(classColor.r, classColor.g, classColor.b)
         else
