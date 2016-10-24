@@ -69,7 +69,7 @@ oUF.Tags.Methods['name'] = function(unit)
     if (unit == 'player' or not UnitIsFriend('player', unit) and UnitIsPlayer(unit) and UnitClass(unit) and not unit:match('arena(%d)')) then
         colorA = oUF.colors.class[class]
     elseif (unit == 'targettarget' or unit == 'focustarget' or unit:match('arena(%d)target')) then
-        r, g, b = UnitSelectionColor(unit)
+        r, g, b = GameTooltip_UnitColor(unit)
     else
         colorB = {1, 1, 1}
     end

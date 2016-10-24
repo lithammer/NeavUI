@@ -409,12 +409,12 @@ local function UpdateHealth(Health, unit, cur, max)
     end
 
     if (self.Portrait.Bg) then
-        self.Portrait.Bg:SetVertexColor(UnitSelectionColor(unit))
+        self.Portrait.Bg:SetVertexColor(GameTooltip_UnitColor(unit))
     end
 
     if (unit == 'target' or unit == 'focus') then
         if (self.Name.Bg) then
-            self.Name.Bg:SetVertexColor(UnitSelectionColor(unit))
+            self.Name.Bg:SetVertexColor(GameTooltip_UnitColor(unit))
         end
     end
 
@@ -422,7 +422,7 @@ local function UpdateHealth(Health, unit, cur, max)
         Health:SetStatusBarColor(0.5, 0.5, 0.5)
     else
         if (UnitIsPlayer(unit) and config.show.classHealth) then
-            local localizedClass, englishClass = UnitClass(unit)
+            local _, englishClass = UnitClass(unit)
             local classColor = RAID_CLASS_COLORS[englishClass]
             Health:SetStatusBarColor(classColor.r, classColor.g, classColor.b)
         else

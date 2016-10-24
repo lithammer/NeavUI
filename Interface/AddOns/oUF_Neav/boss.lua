@@ -39,7 +39,7 @@ local function UpdateHealth(Health, unit, cur, max)
 
     local self = Health:GetParent()
     if (self.Name.Bg) then
-        self.Name.Bg:SetVertexColor(UnitSelectionColor(unit))
+        self.Name.Bg:SetVertexColor(GameTooltip_UnitColor(unit))
     end
 end
 

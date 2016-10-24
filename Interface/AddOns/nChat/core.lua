@@ -113,9 +113,9 @@ end
 
     -- Hide the menu and friend button
 
-FriendsMicroButton:SetAlpha(0)
-FriendsMicroButton:EnableMouse(false)
-FriendsMicroButton:UnregisterAllEvents()
+QuickJoinToastButton:SetAlpha(0)
+QuickJoinToastButton:EnableMouse(false)
+QuickJoinToastButton:UnregisterAllEvents()
 
 ChatFrameMenuButton:SetAlpha(0)
 ChatFrameMenuButton:EnableMouse(false)

@@ -21,10 +21,10 @@ do
             {48438, 'BOTTOMLEFT', {0.7, 1, 0}}, -- Wild Growth
         },
         MONK = {
-            {115151, 'BOTTOMRIGHT', {0, 1, 0}}, -- Renewing Mist
+            {119611, 'BOTTOMRIGHT', {0, 1, 0}}, -- Renewing Mist
             {124682, 'BOTTOMLEFT', {0.15, 0.98, 0.64}}, -- Enveloping Mist
             {116849, 'TOPLEFT', {1, 1, 0}}, -- Life Cocoon
-            {124081, 'BOTTOMLEFT', {0.7, 0.8, 1}}, -- Zen Sphere
+            {115175, 'BOTTOMLEFT', {0.7, 0.8, 1}}, -- Soothing Mist
         },
         PALADIN = {
             {53563, 'BOTTOMRIGHT', {0, 1, 0}}, -- Beacon of Light
@@ -247,11 +247,11 @@ local function CreateIndicators(self, unit)
 end
 
 local function UpdateThreat(self, _, unit)
-    if (self.unit ~= unit  or self.unit ~= 'player' or self.unit ~= 'pet' or self.unit ~= 'raid') then
+    if (self.unit ~= unit) then
         return
     end
-
-    local threatStatus = UnitThreatSituation(self.unit)
+    
+    local threatStatus = UnitThreatSituation(unit) or 0
     if (threatStatus == 3) then
         if (self.ThreatText) then
             self.ThreatText:Show()
