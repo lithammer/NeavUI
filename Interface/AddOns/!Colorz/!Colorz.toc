@@ -1,3 +1,4 @@
+## Interface: 70100
 ## Title: !Colorz
 ## Notes: Custom colors
 
