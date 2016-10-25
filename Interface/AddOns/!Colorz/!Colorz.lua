@@ -85,4 +85,8 @@ function GameTooltip_UnitColor(unit)
     return r, g, b
 end
 
-UnitSelectionColor = GameTooltip_UnitColor
+hooksecurefunc("TargetFrame_CheckFaction", function(self)
+	if ( UnitPlayerControlled(self.unit) ) then
+		self.nameBackground:SetVertexColor(GameTooltip_UnitColor(self.unit));
+	end
+end)

@@ -100,7 +100,7 @@ for _, tooltip in pairs({
     ShoppingTooltip2,
     ShoppingTooltip3,
 
-    WorldMapTooltip.BackdropFrame,
+    WorldMapTooltip,
 
     DropDownList1MenuBackdrop,
     DropDownList2MenuBackdrop,
@@ -115,6 +115,7 @@ for _, tooltip in pairs({
     FriendsTooltip,
 
     FloatingGarrisonFollowerTooltip,
+    FloatingBattlePetTooltip,
 }) do
     ApplyTooltipStyle(tooltip)
 end
