@@ -1,5 +1,3 @@
-local isLegion = select(4, GetBuildInfo()) >= 70000
-if not isLegion then return end 
 
     -- Create SmallOrder Frame
 
@@ -39,7 +37,7 @@ TroopsOverlay:EnableMouse(true)
 TroopsOverlay:SetFrameStrata('HIGH')
 
 local function onEvent(self, event)
-    
+
         -- Checks Location
 
     if (C_Garrison.IsPlayerInGarrison(LE_GARRISON_TYPE_7_0)) then
@@ -59,14 +57,14 @@ local function onEvent(self, event)
         OrderHallCommandBar.Show = function() end
     end
     OrderHall_CheckCommandBar = function () end
-    
+
         -- Change Order Resources Text
 
     local name, amount = GetCurrencyInfo(1220)
     amountDisplay:SetText(name..': '..amount)
 
         -- Count and display number of troops.
-    
+
     local followerInfo = C_Garrison.GetFollowers() or {}
 
     local followerTotal = 0
@@ -83,15 +81,15 @@ local function onEvent(self, event)
 end
 
     -- Gets Follower Info and Outputs it in Tooltip when TroopsOverlay is clicked.
-        
+
 TroopsOverlay:SetScript('OnEnter', function(self)
 
     local followerInfo = C_Garrison.GetFollowers() or {}
-    
+
     GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMRIGHT')
     GameTooltip:ClearLines()
     GameTooltip:AddLine(FOLLOWERLIST_LABEL_TROOPS, 0, 1, 0)
-    
+
     for i, follower in ipairs(followerInfo) do
       if follower.isCollected then
         if follower.isTroop then
@@ -99,7 +97,7 @@ TroopsOverlay:SetScript('OnEnter', function(self)
         end
       end
     end
-    
+
     GameTooltip:Show()
 end)
 
