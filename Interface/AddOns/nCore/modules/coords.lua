@@ -21,18 +21,23 @@ f:SetScript('OnUpdate', function(self, elapsed)
     local px, py = GetPlayerMapPosition('player')
     local cx, cy = GetCursorPosition()
 
-    mx = ((cx / WorldMapDetailFrame:GetEffectiveScale()) - (mx - width / 2)) / width
-    my = ((my + height / 2) - (cy / WorldMapDetailFrame:GetEffectiveScale())) / height
+    if (px) then
+        mx = ((cx / WorldMapDetailFrame:GetEffectiveScale()) - (mx - width / 2)) / width
+        my = ((my + height / 2) - (cy / WorldMapDetailFrame:GetEffectiveScale())) / height
 
-    if (mx >= 0 and my >= 0 and mx <= 1 and my <= 1) then
-        f.Cursor:SetText(MOUSE_LABEL..format(': %.0f x %.0f', mx * 100, my * 100))
+        if (mx >= 0 and my >= 0 and mx <= 1 and my <= 1) then
+            f.Cursor:SetText(MOUSE_LABEL..format(': %.0f x %.0f', mx * 100, my * 100))
+        else
+            f.Cursor:SetText('')
+        end
+
+        if (px ~= 0 and py ~= 0) then
+            f.Player:SetText(PLAYER..format(': %.0f x %.0f', px * 100, py * 100))
+        else
+            f.Player:SetText('')
+        end
     else
         f.Cursor:SetText('')
-    end
-
-    if (px ~= 0 and py ~= 0) then
-        f.Player:SetText(PLAYER..format(': %.0f x %.0f', px * 100, py * 100))
-    else
         f.Player:SetText('')
     end
 end)
