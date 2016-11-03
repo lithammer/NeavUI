@@ -58,7 +58,6 @@ f:SetScript('OnEvent', function(self)
                 name:SetPoint('RIGHT', timer, 'LEFT', -4, 0)
                 name:SetFont('Fonts\\ARIALN.ttf', 15)
 
-                tbar:SetHeight(24)
                 tbar:CreateBeautyBorder(10)
                 tbar:SetBeautyBorderPadding(tbar:GetHeight() + 3, 2, 2, 2, tbar:GetHeight() + 3, 2, 2, 2)
                 tbar:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
