@@ -355,8 +355,8 @@ local function EnableMouseOver(self)
         self.Power.Value:Hide()
     end
 
-    if (self.DruidMana and self.DruidMana.Value) then
-        self.DruidMana.Value:Hide()
+    if (self.AdditionalPower and self.AdditionalPower.Value) then
+        self.AdditionalPower.Value:Hide()
     end
 
     self:HookScript('OnEnter', function(self)
@@ -366,8 +366,8 @@ local function EnableMouseOver(self)
             self.Power.Value:Show()
         end
 
-        if (self.DruidMana and self.DruidMana.Value) then
-            self.DruidMana.Value:Show()
+        if (self.AdditionalPower and self.AdditionalPower.Value) then
+            self.AdditionalPower.Value:Show()
         end
     end)
 
@@ -378,8 +378,8 @@ local function EnableMouseOver(self)
             self.Power.Value:Hide()
         end
 
-        if (self.DruidMana and self.DruidMana.Value) then
-            self.DruidMana.Value:Hide()
+        if (self.AdditionalPower and self.AdditionalPower.Value) then
+            self.AdditionalPower.Value:Hide()
         end
     end)
 end
@@ -987,34 +987,34 @@ local function CreateUnitLayout(self, unit)
             -- Alt Mana Frame for Druids, Shaman, and Shadow Priest
 
         if (playerClass == 'DRUID' or playerClass == 'SHAMAN' or playerClass == 'PRIEST') then
-            self.DruidMana = CreateFrame('StatusBar', nil, self)
-            self.DruidMana:SetPoint('TOP', self.Power, 'BOTTOM', 0, -1)
-            self.DruidMana:SetStatusBarTexture(config.media.statusbar, 'BORDER')
-            self.DruidMana:SetSize(99, 9)
-            self.DruidMana:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
-            self.DruidMana:SetBackdropColor(0, 0, 0, 0.55)
-            self.DruidMana.colorPower = true
+            self.AdditionalPower = CreateFrame('StatusBar', nil, self)
+            self.AdditionalPower:SetPoint('TOP', self.Power, 'BOTTOM', 0, -1)
+            self.AdditionalPower:SetStatusBarTexture(config.media.statusbar, 'BORDER')
+            self.AdditionalPower:SetSize(99, 9)
+            self.AdditionalPower:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
+            self.AdditionalPower:SetBackdropColor(0, 0, 0, 0.55)
+            self.AdditionalPower.colorPower = true
 
-            self.DruidMana.Value = self.DruidMana:CreateFontString(nil, 'OVERLAY')
-            self.DruidMana.Value:SetFont(config.font.normal, config.font.normalSize)
-            self.DruidMana.Value:SetShadowOffset(1, -1)
-            self.DruidMana.Value:SetPoint('CENTER', self.DruidMana, 0, 0.5)
+            self.AdditionalPower.Value = self.AdditionalPower:CreateFontString(nil, 'OVERLAY')
+            self.AdditionalPower.Value:SetFont(config.font.normal, config.font.normalSize)
+            self.AdditionalPower.Value:SetShadowOffset(1, -1)
+            self.AdditionalPower.Value:SetPoint('CENTER', self.AdditionalPower, 0, 0.5)
 
-            self:Tag(self.DruidMana.Value, '[druidmana]')
+            self:Tag(self.AdditionalPower.Value, '[AdditionalPower]')
 
-            self.DruidMana.Texture = self.DruidMana:CreateTexture(nil, 'ARTWORK')
-            self.DruidMana.Texture:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\DruidManaTexture')
-            self.DruidMana.Texture:SetSize(104, 28)
-            self.DruidMana.Texture:SetPoint('TOP', self.Power, 'BOTTOM', 0, 6)
+            self.AdditionalPower.Texture = self.AdditionalPower:CreateTexture(nil, 'ARTWORK')
+            self.AdditionalPower.Texture:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\AdditionalPowerTexture')
+            self.AdditionalPower.Texture:SetSize(104, 28)
+            self.AdditionalPower.Texture:SetPoint('TOP', self.Power, 'BOTTOM', 0, 6)
 
             if (unit == "player") then
-                self.PowerPredictionAlt = CreateFrame('StatusBar', '$parentAltPowerPrediction', self.DruidMana)
+                self.PowerPredictionAlt = CreateFrame('StatusBar', '$parentAltPowerPrediction', self.AdditionalPower)
                 self.PowerPredictionAlt:SetStatusBarTexture(config.media.statusbar)
                 self.PowerPredictionAlt:SetStatusBarColor(0.8,0.8,0.8,.50)
                 self.PowerPredictionAlt:SetReverseFill(true)
                 self.PowerPredictionAlt:SetPoint('TOP')
                 self.PowerPredictionAlt:SetPoint('BOTTOM')
-                self.PowerPredictionAlt:SetPoint('RIGHT', self.DruidMana:GetStatusBarTexture(),'RIGHT')
+                self.PowerPredictionAlt:SetPoint('RIGHT', self.AdditionalPower:GetStatusBarTexture(),'RIGHT')
                 self.PowerPredictionAlt:SetWidth(99)
 
                 self.PowerPrediction = { mainBar = self.MainPowerPrediction, altBar = self.PowerPredictionAlt }
