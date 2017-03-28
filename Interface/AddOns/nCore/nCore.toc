@@ -11,7 +11,6 @@ modules\coords.lua
 modules\durability.lua
 modules\errors.lua
 modules\fonts.lua
-modules\mail.lua
 modules\objectivetracker.lua
 modules\skins.lua
 modules\spellid.lua
