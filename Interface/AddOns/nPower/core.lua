@@ -159,7 +159,7 @@ local function SetPowerColor()
     elseif ( playerClass == 'WARLOCK' ) then
         powerType = SPELL_POWER_SOUL_SHARDS
     end
-        
+
     local currentPower = UnitPower("player", powerType)
     local maxPower = UnitPowerMax("player", powerType)
 
@@ -230,7 +230,7 @@ end
 
 local function UpdateBarValue()
     local min = UnitPower('player')
-    f.Power:SetMinMaxValues(0, UnitPowerMax('player', f))
+    f.Power:SetMinMaxValues(0, UnitPowerMax('player'))
     f.Power:SetValue(min)
 
     if (config.valueAbbrev) then
