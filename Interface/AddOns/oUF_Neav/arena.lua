@@ -33,7 +33,7 @@ end)
 arenaAnchor:SetScript('OnDragStop', function()
     arenaAnchor:StopMovingOrSizing()
 end)
-    
+
 local function ColorNameBackground(self, unit)
     local _, class = UnitClass(unit)
     local classColor = RAID_CLASS_COLORS[class]
@@ -61,7 +61,7 @@ local function UpdateHealth(Health, unit, cur, max)
     end
 end
 
-local function UpdatePower(Power, unit, cur, max)
+local function UpdatePower(Power, unit, cur, min, max)
     if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
         Power:SetValue(0)
     end
@@ -177,12 +177,12 @@ local function CreateArenaLayout(self, unit)
         self.Name.Bg:SetPoint('BOTTOMLEFT', self.Health, 'TOPLEFT')
         self.Name.Bg:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\nameBackground')
 
-            -- raidicons
+            -- Raid target indicator
 
-        self.RaidIcon = self.Health:CreateTexture(nil, 'OVERLAY', self)
-        self.RaidIcon:SetPoint('CENTER', self, 'TOPRIGHT', -9, -5)
-        self.RaidIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
-        self.RaidIcon:SetSize(26, 26)
+        self.RaidTargetIndicator = self.Health:CreateTexture(nil, 'OVERLAY', self)
+        self.RaidTargetIndicator:SetPoint('CENTER', self, 'TOPRIGHT', -9, -5)
+        self.RaidTargetIndicator:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
+        self.RaidTargetIndicator:SetSize(26, 26)
 
         self.Buffs = CreateFrame('Frame', nil, self)
         self.Buffs.size = 22

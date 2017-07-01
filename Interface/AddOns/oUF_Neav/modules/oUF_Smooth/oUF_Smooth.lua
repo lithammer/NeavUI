@@ -30,13 +30,13 @@ local function hook(frame)
         frame:SmoothBar(frame.Power)
     end
 
-	if (frame.HealPrediction) then
-		if (frame.HealPrediction.myBar and frame.HealPrediction.myBar.Smooth) then
-			frame:SmoothBar(frame.HealPrediction.myBar)
+	if (frame.HealthPrediction) then
+		if (frame.HealthPrediction.myBar and frame.HealthPrediction.myBar.Smooth) then
+			frame:SmoothBar(frame.HealthPrediction.myBar)
 		end
 
-		if (frame.HealPrediction.otherBar and frame.HealPrediction.myBar.otherBar) then
-			frame:SmoothBar(frame.HealPrediction.otherBar)
+		if (frame.HealthPrediction.otherBar and frame.HealthPrediction.myBar.otherBar) then
+			frame:SmoothBar(frame.HealthPrediction.otherBar)
 		end
 	end
 end

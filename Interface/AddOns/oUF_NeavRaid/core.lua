@@ -250,7 +250,7 @@ local function UpdateThreat(self, _, unit)
     if (self.unit ~= unit) then
         return
     end
-    
+
     local threatStatus = UnitThreatSituation(unit) or 0
     if (threatStatus == 3) then
         if (self.ThreatText) then
@@ -450,7 +450,7 @@ local function CreateRaidLayout(self, unit)
 
         -- Heal prediction
 
-    local myBar = CreateFrame('StatusBar', '$parentMyHealPredictionBar', self)
+    local myBar = CreateFrame('StatusBar', '$parentMyHealthPredictionBar', self)
     myBar:SetStatusBarTexture(config.media.statusbar, 'OVERLAY')
     myBar:SetStatusBarColor(0, 0.827, 0.765, 1)
 
@@ -470,7 +470,7 @@ local function CreateRaidLayout(self, unit)
         myBar:SetHeight(self:GetHeight())
     end
 
-    local otherBar = CreateFrame('StatusBar', '$parentOtherHealPredictionBar', self)
+    local otherBar = CreateFrame('StatusBar', '$parentOtherHealthPredictionBar', self)
     otherBar:SetStatusBarTexture(config.media.statusbar, 'OVERLAY')
     otherBar:SetStatusBarColor(0.0, 0.631, 0.557, 1)
 
@@ -533,7 +533,7 @@ local function CreateRaidLayout(self, unit)
     absorbBar.Overlay = absorbBar:CreateTexture('$parentOverlay', 'ARTWORK', 'TotalAbsorbBarOverlayTemplate', 1)
     absorbBar.Overlay:SetAllPoints(absorbBar:GetStatusBarTexture())
 
-    self.HealPrediction = {
+    self.HealthPrediction = {
         myBar = myBar,
         otherBar = otherBar,
         healAbsorbBar = healAbsorbBar,
@@ -592,29 +592,29 @@ local function CreateRaidLayout(self, unit)
 
         -- Masterlooter icons
 
-    self.MasterLooter = self.Health:CreateTexture(nil, 'OVERLAY', self)
-    self.MasterLooter:SetSize(11, 11)
-    self.MasterLooter:SetPoint('RIGHT', self, 'TOPRIGHT', -1, 1)
+    self.MasterLooterIndicator = self.Health:CreateTexture(nil, 'OVERLAY', self)
+    self.MasterLooterIndicator:SetSize(11, 11)
+    self.MasterLooterIndicator:SetPoint('RIGHT', self, 'TOPRIGHT', -1, 1)
 
         -- Leader icons
 
-    self.Leader = self.Health:CreateTexture(nil, 'OVERLAY', self)
-    self.Leader:SetSize(12, 12)
-    self.Leader:SetPoint('LEFT', self.Health, 'TOPLEFT', 1, 2)
+    self.LeaderIndicator = self.Health:CreateTexture(nil, 'OVERLAY', self)
+    self.LeaderIndicator:SetSize(12, 12)
+    self.LeaderIndicator:SetPoint('LEFT', self.Health, 'TOPLEFT', 1, 2)
 
-        -- Raid icons
+        -- Raid target indicator
 
-    self.RaidIcon = self.Health:CreateTexture(nil, 'OVERLAY')
-    self.RaidIcon:SetSize(16, 16)
-    self.RaidIcon:SetPoint('CENTER', self, 'TOP')
+    self.RaidTargetIndicator = self.Health:CreateTexture(nil, 'OVERLAY')
+    self.RaidTargetIndicator:SetSize(16, 16)
+    self.RaidTargetIndicator:SetPoint('CENTER', self, 'TOP')
 
         -- Readycheck icons
 
-    self.ReadyCheck = self.Health:CreateTexture(nil, 'OVERLAY')
-    self.ReadyCheck:SetPoint('CENTER')
-    self.ReadyCheck:SetSize(20, 20)
-    self.ReadyCheck.delayTime = 2
-    self.ReadyCheck.fadeTime = 1
+    self.ReadyCheckIndicator = self.Health:CreateTexture(nil, 'OVERLAY')
+    self.ReadyCheckIndicator:SetPoint('CENTER')
+    self.ReadyCheckIndicator:SetSize(20, 20)
+    self.ReadyCheckIndicator.delayTime = 2
+    self.ReadyCheckIndicator.fadeTime = 1
 
         -- Debuff icons, using freebAuras from oUF_Freebgrid
 
@@ -637,27 +637,27 @@ local function CreateRaidLayout(self, unit)
         self:Tag(self.LFDRoleText, '[role:raid]')
     end
 
-        -- Ressurection icon....ehm text!
+        -- Resurrect indicator
 
     if (config.units.raid.showResurrectText) then
-        self.ResurrectIcon = self.Health:CreateFontString(nil, 'OVERLAY')
-        self.ResurrectIcon:SetPoint('CENTER', self, 'BOTTOM', 0, 1)
-        self.ResurrectIcon:SetFont(config.font.fontSmall, 11, 'THINOUTLINE')
-        self.ResurrectIcon:SetShadowOffset(0, 0)
-        self.ResurrectIcon:SetTextColor(0.1, 1, 0.1)
-        self.ResurrectIcon:SetText('RES') -- RESURRECT
+        self.ResurrectIndicator = self.Health:CreateFontString(nil, 'OVERLAY')
+        self.ResurrectIndicator:SetPoint('CENTER', self, 'BOTTOM', 0, 1)
+        self.ResurrectIndicator:SetFont(config.font.fontSmall, 11, 'THINOUTLINE')
+        self.ResurrectIndicator:SetShadowOffset(0, 0)
+        self.ResurrectIndicator:SetTextColor(0.1, 1, 0.1)
+        self.ResurrectIndicator:SetText('RES') -- RESURRECT
 
-        self.ResurrectIcon.Override = function()
+        self.ResurrectIndicator.Override = function()
             local incomingResurrect = UnitHasIncomingResurrection(self.unit)
 
             if (incomingResurrect) then
-                self.ResurrectIcon:Show()
+                self.ResurrectIndicator:Show()
 
                 if (self.NotHere) then
                     self.NotHere:Hide()
                 end
             else
-                self.ResurrectIcon:Hide()
+                self.ResurrectIndicator:Hide()
 
                 if (self.NotHere) then
                     self.NotHere:Show()

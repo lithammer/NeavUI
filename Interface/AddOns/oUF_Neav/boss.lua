@@ -27,7 +27,7 @@ end)
 bossAnchor:SetScript('OnDragStop', function()
     bossAnchor:StopMovingOrSizing()
 end)
-    
+
 local function UpdateHealth(Health, unit, cur, max)
     if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
         Health:SetStatusBarColor(0.5, 0.5, 0.5)
@@ -43,7 +43,7 @@ local function UpdateHealth(Health, unit, cur, max)
     end
 end
 
-local function UpdatePower(Power, unit, cur, max)
+local function UpdatePower(Power, unit, cur, min, max)
     if (UnitIsDead(unit)) then
         Power:SetValue(0)
     end
@@ -146,12 +146,12 @@ local function CreateBossLayout(self, unit)
 
     self:Tag(self.Level, '[level]')
 
-        -- raidicons
+        -- Raid target indicator
 
-    self.RaidIcon = self.Health:CreateTexture(nil, 'OVERLAY', self)
-    self.RaidIcon:SetPoint('CENTER', self, 'TOPRIGHT', -9, -5)
-    self.RaidIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
-    self.RaidIcon:SetSize(26, 26)
+    self.RaidTargetIndicator = self.Health:CreateTexture(nil, 'OVERLAY', self)
+    self.RaidTargetIndicator:SetPoint('CENTER', self, 'TOPRIGHT', -9, -5)
+    self.RaidTargetIndicator:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
+    self.RaidTargetIndicator:SetSize(26, 26)
 
         -- threat glow textures
 
