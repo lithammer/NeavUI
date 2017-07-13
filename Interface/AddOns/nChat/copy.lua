@@ -44,32 +44,23 @@ f.c = CreateFrame('Button', nil, f, 'UIPanelCloseButton')
 f.c:SetPoint('TOPRIGHT', f, 'TOPRIGHT', 0, -1)
 
 local lines = {}
-local function GetChatLines(...)
-    local count = 1
-    for i = select('#', ...), 1, -1 do
-        local region = select(i, ...)
-        if (region:GetObjectType() == 'FontString') then
-            lines[count] = tostring(region:GetText())
-            count = count + 1
-        end
+local function GetChatLines(self)
+    table.wipe(lines) -- in case the chat was cleared
+    for message = 1, self:GetNumMessages() do
+        lines[message] = self:GetMessageInfo(message)
     end
 
-    return count - 1
+    return #lines
 end
 
 local function copyChat(self)
-    local chat = _G[self:GetName()]
-    local _, fontSize = chat:GetFont()
-
-    FCF_SetChatWindowFontSize(self, chat, 0.1)
-    local lineCount = GetChatLines(chat:GetRegions())
-    FCF_SetChatWindowFontSize(self, chat, fontSize)
+    local lineCount = GetChatLines(self)
 
     if (lineCount > 0) then
         ToggleFrame(f)
-        f.t:SetText(chat:GetName())
+        f.t:SetText(self:GetName())
 
-        local f1, f2, f3 = ChatFrame1:GetFont()
+        local f1, f2, f3 = self:GetFont()
         f.b:SetFont(f1, f2, f3)
 
         local text = concat(lines, '\n', 1, lineCount)
@@ -78,7 +69,7 @@ local function copyChat(self)
 end
 
 local function CreateCopyButton(self)
-    self.Copy = CreateFrame('Button', nil, _G[self:GetName()])
+    self.Copy = CreateFrame('Button', nil, self)
     self.Copy:SetSize(20, 20)
     self.Copy:SetPoint('TOPRIGHT', self, -5, -5)
 
