@@ -1,4 +1,7 @@
 
+local _, nChat = ...
+local cfg = nChat.Config
+
 local select = select
 local tostring = tostring
 local concat = table.concat
@@ -8,8 +11,6 @@ local concat = table.concat
 local f = CreateFrame('Frame', nil, UIParent)
 f:SetHeight(220)
 f:SetBackdropColor(0, 0, 0, 1)
-f:SetPoint('BOTTOMLEFT', ChatFrame1EditBox, 'TOPLEFT', 3, 10)
-f:SetPoint('BOTTOMRIGHT', ChatFrame1EditBox, 'TOPRIGHT', -3, 10)
 f:SetFrameStrata('DIALOG')
 f:CreateBeautyBorder(12)
 f:SetBackdrop({
@@ -58,6 +59,17 @@ local function copyChat(self)
 
     if (lineCount > 0) then
         ToggleFrame(f)
+
+        if (cfg.showInputBoxAbove) then
+            local editBox = _G[self:GetName()..'EditBox']
+            f:SetPoint('BOTTOMLEFT', editBox, 'TOPLEFT', 3, 10)
+            f:SetPoint('BOTTOMRIGHT', editBox, 'TOPRIGHT', -3, 10)
+        else
+            local tabHeight = _G[self:GetName()..'Tab']:GetHeight()
+            f:SetPoint('BOTTOMLEFT', self, 'TOPLEFT', 0, tabHeight + 10)
+            f:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT', 0, tabHeight + 10)
+        end
+
         f.t:SetText(self:GetName())
 
         local f1, f2, f3 = self:GetFont()
