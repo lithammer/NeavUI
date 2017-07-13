@@ -44,21 +44,20 @@ f.s:SetScrollChild(f.b)
 f.c = CreateFrame('Button', nil, f, 'UIPanelCloseButton')
 f.c:SetPoint('TOPRIGHT', f, 'TOPRIGHT', 0, -1)
 
-local lines = {}
 local function GetChatLines(self)
-    table.wipe(lines) -- in case the chat was cleared
+    local lines = {}
     for message = 1, self:GetNumMessages() do
         lines[message] = self:GetMessageInfo(message)
     end
 
-    return #lines
+    return lines
 end
 
 local function copyChat(self)
     ToggleFrame(f)
 
     if (f:IsShown()) then
-        local lineCount = GetChatLines(self)
+        local lines = GetChatLines(self)
         if (cfg.showInputBoxAbove) then
             local editBox = _G[self:GetName()..'EditBox']
             f:SetPoint('BOTTOMLEFT', editBox, 'TOPLEFT', 3, 10)
@@ -74,7 +73,7 @@ local function copyChat(self)
         local f1, f2, f3 = self:GetFont()
         f.b:SetFont(f1, f2, f3)
 
-        local text = concat(lines, '\n', 1, lineCount)
+        local text = concat(lines, '\n')
         f.b:SetText(text)
     end
 end
