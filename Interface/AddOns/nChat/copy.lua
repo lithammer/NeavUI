@@ -55,11 +55,10 @@ local function GetChatLines(self)
 end
 
 local function copyChat(self)
-    local lineCount = GetChatLines(self)
+    ToggleFrame(f)
 
-    if (lineCount > 0) then
-        ToggleFrame(f)
-
+    if (f:IsShown()) then
+        local lineCount = GetChatLines(self)
         if (cfg.showInputBoxAbove) then
             local editBox = _G[self:GetName()..'EditBox']
             f:SetPoint('BOTTOMLEFT', editBox, 'TOPLEFT', 3, 10)
