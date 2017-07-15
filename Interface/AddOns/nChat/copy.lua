@@ -4,8 +4,9 @@ local cfg = nChat.Config
 
 local concat = table.concat
 
+local chatWidth, chatHeight = ChatFrame1:GetSize()
 local container = CreateFrame('Frame', nil, UIParent)
-container:SetHeight(220)
+container:SetSize(chatWidth, chatHeight)
 container:SetFrameStrata('DIALOG')
 container:CreateBeautyBorder(12)
 container:SetBackdrop({
@@ -28,7 +29,7 @@ local closeButton = CreateFrame('Button', nil, container, 'UIPanelCloseButton')
 closeButton:SetPoint('TOPRIGHT', 0, -1)
 
 local copyBox = CreateFrame('EditBox', nil, container)
-copyBox:SetSize(450, 270)
+copyBox:SetSize(chatWidth - 38, chatHeight - 38) -- a ScrollFrame's child needs to have its size set explicitly
 copyBox:SetMultiLine(true)
 copyBox:SetMaxLetters(20000)
 copyBox:SetScript('OnEscapePressed', function()
