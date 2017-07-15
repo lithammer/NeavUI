@@ -2,45 +2,43 @@
 local _, nChat = ...
 local cfg = nChat.Config
 
-local select = select
-local tostring = tostring
 local concat = table.concat
 
 local container = CreateFrame('Frame', nil, UIParent)
 container:SetHeight(220)
-container:SetBackdropColor(0, 0, 0, 1)
 container:SetFrameStrata('DIALOG')
 container:CreateBeautyBorder(12)
 container:SetBackdrop({
     bgFile = 'Interface\\DialogFrame\\UI-DialogBox-Background',
-    edgeFile = '',
-    tile = true, tileSize = 16, edgeSize = 16,
-    insets = {left = 3, right = 3, top = 3, bottom = 3
-}})
+    edgeSize = 16,
+    tile = true, tileSize = 16,
+    insets = { left = 3, right = 3, top = 3, bottom = 3 }
+})
+container:SetBackdropColor(0, 0, 0)
 container:Hide()
 
 local title = container:CreateFontString(nil, 'OVERLAY')
+title:SetPoint('TOPLEFT', 8, -8)
 title:SetFont('Fonts\\ARIALN.ttf', 18)
-title:SetPoint('TOPLEFT', container, 8, -8)
 title:SetTextColor(1, 1, 0)
 title:SetShadowOffset(1, -1)
 title:SetJustifyH('LEFT')
 
+local closeButton = CreateFrame('Button', nil, container, 'UIPanelCloseButton')
+closeButton:SetPoint('TOPRIGHT', 0, -1)
+
 local copyBox = CreateFrame('EditBox', nil, container)
+copyBox:SetSize(450, 270)
 copyBox:SetMultiLine(true)
 copyBox:SetMaxLetters(20000)
-copyBox:SetSize(450, 270)
 copyBox:SetScript('OnEscapePressed', function()
     container:Hide()
 end)
 
-local scroll = CreateFrame('ScrollFrame', '$parentScrollBar', container, 'UIPanelScrollFrameTemplate')
-scroll:SetPoint('TOPLEFT', container, 'TOPLEFT', 8, -30)
-scroll:SetPoint('BOTTOMRIGHT', container, 'BOTTOMRIGHT', -30, 8)
+local scroll = CreateFrame('ScrollFrame', nil, container, 'UIPanelScrollFrameTemplate')
+scroll:SetPoint('TOPLEFT', 8, -30)
+scroll:SetPoint('BOTTOMRIGHT', -30, 8)
 scroll:SetScrollChild(copyBox)
-
-local closeButton = CreateFrame('Button', nil, container, 'UIPanelCloseButton')
-closeButton:SetPoint('TOPRIGHT', container, 'TOPRIGHT', 0, -1)
 
 local function GetChatLines(chat)
     local lines = {}
