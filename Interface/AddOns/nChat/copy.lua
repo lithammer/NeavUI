@@ -41,6 +41,11 @@ scroll:SetPoint('TOPLEFT', 8, -30)
 scroll:SetPoint('BOTTOMRIGHT', -30, 8)
 scroll:SetScrollChild(copyBox)
 
+scroll.ScrollBar:SetScript('OnMinMaxChanged', function(self, _, max)
+    -- need to use a timer here, because the values take time to update
+    C_Timer.After(1, function() self:SetValue(max) end)
+end)
+
 local function GetChatLines(chat)
     local lines = {}
     for message = 1, chat:GetNumMessages() do
