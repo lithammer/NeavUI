@@ -1,84 +1,92 @@
 
-local select = select
-local tostring = tostring
+local _, nChat = ...
+local cfg = nChat.Config
+
 local concat = table.concat
 
-    -- First, we create the copy frame
-
-local f = CreateFrame('Frame', nil, UIParent)
-f:SetHeight(220)
-f:SetBackdropColor(0, 0, 0, 1)
-f:SetPoint('BOTTOMLEFT', ChatFrame1EditBox, 'TOPLEFT', 3, 10)
-f:SetPoint('BOTTOMRIGHT', ChatFrame1EditBox, 'TOPRIGHT', -3, 10)
-f:SetFrameStrata('DIALOG')
-f:CreateBeautyBorder(12)
-f:SetBackdrop({
+local chatWidth, chatHeight = ChatFrame1:GetSize()
+local container = CreateFrame('Frame', nil, UIParent)
+container:SetSize(chatWidth, chatHeight)
+container:SetFrameStrata('DIALOG')
+container:CreateBeautyBorder(12)
+container:SetBackdrop({
     bgFile = 'Interface\\DialogFrame\\UI-DialogBox-Background',
-    edgeFile = '',
-    tile = true, tileSize = 16, edgeSize = 16,
-    insets = {left = 3, right = 3, top = 3, bottom = 3
-}})
-f:Hide()
+    edgeSize = 16,
+    tile = true, tileSize = 16,
+    insets = { left = 3, right = 3, top = 3, bottom = 3 }
+})
+container:SetBackdropColor(0, 0, 0)
+container:Hide()
 
-f.t = f:CreateFontString(nil, 'OVERLAY')
-f.t:SetFont('Fonts\\ARIALN.ttf', 18)
-f.t:SetPoint('TOPLEFT', f, 8, -8)
-f.t:SetTextColor(1, 1, 0)
-f.t:SetShadowOffset(1, -1)
-f.t:SetJustifyH('LEFT')
+local title = container:CreateFontString(nil, 'OVERLAY')
+title:SetPoint('TOPLEFT', 8, -8)
+title:SetFont('Fonts\\ARIALN.ttf', 18)
+title:SetTextColor(1, 1, 0)
+title:SetShadowOffset(1, -1)
+title:SetJustifyH('LEFT')
 
-f.b = CreateFrame('EditBox', nil, f)
-f.b:SetMultiLine(true)
-f.b:SetMaxLetters(20000)
-f.b:SetSize(450, 270)
-f.b:SetScript('OnEscapePressed', function()
-    f:Hide()
+local closeButton = CreateFrame('Button', nil, container, 'UIPanelCloseButton')
+closeButton:SetPoint('TOPRIGHT', 0, -1)
+
+local copyBox = CreateFrame('EditBox', nil, container)
+copyBox:SetSize(chatWidth - 38, chatHeight - 38) -- a ScrollFrame's child needs to have its size set explicitly
+copyBox:SetMultiLine(true)
+copyBox:SetAutoFocus(false)
+copyBox:SetScript('OnEscapePressed', function()
+    container:Hide()
 end)
 
-f.s = CreateFrame('ScrollFrame', '$parentScrollBar', f, 'UIPanelScrollFrameTemplate')
-f.s:SetPoint('TOPLEFT', f, 'TOPLEFT', 8, -30)
-f.s:SetPoint('BOTTOMRIGHT', f, 'BOTTOMRIGHT', -30, 8)
-f.s:SetScrollChild(f.b)
+local scroll = CreateFrame('ScrollFrame', nil, container, 'UIPanelScrollFrameTemplate')
+scroll:SetPoint('TOPLEFT', 8, -30)
+scroll:SetPoint('BOTTOMRIGHT', -30, 8)
+scroll:SetScrollChild(copyBox)
 
-f.c = CreateFrame('Button', nil, f, 'UIPanelCloseButton')
-f.c:SetPoint('TOPRIGHT', f, 'TOPRIGHT', 0, -1)
+scroll.ScrollBar:SetScript('OnMinMaxChanged', function(self, _, max)
+    -- need to use a timer here, because the values take time to update
+    C_Timer.After(2, function() self:SetValue(max) end)
+end)
 
-local lines = {}
-local function GetChatLines(...)
-    local count = 1
-    for i = select('#', ...), 1, -1 do
-        local region = select(i, ...)
-        if (region:GetObjectType() == 'FontString') then
-            lines[count] = tostring(region:GetText())
-            count = count + 1
-        end
+local function GetChatLines(chat)
+    local lines = {}
+    for message = 1, chat:GetNumMessages() do
+        lines[message] = chat:GetMessageInfo(message)
     end
 
-    return count - 1
+    return lines
 end
 
-local function copyChat(self)
-    local chat = _G[self:GetName()]
-    local _, fontSize = chat:GetFont()
+local function CopyChat(chat)
+    ToggleFrame(container)
 
-    FCF_SetChatWindowFontSize(self, chat, 0.1)
-    local lineCount = GetChatLines(chat:GetRegions())
-    FCF_SetChatWindowFontSize(self, chat, fontSize)
+    if (container:IsShown()) then
+        if (cfg.showInputBoxAbove) then
+            local editBox = _G[chat:GetName()..'EditBox']
+            container:SetPoint('BOTTOMLEFT', editBox, 'TOPLEFT', 3, 10)
+            container:SetPoint('BOTTOMRIGHT', editBox, 'TOPRIGHT', -3, 10)
+        else
+            local tabHeight = _G[chat:GetName()..'Tab']:GetHeight()
+            container:SetPoint('BOTTOMLEFT', chat, 'TOPLEFT', 0, tabHeight + 10)
+            container:SetPoint('BOTTOMRIGHT', chat, 'TOPRIGHT', 0, tabHeight + 10)
+        end
 
-    if (lineCount > 0) then
-        ToggleFrame(f)
-        f.t:SetText(chat:GetName())
+        local width, height = container:GetSize()
+        copyBox:SetSize(width - 38, height - 38)
+        scroll:UpdateScrollChildRect()
 
-        local f1, f2, f3 = ChatFrame1:GetFont()
-        f.b:SetFont(f1, f2, f3)
+        title:SetText(chat.name)
 
-        local text = concat(lines, '\n', 1, lineCount)
-        f.b:SetText(text)
+        local f1, f2, f3 = chat:GetFont()
+        copyBox:SetFont(f1, f2, f3)
+
+        local lines = GetChatLines(chat)
+        local text = concat(lines, '\n')
+        copyBox:SetMaxLetters(#lines * 255 + #lines)
+        copyBox:SetText(text)
     end
 end
 
 local function CreateCopyButton(self)
-    self.Copy = CreateFrame('Button', nil, _G[self:GetName()])
+    self.Copy = CreateFrame('Button', nil, self)
     self.Copy:SetSize(20, 20)
     self.Copy:SetPoint('TOPRIGHT', self, -5, -5)
 
@@ -103,7 +111,7 @@ local function CreateCopyButton(self)
         self.Copy:GetNormalTexture():SetPoint('CENTER')
 
         if (self.Copy:IsMouseOver()) then
-            copyChat(self)
+            CopyChat(self)
         end
     end)
 end

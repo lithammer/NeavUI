@@ -338,12 +338,13 @@ local function ModChat(self)
         select(k, _G[self..'EditBox']:GetRegions()):SetTexture(nil)
     end
 
-    _G[self..'EditBox']:SetAltArrowKeyMode(false)
+    _G[self..'EditBox']:SetAltArrowKeyMode(cfg.ignoreArrows)
 
     if (cfg.showInputBoxAbove) then
+        local tabHeight = _G[self..'Tab']:GetHeight()
         _G[self..'EditBox']:ClearAllPoints()
-        _G[self..'EditBox']:SetPoint('BOTTOMLEFT', GeneralDockManager, 'TOPLEFT', 2, 5)
-        _G[self..'EditBox']:SetPoint('BOTTOMRIGHT', GeneralDockManager, 'TOPRIGHT', 0, 5)
+        _G[self..'EditBox']:SetPoint('BOTTOMLEFT', chat, 'TOPLEFT', 0, tabHeight + 5)
+        _G[self..'EditBox']:SetPoint('BOTTOMRIGHT', chat, 'TOPRIGHT', 0, tabHeight + 5)
     end
     _G[self..'EditBox']:SetBackdrop({
         bgFile = 'Interface\\Buttons\\WHITE8x8',
