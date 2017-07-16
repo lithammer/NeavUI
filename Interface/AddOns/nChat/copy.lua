@@ -31,6 +31,7 @@ closeButton:SetPoint('TOPRIGHT', 0, -1)
 local copyBox = CreateFrame('EditBox', nil, container)
 copyBox:SetSize(chatWidth - 38, chatHeight - 38) -- a ScrollFrame's child needs to have its size set explicitly
 copyBox:SetMultiLine(true)
+copyBox:SetAutoFocus(false)
 copyBox:SetScript('OnEscapePressed', function()
     container:Hide()
 end)
