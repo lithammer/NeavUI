@@ -31,7 +31,6 @@ closeButton:SetPoint('TOPRIGHT', 0, -1)
 local copyBox = CreateFrame('EditBox', nil, container)
 copyBox:SetSize(chatWidth - 38, chatHeight - 38) -- a ScrollFrame's child needs to have its size set explicitly
 copyBox:SetMultiLine(true)
-copyBox:SetMaxLetters(20000)
 copyBox:SetScript('OnEscapePressed', function()
     container:Hide()
 end)
@@ -59,7 +58,6 @@ local function CopyChat(chat)
     ToggleFrame(container)
 
     if (container:IsShown()) then
-        local lines = GetChatLines(chat)
         if (cfg.showInputBoxAbove) then
             local editBox = _G[chat:GetName()..'EditBox']
             container:SetPoint('BOTTOMLEFT', editBox, 'TOPLEFT', 3, 10)
@@ -79,7 +77,9 @@ local function CopyChat(chat)
         local f1, f2, f3 = chat:GetFont()
         copyBox:SetFont(f1, f2, f3)
 
+        local lines = GetChatLines(chat)
         local text = concat(lines, '\n')
+        copyBox:SetMaxLetters(#lines * 255 + #lines)
         copyBox:SetText(text)
     end
 end
