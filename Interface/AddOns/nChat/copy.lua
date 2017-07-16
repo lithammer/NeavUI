@@ -73,7 +73,7 @@ local function CopyChat(chat)
         copyBox:SetSize(width - 38, height - 38)
         scroll:UpdateScrollChildRect()
 
-        title:SetText(chat:GetName())
+        title:SetText(chat.name)
 
         local f1, f2, f3 = chat:GetFont()
         copyBox:SetFont(f1, f2, f3)
