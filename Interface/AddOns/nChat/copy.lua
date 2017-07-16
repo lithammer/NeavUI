@@ -43,7 +43,7 @@ scroll:SetScrollChild(copyBox)
 
 scroll.ScrollBar:SetScript('OnMinMaxChanged', function(self, _, max)
     -- need to use a timer here, because the values take time to update
-    C_Timer.After(1, function() self:SetValue(max) end)
+    C_Timer.After(2, function() self:SetValue(max) end)
 end)
 
 local function GetChatLines(chat)
@@ -69,6 +69,10 @@ local function CopyChat(chat)
             container:SetPoint('BOTTOMLEFT', chat, 'TOPLEFT', 0, tabHeight + 10)
             container:SetPoint('BOTTOMRIGHT', chat, 'TOPRIGHT', 0, tabHeight + 10)
         end
+
+        local width, height = container:GetSize()
+        copyBox:SetSize(width - 38, height - 38)
+        scroll:UpdateScrollChildRect()
 
         title:SetText(chat:GetName())
 
