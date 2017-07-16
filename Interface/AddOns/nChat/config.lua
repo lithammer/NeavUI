@@ -12,6 +12,7 @@ nChat.Config = {
     enableBorderColoring = true,
 
     showInputBoxAbove = true,  -- Show the chat input box above the chat window
+    ignoreArrows = false, -- Ignore the arrow keys when typing in the input box unless alt is pressed
 
     tab = {
         fontSize = 15,
