@@ -2,7 +2,7 @@
 local _, ns = ...
 
 local function UpdateCastbarColor(self, unit, config)
-    if (self.interrupt) then
+    if (self.notInterruptible) then
         ns.ColorBorder(self, 'white', unpack(config and config.interruptColor or {1, 0, 1}))
 
         if (self.IconOverlay) then
