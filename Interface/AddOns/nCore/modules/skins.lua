@@ -108,7 +108,9 @@ f:SetScript('OnEvent', function(self)
                     bgFile = 'Interface\\Buttons\\WHITE8x8',
                     insets = { left = 0, right = 0, top = 10, bottom = 0 },
                 })
-                SkadaBarWindowSkada:SetBackdropColor(0, 0, 0, 0.5)
+                SkadaBarWindowSkada:SetBackdropColor(0, 0, 0, 0.50)
+                SkadaBarWindowSkada.button:CreateBeautyBorder(11)
+                SkadaBarWindowSkada.button:SetBeautyBorderPadding(2)
             end
         end
     end

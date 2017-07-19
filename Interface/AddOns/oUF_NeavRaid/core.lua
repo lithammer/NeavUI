@@ -260,9 +260,9 @@ local function UpdateThreat(self, _, unit)
 
     if (threatStatus and threatStatus >= 2) then
         local r, g, b = GetThreatStatusColor(threatStatus)
-        self.ThreatGlow:SetBackdropBorderColor(r, g, b, 1)
+        self.ThreatIndicator:SetBackdropBorderColor(r, g, b, 1)
     else
-        self.ThreatGlow:SetBackdropBorderColor(0, 0, 0, 0)
+        self.ThreatIndicator:SetBackdropBorderColor(0, 0, 0, 0)
 
         if (self.ThreatText) then
             self.ThreatText:Hide()
@@ -490,6 +490,29 @@ local function CreateRaidLayout(self, unit)
         otherBar:SetHeight(self:GetHeight())
     end
 
+    local absorbBar = CreateFrame('StatusBar', '$parentTotalAbsorbBar', self)
+    absorbBar:SetStatusBarTexture('Interface\\Buttons\\WHITE8x8')
+    absorbBar:SetStatusBarColor(0.85, 0.85, 0.9, 1)
+
+    if (config.units.raid.smoothUpdates) then
+        absorbBar.Smooth = true
+    end
+
+    if (config.units.raid.horizontalHealthBars) then
+        absorbBar:SetOrientation('HORIZONTAL')
+        absorbBar:SetPoint('TOPLEFT', otherBar:GetStatusBarTexture(), 'TOPRIGHT')
+        absorbBar:SetPoint('BOTTOMLEFT', otherBar:GetStatusBarTexture(), 'BOTTOMRIGHT')
+        absorbBar:SetWidth(self:GetWidth())
+    else
+        absorbBar:SetOrientation('VERTICAL')
+        absorbBar:SetPoint('BOTTOMLEFT', otherBar:GetStatusBarTexture(), 'TOPLEFT')
+        absorbBar:SetPoint('BOTTOMRIGHT', otherBar:GetStatusBarTexture(), 'TOPRIGHT')
+        absorbBar:SetHeight(self:GetHeight())
+    end
+
+    absorbBar.Overlay = absorbBar:CreateTexture('$parentOverlay', 'OVERLAY', 'TotalAbsorbBarOverlayTemplate', 1)
+    absorbBar.Overlay:SetAllPoints(absorbBar:GetStatusBarTexture())
+
     local healAbsorbBar = CreateFrame('StatusBar', '$parentHealAbsorbBar', self)
     healAbsorbBar:SetStatusBarTexture('Interface\\Buttons\\WHITE8x8')
     healAbsorbBar:SetStatusBarColor(0.9, 0.1, 0.3, 1)
@@ -510,35 +533,38 @@ local function CreateRaidLayout(self, unit)
         healAbsorbBar:SetHeight(self:GetHeight())
     end
 
-    local absorbBar = CreateFrame('StatusBar', '$parentTotalAbsorbBar', self)
-    absorbBar:SetStatusBarTexture('Interface\\Buttons\\WHITE8x8')
-    absorbBar:SetStatusBarColor(0.85, 0.85, 0.9, 1)
-
-    if (config.units.raid.smoothUpdates) then
-        absorbBar.Smooth = true
-    end
+    local overAbsorb = self.Health:CreateTexture(nil, "OVERLAY")
 
     if (config.units.raid.horizontalHealthBars) then
-        absorbBar:SetOrientation('HORIZONTAL')
-        absorbBar:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
-        absorbBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
-        absorbBar:SetWidth(self:GetWidth())
+        overAbsorb:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
+        overAbsorb:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
+        overAbsorb:SetWidth(3)
     else
-        absorbBar:SetOrientation('VERTICAL')
-        absorbBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'TOPLEFT')
-        absorbBar:SetPoint('BOTTOMRIGHT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
-        absorbBar:SetHeight(self:GetHeight())
+        overAbsorb:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'TOPLEFT')
+        overAbsorb:SetPoint('BOTTOMRIGHT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
+        overAbsorb:SetHeight(3)
     end
 
-    absorbBar.Overlay = absorbBar:CreateTexture('$parentOverlay', 'ARTWORK', 'TotalAbsorbBarOverlayTemplate', 1)
-    absorbBar.Overlay:SetAllPoints(absorbBar:GetStatusBarTexture())
+    local overHealAbsorb = self.Health:CreateTexture(nil, "OVERLAY")
+
+    if (config.units.raid.horizontalHealthBars) then
+        overHealAbsorb:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
+        overHealAbsorb:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
+        overHealAbsorb:SetWidth(3)
+    else
+        overHealAbsorb:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'TOPLEFT')
+        overHealAbsorb:SetPoint('BOTTOMRIGHT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
+        overHealAbsorb:SetHeight(3)
+    end
 
     self.HealthPrediction = {
         myBar = myBar,
         otherBar = otherBar,
         healAbsorbBar = healAbsorbBar,
         absorbBar = absorbBar,
-        maxOverflow = 1.0,
+        overAbsorb = overAbsorb,
+        overHealAbsorb = overHealAbsorb,
+        maxOverflow = 1.05,
         frequentUpdates = true
     }
 
@@ -567,13 +593,12 @@ local function CreateRaidLayout(self, unit)
 
         -- Threat glow
 
-    self.ThreatGlow = CreateFrame('Frame', nil, self)
-    self.ThreatGlow:SetPoint('TOPLEFT', self, 'TOPLEFT', -4, 4)
-    self.ThreatGlow:SetPoint('BOTTOMRIGHT', self, 'BOTTOMRIGHT', 4, -4)
-    self.ThreatGlow:SetBackdrop({edgeFile = 'Interface\\AddOns\\oUF_NeavRaid\\media\\textureGlow', edgeSize = 3})
-    self.ThreatGlow:SetBackdropBorderColor(0, 0, 0, 0)
-    self.ThreatGlow:SetFrameLevel(self:GetFrameLevel() - 1)
-    self.ThreatGlow.ignore = true
+    self.ThreatIndicator = CreateFrame('Frame', nil, self)
+    self.ThreatIndicator:SetPoint('TOPLEFT', self, 'TOPLEFT', -4, 4)
+    self.ThreatIndicator:SetPoint('BOTTOMRIGHT', self, 'BOTTOMRIGHT', 4, -4)
+    self.ThreatIndicator:SetBackdrop({edgeFile = 'Interface\\AddOns\\oUF_NeavRaid\\media\\textureGlow', edgeSize = 3})
+    self.ThreatIndicator:SetBackdropBorderColor(0, 0, 0, 0)
+    self.ThreatIndicator:SetFrameLevel(self:GetFrameLevel() - 1)
 
         -- Threat text
 

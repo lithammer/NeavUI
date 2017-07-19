@@ -15,16 +15,23 @@ MiniMapMailFrame:SetPoint('BOTTOMRIGHT', Minimap, -4, 5)
 MiniMapMailBorder:SetTexture(nil)
 MiniMapMailIcon:SetTexture(nil)
 
-hooksecurefunc(MiniMapMailFrame, 'Show', function()
-    MiniMapMailBorder:SetTexture(nil)
-    MiniMapMailIcon:SetTexture(nil)
-end)
-
 MiniMapMailFrame.Text = MiniMapMailFrame:CreateFontString(nil, 'OVERLAY')
 MiniMapMailFrame.Text:SetFont('Fonts\\ARIALN.ttf', 15, 'OUTLINE')
 MiniMapMailFrame.Text:SetPoint('BOTTOMRIGHT', MiniMapMailFrame)
 MiniMapMailFrame.Text:SetTextColor(1, 0, 1)
-MiniMapMailFrame.Text:SetText('N')
+
+MiniMapMailBorder:SetTexture(nil)
+MiniMapMailIcon:SetTexture(nil)
+
+MiniMapMailFrame:HookScript('OnEvent', function(self, event, ...)
+    if ( event == "UPDATE_PENDING_MAIL" or event == "MAIL_CLOSED" ) then
+        if ( HasNewMail() ) then
+            MiniMapMailFrame.Text:SetText('N')
+        else
+            MiniMapMailFrame.Text:SetText('')
+        end
+    end
+end)
 
    -- Modify the lfg frame
 

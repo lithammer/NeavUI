@@ -8,7 +8,7 @@ local tonumber = tonumber
 
 local modf = math.modf
 local fmod = math.fmod
-local floot = math.floor
+local floor = math.floor
 local gsub = string.gsub
 local format = string.format
 
@@ -16,12 +16,16 @@ local GetTime = GetTime
 local day, hour, minute = 86400, 3600, 60
 
 local function FormatValue(value)
-    if (value >= 1e6) then
-        return tonumber(format('%.1f', value/1e6))..'m'
-    elseif (value >= 1e3) then
-        return tonumber(format('%.1f', value/1e3))..'k'
-    else
-        return value
+    if value < 1e3 then
+        return floor(value)
+    elseif value >= 1e12 then
+        return string.format("%.3ft", value/1e12)
+    elseif value >= 1e9 then
+        return string.format("%.3fb", value/1e9)
+    elseif value >= 1e6 then
+        return string.format("%.2fm", value/1e6)
+    elseif value >= 1e3 then
+        return string.format("%.1fk", value/1e3)
     end
 end
 
