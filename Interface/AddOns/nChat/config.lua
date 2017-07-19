@@ -7,6 +7,7 @@ nChat.Config = {
 
     enableChatWindowBorder = false,
 
+    enableQuickJoinButton = true,
     enableBottomButton = false,
     enableHyperlinkTooltip = false,
     enableBorderColoring = true,

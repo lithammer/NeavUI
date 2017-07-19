@@ -289,6 +289,9 @@ local function AddonMem()
 end
 
 local function ShowMemoryTip(self)
+    local _, _, lagHome, lagWorld = GetNetStats()
+    if not lagHome then return end
+    
     GameTooltip:ClearLines()
     GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMLEFT')
 
@@ -297,7 +300,6 @@ local function ShowMemoryTip(self)
     GameTooltip:AddLine(COMBAT_MISC_INFO)
     GameTooltip:AddLine(' ')
 
-    local _, _, lagHome, lagWorld = GetNetStats()
     GameTooltip:AddLine('|cffffffffHome:|r '..format('%d ms', lagHome), RGBGradient(select(3, GetNetStats()) / 100))
     GameTooltip:AddLine('|cffffffff'..CHANNEL_CATEGORY_WORLD..':|r '..format('%d ms', lagWorld), RGBGradient(select(4, GetNetStats()) / 100))
 

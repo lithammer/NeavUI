@@ -20,8 +20,6 @@ local tankIcon = '|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES.blp:13:13:0:0
 local healIcon = '|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES.blp:13:13:0:0:64:64:20:39:1:20|t'
 local damagerIcon = '|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES.blp:13:13:0:0:64:64:20:39:22:41|t'
 
--- _G.TOOLTIP_DEFAULT_BACKGROUND_COLOR = {r = 0, g = 0, b = 0}
-
     -- Some tooltip changes
 
 if (cfg.fontOutline) then
@@ -116,8 +114,21 @@ for _, tooltip in pairs({
 
     FloatingGarrisonFollowerTooltip,
     FloatingBattlePetTooltip,
+
+    ReputationParagonTooltip,
 }) do
     ApplyTooltipStyle(tooltip)
+end
+
+    -- Item Compare Tooltips
+
+for i, tooltip in ipairs(WorldMapTooltip.ItemTooltip.Tooltip.shoppingTooltips) do
+    ApplyTooltipStyle(tooltip)
+    local tooltipParent = tooltip:GetParent();
+    tooltip:SetFrameLevel(tooltipParent:GetFrameLevel()+2);
+    tooltip:HookScript('OnUpdate', function(self)
+        self:SetBackdropColor(0, 0, 0, .8);
+    end)
 end
 
     -- Itemquaility border, we use our beautycase functions
@@ -288,12 +299,13 @@ end
 
 local function GetUnitRaidIcon(unit)
     local index = GetRaidTargetIndex(unit)
-
+    local icon = ICON_LIST[index] or ""
+    
     if (index) then
         if (UnitIsPVP(unit) and cfg.showPVPIcons) then
-            return ICON_LIST[index]..'11|t'
+            return icon..'11|t'
         else
-            return ICON_LIST[index]..'11|t '
+            return icon..'11|t '
         end
     else
         return ''
@@ -324,9 +336,9 @@ local function AddMouseoverTarget(self, unit)
     local unitTargetName = UnitName(unit..'target')
     local unitTargetClassColor = RAID_CLASS_COLORS[select(2, UnitClass(unit..'target'))] or { r = 1, g = 0, b = 1 }
     local unitTargetReactionColor = {
-        r = select(1, UnitSelectionColor(unit..'target')),
-        g = select(2, UnitSelectionColor(unit..'target')),
-        b = select(3, UnitSelectionColor(unit..'target'))
+        r = select(1, GameTooltip_UnitColor(unit..'target')),
+        g = select(2, GameTooltip_UnitColor(unit..'target')),
+        b = select(3, GameTooltip_UnitColor(unit..'target'))
     }
 
     if (UnitExists(unit..'target')) then

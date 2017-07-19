@@ -111,11 +111,18 @@ local function FCF_AddMessage(self, text, ...)
     return AddMessage(self, text, ...)
 end
 
-    -- Hide the menu and friend button
+    -- Quick Join Button Options
 
-QuickJoinToastButton:SetAlpha(0)
-QuickJoinToastButton:EnableMouse(false)
-QuickJoinToastButton:UnregisterAllEvents()
+if cfg.enableQuickJoinButton then
+    QuickJoinToastButton:ClearAllPoints();
+    QuickJoinToastButton:SetPoint("BOTTOMLEFT",ChatFrame1Tab,"TOPLEFT",0,0);
+else
+    QuickJoinToastButton:SetAlpha(0)
+    QuickJoinToastButton:EnableMouse(false)
+    QuickJoinToastButton:UnregisterAllEvents()
+end
+
+    -- Hide the menu.
 
 ChatFrameMenuButton:SetAlpha(0)
 ChatFrameMenuButton:EnableMouse(false)

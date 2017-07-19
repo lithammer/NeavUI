@@ -23,16 +23,19 @@ end
     -- Note: Just must be in this instance, when you run the script above
 
 local L = {
+    -- WoD Raids
     ['Hellfire Citadel'] = 1026,
     ['Blackrock Foundry'] = 988,
     ['Highmaul'] = 994,
 
+    -- MoP Raids
     ['Siege of Orgrimmar'] = 953,
     ['Throne of Thunder'] = 930,
     ['Terrace of Endless Spring'] = 886,
     ['Heart of Fear'] = 897,
     ['Mogu\'shan Vaults'] = 896,
 
+    -- Cata Raids
     ['Baradin Hold'] = 752,
     ['Blackwing Descent'] = 754,
     ['The Bastion of Twilight'] = 758,
@@ -40,12 +43,34 @@ local L = {
     ['Firelands'] = 800,
     ['Dragon Soul'] = 824,
 
+    -- Wrath Raids
     -- ['Ulduar'] = 529,
     ['ToC'] = 543,
     ['Naxxramas'] = 535,
     ['Ruby Sanctum'] = 531,
     ['Icecrown'] = 604,
 
+    -- Legion Dungeons
+	['Black Rook Hold'] = 1081,
+    ['Cathedral of Eternal Night'] = 1146,
+	['Court of Stars'] = 1087,
+	['Darkheart Thicket'] = 1067,
+	['Eye of Azshara'] = 1046,
+	['Halls of Valor'] = 1041,
+	['Maw of Souls'] = 1042,
+	['Neltharion\'s Lair'] = 1065,
+    ['Return to Karazhan'] = 1115,
+    ['The Arcway'] = 1079,
+	['Vault of the Wardens'] = 1045,
+	['Violet Hold'] = 1066,
+
+    -- Legion Raids
+    ['The Emerald Nightmare'] = 1094,
+    ['Trial of Valor'] = 1114,
+    ['The Nighthold'] = 1088,
+    ['Tomb of Sargeras'] = 1147,
+    
+    
     -- ['Tol Barad'] = 708,
     -- ['Lost City Tol'vir'] = 747,
     -- ['Deadmines'] = 756,
@@ -73,7 +98,6 @@ ns.auras = {
         [GetSpellInfo(115804)] = 9, -- Mortal Wounds
         [GetSpellInfo(51372)] = 1, -- Daze
         [GetSpellInfo(5246)] = 5, -- Intimidating Shout
-        -- [GetSpellInfo(6788)] = 16, -- Weakened Soul
     },
 
         -- Buffs
@@ -89,6 +113,58 @@ ns.auras = {
         -- Raid Debuffs
 
     instances = {
+        [L['Darkheart Thicket']] = {
+            -- Trash
+            [GetSpellInfo(200620)] = 7, -- Frantic Rip
+            
+            -- Archdruid Glaidalis
+            [GetSpellInfo(196376)] = 7, -- Grievous Tear
+        },
+    
+        [L['Black Rook Hold']] = {
+            -- Trash
+            [GetSpellInfo(225962)] = 7, -- Bloodthirsty Leap
+            
+            -- Smashspite
+            [GetSpellInfo(198245)] = 7, -- Brutal Haymaker
+        },
+    
+        [L['The Emerald Nightmare']] = {
+            -- Ursoc
+            [GetSpellInfo(197943)] = 7, -- Overwhelm
+            -- Nythendra
+            [GetSpellInfo(203096)] = 7, -- Rot
+            -- Xavius
+            [GetSpellInfo(209158)] = 7, -- Blackening Soul
+            -- Il'gynoth
+            [GetSpellInfo(215128)] = 7, -- Cursed Blood
+        },
+    
+        [L["Trial of Valor"]] = {
+            -- Helya
+            [GetSpellInfo(228054)] = 7, -- Taint of the Sea
+        },
+    
+        [L['The Nighthold']] = {
+            -- Chronomatic Anomaly
+            [GetSpellInfo(206609)] = 7, -- Time Release
+            -- Trilliax
+            [GetSpellInfo(206788)] = 7, -- Toxic Slice
+            -- Tichondrius
+            [GetSpellInfo(206480)] = 6, -- Carrion Plague
+            [GetSpellInfo(216040)] = 7, -- Burning Soul
+            -- High Botanist Tel'arn
+            [GetSpellInfo(218424)] = 7, -- Parasitic Fetter
+        },
+        
+        [L['Tomb of Sargeras']] = {
+        
+            -- Demonic Inquisition
+            [GetSpellInfo(233983)] = 7, -- Echoing Anguish
+            -- Sisters of the Moon
+            [GetSpellInfo(233263)] = 7, -- Embrace of the Eclipse
+        },
+        
         [L['Hellfire Citadel']] = {
 
                 -- Hellfire Assault

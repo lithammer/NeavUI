@@ -90,7 +90,7 @@ local function CreateFocusButton(self)
     end)
 
     self.FTarget:SetScript('OnLeave', function()
-        self.T:FadeOut(0)
+        self.T:FadeOut(5)
     end)
 
     self.FTarget:SetScript('OnEnter', function()
@@ -571,12 +571,24 @@ local function CreateUnitLayout(self, unit)
     otherBar:SetPoint('TOPLEFT', myBar:GetStatusBarTexture(), 'TOPRIGHT')
     otherBar:SetPoint('BOTTOMLEFT', myBar:GetStatusBarTexture(), 'BOTTOMRIGHT')
     otherBar:SetWidth(self.Health:GetWidth())
-    otherBar:Hide()
     otherBar.Smooth = true
 
-    local healAbsorbBar = CreateFrame('StatusBar', '$parentHealthAbsorbBar', self)
+    local absorbBar = CreateFrame('StatusBar', '$parentTotalAbsorbBar', self)
+    absorbBar:SetFrameLevel(self:GetFrameLevel() - 1)
+    absorbBar:SetStatusBarTexture('Interface\\Buttons\\WHITE8x8')
+    absorbBar:SetStatusBarColor(0.85, 0.85, 0.9, 1)
+    absorbBar:SetOrientation('HORIZONTAL')
+    absorbBar:SetPoint('TOPLEFT', otherBar:GetStatusBarTexture(), 'TOPRIGHT')
+    absorbBar:SetPoint('BOTTOMLEFT', otherBar:GetStatusBarTexture(), 'BOTTOMRIGHT')
+    absorbBar:SetWidth(self.Health:GetWidth())
+    absorbBar.Smooth = true
+
+    absorbBar.Overlay = absorbBar:CreateTexture('$parentOverlay', 'ARTWORK', 'TotalAbsorbBarOverlayTemplate', 1)
+    absorbBar.Overlay:SetAllPoints(absorbBar:GetStatusBarTexture())
+    
+    local healAbsorbBar = CreateFrame('StatusBar', '$parentHealAbsorbBar', self)
     healAbsorbBar:SetReverseFill(true)
-    healAbsorbBar:SetFrameLevel(self:GetFrameLevel() - 1)
+    healAbsorbBar:SetFrameLevel(self:GetFrameLevel() + 1)
     healAbsorbBar:SetStatusBarTexture('Interface\\Buttons\\WHITE8x8')
     healAbsorbBar:SetStatusBarColor(0.9, 0.1, 0.3, 1)
     healAbsorbBar:SetOrientation('HORIZONTAL')
@@ -585,26 +597,26 @@ local function CreateUnitLayout(self, unit)
     healAbsorbBar:SetWidth(self.Health:GetWidth())
     healAbsorbBar.Smooth = true
 
-    local absorbBar = CreateFrame('StatusBar', '$parentTotalAbsorbBar', self)
-    absorbBar:SetFrameLevel(self:GetFrameLevel() - 1)
-    absorbBar:SetStatusBarTexture('Interface\\Buttons\\WHITE8x8')
-    absorbBar:SetStatusBarColor(0.85, 0.85, 0.9, 1)
-    absorbBar:SetOrientation('HORIZONTAL')
-    absorbBar:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
-    absorbBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
-    absorbBar:SetWidth(self.Health:GetWidth())
-    absorbBar:Hide()
-    absorbBar.Smooth = true
+    local overAbsorb = self.Health:CreateTexture('$parentOverAbsorb', "OVERLAY")
+    overAbsorb:SetPoint('TOP')
+    overAbsorb:SetPoint('BOTTOM')
+    overAbsorb:SetPoint('LEFT', self.Health, 'RIGHT')
+    overAbsorb:SetWidth(10)
 
-    absorbBar.Overlay = absorbBar:CreateTexture('$parentOverlay', 'ARTWORK', 'TotalAbsorbBarOverlayTemplate', 1)
-    absorbBar.Overlay:SetAllPoints(absorbBar:GetStatusBarTexture())
-
+	local overHealAbsorb = self.Health:CreateTexture('$parentOverHealAbsorb', "OVERLAY")
+    overHealAbsorb:SetPoint('TOP')
+    overHealAbsorb:SetPoint('BOTTOM')
+    overHealAbsorb:SetPoint('RIGHT', self.Health, 'LEFT')
+    overHealAbsorb:SetWidth(10)
+    
     self.HealthPrediction = {
         myBar = myBar,
         otherBar = otherBar,
         healAbsorbBar = healAbsorbBar,
         absorbBar = absorbBar,
-        maxOverflow = 1.0,
+        overAbsorb = overAbsorb,
+        overHealAbsorb = overHealAbsorb,
+        maxOverflow = 1.05,
         frequentUpdates = true
     }
 
