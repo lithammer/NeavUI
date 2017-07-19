@@ -30,7 +30,7 @@ ns.UpdateAuraTimer = function(self, elapsed)
     if (timeLeft <= 0) then
         self.remaining:SetText(nil)
     else
-        if (timeLeft <= 5 and IsMine(self.owner)) then
+        if (timeLeft <= 5 and IsMine(self.caster)) then
             self.remaining:SetText('|cffff0000'..ExactTime(timeLeft)..'|r')
             if (not self.ignoreSize) then
                 self.remaining:SetFont(config.font.normal, 12, 'THINOUTLINE')
@@ -60,7 +60,7 @@ ns.PostUpdateIcon = function(icons, unit, icon, index, offset)
     if (config.units.target.colorPlayerDebuffsOnly) then
         if (unit == 'target') then
             if (icon.isDebuff) then
-                if (not IsMine(icon.owner)) then
+                if (not IsMine(icon.caster)) then
                     icon.overlay:SetVertexColor(0.45, 0.45, 0.45)
                     icon.icon:SetDesaturated(true)
                     -- icon:SetAlpha(0.55)
@@ -73,7 +73,7 @@ ns.PostUpdateIcon = function(icons, unit, icon, index, offset)
     end
 
     if (icon.remaining) then
-        if (unit == 'target' and icon.isDebuff and not IsMine(icon.owner) and (not UnitIsFriend('player', unit) and UnitCanAttack(unit, 'player') and not UnitPlayerControlled(unit)) and not config.units.target.showAllTimers ) then
+        if (unit == 'target' and icon.isDebuff and not IsMine(icon.caster) and (not UnitIsFriend('player', unit) and UnitCanAttack(unit, 'player') and not UnitPlayerControlled(unit)) and not config.units.target.showAllTimers ) then
             if (icon.remaining:IsShown()) then
                 icon.remaining:Hide()
             end
