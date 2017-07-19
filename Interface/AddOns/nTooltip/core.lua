@@ -124,10 +124,10 @@ end
 
 for i, tooltip in ipairs(WorldMapTooltip.ItemTooltip.Tooltip.shoppingTooltips) do
     ApplyTooltipStyle(tooltip)
-    local tooltipParent = tooltip:GetParent();
-    tooltip:SetFrameLevel(tooltipParent:GetFrameLevel()+2);
+    local tooltipParent = tooltip:GetParent()
+    tooltip:SetFrameLevel(tooltipParent:GetFrameLevel() + 2)
     tooltip:HookScript('OnUpdate', function(self)
-        self:SetBackdropColor(0, 0, 0, .8);
+        self:SetBackdropColor(0, 0, 0, .8)
     end)
 end
 
@@ -299,8 +299,8 @@ end
 
 local function GetUnitRaidIcon(unit)
     local index = GetRaidTargetIndex(unit)
-    local icon = ICON_LIST[index] or ""
-    
+    local icon = ICON_LIST[index] or ''
+
     if (index) then
         if (UnitIsPVP(unit) and cfg.showPVPIcons) then
             return icon..'11|t'

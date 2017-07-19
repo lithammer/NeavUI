@@ -23,32 +23,11 @@ end
     -- Note: Just must be in this instance, when you run the script above
 
 local L = {
-    -- WoD Raids
-    ['Hellfire Citadel'] = 1026,
-    ['Blackrock Foundry'] = 988,
-    ['Highmaul'] = 994,
-
-    -- MoP Raids
-    ['Siege of Orgrimmar'] = 953,
-    ['Throne of Thunder'] = 930,
-    ['Terrace of Endless Spring'] = 886,
-    ['Heart of Fear'] = 897,
-    ['Mogu\'shan Vaults'] = 896,
-
-    -- Cata Raids
-    ['Baradin Hold'] = 752,
-    ['Blackwing Descent'] = 754,
-    ['The Bastion of Twilight'] = 758,
-    ['Throne of the Four Winds'] = 773,
-    ['Firelands'] = 800,
-    ['Dragon Soul'] = 824,
-
-    -- Wrath Raids
-    -- ['Ulduar'] = 529,
-    ['ToC'] = 543,
-    ['Naxxramas'] = 535,
-    ['Ruby Sanctum'] = 531,
-    ['Icecrown'] = 604,
+    -- Legion Raids
+    ['The Emerald Nightmare'] = 1094,
+    ['Trial of Valor'] = 1114,
+    ['The Nighthold'] = 1088,
+    ['Tomb of Sargeras'] = 1147,
 
     -- Legion Dungeons
     ['Black Rook Hold'] = 1081,
@@ -64,12 +43,32 @@ local L = {
     ['Vault of the Wardens'] = 1045,
     ['Violet Hold'] = 1066,
 
-    -- Legion Raids
-    ['The Emerald Nightmare'] = 1094,
-    ['Trial of Valor'] = 1114,
-    ['The Nighthold'] = 1088,
-    ['Tomb of Sargeras'] = 1147,
+    -- Warlords of Draenor Raids
+    ['Hellfire Citadel'] = 1026,
+    ['Blackrock Foundry'] = 988,
+    ['Highmaul'] = 994,
 
+    -- Mists of Pandaria Raids
+    ['Siege of Orgrimmar'] = 953,
+    ['Throne of Thunder'] = 930,
+    ['Terrace of Endless Spring'] = 886,
+    ['Heart of Fear'] = 897,
+    ['Mogu\'shan Vaults'] = 896,
+
+    -- Cataclysm Raids
+    ['Baradin Hold'] = 752,
+    ['Blackwing Descent'] = 754,
+    ['The Bastion of Twilight'] = 758,
+    ['Throne of the Four Winds'] = 773,
+    ['Firelands'] = 800,
+    ['Dragon Soul'] = 824,
+
+    -- Wrath of the Lich King Raids
+    -- ['Ulduar'] = 529,
+    ['ToC'] = 543,
+    ['Naxxramas'] = 535,
+    ['Ruby Sanctum'] = 531,
+    ['Icecrown'] = 604,
 
     -- ['Tol Barad'] = 708,
     -- ['Lost City Tol'vir'] = 747,

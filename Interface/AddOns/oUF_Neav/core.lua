@@ -585,7 +585,7 @@ local function CreateUnitLayout(self, unit)
 
     absorbBar.Overlay = absorbBar:CreateTexture('$parentOverlay', 'ARTWORK', 'TotalAbsorbBarOverlayTemplate', 1)
     absorbBar.Overlay:SetAllPoints(absorbBar:GetStatusBarTexture())
-    
+
     local healAbsorbBar = CreateFrame('StatusBar', '$parentHealAbsorbBar', self)
     healAbsorbBar:SetReverseFill(true)
     healAbsorbBar:SetFrameLevel(self:GetFrameLevel() + 1)
@@ -597,18 +597,18 @@ local function CreateUnitLayout(self, unit)
     healAbsorbBar:SetWidth(self.Health:GetWidth())
     healAbsorbBar.Smooth = true
 
-    local overAbsorb = self.Health:CreateTexture('$parentOverAbsorb', "OVERLAY")
+    local overAbsorb = self.Health:CreateTexture('$parentOverAbsorb', 'OVERLAY')
     overAbsorb:SetPoint('TOP')
     overAbsorb:SetPoint('BOTTOM')
     overAbsorb:SetPoint('LEFT', self.Health, 'RIGHT')
     overAbsorb:SetWidth(10)
 
-	local overHealAbsorb = self.Health:CreateTexture('$parentOverHealAbsorb', "OVERLAY")
+    local overHealAbsorb = self.Health:CreateTexture('$parentOverHealAbsorb', 'OVERLAY')
     overHealAbsorb:SetPoint('TOP')
     overHealAbsorb:SetPoint('BOTTOM')
     overHealAbsorb:SetPoint('RIGHT', self.Health, 'LEFT')
     overHealAbsorb:SetWidth(10)
-    
+
     self.HealthPrediction = {
         myBar = myBar,
         otherBar = otherBar,

@@ -533,7 +533,7 @@ local function CreateRaidLayout(self, unit)
         healAbsorbBar:SetHeight(self:GetHeight())
     end
 
-    local overAbsorb = self.Health:CreateTexture(nil, "OVERLAY")
+    local overAbsorb = self.Health:CreateTexture(nil, 'OVERLAY')
 
     if (config.units.raid.horizontalHealthBars) then
         overAbsorb:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
@@ -545,7 +545,7 @@ local function CreateRaidLayout(self, unit)
         overAbsorb:SetHeight(3)
     end
 
-    local overHealAbsorb = self.Health:CreateTexture(nil, "OVERLAY")
+    local overHealAbsorb = self.Health:CreateTexture(nil, 'OVERLAY')
 
     if (config.units.raid.horizontalHealthBars) then
         overHealAbsorb:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')

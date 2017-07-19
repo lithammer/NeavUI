@@ -114,8 +114,8 @@ end
     -- Quick Join Button Options
 
 if cfg.enableQuickJoinButton then
-    QuickJoinToastButton:ClearAllPoints();
-    QuickJoinToastButton:SetPoint("BOTTOMLEFT",ChatFrame1Tab,"TOPLEFT",0,0);
+    QuickJoinToastButton:ClearAllPoints()
+    QuickJoinToastButton:SetPoint('BOTTOMLEFT', ChatFrame1Tab, 'TOPLEFT', 0, 0)
 else
     QuickJoinToastButton:SetAlpha(0)
     QuickJoinToastButton:EnableMouse(false)

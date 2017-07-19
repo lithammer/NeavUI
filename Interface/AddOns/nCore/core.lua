@@ -26,7 +26,7 @@ SlashCmdList['RELOADUI'] = function()
 end
 SLASH_RELOADUI1 = '/rl'
 
-if ( AddonList ) then
+if AddonList then
     _G['ADDON_DEMAND_LOADED'] = "On Demand";
 end
 

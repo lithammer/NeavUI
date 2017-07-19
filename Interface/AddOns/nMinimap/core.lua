@@ -4,7 +4,7 @@ local cfg = nMinimap.Config
 
     -- Texture Fix
 
-Minimap:SetBlipTexture('Interface\\Minimap\\ObjectIconsAtlas')    
+Minimap:SetBlipTexture('Interface\\Minimap\\ObjectIconsAtlas')
 
     -- A 'new' mail notification
 
@@ -24,12 +24,9 @@ MiniMapMailBorder:SetTexture(nil)
 MiniMapMailIcon:SetTexture(nil)
 
 MiniMapMailFrame:HookScript('OnEvent', function(self, event, ...)
-    if ( event == "UPDATE_PENDING_MAIL" or event == "MAIL_CLOSED" ) then
-        if ( HasNewMail() ) then
-            MiniMapMailFrame.Text:SetText('N')
-        else
-            MiniMapMailFrame.Text:SetText('')
-        end
+    if event == 'UPDATE_PENDING_MAIL' or event == 'MAIL_CLOSED' then
+        local text = HasNewMail() and 'N' or ''
+        MiniMapMailFrame.Text:SetText(text)
     end
 end)
 
