@@ -516,6 +516,7 @@ local function CreateRaidLayout(self, unit)
     local healAbsorbBar = CreateFrame('StatusBar', '$parentHealAbsorbBar', self)
     healAbsorbBar:SetStatusBarTexture('Interface\\Buttons\\WHITE8x8')
     healAbsorbBar:SetStatusBarColor(0.9, 0.1, 0.3, 1)
+    healAbsorbBar:SetReverseFill(true)
 
     if (config.units.raid.smoothUpdates) then
         healAbsorbBar.Smooth = true
@@ -525,35 +526,35 @@ local function CreateRaidLayout(self, unit)
         healAbsorbBar:SetOrientation('HORIZONTAL')
         healAbsorbBar:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
         healAbsorbBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
-        healAbsorbBar:SetWidth(self:GetWidth())
+        healAbsorbBar:SetWidth(self.Health:GetWidth())
     else
         healAbsorbBar:SetOrientation('VERTICAL')
         healAbsorbBar:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'TOPLEFT')
         healAbsorbBar:SetPoint('BOTTOMRIGHT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
-        healAbsorbBar:SetHeight(self:GetHeight())
+        healAbsorbBar:SetHeight(self.Health:GetHeight())
     end
 
     local overAbsorb = self.Health:CreateTexture(nil, 'OVERLAY')
 
     if (config.units.raid.horizontalHealthBars) then
-        overAbsorb:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
-        overAbsorb:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
+        overAbsorb:SetPoint('TOPLEFT', self.Health, 'TOPRIGHT')
+        overAbsorb:SetPoint('BOTTOMLEFT', self.Health, 'BOTTOMRIGHT')
         overAbsorb:SetWidth(3)
     else
-        overAbsorb:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'TOPLEFT')
-        overAbsorb:SetPoint('BOTTOMRIGHT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
+        overAbsorb:SetPoint('BOTTOMLEFT', self.Health, 'TOPLEFT')
+        overAbsorb:SetPoint('BOTTOMRIGHT', self.Health, 'TOPRIGHT')
         overAbsorb:SetHeight(3)
     end
 
     local overHealAbsorb = self.Health:CreateTexture(nil, 'OVERLAY')
 
     if (config.units.raid.horizontalHealthBars) then
-        overHealAbsorb:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
-        overHealAbsorb:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMRIGHT')
+        overHealAbsorb:SetPoint('TOPLEFT', self.Health, 'TOPRIGHT')
+        overHealAbsorb:SetPoint('BOTTOMLEFT', self.Health, 'BOTTOMRIGHT')
         overHealAbsorb:SetWidth(3)
     else
-        overHealAbsorb:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'TOPLEFT')
-        overHealAbsorb:SetPoint('BOTTOMRIGHT', self.Health:GetStatusBarTexture(), 'TOPRIGHT')
+        overHealAbsorb:SetPoint('BOTTOMLEFT', self.Health, 'TOPLEFT')
+        overHealAbsorb:SetPoint('BOTTOMRIGHT', self.Health, 'TOPRIGHT')
         overHealAbsorb:SetHeight(3)
     end
 
