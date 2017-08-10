@@ -15,7 +15,7 @@ all: build
 build: $(PROJECTS)
 
 clean:
-	rm -f $(PROJECTS)
+	$(RM) $(PROJECTS)
 
 $(NMAINBAR_ZIP):
 	(cd Interface/AddOns; zip -r "$(CURDIR)/$@" nMainbar -x '*.git*' '.DS_Store')
