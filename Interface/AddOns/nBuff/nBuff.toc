@@ -1,4 +1,4 @@
-## Interface: 70200
+## Interface: 70300
 ## Title: |cffCC3333 n|rBuff
 
 config.lua
