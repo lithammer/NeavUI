@@ -33,7 +33,7 @@ SlashCmdList['WORLDMARKERS'] = function()
 		if (button:IsVisible()) then
 			button:Hide()
 		else
-			PlaySound('igQuestFailed')
+			PlaySound(SOUNDKIT.IG_QUEST_CANCEL)
 			UIErrorsFrame:AddMessage('You are not in a party and/or not eligible for marking', 1, 0, 0)
 		end
 	end
