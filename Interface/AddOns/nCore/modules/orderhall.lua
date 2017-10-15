@@ -1,3 +1,4 @@
+-- Small Order: Hides default Blizzard order hall ui bar and replaces it with a custom version.
 
     -- Create SmallOrder Frame
 
@@ -36,35 +37,16 @@ TroopsOverlay:SetPoint('RIGHT', SmallOrder, 'RIGHT', 0, 0)
 TroopsOverlay:EnableMouse(true)
 TroopsOverlay:SetFrameStrata('HIGH')
 
-local function onEvent(self, event)
+    -- Change Order Resources Text
 
-        -- Checks Location
-
-    if (C_Garrison.IsPlayerInGarrison(LE_GARRISON_TYPE_7_0)) then
-        SmallOrder:Show()
-        TroopsOverlay:Show()
-    else
-        SmallOrder:Hide()
-        TroopsOverlay:Hide()
-        return
-    end
-
-        -- Hide Default Bar
-
-    if OrderHallCommandBar then
-        OrderHallCommandBar:Hide()
-        OrderHallCommandBar:UnregisterAllEvents()
-        OrderHallCommandBar.Show = function() end
-    end
-    OrderHall_CheckCommandBar = function () end
-
-        -- Change Order Resources Text
-
+local function SetCurrency()
     local name, amount = GetCurrencyInfo(1220)
     amountDisplay:SetText(name..': '..amount)
+end
 
-        -- Count and display number of troops.
+    -- Count and display number of troops.
 
+local function SetTroops()
     local followerInfo = C_Garrison.GetFollowers() or {}
 
     local followerTotal = 0
@@ -80,7 +62,51 @@ local function onEvent(self, event)
     followerDisplay:SetText(FOLLOWERLIST_LABEL_TROOPS..': '..followerTotal)
 end
 
-    -- Gets Follower Info and Outputs it in Tooltip when TroopsOverlay is clicked.
+local function onEvent(self, event, ...)
+
+    if ( event == "GARRISON_UPDATE" ) then
+
+        if ( C_Garrison.IsPlayerInGarrison(LE_GARRISON_TYPE_7_0) ) then
+
+            -- Hide Default Bar
+            if ( OrderHallCommandBar ) then
+                OrderHallCommandBar:Hide()
+                OrderHallCommandBar:UnregisterAllEvents()
+                OrderHallCommandBar.Show = function() end
+            end
+            OrderHall_CheckCommandBar = function () end
+
+            -- Show SmallOrder
+            SmallOrder:Show()
+            TroopsOverlay:Show()
+
+            -- Update Display
+            SetCurrency()
+            SetTroops()
+        else
+            -- Hide SmallOrder
+            if ( SmallOrder:IsVisible() ) then
+                SmallOrder:Hide()
+                TroopsOverlay:Hide()
+                return
+            end
+        end
+
+    elseif ( event == "CURRENCY_DISPLAY_UPDATE" ) then
+        if ( not C_Garrison.IsPlayerInGarrison(LE_GARRISON_TYPE_7_0) ) then return end
+
+        -- Update Currency Display
+        SetCurrency()
+
+    elseif ( event == "GARRISON_FOLLOWER_ADDED" or event == "GARRISON_FOLLOWER_REMOVED" ) then
+        if ( not C_Garrison.IsPlayerInGarrison(LE_GARRISON_TYPE_7_0) ) then return end
+
+        -- Update Troop Count
+        SetTroops()
+    end
+end
+
+    -- Gets follower info and outputs it in tooltip on TroopsOverlay mouseover.
 
 TroopsOverlay:SetScript('OnEnter', function(self)
 
@@ -90,12 +116,15 @@ TroopsOverlay:SetScript('OnEnter', function(self)
     GameTooltip:ClearLines()
     GameTooltip:AddLine(FOLLOWERLIST_LABEL_TROOPS, 0, 1, 0)
 
+    local sort_func = function( a,b ) return a.name < b.name end
+    table.sort( followerInfo, sort_func )
+
     for i, follower in ipairs(followerInfo) do
-      if follower.isCollected then
-        if follower.isTroop then
-            GameTooltip:AddLine(follower.name .. ' - '.. DURABILITY .. ': ' .. follower.durability .. '/' .. follower.maxDurability)
+        if follower.isCollected then
+            if follower.isTroop then
+                GameTooltip:AddLine(follower.name .. ' - '.. DURABILITY .. ': ' .. follower.durability .. '/' .. follower.maxDurability)
+            end
         end
-      end
     end
 
     GameTooltip:Show()
@@ -108,14 +137,7 @@ TroopsOverlay:SetScript('OnLeave', function()
 end)
 
 SmallOrder:SetScript('OnEvent', onEvent)
-SmallOrder:RegisterEvent('ADDON_LOADED')
 SmallOrder:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
-SmallOrder:RegisterEvent('DISPLAY_SIZE_CHANGED')
-SmallOrder:RegisterEvent('UI_SCALE_CHANGED')
-SmallOrder:RegisterEvent('GARRISON_TALENT_COMPLETE')
-SmallOrder:RegisterEvent('GARRISON_TALENT_UPDATE')
-SmallOrder:RegisterEvent('GARRISON_FOLLOWER_CATEGORIES_UPDATED')
+SmallOrder:RegisterEvent('GARRISON_UPDATE')
 SmallOrder:RegisterEvent('GARRISON_FOLLOWER_ADDED')
 SmallOrder:RegisterEvent('GARRISON_FOLLOWER_REMOVED')
-SmallOrder:RegisterEvent('GARRISON_UPDATE')
-SmallOrder:RegisterUnitEvent('UNIT_AURA', 'player')
