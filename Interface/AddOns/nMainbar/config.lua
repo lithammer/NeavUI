@@ -97,6 +97,7 @@ nMainbar.Config = {
 
     multiBarLeft = {
         mouseover = false,
+        scale = 1,
         hiddenAlpha = 0,
         alpha = 1,
         orderHorizontal = false,
@@ -104,6 +105,7 @@ nMainbar.Config = {
 
     multiBarRight = {
         mouseover = false,
+        scale = 1,
         hiddenAlpha = 0,
         alpha = 1,
         orderHorizontal = false,
@@ -111,12 +113,14 @@ nMainbar.Config = {
 
     multiBarBottomLeft = {
         mouseover = false,
+        scale = 1,
         hiddenAlpha = 0,
         alpha = 1,
     },
 
     multiBarBottomRight = {
         mouseover = true,
+        scale = 1,
         hiddenAlpha = 0,
         alpha = 1,
         orderVertical = false,

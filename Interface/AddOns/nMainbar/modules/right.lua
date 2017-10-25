@@ -3,7 +3,7 @@ local _, nMainbar = ...
 local cfg = nMainbar.Config
 
 MultiBarRight:SetAlpha(cfg.multiBarRight.alpha)
-MultiBarRight:SetScale(cfg.MainMenuBar.scale)
+MultiBarRight:SetScale(cfg.multiBarRight.scale)
 
 MultiBarRight:SetParent(UIParent)
 
