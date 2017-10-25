@@ -3,6 +3,7 @@ local _, nMainbar = ...
 local cfg = nMainbar.Config
 
 MultiBarBottomRight:SetAlpha(cfg.multiBarBottomRight.alpha)
+MultiBarBottomRight:SetScale(cfg.multiBarBottomRight.scale)
 
 if (cfg.multiBarBottomRight.orderVertical) then
     for i = 2, 12 do
