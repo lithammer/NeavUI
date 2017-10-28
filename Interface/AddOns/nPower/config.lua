@@ -31,6 +31,15 @@ nPower.Config = {
     extraFontSize = 16,
     extraFontOutline = true,
 
+    hp = {
+        show = false,
+        hpFont = 'Fonts\\ARIALN.ttf',
+        hpFontOutline = true,
+        hpFontSize = 25,
+        hpFontColor = {0.0, 1.0, 0.0},
+        position = {'CENTER', 0, 0},
+    },
+
     mana = {
         show = true,
     },

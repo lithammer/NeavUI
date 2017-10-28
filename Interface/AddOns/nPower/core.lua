@@ -24,6 +24,12 @@ if (config.showCombatRegen) then
     f:RegisterUnitEvent('UNIT_AURA', 'player')
 end
 
+if (config.hp.show) then 
+    f:RegisterUnitEvent('UNIT_HEALTH', 'player')
+    f:RegisterUnitEvent('UNIT_MAX_HEALTH', 'player')
+    f:RegisterUnitEvent('UNIT_HEALTH_FREQUENT', 'player')
+end
+
 f:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
 f:RegisterUnitEvent('UNIT_ENTERING_VEHICLE', 'player')
 f:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
@@ -75,6 +81,19 @@ if (playerClass == 'DEATHKNIGHT' and config.showRunes) then
     f.Rune[4]:SetPoint('CENTER', 8, 2)
     f.Rune[5]:SetPoint('CENTER', 26, 2)
     f.Rune[6]:SetPoint('CENTER', 42, 2)
+end
+
+if (config.hp.show) then
+    f.HPText = f:CreateFontString(nil, 'ARTWORK')
+    if (config.hp.hpFontOutline) then
+        f.HPText:SetFont(config.hp.hpFont, config.hp.hpFontSize, 'THINOUTLINE')
+        f.HPText:SetShadowOffset(0, 0)
+    else
+        f.HPText:SetFont(config.hp.hpFont, config.hp.hpFontSize)
+        f.HPText:SetShadowOffset(1, -1)
+    end
+    f.HPText:SetParent(f)
+    f.HPText:SetPoint(unpack(config.hp.position))
 end
 
 f.Power = CreateFrame('StatusBar', nil, UIParent)
@@ -173,6 +192,13 @@ local function SetPowerColor()
         return 1, 1, 1
     end
 end
+
+local function GetHPPercentage()
+    local currentHP = UnitHealth('player')
+    local maxHP = UnitHealthMax('player')
+    return math.floor(100*currentHP/maxHP)
+end
+
 
 local function CalcRuneCooldown(self)
     local start, duration, runeReady = GetRuneCooldown(self)
@@ -292,6 +318,21 @@ f:SetScript('OnEvent', function(self, event, arg1)
 
     if (f.mpreg and (event == 'UNIT_AURA' or event == 'PLAYER_ENTERING_WORLD')) then
         f.mpreg:SetText(GetRealMpFive())
+    end
+
+    if (f.HPText) then
+        if (UnitHasVehicleUI('player')) then
+            if (f.HPText:IsShown()) then
+                f.HPText:Hide()
+            end
+        else
+            f.HPText:SetTextColor(unpack(config.hp.hpFontColor))
+            f.HPText:SetText(GetHPPercentage())
+
+            if (not f.HPText:IsShown()) then
+                f.HPText:Show()
+            end
+        end
     end
 
     UpdateBar()
