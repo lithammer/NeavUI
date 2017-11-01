@@ -28,9 +28,6 @@ if (config.hp.show) then
     f:RegisterUnitEvent('UNIT_HEALTH', 'player')
     f:RegisterUnitEvent('UNIT_MAX_HEALTH', 'player')
     f:RegisterUnitEvent('UNIT_HEALTH_FREQUENT', 'player')
-    if (playerClass == 'DRUID') then
-        f:RegisterUnitEvent('UPDATE_SHAPESHIFT_FORMS', 'player')
-    end
 end
 
 f:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
@@ -97,7 +94,7 @@ if (config.hp.show) then
     end
     f.HPText:SetParent(f)
     if (f.extraPoints) then
-        f.HPText:SetPoint('CENTER', 0, config.extraFontSize + 5)
+        f.HPText:SetPoint('CENTER', 0, config.extraFontSize + config.hp.hpFontHeightAdjustment)
     else
         f.HPText:SetPoint('CENTER', 0, 0)
     end
@@ -322,14 +319,11 @@ f:SetScript('OnEvent', function(self, event, arg1)
                 f.extraPoints:Show()
             end
 
-            -- check for druid and move the text as needed
-            if ( f.HPText and playerClass == 'DRUID' and config.showComboPoints ) then
-                local shape = GetShapeshiftFormID()
-                if (shape == 1 or nump > 0) then
-                    f.HPText:SetPoint('CENTER', 0, config.extraFontSize + 5)
-                else
-                    f.HPText:SetPoint('CENTER', 0, 0)
-                end
+            -- move the hp text if no points
+            if ( f.HPText and nump == 0) then
+                f.HPText:SetPoint('CENTER', 0, 0)
+            else
+                f.HPText:SetPoint('CENTER', 0, config.extraFontSize + config.hp.hpFontHeightAdjustment)
             end
 
         end
