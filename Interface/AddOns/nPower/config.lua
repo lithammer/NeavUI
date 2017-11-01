@@ -37,7 +37,6 @@ nPower.Config = {
         hpFontOutline = true,
         hpFontSize = 25,
         hpFontColor = {0.0, 1.0, 0.0},
-        position = {'CENTER', 0, 0},
     },
 
     mana = {

@@ -28,6 +28,9 @@ if (config.hp.show) then
     f:RegisterUnitEvent('UNIT_HEALTH', 'player')
     f:RegisterUnitEvent('UNIT_MAX_HEALTH', 'player')
     f:RegisterUnitEvent('UNIT_HEALTH_FREQUENT', 'player')
+    if (playerClass == 'DRUID') then
+        f:RegisterUnitEvent('UPDATE_SHAPESHIFT_FORMS', 'player')
+    end
 end
 
 f:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
@@ -93,7 +96,12 @@ if (config.hp.show) then
         f.HPText:SetShadowOffset(1, -1)
     end
     f.HPText:SetParent(f)
-    f.HPText:SetPoint(unpack(config.hp.position))
+    if (f.extraPoints) then
+        f.HPText:SetPoint('CENTER', 0, config.extraFontSize + 2)
+    else
+        f.HPText:SetPoint('CENTER', 0, 0)
+    end
+    
 end
 
 f.Power = CreateFrame('StatusBar', nil, UIParent)
@@ -331,6 +339,15 @@ f:SetScript('OnEvent', function(self, event, arg1)
 
             if (not f.HPText:IsShown()) then
                 f.HPText:Show()
+            end
+        end
+        -- check for druid and move the text as needed
+        if ( playerClass == 'DRUID' and config.showComboPoints ) then
+            local shape = GetShapeshiftFormID()
+            if (shape == 1) then
+                f.HPText:SetPoint('CENTER', 0, config.extraFontSize + 2)
+            else
+                f.HPText:SetPoint('CENTER', 0, 0)
             end
         end
     end
