@@ -97,7 +97,7 @@ if (config.hp.show) then
     end
     f.HPText:SetParent(f)
     if (f.extraPoints) then
-        f.HPText:SetPoint('CENTER', 0, config.extraFontSize + 2)
+        f.HPText:SetPoint('CENTER', 0, config.extraFontSize + 5)
     else
         f.HPText:SetPoint('CENTER', 0, 0)
     end
@@ -321,6 +321,17 @@ f:SetScript('OnEvent', function(self, event, arg1)
             if (not f.extraPoints:IsShown()) then
                 f.extraPoints:Show()
             end
+
+            -- check for druid and move the text as needed
+            if ( f.HPText and playerClass == 'DRUID' and config.showComboPoints ) then
+                local shape = GetShapeshiftFormID()
+                if (shape == 1 or nump > 0) then
+                    f.HPText:SetPoint('CENTER', 0, config.extraFontSize + 5)
+                else
+                    f.HPText:SetPoint('CENTER', 0, 0)
+                end
+            end
+
         end
     end
 
@@ -339,15 +350,6 @@ f:SetScript('OnEvent', function(self, event, arg1)
 
             if (not f.HPText:IsShown()) then
                 f.HPText:Show()
-            end
-        end
-        -- check for druid and move the text as needed
-        if ( playerClass == 'DRUID' and config.showComboPoints ) then
-            local shape = GetShapeshiftFormID()
-            if (shape == 1) then
-                f.HPText:SetPoint('CENTER', 0, config.extraFontSize + 2)
-            else
-                f.HPText:SetPoint('CENTER', 0, 0)
             end
         end
     end
