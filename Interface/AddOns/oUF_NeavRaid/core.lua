@@ -801,19 +801,33 @@ oUF:Factory(function(self)
     self:SetActiveStyle('oUF_Neav_Raid')
 
     local rlayout = config.units.raid.layout
-    local relpoint, anchpoint, xOffset, yOffset
+    local relpoint, anchpoint, xOffset, yOffset, columnRelPoint
 
     if (rlayout.orientation == 'HORIZONTAL') then
-        if (rlayout.initialAnchor == 'TOPRIGHT' or rlayout.initialAnchor == 'TOPLEFT') then
+        if (rlayout.initialAnchor == 'TOPLEFT') then
             relpoint = 'LEFT'
             anchpoint = 'TOP'
             xOffset = rlayout.frameSpacing
             yOffset = rlayout.frameSpacing
-        elseif (rlayout.initialAnchor == 'BOTTOMLEFT' or rlayout.initialAnchor == 'BOTTOMRIGHT') then
-            relpoint = 'BOTTOM'
-            anchpoint = 'LEFT'
+            columnRelPoint = 'BOTTOMLEFT'
+        elseif (rlayout.initialAnchor == 'TOPRIGHT') then
+            relpoint = 'LEFT'
+            anchpoint = 'TOP'
+            xOffset = rlayout.frameSpacing
+            yOffset = rlayout.frameSpacing
+            columnRelPoint = 'BOTTOMRIGHT'
+        elseif (rlayout.initialAnchor == 'BOTTOMLEFT') then
+            relpoint = 'RIGHT'
+            anchpoint = 'BOTTOM'
             xOffset = -rlayout.frameSpacing
             yOffset = rlayout.frameSpacing
+            columnRelPoint = 'TOPLEFT'
+        elseif (rlayout.initialAnchor == 'BOTTOMRIGHT') then
+            relpoint = 'RIGHT'
+            anchpoint = 'BOTTOM'
+            xOffset = -rlayout.frameSpacing
+            yOffset = rlayout.frameSpacing
+            columnRelPoint = 'TOPRIGHT'
         end
     elseif (rlayout.orientation == 'VERTICAL') then
         if (rlayout.initialAnchor == 'TOPRIGHT') then
@@ -821,32 +835,38 @@ oUF:Factory(function(self)
             anchpoint = 'RIGHT'
             xOffset = -rlayout.frameSpacing
             yOffset = -rlayout.frameSpacing
+            columnRelPoint = 'TOPLEFT'
         elseif (rlayout.initialAnchor == 'TOPLEFT') then
             relpoint = 'TOP'
             anchpoint = 'LEFT'
             xOffset = rlayout.frameSpacing
             yOffset = -rlayout.frameSpacing
+            columnRelPoint = 'TOPRIGHT'
         elseif (rlayout.initialAnchor == 'BOTTOMLEFT') then
             relpoint = 'BOTTOM'
             anchpoint = 'LEFT'
             xOffset = rlayout.frameSpacing
             yOffset = rlayout.frameSpacing
+            columnRelPoint = 'BOTTOMRIGHT'
         elseif (rlayout.initialAnchor == 'BOTTOMRIGHT') then
             relpoint = 'BOTTOM'
             anchpoint = 'RIGHT'
             xOffset = -rlayout.frameSpacing
             yOffset = rlayout.frameSpacing
+            columnRelPoint = 'BOTTOMLEFT'
         end
     end
 
-    local raid = self:SpawnHeader('oUF_Raid', nil, 'raid,party,solo',
+    local raid = {}
+    for i = 1, 8 do
+        raid[i] = self:SpawnHeader('oUF_Raid'..i, nil, 'party,raid,solo',
         'showSolo', config.units.raid.showSolo,
         'showParty', config.units.raid.showParty,
         'showRaid', true,
         'showPlayer', true,
         'point', relpoint,
-        'groupFilter', '1,2,3,4,5,6,7,8',
-        'groupingOrder', '1,2,3,4,5,6,7,8',
+        'groupFilter', tostring(i),
+        'groupingOrder', tostring(i),
         'groupBy', 'GROUP',
         'maxColumns', 8,
         'unitsPerColumn', 5,
@@ -860,9 +880,23 @@ oUF:Factory(function(self)
             self:SetHeight(%d)
         ]]):format(config.units.raid.width, config.units.raid.height))
 
-    raid:SetPoint(rlayout.initialAnchor, raidFrames)
-    raid:SetScale(config.units.raid.scale)
-    raid:SetFrameStrata('LOW')
+        if (i == 1) then
+            raid[i]:SetPoint(rlayout.initialAnchor, raidFrames)
+        else
+            if (rlayout.orientation == "VERTICAL") then
+                raid[i]:SetPoint(rlayout.initialAnchor, raid[i-1], columnRelPoint, xOffset, 0)
+            else
+                if (rlayout.initialAnchor == 'TOPRIGHT' or rlayout.initialAnchor == 'TOPLEFT') then
+                    raid[i]:SetPoint(rlayout.initialAnchor, raid[i-1], columnRelPoint, 0, -yOffset)
+                else
+                    raid[i]:SetPoint(rlayout.initialAnchor, raid[i-1], columnRelPoint, 0, yOffset)
+                end
+            end
+        end
+
+        raid[i]:SetScale(config.units.raid.scale)
+        raid[i]:SetFrameStrata('LOW')
+    end
 
         -- Main Tank/Assist Frames
 
