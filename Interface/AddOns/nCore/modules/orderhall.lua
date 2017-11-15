@@ -37,6 +37,22 @@ TroopsOverlay:SetPoint('RIGHT', SmallOrder, 'RIGHT', 0, 0)
 TroopsOverlay:EnableMouse(true)
 TroopsOverlay:SetFrameStrata('HIGH')
 
+    -- Toggle Display Bar
+
+local function ToggleBar()
+    if ( C_Garrison.IsPlayerInGarrison(LE_GARRISON_TYPE_7_0) and not SmallOrder:IsVisible() ) then
+        -- Show SmallOrder
+        SmallOrder:Show()
+        TroopsOverlay:Show()
+    else
+        -- Hide SmallOrder
+        if ( SmallOrder:IsVisible() ) then
+            SmallOrder:Hide()
+            TroopsOverlay:Hide()
+        end
+    end
+end
+
     -- Change Order Resources Text
 
 local function SetCurrency()
@@ -64,41 +80,35 @@ end
 
 local function onEvent(self, event, ...)
 
-    if ( event == "GARRISON_UPDATE" ) then
+    if ( event == 'PLAYER_ENTERING_WORLD' ) then
+
+        -- Hide Default Bar
+        if ( OrderHallCommandBar ) then
+            OrderHallCommandBar:Hide()
+            OrderHallCommandBar:UnregisterAllEvents()
+            OrderHallCommandBar.Show = function() end
+        end
+        OrderHall_CheckCommandBar = function () end
+
+        ToggleBar()
+
+    elseif ( event == 'GARRISON_UPDATE' ) then
+
+        ToggleBar()
 
         if ( C_Garrison.IsPlayerInGarrison(LE_GARRISON_TYPE_7_0) ) then
-
-            -- Hide Default Bar
-            if ( OrderHallCommandBar ) then
-                OrderHallCommandBar:Hide()
-                OrderHallCommandBar:UnregisterAllEvents()
-                OrderHallCommandBar.Show = function() end
-            end
-            OrderHall_CheckCommandBar = function () end
-
-            -- Show SmallOrder
-            SmallOrder:Show()
-            TroopsOverlay:Show()
-
             -- Update Display
             SetCurrency()
             SetTroops()
-        else
-            -- Hide SmallOrder
-            if ( SmallOrder:IsVisible() ) then
-                SmallOrder:Hide()
-                TroopsOverlay:Hide()
-                return
-            end
         end
 
-    elseif ( event == "CURRENCY_DISPLAY_UPDATE" ) then
+    elseif ( event == 'CURRENCY_DISPLAY_UPDATE' ) then
         if ( not C_Garrison.IsPlayerInGarrison(LE_GARRISON_TYPE_7_0) ) then return end
 
         -- Update Currency Display
         SetCurrency()
 
-    elseif ( event == "GARRISON_FOLLOWER_ADDED" or event == "GARRISON_FOLLOWER_REMOVED" ) then
+    elseif ( event == 'GARRISON_FOLLOWER_ADDED' or event == 'GARRISON_FOLLOWER_REMOVED' ) then
         if ( not C_Garrison.IsPlayerInGarrison(LE_GARRISON_TYPE_7_0) ) then return end
 
         -- Update Troop Count
@@ -114,7 +124,7 @@ TroopsOverlay:SetScript('OnEnter', function(self)
 
     GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMRIGHT')
     GameTooltip:ClearLines()
-    GameTooltip:AddLine(FOLLOWERLIST_LABEL_TROOPS, 0, 1, 0)
+    GameTooltip:AddDoubleLine(FOLLOWERLIST_LABEL_TROOPS, DURABILITY, 0, 1, 0, 0, 1, 0)
 
     local sort_func = function( a,b ) return a.name < b.name end
     table.sort( followerInfo, sort_func )
@@ -122,7 +132,7 @@ TroopsOverlay:SetScript('OnEnter', function(self)
     for i, follower in ipairs(followerInfo) do
         if follower.isCollected then
             if follower.isTroop then
-                GameTooltip:AddLine(follower.name .. ' - '.. DURABILITY .. ': ' .. follower.durability .. '/' .. follower.maxDurability)
+                GameTooltip:AddDoubleLine(follower.name, follower.durability .. '/' .. follower.maxDurability)
             end
         end
     end
@@ -137,6 +147,7 @@ TroopsOverlay:SetScript('OnLeave', function()
 end)
 
 SmallOrder:SetScript('OnEvent', onEvent)
+SmallOrder:RegisterEvent('PLAYER_ENTERING_WORLD')
 SmallOrder:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
 SmallOrder:RegisterEvent('GARRISON_UPDATE')
 SmallOrder:RegisterEvent('GARRISON_FOLLOWER_ADDED')

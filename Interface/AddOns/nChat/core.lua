@@ -198,6 +198,7 @@ end)
 
 local function SkinTab(self)
     local chat = _G[self]
+    local font, _, _ = chat:GetFont()
 
     local tab = _G[self..'Tab']
     for i = 1, select('#', tab:GetRegions()) do
@@ -211,10 +212,10 @@ local function SkinTab(self)
     tabText:SetJustifyH('CENTER')
     tabText:SetWidth(60)
     if (cfg.tab.fontOutline) then
-        tabText:SetFont('Fonts\\ARIALN.ttf', cfg.tab.fontSize, 'THINOUTLINE')
+        tabText:SetFont(font, cfg.tab.fontSize, 'THINOUTLINE')
         tabText:SetShadowOffset(0, 0)
     else
-        tabText:SetFont('Fonts\\ARIALN.ttf', cfg.tab.fontSize)
+        tabText:SetFont(font, cfg.tab.fontSize)
         tabText:SetShadowOffset(1, -1)
     end
 
@@ -380,8 +381,8 @@ local function ModChat(self)
 end
 
 local function SetChatStyle()
-    for _, v in pairs(CHAT_FRAMES) do
-        local chat = _G[v]
+    for _, frame in pairs(CHAT_FRAMES) do
+        local chat = _G[frame]
         if (chat and not chat.hasModification) then
             ModChat(chat:GetName())
 
@@ -395,6 +396,16 @@ local function SetChatStyle()
             if (chatMinimize) then
                 chatMinimize:SetAlpha(0)
                 chatMinimize:EnableMouse(0)
+            end
+
+            if (cfg.enableChatWindowBorder) then
+                chat:CreateBeautyBorder(12)
+                chat:SetBeautyBorderPadding(5, 5, 5, 5, 5, 8, 5, 8)
+
+                if (chat == _G['ChatFrame2']) then
+                    chat:CreateBeautyBorder(12)
+                    chat:SetBeautyBorderPadding(5, 29, 5, 29, 5, 8, 5, 8)
+                end
             end
 
             chat.hasModification = true
@@ -431,11 +442,10 @@ end)
 
     -- Modify the gm chatframe and add a sound notification on incoming whispers
 
-local f = CreateFrame('Frame')
-f:RegisterEvent('ADDON_LOADED')
-f:RegisterEvent('CHAT_MSG_WHISPER')
-f:RegisterEvent('CHAT_MSG_BN_WHISPER')
-f:SetScript('OnEvent', function(_, event)
+local eventWatcher = CreateFrame('Frame')
+eventWatcher:RegisterEvent('ADDON_LOADED')
+eventWatcher:RegisterEvent('CHAT_MSG_WHISPER')
+eventWatcher:SetScript('OnEvent', function(_, event)
     if (event == 'ADDON_LOADED' and arg1 == 'Blizzard_GMChatUI') then
         GMChatFrame:EnableMouseWheel(true)
         GMChatFrame:SetScript('OnMouseWheel', ChatFrame1:GetScript('OnMouseWheel'))
@@ -451,8 +461,8 @@ f:SetScript('OnEvent', function(_, event)
         GMChatFrameBottomButton:EnableMouse(false)
     end
 
-    if (event == 'CHAT_MSG_WHISPER' or event == 'CHAT_MSG_BN_WHISPER') then
-        PlaySoundFile('Sound\\Spells\\Simongame_visual_gametick.wav')
+    if (event == 'CHAT_MSG_WHISPER') then
+        PlaySound(SOUNDKIT.TELL_MESSAGE)
     end
 end)
 
@@ -515,19 +525,3 @@ local function FCF_Tab_OnClickHook(chatTab, ...)
     UIDropDownMenu_AddButton(chatLog)
 end
 FCF_Tab_OnClick = FCF_Tab_OnClickHook
-
-if (cfg.enableChatWindowBorder) then
-    for i = 1, NUM_CHAT_WINDOWS do
-        local cf = _G['ChatFrame'..i]
-        if (cf) then
-            cf:CreateBeautyBorder(12)
-            cf:SetBeautyBorderPadding(5, 5, 5, 5, 5, 8, 5, 8)
-        end
-    end
-
-    local ct = _G['ChatFrame2']
-    if (ct) then
-        ct:CreateBeautyBorder(12)
-        ct:SetBeautyBorderPadding(5, 29, 5, 29, 5, 8, 5, 8)
-    end
-end
