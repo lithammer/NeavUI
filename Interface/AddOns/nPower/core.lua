@@ -24,7 +24,7 @@ if (config.showCombatRegen) then
     f:RegisterUnitEvent('UNIT_AURA', 'player')
 end
 
-if (config.hp.show) then 
+if (config.hp.show) then
     f:RegisterUnitEvent('UNIT_HEALTH', 'player')
     f:RegisterUnitEvent('UNIT_MAX_HEALTH', 'player')
     f:RegisterUnitEvent('UNIT_HEALTH_FREQUENT', 'player')
@@ -98,7 +98,7 @@ if (config.hp.show) then
     else
         f.HPText:SetPoint('CENTER', 0, 0)
     end
-    
+
 end
 
 f.Power = CreateFrame('StatusBar', nil, UIParent)
@@ -320,12 +320,13 @@ f:SetScript('OnEvent', function(self, event, arg1)
             end
 
             -- move the hp text if no points
-            if ( f.HPText and nump == 0) then
-                f.HPText:SetPoint('CENTER', 0, 0)
-            else
-                f.HPText:SetPoint('CENTER', 0, config.extraFontSize + config.hp.hpFontHeightAdjustment)
+            if (f.HPText) then
+                if (nump == 0) then
+                    f.HPText:SetPoint('CENTER', 0, 0)
+                else
+                    f.HPText:SetPoint('CENTER', 0, config.extraFontSize + config.hp.hpFontHeightAdjustment)
+                end
             end
-
         end
     end
 
