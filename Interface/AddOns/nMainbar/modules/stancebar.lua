@@ -16,4 +16,6 @@ if (cfg.stanceBar.hide) then
         button:EnableMouse(false)
         button.EnableMouse = function() end
     end
+
+    RegisterStateDriver(StanceBarFrame, "visibility", "hide")
 end
