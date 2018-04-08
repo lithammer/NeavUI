@@ -8,12 +8,10 @@ StanceBarFrame:SetScale(cfg.stanceBar.scale)
 StanceBarFrame:SetAlpha(cfg.stanceBar.alpha)
 
 if (cfg.stanceBar.hide) then
-    for i = 1, NUM_STANCE_SLOTS do
-        local button = _G['StanceButton'..i]
-        button:SetAlpha(0)
-        button.SetAlpha = function() end
-
-        button:EnableMouse(false)
-        button.EnableMouse = function() end
-    end
+    hooksecurefunc("StanceBar_Update", function()
+        if StanceBarFrame:IsShown() then
+            RegisterStateDriver(StanceBarFrame, "visibility", "hide")
+            function StanceBar_Update() end
+        end
+    end)
 end
