@@ -199,20 +199,6 @@ local function GetItemLevel(unit)
     return 0
 end
 
-    -- Make sure we get a correct unit
-
-local function GetRealUnit(self)
-    if (GetMouseFocus() and not GetMouseFocus():GetAttribute('unit') and GetMouseFocus() ~= WorldFrame) then
-        return select(2, self:GetUnit())
-    elseif (GetMouseFocus() and GetMouseFocus():GetAttribute('unit')) then
-        return GetMouseFocus():GetAttribute('unit')
-    elseif (select(2, self:GetUnit())) then
-        return select(2, self:GetUnit())
-    else
-        return 'mouseover'
-    end
-end
-
 local function GetFormattedUnitType(unit)
     local creaturetype = UnitCreatureType(unit)
     if (creaturetype) then
@@ -357,7 +343,7 @@ end
 GameTooltip.inspectCache = {}
 
 GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
-    local unit = GetRealUnit(self)
+    local _, unit = self:GetUnit()
 
     if (cfg.hideInCombat and InCombatLockdown()) then
         self:Hide()
@@ -509,7 +495,7 @@ end)
 
 if (cfg.healthbar.reactionColoring or cfg.healthbar.customColor.apply) then
     GameTooltipStatusBar:HookScript('OnValueChanged', function(self)
-        local unit = GetRealUnit(self:GetParent())
+        local _, unit = self:GetParent():GetUnit()
         SetHealthBarColor(unit)
     end)
 end
