@@ -165,8 +165,8 @@ local Update = function(self, event, unit)
     local pt = self.PortraitTimer
     for _, spellID in ipairs(ns.PortraitTimerDB) do
         local spell = GetSpellInfo(spellID)
-        if (UnitBuff(unit, spell)) then
-            local name, _, texture, _, _, duration, expires = UnitBuff(unit, spell)
+        local name, _, texture, _, _, duration, expires = AuraUtil.FindAuraByName(spell, unit)
+        if (name) then
             UpdateIcon(pt, texture, duration, expires)
 
             pt:Show()
@@ -174,19 +174,6 @@ local Update = function(self, event, unit)
             if (self.CombatFeedbackText) then
                 self.CombatFeedbackText.maxAlpha = 0
             end
-
-            return
-        elseif (UnitDebuff(unit, spell)) then
-            local name, _, texture, _, _, duration, expires = UnitDebuff(unit, spell)
-            UpdateIcon(pt, texture, duration, expires)
-
-            pt:Show()
-
-            if (self.CombatFeedbackText) then
-                self.CombatFeedbackText.maxAlpha = 0
-            end
-
-            return
         else
             if (pt:IsShown()) then
                 pt:Hide()
