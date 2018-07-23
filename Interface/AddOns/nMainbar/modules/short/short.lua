@@ -79,46 +79,6 @@ for _, object in pairs({
     object:SetWidth(512)
 end
 
-ReputationWatchBar:SetWidth(512)
-ReputationWatchBar.StatusBar:SetWidth(512)
-
-ReputationWatchBar.StatusBar.WatchBarTexture0:SetWidth(256)
-ReputationWatchBar.StatusBar.WatchBarTexture1:SetWidth(256)
-ReputationWatchBar.StatusBar.WatchBarTexture2:SetTexture(nil)
-ReputationWatchBar.StatusBar.WatchBarTexture3:SetTexture(nil)
-
-ArtifactWatchBar:SetWidth(512)
-ArtifactWatchBar.StatusBar:SetWidth(512)
-
-ArtifactWatchBar.StatusBar.WatchBarTexture0:SetWidth(256)
-ArtifactWatchBar.StatusBar.WatchBarTexture1:SetWidth(256)
-ArtifactWatchBar.StatusBar.WatchBarTexture2:SetTexture(nil)
-ArtifactWatchBar.StatusBar.WatchBarTexture3:SetTexture(nil)
-
-HonorWatchBar:SetWidth(512)
-HonorWatchBar.StatusBar:SetWidth(512)
-
-HonorWatchBar.StatusBar.WatchBarTexture0:SetWidth(256)
-HonorWatchBar.StatusBar.WatchBarTexture1:SetWidth(256)
-HonorWatchBar.StatusBar.WatchBarTexture2:SetTexture(nil)
-HonorWatchBar.StatusBar.WatchBarTexture3:SetTexture(nil)
-
--- Only shown when tracker is in place of MainMenuExpBar.
-ReputationWatchBar.StatusBar.XPBarTexture0:SetWidth(256)
-ReputationWatchBar.StatusBar.XPBarTexture1:SetWidth(256)
-ReputationWatchBar.StatusBar.XPBarTexture2:SetTexture(nil)
-ReputationWatchBar.StatusBar.XPBarTexture3:SetTexture(nil)
-
-ArtifactWatchBar.StatusBar.XPBarTexture0:SetWidth(256)
-ArtifactWatchBar.StatusBar.XPBarTexture1:SetWidth(256)
-ArtifactWatchBar.StatusBar.XPBarTexture2:SetTexture(nil)
-ArtifactWatchBar.StatusBar.XPBarTexture3:SetTexture(nil)
-
-HonorWatchBar.StatusBar.XPBarTexture0:SetWidth(256)
-HonorWatchBar.StatusBar.XPBarTexture1:SetWidth(256)
-HonorWatchBar.StatusBar.XPBarTexture2:SetTexture(nil)
-HonorWatchBar.StatusBar.XPBarTexture3:SetTexture(nil)
-
     -- remove divider
 
 for i = 1, 19, 2 do
@@ -132,31 +92,6 @@ for i = 1, 19, 2 do
         object:Hide()
     end
 end
-
-hooksecurefunc(_G['MainMenuXPBarDiv2'], 'Show', function(self)
-    local divWidth = MainMenuExpBar:GetWidth() / 10
-    local xpos = divWidth - 4.5
-
-    for i = 2, 19, 2 do
-        local texture = _G['MainMenuXPBarDiv'..i]
-        local xalign = floor(xpos)
-        texture:SetPoint('LEFT', xalign, 1)
-        xpos = xpos + divWidth
-    end
-end)
-
-_G['MainMenuXPBarDiv2']:Show()
-
-    -- fix the exp bar size when exiting vehicle
-
--- XXX: Not need anymore?
---MainMenuExpBar:HookScript('OnSizeChanged', function(self, width, height)
---    if (math.floor(width) == EXP_DEFAULT_WIDTH) then
---        securecall(MainMenuExpBar_SetWidth, 512)
---        CharacterMicroButton:ClearAllPoints()
---        CharacterMicroButton:SetPoint('BOTTOMLEFT', UIParent, 9000, 9000)
---    end
---end)
 
     -- the bottom right bar needs a better place, above the bottom left bar
 
