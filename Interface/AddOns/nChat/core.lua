@@ -305,15 +305,7 @@ local function ModChat(self)
         chat.AddMessage = FCF_AddMessage
     end
 
-    local buttonUp = _G[self..'ButtonFrameUpButton']
-    buttonUp:SetAlpha(0)
-    buttonUp:EnableMouse(false)
-
-    local buttonDown = _G[self..'ButtonFrameDownButton']
-    buttonDown:SetAlpha(0)
-    buttonDown:EnableMouse(false)
-
-    local buttonBottom = _G[self..'ButtonFrameBottomButton']
+    local buttonBottom = _G[self]['ScrollToBottomButton']
     if (cfg.enableBottomButton) then
         buttonBottom:Hide()
         buttonBottom:ClearAllPoints()
