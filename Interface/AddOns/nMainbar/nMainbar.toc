@@ -21,7 +21,6 @@ modules\stancebar.lua
 modules\mouseover.lua
 modules\slash.lua
 modules\picomenu.lua
-modules\artifactBar.lua
 modules\honorbar.lua
 
 modules\short\short.lua
