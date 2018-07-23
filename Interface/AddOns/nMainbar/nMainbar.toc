@@ -12,7 +12,6 @@ modules\bottomRight.lua
 modules\left.lua
 modules\right.lua
 modules\skins.lua
-modules\expbar.lua
 modules\hotkey.lua
 modules\petbar.lua
 modules\possessbar.lua
