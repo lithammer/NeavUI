@@ -107,11 +107,11 @@ MainMenuBarTexture1:SetPoint('BOTTOM', MainMenuBarArtFrame, 128, 0)
 
 MainMenuMaxLevelBar0:SetPoint('BOTTOM', MainMenuBarMaxLevelBar, 'TOP', -128, 0)
 
-MainMenuBarLeftEndCap:SetPoint('BOTTOM', MainMenuBarArtFrame, -289, 0)
-MainMenuBarLeftEndCap.SetPoint = function() end
+MainMenuBarArtFrame.LeftEndCap:SetPoint('BOTTOM', MainMenuBarArtFrame, -289, 0)
+MainMenuBarArtFrame.LeftEndCap.SetPoint = function() end
 
-MainMenuBarRightEndCap:SetPoint('BOTTOM', MainMenuBarArtFrame, 289, 0)
-MainMenuBarRightEndCap.SetPoint = function() end
+MainMenuBarArtFrame.RightEndCap:SetPoint('BOTTOM', MainMenuBarArtFrame, 289, 0)
+MainMenuBarArtFrame.RightEndCap.SetPoint = function() end
 
     -- reposit the micromenu
 
