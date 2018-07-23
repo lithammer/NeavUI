@@ -15,7 +15,6 @@ modules\skins.lua
 modules\hotkey.lua
 modules\petbar.lua
 modules\possessbar.lua
-modules\repbar.lua
 modules\stancebar.lua
 modules\mouseover.lua
 modules\slash.lua
