@@ -19,7 +19,6 @@ modules\stancebar.lua
 modules\mouseover.lua
 modules\slash.lua
 modules\picomenu.lua
-modules\honorbar.lua
 
 modules\short\short.lua
 modules\short\extras.lua
