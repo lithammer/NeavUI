@@ -5,7 +5,6 @@
 ## OptionalDeps: oUF_AuraWatch, oUF_SpellRange, oUF_CombatFeedback, oUF_Smooth
 
 config.lua
-config_custom.lua
 
 func\aura.lua
 func\castbar.lua

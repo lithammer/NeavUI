@@ -4,7 +4,6 @@
 ## SavedVariables: BagsShown
 
 config.lua
-config_custom.lua
 Bindings.xml
 
 modules\core.lua

@@ -3,6 +3,5 @@
 ## OptionalDeps: !Beautycase
 
 config.lua
-config_custom.lua
 core.lua
 health.lua

@@ -3,5 +3,4 @@
 
 utils.lua
 config.lua
-config_custom.lua
 core.lua
