@@ -80,7 +80,7 @@ ns.PostUpdateIcon = function(icons, unit, icon, index, offset)
 
             icon:SetScript('OnUpdate', nil)
         else
-            local _, _, _, _, _, duration, expirationTime = UnitAura(unit, index, icon.filter)
+            local _, _, _, _, duration, expirationTime = UnitAura(unit, index, icon.filter)
             if (duration and duration > 0) then
                 if (not icon.remaining:IsShown()) then
                     icon.remaining:Show()

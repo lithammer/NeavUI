@@ -16,7 +16,7 @@ hooksecurefunc(GameTooltip, 'SetUnitDebuff', function(self,...)
 end)
 
 hooksecurefunc(GameTooltip, 'SetUnitAura', function(self,...)
-    local id = select(11, UnitAura(...))
+    local id = select(10, UnitAura(...))
     if (id) then
         self:AddLine('SpellID: '..id, 1, 1, 1)
         self:Show()
