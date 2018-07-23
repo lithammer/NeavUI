@@ -426,7 +426,7 @@ local f = CreateFrame('Button', nil, MainMenuBar)
 f:SetFrameStrata('HIGH')
 f:SetToplevel(true)
 f:SetSize(30, 30)
-f:SetPoint('BOTTOM', MainMenuBarRightEndCap, -13, 8)
+f:SetPoint('BOTTOM', MainMenuBarArtFrame.RightEndCap, -13, 8)
 f:RegisterForClicks('Anyup')
 f:RegisterEvent('ADDON_LOADED')
 
