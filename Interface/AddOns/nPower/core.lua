@@ -13,10 +13,9 @@ f:EnableMouse(false)
 f:RegisterEvent('PLAYER_REGEN_ENABLED')
 f:RegisterEvent('PLAYER_REGEN_DISABLED')
 f:RegisterEvent('PLAYER_ENTERING_WORLD')
-f:RegisterUnitEvent('UNIT_COMBO_POINTS', 'player')
 f:RegisterEvent('PLAYER_TARGET_CHANGED')
-f:RegisterEvent('RUNE_TYPE_UPDATE')
 f:RegisterUnitEvent('UNIT_DISPLAYPOWER', 'player')
+f:RegisterUnitEvent('UNIT_POWER_UPDATE', 'player')
 f:RegisterUnitEvent('UNIT_POWER_FREQUENT', 'player')
 f:RegisterEvent('UPDATE_SHAPESHIFT_FORM')
 
@@ -173,15 +172,15 @@ end
 local function SetPowerColor()
     local powerType
     if ( playerClass == 'ROGUE' or playerClass == 'DRUID' ) then
-        powerType = SPELL_POWER_COMBO_POINTS
+        powerType = Enum.PowerType.ComboPoints
     elseif ( playerClass == 'MONK' ) then
-        powerType = SPELL_POWER_CHI
+        powerType = Enum.PowerType.Chi
     elseif ( playerClass == 'MAGE' ) then
-        powerType = SPELL_POWER_ARCANE_CHARGES
+        powerType = Enum.PowerType.ArcaneCharges
     elseif ( playerClass == 'PALADIN' ) then
-        powerType = SPELL_POWER_HOLY_POWER
+        powerType = Enum.PowerType.HolyPower
     elseif ( playerClass == 'WARLOCK' ) then
-        powerType = SPELL_POWER_SOUL_SHARDS
+        powerType = Enum.PowerType.SoulShards
     end
 
     local currentPower = UnitPower("player", powerType)
@@ -301,15 +300,15 @@ f:SetScript('OnEvent', function(self, event, arg1)
         else
             local nump
             if (playerClass == 'WARLOCK') then
-                nump = UnitPower('player', SPELL_POWER_SOUL_SHARDS)
+                nump = WarlockPowerBar_UnitPower('player')
             elseif (playerClass == 'PALADIN') then
-                nump = UnitPower('player', SPELL_POWER_HOLY_POWER)
+                nump = UnitPower('player', Enum.PowerType.HolyPower)
             elseif (playerClass == 'ROGUE' or playerClass == 'DRUID' ) then
-                nump = UnitPower('player', SPELL_POWER_COMBO_POINTS)
+                nump = UnitPower('player', Enum.PowerType.ComboPoints)
             elseif (playerClass == 'MONK' ) then
-                nump = UnitPower('player', SPELL_POWER_CHI)
+                nump = UnitPower('player', Enum.PowerType.Chi)
             elseif (playerClass == 'MAGE' ) then
-                nump = UnitPower('player', SPELL_POWER_ARCANE_CHARGES)
+                nump = UnitPower('player', Enum.PowerType.ArcaneCharges)
             end
 
             f.extraPoints:SetTextColor(SetPowerColor())
