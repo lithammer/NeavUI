@@ -510,7 +510,7 @@ local function CreateRaidLayout(self, unit)
         absorbBar:SetHeight(self:GetHeight())
     end
 
-    absorbBar.Overlay = absorbBar:CreateTexture('$parentOverlay', 'OVERLAY', 'TotalAbsorbBarOverlayTemplate', 1)
+    absorbBar.Overlay = absorbBar:CreateTexture('$parentOverlay', 'OVERLAY', 'TotalAbsorbBarOverlayTemplate', -1)
     absorbBar.Overlay:SetAllPoints(absorbBar:GetStatusBarTexture())
 
     local healAbsorbBar = CreateFrame('StatusBar', '$parentHealAbsorbBar', self)
@@ -534,7 +534,7 @@ local function CreateRaidLayout(self, unit)
         healAbsorbBar:SetHeight(self.Health:GetHeight())
     end
 
-    local overAbsorb = self.Health:CreateTexture(nil, 'OVERLAY')
+    local overAbsorb = self.Health:CreateTexture('$parentOverAbsorb', 'OVERLAY')
 
     if (config.units.raid.horizontalHealthBars) then
         overAbsorb:SetPoint('TOPLEFT', self.Health, 'TOPRIGHT')
@@ -546,7 +546,7 @@ local function CreateRaidLayout(self, unit)
         overAbsorb:SetHeight(3)
     end
 
-    local overHealAbsorb = self.Health:CreateTexture(nil, 'OVERLAY')
+    local overHealAbsorb = self.Health:CreateTexture('$parentOverHealAbsorb', 'OVERLAY')
 
     if (config.units.raid.horizontalHealthBars) then
         overHealAbsorb:SetPoint('TOPLEFT', self.Health, 'TOPRIGHT')
