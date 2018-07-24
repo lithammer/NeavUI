@@ -204,11 +204,10 @@ local zoneDelay = function(self, elapsed)
     end
 
     if (IsInInstance()) then
-        SetMapToCurrentZone()
-        local zone = GetCurrentMapAreaID()
+        local mapid = select(8, GetInstanceInfo())
 
-        if (ns.auras.instances[zone]) then
-            instDebuffs = ns.auras.instances[zone]
+        if (ns.auras.instances[mapid]) then
+            instDebuffs = ns.auras.instances[mapid]
         end
     else
         instDebuffs = {}
