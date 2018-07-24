@@ -1,6 +1,6 @@
 
 hooksecurefunc(GameTooltip, 'SetUnitBuff', function(self,...)
-    local id = select(11, UnitBuff(...))
+    local id = select(10, UnitBuff(...))
     if (id) then
         self:AddLine('SpellID: '..id, 1, 1, 1)
         self:Show()
@@ -8,7 +8,7 @@ hooksecurefunc(GameTooltip, 'SetUnitBuff', function(self,...)
 end)
 
 hooksecurefunc(GameTooltip, 'SetUnitDebuff', function(self,...)
-    local id = select(11, UnitDebuff(...))
+    local id = select(10, UnitDebuff(...))
     if (id) then
         self:AddLine('SpellID: '..id, 1, 1, 1)
         self:Show()
@@ -32,7 +32,7 @@ hooksecurefunc('SetItemRef', function(link, text, button, chatFrame)
 end)
 
 GameTooltip:HookScript('OnTooltipSetSpell', function(self)
-    local id = select(3, self:GetSpell())
+    local id = select(2, self:GetSpell())
     if (id) then
         -- Workaround for weird issue when this gets triggered twice on the Talents frame
         -- https://github.com/lithammer/NeavUI/issues/76
