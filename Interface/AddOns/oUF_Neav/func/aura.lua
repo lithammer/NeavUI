@@ -104,11 +104,10 @@ ns.UpdateAuraIcons = function(auras, button)
 
         button:SetFrameLevel(1)
 
-		-- XXX: Borked in oUF v1.6+, button:GetSize() returns 0
-        --button.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
-        --button.icon:ClearAllPoints()
-        --button.icon:SetPoint('CENTER', button)
-        --button.icon:SetSize(size, size)
+        button.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+        button.icon:ClearAllPoints()
+        button.icon:SetPoint('CENTER', button)
+        button.icon:SetSize(size, size)
 
         button.overlay:SetTexture(config.media.border)
         button.overlay:SetTexCoord(0, 1, 0, 1)

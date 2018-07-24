@@ -588,27 +588,28 @@ local function CreateUnitLayout(self, unit)
 
     local healAbsorbBar = CreateFrame('StatusBar', '$parentHealAbsorbBar', self)
     healAbsorbBar:SetReverseFill(true)
-    healAbsorbBar:SetFrameLevel(self:GetFrameLevel() + 1)
+    healAbsorbBar:SetFrameLevel(self:GetFrameLevel() - 1)
     healAbsorbBar:SetStatusBarTexture('Interface\\Buttons\\WHITE8x8')
     healAbsorbBar:SetStatusBarColor(0.9, 0.1, 0.3, 1)
     healAbsorbBar:SetOrientation('HORIZONTAL')
-    healAbsorbBar:SetPoint('TOP')
-    healAbsorbBar:SetPoint('BOTTOM')
+    healAbsorbBar:SetPoint('TOP', self.Health:GetStatusBarTexture())
+    healAbsorbBar:SetPoint('BOTTOM', self.Health:GetStatusBarTexture())
     healAbsorbBar:SetPoint('RIGHT', self.Health:GetStatusBarTexture())
     healAbsorbBar:SetWidth(self.Health:GetWidth())
+    healAbsorbBar:SetHeight(self.Health:GetHeight())
     healAbsorbBar.Smooth = true
 
     local overAbsorb = self.Health:CreateTexture('$parentOverAbsorb', 'OVERLAY')
-    overAbsorb:SetPoint('TOP')
-    overAbsorb:SetPoint('BOTTOM')
-    overAbsorb:SetPoint('RIGHT', self.Health, 'RIGHT')
-    overAbsorb:SetWidth(10)
+    overAbsorb:SetPoint('TOPLEFT', self.Health, 'TOPRIGHT', -10, 0)
+    overAbsorb:SetPoint('BOTTOMLEFT', self.Health, 'BOTTOMRIGHT', -10, 0)
+    overAbsorb:SetWidth(16)
 
     local overHealAbsorb = self.Health:CreateTexture('$parentOverHealAbsorb', 'OVERLAY')
     overHealAbsorb:SetPoint('TOP')
     overHealAbsorb:SetPoint('BOTTOM')
     overHealAbsorb:SetPoint('RIGHT', self.Health, 'LEFT')
     overHealAbsorb:SetWidth(10)
+    overHealAbsorb:SetHeight(self.Health:GetHeight())
 
     self.HealthPrediction = {
         myBar = myBar,
@@ -617,7 +618,7 @@ local function CreateUnitLayout(self, unit)
         absorbBar = absorbBar,
         overAbsorb = overAbsorb,
         overHealAbsorb = overHealAbsorb,
-        maxOverflow = 1.05,
+        maxOverflow = 1.00,
         frequentUpdates = true
     }
 
@@ -631,7 +632,7 @@ local function CreateUnitLayout(self, unit)
         self.Health.Value:SetPoint('CENTER', self.Health, 'BOTTOM', -4, 1)
     else
         self.Health.Value:SetFont(config.font.normal, config.font.normalSize)
-        self.Health.Value:SetPoint('CENTER', self.Health, 1, 1)
+        self.Health.Value:SetPoint('CENTER', self.Health, 0, 1)
     end
 
         -- Powerbar
@@ -648,8 +649,8 @@ local function CreateUnitLayout(self, unit)
 
     if (self.IsTargetFrame) then
         self.Power:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', 0, 0)
-        self.Power:SetPoint('TOPRIGHT', self.Health, 'BOTTOMRIGHT', -8, 0)
-        self.Power:SetHeight(self.Health:GetHeight() - 2)
+        self.Power:SetPoint('TOPRIGHT', self.Health, 'BOTTOMRIGHT', 0, 0)
+        self.Power:SetHeight(self.Health:GetHeight())
     else
         self.Power:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', 0, 0)
         self.Power:SetPoint('TOPRIGHT', self.Health, 'BOTTOMRIGHT', 0, 0)
