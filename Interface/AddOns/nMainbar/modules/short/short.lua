@@ -30,9 +30,6 @@ end
 
 for i = 2, 3 do
     for _, object in pairs({
-        _G['ActionBarUpButton'],
-        _G['ActionBarDownButton'],
-
         _G['KeyRingButton'],
 
         _G['MainMenuBarTexture'..i],
@@ -69,49 +66,12 @@ for i = 2, 3 do
     end
 end
 
-    -- reduce the size of some main menu bar objects
-
-for _, object in pairs({
-    _G['MainMenuBar'],
-    _G['MainMenuExpBar'],
-    _G['MainMenuBarMaxLevelBar'],
-}) do
-    object:SetWidth(512)
-end
-
-    -- remove divider
-
-for i = 1, 19, 2 do
-    for _, object in pairs({
-        _G['MainMenuXPBarDiv'..i],
-    }) do
-        hooksecurefunc(object, 'Show', function(self)
-            self:Hide()
-        end)
-
-        object:Hide()
-    end
-end
-
     -- the bottom right bar needs a better place, above the bottom left bar
 
 MultiBarBottomRight:EnableMouse(false)
 
 MultiBarBottomRightButton1:ClearAllPoints()
 MultiBarBottomRightButton1:SetPoint('BOTTOMLEFT', MultiBarBottomLeftButton1, 'TOPLEFT', 0, 6)
-
-    -- reposit some objects
-
-MainMenuBarTexture0:SetPoint('BOTTOM', MainMenuBarArtFrame, -128, 0)
-MainMenuBarTexture1:SetPoint('BOTTOM', MainMenuBarArtFrame, 128, 0)
-
-MainMenuMaxLevelBar0:SetPoint('BOTTOM', MainMenuBarMaxLevelBar, 'TOP', -128, 0)
-
-MainMenuBarArtFrame.LeftEndCap:SetPoint('BOTTOM', MainMenuBarArtFrame, -289, 0)
-MainMenuBarArtFrame.LeftEndCap.SetPoint = function() end
-
-MainMenuBarArtFrame.RightEndCap:SetPoint('BOTTOM', MainMenuBarArtFrame, 289, 0)
-MainMenuBarArtFrame.RightEndCap.SetPoint = function() end
 
     -- reposit the micromenu
 

@@ -36,25 +36,7 @@ nMainbar.Config = {
         CountText = { 1, 1, 1 },
     },
 
-    expBar = {
-        mouseover = true,
-        fontsize = 14,
-        font = 'Fonts\\ARIALN.ttf',
-    },
-
-    repBar = {
-        mouseover = true,
-        fontsize = 14,
-        font = 'Fonts\\ARIALN.ttf',
-    },
-
-    artifactBar = {
-        mouseover = true,
-        fontsize = 14,
-        font = 'Fonts\\ARIALN.ttf',
-    },
-
-    honorBar = {
+    statusTrackingBar = {
         mouseover = true,
         fontsize = 14,
         font = 'Fonts\\ARIALN.ttf',
