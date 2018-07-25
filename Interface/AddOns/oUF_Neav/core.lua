@@ -206,7 +206,6 @@ local function PlayerToVehicleTexture(self, event, unit)
     self.GroupRoleIndicator:SetAlpha(0)
 
     self.LeaderIndicator:SetPoint('TOPLEFT', self.Texture, 23, -14)
-    self.MasterLooterIndicator:SetPoint('TOPLEFT', self.Texture, 74, -14)
     self.RaidTargetIndicator:SetPoint('CENTER', self.Portrait, 'TOP', 0, -5)
     self.T[1]:SetPoint('BOTTOM', self.Name, 'TOP', 0, 8)
 
@@ -251,7 +250,6 @@ local function VehicleToPlayerTexture(self, event, unit)
     self.GroupRoleIndicator:SetAlpha(1)
 
     self.LeaderIndicator:SetPoint('TOPLEFT', self.Portrait, 3, 2)
-    self.MasterLooterIndicator:SetPoint('TOPRIGHT', self.Portrait, -3, 3)
     self.RaidTargetIndicator:SetPoint('CENTER', self.Portrait, 'TOP', 0, -1)
     self.T[1]:SetPoint('BOTTOM', self.Name.Bg, 'TOP', -1, 0)
 
@@ -649,8 +647,8 @@ local function CreateUnitLayout(self, unit)
 
     if (self.IsTargetFrame) then
         self.Power:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', 0, 0)
-        self.Power:SetPoint('TOPRIGHT', self.Health, 'BOTTOMRIGHT', 0, 0)
-        self.Power:SetHeight(self.Health:GetHeight())
+        self.Power:SetPoint('TOPRIGHT', self.Health, 'BOTTOMRIGHT', -8, 0)
+        self.Power:SetHeight(self.Health:GetHeight() - 2)
     else
         self.Power:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', 0, 0)
         self.Power:SetPoint('TOPRIGHT', self.Health, 'BOTTOMRIGHT', 0, 0)
@@ -797,43 +795,23 @@ local function CreateUnitLayout(self, unit)
         self.PortraitTimer.Remaining:SetTextColor(1, 1, 1)
     end
 
-        -- PvP/Prestige Icons
+        -- PvP Icon
 
     if (config.show.pvpicons) then
         self.PvPIndicator = self:CreateTexture(nil, 'OVERLAY')
-        local Prestige = self:CreateTexture(nil, 'ARTWORK')
-        self.PvPIndicator.Prestige = Prestige
 
         if (unit == 'player') then
             self.PvPIndicator:SetSize(40, 42)
-            Prestige:SetSize(40, 42)
-            Prestige:SetPoint('CENTER', self.PvPIndicator, 'CENTER')
         elseif (unit == 'pet') then
             self.PvPIndicator:SetSize(35, 35)
             self.PvPIndicator:SetPoint('CENTER', self.Portrait, 'LEFT', -7, -7)
         elseif (unit == 'target' or unit == 'focus') then
             self.PvPIndicator:SetSize(40, 42)
             self.PvPIndicator:SetPoint('TOPRIGHT', self.Texture, -16, -23)
-            Prestige:SetSize(40, 42)
-            Prestige:SetPoint('TOPRIGHT', self.Texture, -16, -23)
         elseif (self.IsPartyFrame) then
             self.PvPIndicator:SetSize(40, 40)
             self.PvPIndicator:SetPoint('TOPLEFT', self.Texture, -9, -10)
         end
-    end
-
-        -- Master Looter Icon
-
-    self.MasterLooterIndicator = self:CreateTexture(nil, 'OVERLAY')
-    self.MasterLooterIndicator:SetSize(16, 16)
-
-    if (unit == 'target' or unit == 'focus') then
-        self.MasterLooterIndicator:SetPoint('TOPLEFT', self.Portrait, 3, 3)
-    elseif (self.IsTargetFrame) then
-        self.MasterLooterIndicator:SetPoint('CENTER', self.Portrait, 'TOPLEFT', 3, -3)
-    elseif (self.IsPartyFrame) then
-        self.MasterLooterIndicator:SetSize(14, 14)
-        self.MasterLooterIndicator:SetPoint('TOPLEFT', self.Texture, 29, 0)
     end
 
         -- Group Leader Icon
@@ -1397,17 +1375,10 @@ local function CreateUnitLayout(self, unit)
 
     self:SetScale(config.units[ns.cUnit(unit)] and config.units[ns.cUnit(unit)].scale or 1)
 
-        -- OOR and oUF_SpellRange settings
+        -- Range Check
 
-    if (unit == 'pet' or self.IsPartyFrame) then
+    if ( unit == "pet" or self.IsPartyFrame ) then
         self.Range = {
-            insideAlpha = 1,
-            outsideAlpha = 0.3,
-        }
-
-        self.SpellRange = true
-
-        self.SpellRange = {
             insideAlpha = 1,
             outsideAlpha = 0.3,
         }

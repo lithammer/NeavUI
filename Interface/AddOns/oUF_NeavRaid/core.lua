@@ -717,11 +717,6 @@ local function CreateRaidLayout(self, unit)
         outsideAlpha = 0.3,
     }
 
-    self.SpellRange = {
-        insideAlpha = 1,
-        outsideAlpha = 0.3,
-    }
-
     return self
 end
 

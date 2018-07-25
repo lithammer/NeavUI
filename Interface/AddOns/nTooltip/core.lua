@@ -51,39 +51,21 @@ local function ApplyTooltipStyle(self)
 
         bgsize = 1
         bsize = 9
+	elseif (self == FloatingBattlePetTooltip or self == BattlePetTooltip) then
+		bgsize = 4
+        bsize = 16
     else
         bgsize = 3
         bsize = 12
     end
 
-    local edgeTexture
-    if (not IsAddOnLoaded('!Beautycase')) then
-        edgeTexture = 'Interface\\Tooltips\\UI-Tooltip-Border'
-    else
-        edgeTexture = nil
+    if (not self.Background) then
+        self.Background = self:CreateTexture(nil, 'BACKGROUND', nil, 1)
+        self.Background:SetTexture('Interface\\Buttons\\WHITE8x8')
+        self.Background:SetPoint('TOPLEFT', self, bgsize, -bgsize)
+        self.Background:SetPoint('BOTTOMRIGHT', self, -bgsize, bgsize)
+        self.Background:SetVertexColor(0.0, 0.0, 0.0, 0.60)
     end
-
-    self:SetBackdrop({
-        bgFile = 'Interface\\Buttons\\WHITE8x8',    -- 'Interface\\Tooltips\\UI-Tooltip-Background',
-        edgeFile = edgeTexture,
-        edgeSize = 15,
-
-        insets = {
-            left = bgsize, right = bgsize, top = bgsize, bottom = bgsize
-        }
-    })
-
-    self:HookScript('OnShow', function(self)
-        self:SetBackdropColor(0, 0, 0, 0.7)
-    end)
-
-    self:HookScript('OnHide', function(self)
-        self:SetBackdropColor(0, 0, 0, 0.7)
-    end)
-
-    self:HookScript('OnUpdate', function(self)
-        self:SetBackdropColor(0, 0, 0, 0.7)
-    end)
 
     if (IsAddOnLoaded('!Beautycase')) then
         self:CreateBeautyBorder(bsize)
@@ -92,29 +74,31 @@ end
 
 for _, tooltip in pairs({
     GameTooltip,
+    BattlePetTooltip,
+	EmbeddedItemTooltip,
     ItemRefTooltip,
-
+    ItemRefShoppingTooltip1,
+    ItemRefShoppingTooltip2,
+    ItemRefShoppingTooltip3,
     ShoppingTooltip1,
     ShoppingTooltip2,
     ShoppingTooltip3,
-
     WorldMapTooltip,
-
+    WorldMapCompareTooltip1,
+    WorldMapCompareTooltip2,
+    WorldMapCompareTooltip3,
     DropDownList1MenuBackdrop,
     DropDownList2MenuBackdrop,
-
     ConsolidatedBuffsTooltip,
-
+    AutoCompleteBox,
     ChatMenu,
     EmoteMenu,
     LanguageMenu,
     VoiceMacroMenu,
-
     FriendsTooltip,
-
     FloatingGarrisonFollowerTooltip,
     FloatingBattlePetTooltip,
-
+    FloatingPetBattleAbilityTooltip,
     ReputationParagonTooltip,
 }) do
     ApplyTooltipStyle(tooltip)

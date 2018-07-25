@@ -100,14 +100,7 @@ end
 
 ns.UpdateAuraIcons = function(auras, button)
     if (not button.Shadow) then
-        local size = button:GetSize()
-
         button:SetFrameLevel(1)
-
-        button.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
-        button.icon:ClearAllPoints()
-        button.icon:SetPoint('CENTER', button)
-        button.icon:SetSize(size, size)
 
         button.overlay:SetTexture(config.media.border)
         button.overlay:SetTexCoord(0, 1, 0, 1)
