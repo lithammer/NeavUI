@@ -19,66 +19,70 @@ local function GetSpellInfo(a)
 end
 
     -- instance name and the instance ID,
-    -- find out the instance ID by typing this in the chat "/run print(GetCurrentMapAreaID())"
+    -- find out the instance ID by typing this in the chat "/run print(select(8, GetInstanceInfo()))"
+	-- or find them on https://wow.gamepedia.com/InstanceMapID
     -- Note: Just must be in this instance, when you run the script above
 
 local L = {
     -- Legion Raids
-    ['The Emerald Nightmare'] = 1094,
-    ['Trial of Valor'] = 1114,
-    ['The Nighthold'] = 1088,
-    ['Tomb of Sargeras'] = 1147,
+    ['The Emerald Nightmare'] = 1520,
+    ['Trial of Valor'] = 1648,
+    ['The Nighthold'] = 1530,
+    ['Tomb of Sargeras'] = 1676,
+    ['Antorus'] = 1712,
 
     -- Legion Dungeons
-    ['Black Rook Hold'] = 1081,
-    ['Cathedral of Eternal Night'] = 1146,
-    ['Court of Stars'] = 1087,
-    ['Darkheart Thicket'] = 1067,
-    ['Eye of Azshara'] = 1046,
-    ['Halls of Valor'] = 1041,
-    ['Maw of Souls'] = 1042,
-    ['Neltharion\'s Lair'] = 1065,
-    ['Return to Karazhan'] = 1115,
-    ['The Arcway'] = 1079,
-    ['Vault of the Wardens'] = 1045,
-    ['Violet Hold'] = 1066,
+    ['Black Rook Hold'] = 1501,
+    ['Cathedral of Eternal Night'] = 1677,
+    ['Court of Stars'] = 1571,
+    ['Darkheart Thicket'] = 1466,
+    ['Eye of Azshara'] = 1456,
+    ['Halls of Valor'] = 1477,
+    ['Maw of Souls'] = 1492,
+    ['Neltharion\'s Lair'] = 1458,
+    ['Return to Karazhan'] = 1651,
+    ['The Arcway'] = 1516,
+    ['Vault of the Wardens'] = 1493,
+    ['Violet Hold'] = 1544,
 
     -- Warlords of Draenor Raids
-    ['Hellfire Citadel'] = 1026,
-    ['Blackrock Foundry'] = 988,
-    ['Highmaul'] = 994,
+    ['Hellfire Citadel'] = 1448,
+    ['Blackrock Foundry'] = 1205,
+    ['Highmaul'] = 1228,
 
     -- Mists of Pandaria Raids
-    ['Siege of Orgrimmar'] = 953,
-    ['Throne of Thunder'] = 930,
-    ['Terrace of Endless Spring'] = 886,
-    ['Heart of Fear'] = 897,
-    ['Mogu\'shan Vaults'] = 896,
+    ['Siege of Orgrimmar'] = 1136,
+    ['Throne of Thunder'] = 1098,
+    ['Terrace of Endless Spring'] = 996,
+    ['Heart of Fear'] = 1009,
+    ['Mogu\'shan Vaults'] = 1008,
 
     -- Cataclysm Raids
-    ['Baradin Hold'] = 752,
-    ['Blackwing Descent'] = 754,
-    ['The Bastion of Twilight'] = 758,
-    ['Throne of the Four Winds'] = 773,
-    ['Firelands'] = 800,
-    ['Dragon Soul'] = 824,
+    ['Baradin Hold'] = 757,
+    ['Blackwing Descent'] = 669,
+    ['The Bastion of Twilight'] = 671,
+    ['Throne of the Four Winds'] = 754,
+    ['Firelands'] = 720,
+    ['Dragon Soul'] = 967,
 
     -- Wrath of the Lich King Raids
-    -- ['Ulduar'] = 529,
-    ['ToC'] = 543,
-    ['Naxxramas'] = 535,
-    ['Ruby Sanctum'] = 531,
-    ['Icecrown'] = 604,
+    ['Ulduar'] = 603,
+    ['ToC'] = 649,
+    ['Naxxramas'] = 533,
+    ['Ruby Sanctum'] = 724,
+    ['Icecrown'] = 631,
 
-    -- ['Tol Barad'] = 708,
-    -- ['Lost City Tol'vir'] = 747,
-    -- ['Deadmines'] = 756,
-    -- ['Grim Batol'] = 757,
-    -- ['Shadowfang'] = 764,
-    -- ['Throne of Tides'] = 767,
+	-- ['Ragefire Chasm'] = 389,
 
-    -- ['Zul'Gurub'] = 697 or 793,
-    -- ['Zul'Aman'] = 781,
+    -- ['Tol Barad'] = 732,
+    -- ['Lost City Tol'vir'] = 755,
+    -- ['Deadmines'] = 36,
+    -- ['Grim Batol'] = 670,
+    -- ['Shadowfang'] = 33,
+    -- ['Throne of the Tides'] = 643,
+
+    -- ['Zul'Gurub'] = 859,
+    -- ['Zul'Aman'] = 568,
 }
 
 ns.auras = {
@@ -88,25 +92,27 @@ ns.auras = {
         -- NOTE: This does not show the aura, it needs to be in one of the other list too.
 
     ascending = {
-        [GetSpellInfo(89421)] = true, -- Wrack
+        [GetSpellInfo(89421)] = true,   -- Wrack
     },
 
         -- General debuffs
 
     debuffs = {
-        [GetSpellInfo(115804)] = 9, -- Mortal Wounds
-        [GetSpellInfo(51372)] = 1, -- Daze
-        [GetSpellInfo(5246)] = 5, -- Intimidating Shout
+        [GetSpellInfo(115804)] = 1,     -- Mortal Wounds
+        [GetSpellInfo(51372)] = 1,      -- Daze
+        [GetSpellInfo(5246)] = 5,       -- Intimidating Shout
+        [GetSpellInfo(240559)] = 1,     -- Grievous Wound (Mythic Affix)
+        [GetSpellInfo(209858)] = 1,     -- Necrotic Rot (Mythic Affix)
     },
 
         -- Buffs
 
     buffs = {
-        [GetSpellInfo(871)] = 15, -- Shield Wall
-        [GetSpellInfo(61336)] = 15, -- Survival Instincts
-        [GetSpellInfo(31850)] = 15, -- Ardent Defender
-        [GetSpellInfo(498)] = 15, -- Divine Protection
-        [GetSpellInfo(33206)] = 15, -- Pain Suppression
+        [GetSpellInfo(871)] = 15,       -- Shield Wall
+        [GetSpellInfo(61336)] = 15,     -- Survival Instincts
+        [GetSpellInfo(31850)] = 15,     -- Ardent Defender
+        [GetSpellInfo(498)] = 15,       -- Divine Protection
+        [GetSpellInfo(33206)] = 15,     -- Pain Suppression
     },
 
         -- Raid Debuffs
@@ -139,7 +145,7 @@ ns.auras = {
             [GetSpellInfo(215128)] = 7, -- Cursed Blood
         },
 
-        [L["Trial of Valor"]] = {
+        [L['Trial of Valor']] = {
             -- Helya
             [GetSpellInfo(228054)] = 7, -- Taint of the Sea
         },
@@ -158,10 +164,110 @@ ns.auras = {
 
         [L['Tomb of Sargeras']] = {
 
-            -- Demonic Inquisition
+                -- Goroth
+
+            [GetSpellInfo(231363)] = 7, -- Burning Armor
+            [GetSpellInfo(232249)] = 6, -- Crashing Comet
+            [GetSpellInfo(233062)] = 8, -- Infernal Burning
+
+                -- Demonic Inquisition
+
             [GetSpellInfo(233983)] = 7, -- Echoing Anguish
-            -- Sisters of the Moon
+
+                -- Sisters of the Moon
+
             [GetSpellInfo(233263)] = 7, -- Embrace of the Eclipse
+            [GetSpellInfo(236596)] = 7, -- Rapid Shot
+            [GetSpellInfo(236519)] = 7, -- Moon Burn
+
+                -- Mistress Sasszine
+
+            [GetSpellInfo(230920)] = 3, -- Consuming Hunger
+            [GetSpellInfo(232732)] = 4, -- Slicing Tornado
+
+                -- Desolate Host
+
+            [GetSpellInfo(236449)] = 6, -- Soulbind
+            [GetSpellInfo(235969)] = 7, -- Shattering Scream
+
+                -- Fallen Avatar
+
+            [GetSpellInfo(239739)] = 7, -- Dark Mark
+            [GetSpellInfo(242017)] = 8, -- Black Winds
+
+                -- Kil'jaden
+
+            [GetSpellInfo(234295)] = 7, -- Armageddon Rain
+            [GetSpellInfo(239932)] = 9, -- Fel Claws
+        },
+
+        [L['Antorus']] = {
+                -- Felhounds of Sargeras
+
+            [GetSpellInfo(251445)] = 7, -- Smouldering
+            [GetSpellInfo(244091)] = 7, -- Singed
+            [GetSpellInfo(248815)] = 7, -- Enflamed
+            [GetSpellInfo(245098)] = 7, -- Decay
+            [GetSpellInfo(244071)] = 8, -- Weight of Darkness (Fear)
+
+                -- Antoran High Command
+
+            [GetSpellInfo(244172)] = 6, -- Psychic Assault
+            [GetSpellInfo(257974)] = 7, -- Chaos Pulse
+            [GetSpellInfo(244892)] = 8, -- Exploit Weakness
+            [GetSpellInfo(244729)] = 9, -- Shock Grenade (Mythic Only)
+
+                -- Portal Keeper Hasabel
+
+            [GetSpellInfo(246208)] = 6, -- Adidic Web
+            [GetSpellInfo(245050)] = 7, -- Delusions
+            [GetSpellInfo(244016)] = 7, -- Reality Tear
+
+                -- Eonar the Life-Binder
+
+            [GetSpellInfo(249194)] = 7, -- Pain (Mythic Only)
+            [GetSpellInfo(249017)] = 7, -- Feedback - Arcane Singularity (Blue)
+            [GetSpellInfo(249016)] = 7, -- Feedback - Targeted (Green)
+            [GetSpellInfo(249015)] = 7, -- Feedback - Burning Embers (Red)
+            [GetSpellInfo(249014)] = 7, -- Feedback - Foul Steps (Yellow)
+
+                -- Imonar the Soulhunter
+
+            [GetSpellInfo(247552)] = 7, -- Sleep Canister
+            [GetSpellInfo(247565)] = 7, -- Slumber Gas
+            [GetSpellInfo(247641)] = 7, -- Stasis Trap
+            [GetSpellInfo(247367)] = 8, -- Shock Lance
+            [GetSpellInfo(247687)] = 8, -- Sever
+            [GetSpellInfo(250255)] = 9, -- Empowered Shock Lance
+
+                -- Kin'garoth
+
+            [GetSpellInfo(246706)] = 7, -- Demolish (Purple)
+            [GetSpellInfo(246687)] = 7, -- Decimation (Red)
+
+                -- Varimathras
+
+            [GetSpellInfo(243961)] = 7, -- Misery
+            [GetSpellInfo(244093)] = 7, -- Necrotic Embrace
+
+                -- The Coven of Shivarra
+
+            [GetSpellInfo(245586)] = 8, -- Chiled Blood
+            [GetSpellInfo(245518)] = 7, -- Flashfreeze
+            [GetSpellInfo(244899)] = 7, -- Fiery Strike
+            [GetSpellInfo(253538)] = 9, -- Fulminating Pulse
+            [GetSpellInfo(250097)] = 6, -- Machinations of Aman'Thul
+
+                -- Aggramar
+
+            [GetSpellInfo(244912)] = 7, -- Blazing Eruption
+            [GetSpellInfo(243431)] = 8, -- Taeshalach's Reach
+
+                -- Argus the Unmaker
+
+            [GetSpellInfo(251570)] = 7, -- Soulbomb
+            [GetSpellInfo(250669)] = 7, -- Soulburst
+            [GetSpellInfo(248499)] = 8, -- Sweeping Scythe
         },
 
         [L['Hellfire Citadel']] = {
