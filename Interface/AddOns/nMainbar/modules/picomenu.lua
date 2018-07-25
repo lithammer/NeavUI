@@ -454,7 +454,7 @@ f:SetScript('OnMouseUp', function(self, button)
             if (DropDownList1:IsShown()) then
                 DropDownList1:Hide()
             else
-                securecall(EasyMenu, menuList, menuFrame, self, 27, 190, 'MENU', 8)
+                securecall(EasyMenu, menuList, menuFrame, self, 3, 290, 'MENU', 8)
                 -- DropDownList1:ClearAllPoints()
                 -- DropDownList1:SetPoint('BOTTOMLEFT', self, 'TOPRIGHT')
             end
