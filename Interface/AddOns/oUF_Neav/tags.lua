@@ -11,7 +11,7 @@ local function FormatValue(value)
     end
 end
 
-oUF.Tags.Events['AdditionalPower'] = 'UNIT_POWER UNIT_DISPLAYPOWER UNIT_MAXPOWER'
+oUF.Tags.Events['AdditionalPower'] = 'UNIT_POWER_UPDATE UNIT_DISPLAYPOWER UNIT_MAXPOWER'
 oUF.Tags.Methods['AdditionalPower'] = function(unit)
     local min, max = UnitPower(unit, SPELL_POWER_MANA), UnitPowerMax(unit, SPELL_POWER_MANA)
     if (min == max) then
