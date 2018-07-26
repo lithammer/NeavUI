@@ -232,7 +232,7 @@ getZone:SetScript('OnEvent', function(self, event)
 end)
 
 local CustomFilter = function(icons, ...)
-    local _, icon, name, _, _, _, dtype = ...
+    local _, icon, name, _, _, dtype = ...
 
     icon.asc = false
     icon.buff = false
@@ -323,12 +323,12 @@ local Update = function(self, event, unit)
 
     local index = 1
     while true do
-        local name, rank, texture, count, dtype, duration, expires, caster = UnitDebuff(unit, index)
+        local name, texture, count, dtype, duration, expires, caster = UnitDebuff(unit, index)
         if (not name) then
             break
         end
 
-        local show = CustomFilter(auras, unit, icon, name, rank, texture, count, dtype, duration, expires, caster)
+        local show = CustomFilter(auras, unit, icon, name, texture, count, dtype, duration, expires, caster)
 
         if (show) then
             if (not cur) then
@@ -358,12 +358,12 @@ local Update = function(self, event, unit)
 
     index = 1
     while true do
-        local name, rank, texture, count, dtype, duration, expires, caster = UnitBuff(unit, index)
+        local name, texture, count, dtype, duration, expires, caster = UnitBuff(unit, index)
         if (not name) then
             break
         end
 
-        local show = CustomFilter(auras, unit, icon, name, rank, texture, count, dtype, duration, expires, caster)
+        local show = CustomFilter(auras, unit, icon, name, texture, count, dtype, duration, expires, caster)
 
         if (show and icon.buff) then
             if (not cur) then
