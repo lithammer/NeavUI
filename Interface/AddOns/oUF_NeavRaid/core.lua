@@ -736,7 +736,7 @@ raidFrames:Hide()
 raidFrames.text = raidFrames:CreateFontString(nil, "OVERLAY")
 raidFrames.text:SetAllPoints(raidFrames)
 raidFrames.text:SetFont("Fonts\\ARIALN.ttf", 13)
-raidFrames.text:SetText("oUF_Neav Raid_Anchor ""..config.units.raid.layout.initialAnchor..""")
+raidFrames.text:SetText("oUF_Neav Raid_Anchor \""..config.units.raid.layout.initialAnchor.."\"")
 
 raidFrames:SetScript("OnDragStart", function(self)
     self:StartMoving()
