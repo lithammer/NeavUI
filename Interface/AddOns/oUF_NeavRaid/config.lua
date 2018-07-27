@@ -3,19 +3,19 @@ local _, ns = ...
 
 ns.Config = {
     media = {
-        statusbar = 'Interface\\AddOns\\oUF_NeavRaid\\media\\statusbarTexture',             -- Health- and Powerbar texture
+        statusbar = "Interface\\AddOns\\oUF_NeavRaid\\media\\statusbarTexture",             -- Health- and Powerbar texture
     },
 
     font = {
-        fontSmall = 'Interface\\AddOns\\oUF_NeavRaid\\media\\fontSmall.ttf',                -- Name font
+        fontSmall = "Interface\\AddOns\\oUF_NeavRaid\\media\\fontSmall.ttf",                -- Name font
         fontSmallSize = 11,
 
-        fontBig = 'Interface\\AddOns\\oUF_NeavRaid\\media\\fontThick.ttf',                  -- Health, dead/ghost/offline etc. font
+        fontBig = "Interface\\AddOns\\oUF_NeavRaid\\media\\fontThick.ttf",                  -- Health, dead/ghost/offline etc. font
         fontBigSize = 12,
     },
 
     units = {
-        ['raid'] = {
+        ["raid"] = {
             showSolo = true,
             showParty = true,
 
@@ -28,13 +28,13 @@ ns.Config = {
             layout = {
                 frameSpacing = 7,
 
-                initialAnchor = 'TOPLEFT',                                                  -- 'TOPLEFT' 'BOTTOMLEFT' 'TOPRIGHT' 'BOTTOMRIGHT'
-                orientation = 'HORIZONTAL',                                                 -- 'VERTICAL' 'HORIZONTAL'
+                initialAnchor = "TOPLEFT",                                                  -- "TOPLEFT" "BOTTOMLEFT" "TOPRIGHT" "BOTTOMRIGHT"
+                orientation = "HORIZONTAL",                                                 -- "VERTICAL" "HORIZONTAL"
             },
 
             smoothUpdates = true,                                                           -- Enable smooth updates for all bars
-            showThreatText = false,                                                         -- Show a red 'AGGRO' text on the raidframes in addition to the glow
-            showRolePrefix = false,                                                         -- A simple role abbrev..tanks = '>'..healer = '+'..dds = '-'
+            showThreatText = false,                                                         -- Show a red "AGGRO" text on the raidframes in addition to the glow
+            showRolePrefix = false,                                                         -- A simple role abbrev..tanks = ">"..healer = "+"..dds = "-"
             showNotHereTimer = true,                                                        -- A afk and offline timer
             showMainTankIcon = true,                                                        -- A little shield on the top of a raidframe if the unit is marked as maintank
             showResurrectText = true,                                                       -- Not working atm. just a placeholder

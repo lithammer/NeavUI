@@ -7,11 +7,11 @@ local floor, fmod = floor, math.fmod
 local day, hour, minute = 86400, 3600, 60
 
 local function ExactTime(time)
-    return format('%.1f', time), (time * 100 - floor(time * 100))/100
+    return format("%.1f", time), (time * 100 - floor(time * 100))/100
 end
 
 local function IsMine(unit)
-    if (unit == 'player' or unit == 'vehicle' or unit == 'pet') then
+    if (unit == "player" or unit == "vehicle" or unit == "pet") then
         return true
     else
         return false
@@ -31,14 +31,14 @@ ns.UpdateAuraTimer = function(self, elapsed)
         self.remaining:SetText(nil)
     else
         if (timeLeft <= 5 and IsMine(self.caster)) then
-            self.remaining:SetText('|cffff0000'..ExactTime(timeLeft)..'|r')
+            self.remaining:SetText("|cffff0000"..ExactTime(timeLeft).."|r")
             if (not self.ignoreSize) then
-                self.remaining:SetFont(config.font.normal, 12, 'THINOUTLINE')
+                self.remaining:SetFont(config.font.normal, 12, "THINOUTLINE")
             end
         else
             self.remaining:SetText(ns.FormatTime(timeLeft))
             if (not self.ignoreSize) then
-                self.remaining:SetFont(config.font.normal, 8, 'THINOUTLINE')
+                self.remaining:SetFont(config.font.normal, 8, "THINOUTLINE")
             end
         end
     end
@@ -58,7 +58,7 @@ ns.PostUpdateIcon = function(icons, unit, icon, index, offset)
     end
 
     if (config.units.target.colorPlayerDebuffsOnly) then
-        if (unit == 'target') then
+        if (unit == "target") then
             if (icon.isDebuff) then
                 if (not IsMine(icon.caster)) then
                     icon.overlay:SetVertexColor(0.45, 0.45, 0.45)
@@ -73,12 +73,12 @@ ns.PostUpdateIcon = function(icons, unit, icon, index, offset)
     end
 
     if (icon.remaining) then
-        if (unit == 'target' and icon.isDebuff and not IsMine(icon.caster) and (not UnitIsFriend('player', unit) and UnitCanAttack(unit, 'player') and not UnitPlayerControlled(unit)) and not config.units.target.showAllTimers ) then
+        if (unit == "target" and icon.isDebuff and not IsMine(icon.caster) and (not UnitIsFriend("player", unit) and UnitCanAttack(unit, "player") and not UnitPlayerControlled(unit)) and not config.units.target.showAllTimers ) then
             if (icon.remaining:IsShown()) then
                 icon.remaining:Hide()
             end
 
-            icon:SetScript('OnUpdate', nil)
+            icon:SetScript("OnUpdate", nil)
         else
             local _, _, _, _, duration, expirationTime = UnitAura(unit, index, icon.filter)
             if (duration and duration > 0) then
@@ -93,7 +93,7 @@ ns.PostUpdateIcon = function(icons, unit, icon, index, offset)
 
             icon.duration = duration
             icon.expires = expirationTime
-            icon:SetScript('OnUpdate', ns.UpdateAuraTimer)
+            icon:SetScript("OnUpdate", ns.UpdateAuraTimer)
         end
     end
 end
@@ -105,42 +105,42 @@ ns.UpdateAuraIcons = function(auras, button)
         button.overlay:SetTexture(config.media.border)
         button.overlay:SetTexCoord(0, 1, 0, 1)
         button.overlay:ClearAllPoints()
-        button.overlay:SetPoint('TOPRIGHT', button.icon, 1.35, 1.35)
-        button.overlay:SetPoint('BOTTOMLEFT', button.icon, -1.35, -1.35)
+        button.overlay:SetPoint("TOPRIGHT", button.icon, 1.35, 1.35)
+        button.overlay:SetPoint("BOTTOMLEFT", button.icon, -1.35, -1.35)
 
-        button.count:SetFont(config.font.normal, 11, 'THINOUTLINE')
+        button.count:SetFont(config.font.normal, 11, "THINOUTLINE")
         button.count:SetShadowOffset(0, 0)
         button.count:ClearAllPoints()
-        button.count:SetPoint('BOTTOMRIGHT', button.icon, 2, 0)
+        button.count:SetPoint("BOTTOMRIGHT", button.icon, 2, 0)
 
         if (config.show.disableCooldown) then
             button.cd:SetReverse()
             button.cd:SetDrawEdge(true)
             button.cd:ClearAllPoints()
-            button.cd:SetPoint('TOPRIGHT', button.icon, 'TOPRIGHT', -1, -1)
-            button.cd:SetPoint('BOTTOMLEFT', button.icon, 'BOTTOMLEFT', 1, 1)
+            button.cd:SetPoint("TOPRIGHT", button.icon, "TOPRIGHT", -1, -1)
+            button.cd:SetPoint("BOTTOMLEFT", button.icon, "BOTTOMLEFT", 1, 1)
         else
             auras.disableCooldown = true
             -- button.cd.noOCC = true
 
-            button.remaining = button:CreateFontString(nil, 'OVERLAY')
-            button.remaining:SetFont(config.font.normal, 8, 'THINOUTLINE')
+            button.remaining = button:CreateFontString(nil, "OVERLAY")
+            button.remaining:SetFont(config.font.normal, 8, "THINOUTLINE")
             button.remaining:SetShadowOffset(0, 0)
-            button.remaining:SetPoint('TOP', button.icon, 0, 2)
+            button.remaining:SetPoint("TOP", button.icon, 0, 2)
         end
 
         if (not button.Shadow) then
-            button.Shadow = button:CreateTexture(nil, 'BACKGROUND')
-            button.Shadow:SetPoint('TOPLEFT', button.icon, 'TOPLEFT', -4, 4)
-            button.Shadow:SetPoint('BOTTOMRIGHT', button.icon, 'BOTTOMRIGHT', 4, -4)
-            button.Shadow:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\borderBackground')
+            button.Shadow = button:CreateTexture(nil, "BACKGROUND")
+            button.Shadow:SetPoint("TOPLEFT", button.icon, "TOPLEFT", -4, 4)
+            button.Shadow:SetPoint("BOTTOMRIGHT", button.icon, "BOTTOMRIGHT", 4, -4)
+            button.Shadow:SetTexture("Interface\\AddOns\\oUF_Neav\\media\\borderBackground")
             button.Shadow:SetVertexColor(0, 0, 0, 1)
         end
 
         if (button.stealable) then
-            local stealable = button:CreateTexture(nil, 'OVERLAY')
-            stealable:SetPoint('TOPLEFT', -4, 4)
-            stealable:SetPoint('BOTTOMRIGHT', 4, -4)
+            local stealable = button:CreateTexture(nil, "OVERLAY")
+            stealable:SetPoint("TOPLEFT", -4, 4)
+            stealable:SetPoint("BOTTOMRIGHT", 4, -4)
         end
         
         button.overlay.Hide = function(self)

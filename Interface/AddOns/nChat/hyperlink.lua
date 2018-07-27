@@ -25,9 +25,9 @@ local linktypes = {
 }
 
 local function OnHyperlinkEnter(frame, link, ...)
-    local linktype = link:match('^([^:]+)')
+    local linktype = link:match("^([^:]+)")
     if (linktype and linktypes[linktype]) then
-        GameTooltip:SetOwner(ChatFrame1, 'ANCHOR_CURSOR', 0, 20)
+        GameTooltip:SetOwner(ChatFrame1, "ANCHOR_CURSOR", 0, 20)
         GameTooltip:SetHyperlink(link)
         GameTooltip:Show()
     else
@@ -51,14 +51,14 @@ local function EnableItemLinkTooltip()
     for _, v in pairs(CHAT_FRAMES) do
         local chat = _G[v]
         if (chat and not chat.URLCopy) then
-            orig1[chat] = chat:GetScript('OnHyperlinkEnter')
-            chat:SetScript('OnHyperlinkEnter', OnHyperlinkEnter)
+            orig1[chat] = chat:GetScript("OnHyperlinkEnter")
+            chat:SetScript("OnHyperlinkEnter", OnHyperlinkEnter)
 
-            orig2[chat] = chat:GetScript('OnHyperlinkLeave')
-            chat:SetScript('OnHyperlinkLeave', OnHyperlinkLeave)
+            orig2[chat] = chat:GetScript("OnHyperlinkLeave")
+            chat:SetScript("OnHyperlinkLeave", OnHyperlinkLeave)
             chat.URLCopy = true
         end
     end
 end
-hooksecurefunc('FCF_OpenTemporaryWindow', EnableItemLinkTooltip)
+hooksecurefunc("FCF_OpenTemporaryWindow", EnableItemLinkTooltip)
 EnableItemLinkTooltip()

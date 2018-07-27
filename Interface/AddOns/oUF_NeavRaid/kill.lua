@@ -12,12 +12,12 @@ Kill(CompactRaidFrameManager)
 Kill(CompactUnitFrameProfiles)
 
 for i = 1, MAX_PARTY_MEMBERS do
-    local name = 'PartyMemberFrame'..i
+    local name = "PartyMemberFrame"..i
     local frame = _G[name]
 
     Kill(frame)
 
-    local pet = name..'PetFrame'
+    local pet = name.."PetFrame"
     local petframe = _G[pet]
 
     Kill(petframe)

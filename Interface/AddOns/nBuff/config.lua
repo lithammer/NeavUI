@@ -9,8 +9,8 @@ nBuff.Config = {
     buffFontSize = 14,
     buffCountSize = 16,
 
-    borderBuff = 'Interface\\AddOns\\nBuff\\media\\textureOverlay',
-    borderDebuff = 'Interface\\AddOns\\nBuff\\media\\textureDebuff',
+    borderBuff = "Interface\\AddOns\\nBuff\\media\\textureOverlay",
+    borderDebuff = "Interface\\AddOns\\nBuff\\media\\textureDebuff",
 
     debuffSize = 36,
     debuffScale = 1,
@@ -22,6 +22,6 @@ nBuff.Config = {
     paddingY = 7,
     buffPerRow = 8,
 
-    durationFont = 'Fonts\\ARIALN.ttf',
-    countFont = 'Fonts\\ARIALN.ttf',
+    durationFont = "Fonts\\ARIALN.ttf",
+    countFont = "Fonts\\ARIALN.ttf",
 }

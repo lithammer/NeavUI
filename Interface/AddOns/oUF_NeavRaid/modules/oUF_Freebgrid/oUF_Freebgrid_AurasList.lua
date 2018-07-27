@@ -25,64 +25,64 @@ end
 
 local L = {
     -- Legion Raids
-    ['The Emerald Nightmare'] = 1520,
-    ['Trial of Valor'] = 1648,
-    ['The Nighthold'] = 1530,
-    ['Tomb of Sargeras'] = 1676,
-    ['Antorus'] = 1712,
+    ["The Emerald Nightmare"] = 1520,
+    ["Trial of Valor"] = 1648,
+    ["The Nighthold"] = 1530,
+    ["Tomb of Sargeras"] = 1676,
+    ["Antorus"] = 1712,
 
     -- Legion Dungeons
-    ['Black Rook Hold'] = 1501,
-    ['Cathedral of Eternal Night'] = 1677,
-    ['Court of Stars'] = 1571,
-    ['Darkheart Thicket'] = 1466,
-    ['Eye of Azshara'] = 1456,
-    ['Halls of Valor'] = 1477,
-    ['Maw of Souls'] = 1492,
-    ['Neltharion\'s Lair'] = 1458,
-    ['Return to Karazhan'] = 1651,
-    ['The Arcway'] = 1516,
-    ['Vault of the Wardens'] = 1493,
-    ['Violet Hold'] = 1544,
+    ["Black Rook Hold"] = 1501,
+    ["Cathedral of Eternal Night"] = 1677,
+    ["Court of Stars"] = 1571,
+    ["Darkheart Thicket"] = 1466,
+    ["Eye of Azshara"] = 1456,
+    ["Halls of Valor"] = 1477,
+    ["Maw of Souls"] = 1492,
+    ["Neltharion\"s Lair"] = 1458,
+    ["Return to Karazhan"] = 1651,
+    ["The Arcway"] = 1516,
+    ["Vault of the Wardens"] = 1493,
+    ["Violet Hold"] = 1544,
 
     -- Warlords of Draenor Raids
-    ['Hellfire Citadel'] = 1448,
-    ['Blackrock Foundry'] = 1205,
-    ['Highmaul'] = 1228,
+    ["Hellfire Citadel"] = 1448,
+    ["Blackrock Foundry"] = 1205,
+    ["Highmaul"] = 1228,
 
     -- Mists of Pandaria Raids
-    ['Siege of Orgrimmar'] = 1136,
-    ['Throne of Thunder'] = 1098,
-    ['Terrace of Endless Spring'] = 996,
-    ['Heart of Fear'] = 1009,
-    ['Mogu\'shan Vaults'] = 1008,
+    ["Siege of Orgrimmar"] = 1136,
+    ["Throne of Thunder"] = 1098,
+    ["Terrace of Endless Spring"] = 996,
+    ["Heart of Fear"] = 1009,
+    ["Mogu\"shan Vaults"] = 1008,
 
     -- Cataclysm Raids
-    ['Baradin Hold'] = 757,
-    ['Blackwing Descent'] = 669,
-    ['The Bastion of Twilight'] = 671,
-    ['Throne of the Four Winds'] = 754,
-    ['Firelands'] = 720,
-    ['Dragon Soul'] = 967,
+    ["Baradin Hold"] = 757,
+    ["Blackwing Descent"] = 669,
+    ["The Bastion of Twilight"] = 671,
+    ["Throne of the Four Winds"] = 754,
+    ["Firelands"] = 720,
+    ["Dragon Soul"] = 967,
 
     -- Wrath of the Lich King Raids
-    ['Ulduar'] = 603,
-    ['ToC'] = 649,
-    ['Naxxramas'] = 533,
-    ['Ruby Sanctum'] = 724,
-    ['Icecrown'] = 631,
+    ["Ulduar"] = 603,
+    ["ToC"] = 649,
+    ["Naxxramas"] = 533,
+    ["Ruby Sanctum"] = 724,
+    ["Icecrown"] = 631,
 
-	-- ['Ragefire Chasm'] = 389,
+	-- ["Ragefire Chasm"] = 389,
 
-    -- ['Tol Barad'] = 732,
-    -- ['Lost City Tol'vir'] = 755,
-    -- ['Deadmines'] = 36,
-    -- ['Grim Batol'] = 670,
-    -- ['Shadowfang'] = 33,
-    -- ['Throne of the Tides'] = 643,
+    -- ["Tol Barad"] = 732,
+    -- ["Lost City Tol'vir"] = 755,
+    -- ["Deadmines"] = 36,
+    -- ["Grim Batol"] = 670,
+    -- ["Shadowfang"] = 33,
+    -- ["Throne of the Tides"] = 643,
 
-    -- ['Zul'Gurub'] = 859,
-    -- ['Zul'Aman'] = 568,
+    -- ["Zul'Gurub"] = 859,
+    -- ["Zul'Aman"] = 568,
 }
 
 ns.auras = {
@@ -118,7 +118,7 @@ ns.auras = {
         -- Raid Debuffs
 
     instances = {
-        [L['Darkheart Thicket']] = {
+        [L["Darkheart Thicket"]] = {
             -- Trash
             [GetSpellInfo(200620)] = 7, -- Frantic Rip
 
@@ -126,7 +126,7 @@ ns.auras = {
             [GetSpellInfo(196376)] = 7, -- Grievous Tear
         },
 
-        [L['Black Rook Hold']] = {
+        [L["Black Rook Hold"]] = {
             -- Trash
             [GetSpellInfo(225962)] = 7, -- Bloodthirsty Leap
 
@@ -134,7 +134,7 @@ ns.auras = {
             [GetSpellInfo(198245)] = 7, -- Brutal Haymaker
         },
 
-        [L['The Emerald Nightmare']] = {
+        [L["The Emerald Nightmare"]] = {
             -- Ursoc
             [GetSpellInfo(197943)] = 7, -- Overwhelm
             -- Nythendra
@@ -145,12 +145,12 @@ ns.auras = {
             [GetSpellInfo(215128)] = 7, -- Cursed Blood
         },
 
-        [L['Trial of Valor']] = {
+        [L["Trial of Valor"]] = {
             -- Helya
             [GetSpellInfo(228054)] = 7, -- Taint of the Sea
         },
 
-        [L['The Nighthold']] = {
+        [L["The Nighthold"]] = {
             -- Chronomatic Anomaly
             [GetSpellInfo(206609)] = 7, -- Time Release
             -- Trilliax
@@ -162,7 +162,7 @@ ns.auras = {
             [GetSpellInfo(218424)] = 7, -- Parasitic Fetter
         },
 
-        [L['Tomb of Sargeras']] = {
+        [L["Tomb of Sargeras"]] = {
 
                 -- Goroth
 
@@ -201,7 +201,7 @@ ns.auras = {
             [GetSpellInfo(239932)] = 9, -- Fel Claws
         },
 
-        [L['Antorus']] = {
+        [L["Antorus"]] = {
                 -- Felhounds of Sargeras
 
             [GetSpellInfo(251445)] = 7, -- Smouldering
@@ -270,7 +270,7 @@ ns.auras = {
             [GetSpellInfo(248499)] = 8, -- Sweeping Scythe
         },
 
-        [L['Hellfire Citadel']] = {
+        [L["Hellfire Citadel"]] = {
 
                 -- Hellfire Assault
 
@@ -372,7 +372,7 @@ ns.auras = {
             [GetSpellInfo(184931)] = 7, -- Shackled Torment
             [GetSpellInfo(182879)] = 7, -- Doomfire Fixate
         },
-        [L['Blackrock Foundry']] = {
+        [L["Blackrock Foundry"]] = {
 
                 -- Gruul
 
@@ -461,7 +461,7 @@ ns.auras = {
             [GetSpellInfo(156888)] = 7, -- Overheated
             [GetSpellInfo(157000)] = 7, -- Attach Slag Bombs
         },
-        [L['Highmaul']] = {
+        [L["Highmaul"]] = {
 
                 -- Kargath Bladefist
 
@@ -531,7 +531,7 @@ ns.auras = {
             [GetSpellInfo(175654)] = 7, -- Trash: Rune of Disintegration
         },
 
-        [L['Siege of Orgrimmar']] = {
+        [L["Siege of Orgrimmar"]] = {
 
                 -- Immerseus
 
@@ -701,7 +701,7 @@ ns.auras = {
             [GetSpellInfo(145071)] = 5, -- Touch of Y'Sharrj
             [GetSpellInfo(148718)] = 4, -- Fire Pit
         },
-        [L['Throne of Thunder']] = {
+        [L["Throne of Thunder"]] = {
 
                 -- Jin'rokh the Breaker
 
@@ -850,7 +850,7 @@ ns.auras = {
             [GetSpellInfo(138372)] = 5, --Vita Sensitivity
         },
 
-        [L['Terrace of Endless Spring']] = {
+        [L["Terrace of Endless Spring"]] = {
 
                 -- Protectors of the Endless
 
@@ -875,7 +875,7 @@ ns.auras = {
             [GetSpellInfo(119775)] = 5,    -- Reaching Attack
         },
 
-        [L['Heart of Fear']] = {
+        [L["Heart of Fear"]] = {
 
                 -- Imperial Vizier Zor'lok
 
@@ -906,7 +906,7 @@ ns.auras = {
                 -- Grand Empress Shek'zeer
         },
 
-        [L['Mogu\'shan Vaults']] = {
+        [L["Mogu\"shan Vaults"]] = {
 
                 -- The Stone Guard
 
@@ -935,20 +935,20 @@ ns.auras = {
             [GetSpellInfo(116525)] = 7,    -- Focused Assault
         },
 
-        [L['Dragon Soul']] = {
+        [L["Dragon Soul"]] = {
             [GetSpellInfo(109075)] = 7, -- Fading Light, Ultraxion
         },
 
-        [L['Firelands']] = {
+        [L["Firelands"]] = {
             [GetSpellInfo(99256)] = 11, -- Baloroc shard debuff
             [GetSpellInfo(99252)] = 11, -- Baloroc shard debuff
         },
 
-        [L['Baradin Hold']] = {
+        [L["Baradin Hold"]] = {
             [GetSpellInfo(88954)] = 6, -- Consuming Darkness
         },
 
-        [L['Blackwing Descent']] = {
+        [L["Blackwing Descent"]] = {
 
                 -- Magmaw
 
@@ -994,7 +994,7 @@ ns.auras = {
             [GetSpellInfo(79318)] = 9, -- Dominion
         },
 
-        [L['The Bastion of Twilight']] = {
+        [L["The Bastion of Twilight"]] = {
 
                 -- Halfus
 
@@ -1032,7 +1032,7 @@ ns.auras = {
             [GetSpellInfo(89421)] = 9, -- Wrack
         },
 
-        [L['Throne of the Four Winds']] = {
+        [L["Throne of the Four Winds"]] = {
 
                 -- Conclave
 
@@ -1054,13 +1054,13 @@ ns.auras = {
 
             -- Naxxramas
 
-        [L['Naxxramas']] = {
+        [L["Naxxramas"]] = {
             [GetSpellInfo(27808)] = 9, -- Frost Blast, Kel'Thuzad
         },
 
             -- Trial of Crusader
 
-        [L['ToC']] = {
+        [L["ToC"]] = {
             [GetSpellInfo(66869)] = 8, -- Burning Bile
             [GetSpellInfo(66823)] = 10, -- Paralizing Toxin
             [GetSpellInfo(66237)] = 9, -- Incinerate Flesh
@@ -1068,14 +1068,14 @@ ns.auras = {
 
             -- Ruby Sanctum
 
-        [L['Ruby Sanctum']] = {
+        [L["Ruby Sanctum"]] = {
             [GetSpellInfo(74562)] = 8, -- Fiery Combustion, Halion
             [GetSpellInfo(74792)] = 8, -- Soul Consumption, Halion
         },
 
             -- Icecrown
 
-        [L['Icecrown']] = {
+        [L["Icecrown"]] = {
             [GetSpellInfo(69057)] = 9, -- Bone Spike Graveyard
             [GetSpellInfo(72410)] = 9, -- Rune of Blood
             [GetSpellInfo(72293)] = 10, -- Mark of the Fallen Champion, Deathbringer Saurfang

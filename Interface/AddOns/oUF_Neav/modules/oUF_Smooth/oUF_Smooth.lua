@@ -44,8 +44,8 @@ end
 for i, frame in ipairs(oUF.objects) do hook(frame) end
 oUF:RegisterInitCallback(hook)
 
-local f, min, max = CreateFrame('Frame'), math.min, math.max
-f:SetScript('OnUpdate', function()
+local f, min, max = CreateFrame("Frame"), math.min, math.max
+f:SetScript("OnUpdate", function()
     local limit = 40/GetFramerate()
     for bar, value in pairs(smoothing) do
         local cur = bar:GetValue()

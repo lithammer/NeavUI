@@ -31,23 +31,23 @@ end
 
 local function DeficitValue(value)
     if (value == 0) then
-        return ''
+        return ""
     else
-        return '-'..FormatValue(value)
+        return "-"..FormatValue(value)
     end
 end
 
 ns.cUnit = function(unit)
-    if (unit:match('vehicle')) then
-        return 'player'
-    elseif (unit:match('party%d')) then
-        return 'party'
-    elseif (unit:match('arena%d')) then
-        return 'arena'
-    elseif (unit:match('boss%d')) then
-        return 'boss'
-    elseif (unit:match('partypet%d')) then
-        return 'pet'
+    if (unit:match("vehicle")) then
+        return "player"
+    elseif (unit:match("party%d")) then
+        return "party"
+    elseif (unit:match("arena%d")) then
+        return "arena"
+    elseif (unit:match("boss%d")) then
+        return "boss"
+    elseif (unit:match("partypet%d")) then
+        return "pet"
     else
         return unit
     end
@@ -55,25 +55,25 @@ end
 
 ns.FormatTime = function(time)
     if (time >= day) then
-        return format('%dd', floor(time/day + 0.5))
+        return format("%dd", floor(time/day + 0.5))
     elseif (time>= hour) then
-        return format('%dh', floor(time/hour + 0.5))
+        return format("%dh", floor(time/hour + 0.5))
     elseif (time >= minute) then
-        return format('%dm', floor(time/minute + 0.5))
+        return format("%dm", floor(time/minute + 0.5))
     end
 
-    return format('%d', fmod(time, minute))
+    return format("%d", fmod(time, minute))
 end
 
 local function GetUnitStatus(unit)
     if (UnitIsDead(unit)) then
         return DEAD
     elseif (UnitIsGhost(unit)) then
-        return 'Ghost'
+        return "Ghost"
     elseif (not UnitIsConnected(unit)) then
         return PLAYER_OFFLINE
     else
-        return ''
+        return ""
     end
 end
 
@@ -81,17 +81,17 @@ local function GetFormattedText(text, cur, max, alt)
     local perc = (cur/max)*100
 
     if (alt) then
-        text = gsub(text, '$alt', ((alt > 0) and format('%s', FormatValue(alt)) or ''))
+        text = gsub(text, "$alt", ((alt > 0) and format("%s", FormatValue(alt)) or ""))
     end
 
     local r, g, b = oUF.ColorGradient(cur, max, unpack(oUF.smoothGradient or oUF.colors.smooth))
-    text = gsub(text, '$cur', format('%s', (cur > 0 and FormatValue(cur)) or ''))
-    text = gsub(text, '$max', format('%s', FormatValue(max)))
-    text = gsub(text, '$deficit', format('%s', DeficitValue(max-cur)))
-    text = gsub(text, '$perc', format('%d', perc)..'%%')
-    text = gsub(text, '$smartperc', format('%d', perc))
-    text = gsub(text, '$smartcolorperc', format('|cff%02x%02x%02x%d|r', r*255, g*255, b*255, perc))
-    text = gsub(text, '$colorperc', format('|cff%02x%02x%02x%d', r*255, g*255, b*255, perc)..'%%|r')
+    text = gsub(text, "$cur", format("%s", (cur > 0 and FormatValue(cur)) or ""))
+    text = gsub(text, "$max", format("%s", FormatValue(max)))
+    text = gsub(text, "$deficit", format("%s", DeficitValue(max-cur)))
+    text = gsub(text, "$perc", format("%d", perc).."%%")
+    text = gsub(text, "$smartperc", format("%d", perc))
+    text = gsub(text, "$smartcolorperc", format("|cff%02x%02x%02x%d|r", r*255, g*255, b*255, perc))
+    text = gsub(text, "$colorperc", format("|cff%02x%02x%02x%d", r*255, g*255, b*255, perc).."%%|r")
 
     return text
 end
@@ -115,7 +115,7 @@ ns.GetHealthText = function(unit, cur, max)
         if (cur == max) then
             healthString = FormatValue(cur)
         else
-            healthString = FormatValue(cur)..'/'..FormatValue(max)
+            healthString = FormatValue(cur).."/"..FormatValue(max)
         end
     end
 
@@ -135,9 +135,9 @@ ns.GetPowerText = function(unit, cur, max)
 
     local powerString
     if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
-        powerString = ''
+        powerString = ""
     elseif (max == 0) then
-        powerString = ''
+        powerString = ""
     elseif (not UnitHasMana(unit) or powerType ~= 0 or UnitHasVehicleUI(unit) and uconf and uconf.powerTagNoMana) then
         powerString = GetFormattedText(uconf.powerTagNoMana, cur, max, alt)
     elseif ((cur == max) and uconf and uconf.powerTagFull)then
@@ -149,7 +149,7 @@ ns.GetPowerText = function(unit, cur, max)
         if (cur == max) then
             powerString = FormatValue(cur)
         else
-            powerString = FormatValue(cur)..'/'..FormatValue(max)
+            powerString = FormatValue(cur).."/"..FormatValue(max)
         end
     end
 
@@ -157,7 +157,7 @@ ns.GetPowerText = function(unit, cur, max)
 end
 
 ns.MultiCheck = function(what, ...)
-    for i = 1, select('#', ...) do
+    for i = 1, select("#", ...) do
         if (what == select(i, ...)) then
             return true
         end
@@ -221,7 +221,7 @@ if (not IsAddOnLoaded("!Colorz")) then
             g = 0.5
             b = 0.5
         elseif (UnitIsPlayer(unit)) then
-            if (UnitIsFriend(unit, 'player')) then
+            if (UnitIsFriend(unit, "player")) then
                 local _, class = UnitClass(unit)
                 if ( class ) then
                     r = RAID_CLASS_COLORS[class].r
@@ -232,14 +232,14 @@ if (not IsAddOnLoaded("!Colorz")) then
                     g = 0.60
                     b = 0.60
                 end
-            elseif (not UnitIsFriend(unit, 'player')) then
+            elseif (not UnitIsFriend(unit, "player")) then
                 r = 1
                 g = 0
                 b = 0
             end
         elseif (UnitPlayerControlled(unit)) then
-            if (UnitCanAttack(unit, 'player')) then
-                if (not UnitCanAttack('player', unit)) then
+            if (UnitCanAttack(unit, "player")) then
+                if (not UnitCanAttack("player", unit)) then
                     r = 157/255
                     g = 197/255
                     b = 255/255
@@ -248,7 +248,7 @@ if (not IsAddOnLoaded("!Colorz")) then
                     g = 0
                     b = 0
                 end
-            elseif (UnitCanAttack('player', unit)) then
+            elseif (UnitCanAttack("player", unit)) then
                 r = 1
                 g = 1
                 b = 0
@@ -262,7 +262,7 @@ if (not IsAddOnLoaded("!Colorz")) then
                 b = 255/255
             end
         else
-            local reaction = UnitReaction(unit, 'player')
+            local reaction = UnitReaction(unit, "player")
 
             if (reaction) then
                 r = CUSTOM_FACTION_BAR_COLORS[reaction].r

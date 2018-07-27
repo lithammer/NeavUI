@@ -2,7 +2,7 @@
 local _, nPower = ...
 
 nPower.Config = {
-    position = {'CENTER', UIParent, 0, -100},
+    position = {"CENTER", UIParent, 0, -100},
     sizeWidth = 200,
     scale = 1.0,
 
@@ -14,7 +14,7 @@ nPower.Config = {
 
     valueAbbrev = true,
 
-    valueFont = 'Fonts\\ARIALN.ttf',
+    valueFont = "Fonts\\ARIALN.ttf",
     valueFontSize = 20,
     valueFontOutline = true,
     valueFontAdjustmentX = 0,
@@ -27,13 +27,13 @@ nPower.Config = {
     showArcaneCharges = true,
 
     -- Resource text shown above the bar.
-    extraFont = 'Fonts\\ARIALN.ttf',
+    extraFont = "Fonts\\ARIALN.ttf",
     extraFontSize = 16,
     extraFontOutline = true,
 
     hp = {
         show = false,
-        hpFont = 'Fonts\\ARIALN.ttf',
+        hpFont = "Fonts\\ARIALN.ttf",
         hpFontOutline = true,
         hpFontSize = 25,
         hpFontColor = {0.0, 1.0, 0.0},
@@ -63,7 +63,7 @@ nPower.Config = {
     rune = {
         show = true,
 
-        runeFont = 'Fonts\\ARIALN.ttf',
+        runeFont = "Fonts\\ARIALN.ttf",
         runeFontSize = 15,
         runeFontOutline = true,
     },

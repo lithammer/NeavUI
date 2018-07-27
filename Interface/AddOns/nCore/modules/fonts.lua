@@ -2,58 +2,58 @@
 --[[
     -- A list of all fonts
 
-    'GameFontNormal',
-    'GameFontHighlight',
-    'GameFontDisable',
-    'GameFontNormalSmall',
-    'GameFontHighlightExtraSmall',
-    'GameFontHighlightMedium',
-    'GameFontNormalLarge',
-    'GameFontNormalHuge',
+    "GameFontNormal",
+    "GameFontHighlight",
+    "GameFontDisable",
+    "GameFontNormalSmall",
+    "GameFontHighlightExtraSmall",
+    "GameFontHighlightMedium",
+    "GameFontNormalLarge",
+    "GameFontNormalHuge",
 
-    'BossEmoteNormalHuge',
+    "BossEmoteNormalHuge",
 
-    'NumberFontNormal',
-    'NumberFontNormalSmall',
-    'NumberFontNormalLarge',
-    'NumberFontNormalHuge',
+    "NumberFontNormal",
+    "NumberFontNormalSmall",
+    "NumberFontNormalLarge",
+    "NumberFontNormalHuge",
 
-    'ChatFontNormal',
-    'ChatFontSmall',
+    "ChatFontNormal",
+    "ChatFontSmall",
 
-    'QuestTitleFont',
-    'QuestFont',
-    'QuestFontNormalSmall',
-    'QuestFontHighlight',
+    "QuestTitleFont",
+    "QuestFont",
+    "QuestFontNormalSmall",
+    "QuestFontHighlight",
 
-    'ItemTextFontNormal',
-    'MailTextFontNormal',
-    'SubSpellFont',
-    'DialogButtonNormalText',
-    'ZoneTextFont',
-    'SubZoneTextFont',
-    'PVPInfoTextFont',
-    'ErrorFont',
-    'TextStatusBarText',
-    'CombatLogFont',
+    "ItemTextFontNormal",
+    "MailTextFontNormal",
+    "SubSpellFont",
+    "DialogButtonNormalText",
+    "ZoneTextFont",
+    "SubZoneTextFont",
+    "PVPInfoTextFont",
+    "ErrorFont",
+    "TextStatusBarText",
+    "CombatLogFont",
 
-    'GameTooltipText',
-    'GameTooltipTextSmall',
-    'GameTooltipHeaderText',
+    "GameTooltipText",
+    "GameTooltipTextSmall",
+    "GameTooltipHeaderText",
 
-    'WorldMapTextFont',
+    "WorldMapTextFont",
 
-    'InvoiceTextFontNormal',
-    'InvoiceTextFontSmall',
-    'CombatTextFont',
-    'MovieSubtitleFont',
+    "InvoiceTextFontNormal",
+    "InvoiceTextFontSmall",
+    "CombatTextFont",
+    "MovieSubtitleFont",
 
-    'AchievementPointsFont',
-    'AchievementPointsFontSmall',
-    'AchievementDescriptionFont',
-    'AchievementCriteriaFont',
-    'AchievementDateFont',
-    'ReputationDetailFont',
+    "AchievementPointsFont",
+    "AchievementPointsFontSmall",
+    "AchievementDescriptionFont",
+    "AchievementCriteriaFont",
+    "AchievementDateFont",
+    "ReputationDetailFont",
 --]]
 
 for _, font in pairs({
@@ -72,7 +72,7 @@ for _, font in pairs({
     GameFontDisableSmall,
     GameFontHighlightSmall,
 }) do
-    font:SetFont('Fonts\\ARIALN.ttf', 13)
+    font:SetFont("Fonts\\ARIALN.ttf", 13)
     font:SetShadowOffset(1, -1)
 end
 
@@ -83,8 +83,8 @@ for _, font in pairs({
     AchievementCriteriaFont,
     AchievementDateFont,
 }) do
-    font:SetFont('Fonts\\ARIALN.ttf', 12)
+    font:SetFont("Fonts\\ARIALN.ttf", 12)
 end
 
-GameFontNormalHuge:SetFont('Fonts\\ARIALN.ttf', 20, 'OUTLINE')
+GameFontNormalHuge:SetFont("Fonts\\ARIALN.ttf", 20, "OUTLINE")
 GameFontNormalHuge:SetShadowOffset(0, 0)

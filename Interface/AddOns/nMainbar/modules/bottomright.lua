@@ -7,18 +7,18 @@ MultiBarBottomRight:SetScale(cfg.multiBarBottomRight.scale)
 
 if (cfg.multiBarBottomRight.orderVertical) then
     for i = 2, 12 do
-        button = _G['MultiBarBottomRightButton'..i]
+        button = _G["MultiBarBottomRightButton"..i]
         button:ClearAllPoints()
-        button:SetPoint('TOP', _G['MultiBarBottomRightButton'..(i - 1)], 'BOTTOM', 0, -6)
+        button:SetPoint("TOP", _G["MultiBarBottomRightButton"..(i - 1)], "BOTTOM", 0, -6)
     end
 
-    MultiBarBottomRightButton1:HookScript('OnShow', function(self)
+    MultiBarBottomRightButton1:HookScript("OnShow", function(self)
         self:ClearAllPoints()
 
-        if (cfg.multiBarBottomRight.verticalPosition == 'RIGHT') then
-            self:SetPoint('TOPRIGHT', MultiBarLeftButton1, 'TOPLEFT', -6, 0)
+        if (cfg.multiBarBottomRight.verticalPosition == "RIGHT") then
+            self:SetPoint("TOPRIGHT", MultiBarLeftButton1, "TOPLEFT", -6, 0)
         else
-            self:SetPoint('TOPLEFT', UIParent, 'LEFT', 6, (MultiBarBottomRight:GetWidth() / 2))
+            self:SetPoint("TOPLEFT", UIParent, "LEFT", 6, (MultiBarBottomRight:GetWidth() / 2))
         end
     end)
 end

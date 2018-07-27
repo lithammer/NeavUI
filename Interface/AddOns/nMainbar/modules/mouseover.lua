@@ -10,14 +10,14 @@ local function EnableMouseOver(self, bar, min, max, alpha, hiddenAlpha)
     for i = min, max do
         local button = _G[self..i]
 
-        local f = CreateFrame('Frame', bar, bar)
-        f:SetFrameStrata('LOW')
+        local f = CreateFrame("Frame", bar, bar)
+        f:SetFrameStrata("LOW")
         f:SetFrameLevel(1)
         f:EnableMouse()
-        f:SetPoint('TOPLEFT', self..min, -5, 5)
-        f:SetPoint('BOTTOMRIGHT', self..max, 5, 5)
+        f:SetPoint("TOPLEFT", self..min, -5, 5)
+        f:SetPoint("BOTTOMRIGHT", self..max, 5, 5)
 
-        hooksecurefunc(bar, 'SetAlpha', function(self, alpha)
+        hooksecurefunc(bar, "SetAlpha", function(self, alpha)
             if (button.cooldown) then
                 button.cooldown:SetSwipeColor(0, 0, 0, alpha)
                 button.cooldown:SetDrawSwipe(alpha > 0)
@@ -26,25 +26,25 @@ local function EnableMouseOver(self, bar, min, max, alpha, hiddenAlpha)
             end
         end)
 
-        f:SetScript('OnShow', function()
+        f:SetScript("OnShow", function()
             bar:SetAlpha(minAlpha)
         end)
 
-        f:SetScript('OnEnter', function()
+        f:SetScript("OnEnter", function()
             bar:SetAlpha(alpha)
         end)
 
-        f:SetScript('OnLeave', function()
+        f:SetScript("OnLeave", function()
             if (not MouseIsOver(button)) then
                 bar:SetAlpha(minAlpha)
             end
         end)
 
-        button:HookScript('OnEnter', function()
+        button:HookScript("OnEnter", function()
             bar:SetAlpha(alpha)
         end)
 
-        button:HookScript('OnLeave', function()
+        button:HookScript("OnLeave", function()
             if (not MouseIsOver(f)) then
                 bar:SetAlpha(minAlpha)
             end
@@ -55,25 +55,25 @@ local function EnableMouseOver(self, bar, min, max, alpha, hiddenAlpha)
 end
 
 if (cfg.multiBarLeft.mouseover) then
-    EnableMouseOver('MultiBarLeftButton', MultiBarLeft, 1, 12, cfg.multiBarLeft.alpha, cfg.multiBarLeft.hiddenAlpha)
+    EnableMouseOver("MultiBarLeftButton", MultiBarLeft, 1, 12, cfg.multiBarLeft.alpha, cfg.multiBarLeft.hiddenAlpha)
 end
 
 if (cfg.multiBarRight.mouseover) then
-    EnableMouseOver('MultiBarRightButton', MultiBarRight, 1, 12, cfg.multiBarRight.alpha, cfg.multiBarRight.hiddenAlpha)
+    EnableMouseOver("MultiBarRightButton", MultiBarRight, 1, 12, cfg.multiBarRight.alpha, cfg.multiBarRight.hiddenAlpha)
 end
 
 if (cfg.multiBarBottomLeft.mouseover) then
-    EnableMouseOver('MultiBarBottomLeftButton', MultiBarBottomLeft, 1, 12, cfg.multiBarBottomLeft.alpha, cfg.multiBarBottomLeft.hiddenAlpha)
+    EnableMouseOver("MultiBarBottomLeftButton", MultiBarBottomLeft, 1, 12, cfg.multiBarBottomLeft.alpha, cfg.multiBarBottomLeft.hiddenAlpha)
 end
 
 if (cfg.multiBarBottomRight.mouseover) then
-    EnableMouseOver('MultiBarBottomRightButton', MultiBarBottomRight, 1, 12, cfg.multiBarBottomRight.alpha, cfg.multiBarBottomRight.hiddenAlpha)
+    EnableMouseOver("MultiBarBottomRightButton", MultiBarBottomRight, 1, 12, cfg.multiBarBottomRight.alpha, cfg.multiBarBottomRight.hiddenAlpha)
 end
 
 if (cfg.petBar.mouseover) then
-    EnableMouseOver('PetActionButton', PetActionBarFrame, 1, 10, cfg.petBar.alpha, cfg.petBar.hiddenAlpha)
+    EnableMouseOver("PetActionButton", PetActionBarFrame, 1, 10, cfg.petBar.alpha, cfg.petBar.hiddenAlpha)
 end
 
 if (cfg.stanceBar.mouseover) then
-    EnableMouseOver('StanceButton', StanceBarFrame, 1, NUM_STANCE_SLOTS, cfg.stanceBar.alpha, cfg.stanceBar.hiddenAlpha)
+    EnableMouseOver("StanceButton", StanceBarFrame, 1, NUM_STANCE_SLOTS, cfg.stanceBar.alpha, cfg.stanceBar.hiddenAlpha)
 end

@@ -3,22 +3,22 @@ local _, ns = ...
 
 --[[
 
-    The 'Tag-System'
+    The "Tag-System"
         Possible:
             $cur                - Shows the current hp of the unit > 53,4k
             $max                - Shows the maximum hp of the unit > 105,3k
             $deficit            - Shows the deficit value > -10k
             $perc               - Show the percent > 100%
-            $smartperc          - Show the percent without the '%' > 100
+            $smartperc          - Show the percent without the "%" > 100
             $colorperc          - Same as $perc, but color the number depended on the percent of the unit. Green if full, red if low percent
-            $smartcolorperc     - Same as above, but without the '%'
+            $smartcolorperc     - Same as above, but without the "%"
             $alt                - Only for power value, shows the current alternative power of the unit (like Cho'gall fight)
 
     Its possible to add hex color
         Example:
             |cffff0000 YOUTAGHERE |r
 
-            -->   '$cur / $perc |cffff0000$deficit|r'
+            -->   "$cur / $perc |cffff0000$deficit|r"
 
         So you have a red deficit value
 --]]
@@ -35,35 +35,35 @@ ns.Config = {
     },
 
     media = {
-        border = 'Interface\\AddOns\\oUF_Neav\\media\\borderTexture',                       -- Buffborder Texture
-        statusbar = 'Interface\\AddOns\\oUF_Neav\\media\\statusbarTexture',                 -- Statusbar texture
+        border = "Interface\\AddOns\\oUF_Neav\\media\\borderTexture",                       -- Buffborder Texture
+        statusbar = "Interface\\AddOns\\oUF_Neav\\media\\statusbarTexture",                 -- Statusbar texture
     },
 
     font = {
-        normal = 'Interface\\AddOns\\oUF_Neav\\media\\fontSmall.ttf',                       -- General font for all other
+        normal = "Interface\\AddOns\\oUF_Neav\\media\\fontSmall.ttf",                       -- General font for all other
         normalSize = 13,
 
-        normalBig = 'Interface\\AddOns\\oUF_Neav\\media\\fontThick.ttf',                    -- Name font
+        normalBig = "Interface\\AddOns\\oUF_Neav\\media\\fontThick.ttf",                    -- Name font
         normalBigSize = 14,
     },
 
     units = {
-        ['player'] = {
+        ["player"] = {
             scale = 1.193,
-            style = 'NORMAL',                                                               -- 'NORMAL' 'RARE' 'ELITE' 'CUSTOM'
-            customTexture = 'Interface\\AddOns\\oUF_Neav\\media\\customFrameTexture',       -- Custom texture if style = 'CUSTOM'
+            style = "NORMAL",                                                               -- "NORMAL" "RARE" "ELITE" "CUSTOM"
+            customTexture = "Interface\\AddOns\\oUF_Neav\\media\\customFrameTexture",       -- Custom texture if style = "CUSTOM"
 
             mouseoverText = false,
-            healthTag = '$cur/$max',
-            healthTagFull = '$cur',
-            powerTag = '$cur/$max',
-            powerTagFull = '$cur',
-            powerTagNoMana = '$cur',
+            healthTag = "$cur/$max",
+            healthTagFull = "$cur",
+            powerTag = "$cur/$max",
+            powerTagFull = "$cur",
+            powerTagNoMana = "$cur",
 
             showStatusFlash = true,
             showCombatFeedback = false,
 
-            position = {'TOPLEFT', UIParent, 34, -30},
+            position = {"TOPLEFT", UIParent, 34, -30},
 
             castbar = {
                 show = true,
@@ -81,26 +81,26 @@ ns.Config = {
 
                 icon = {
                     show = false,
-                    position = 'LEFT',                                                      -- 'LEFT' 'RIGHT'
+                    position = "LEFT",                                                      -- "LEFT" "RIGHT"
                     positionOutside = true,
                 },
 
-                position = {'BOTTOM', UIParent, 'BOTTOM', 0, 141},
+                position = {"BOTTOM", UIParent, "BOTTOM", 0, 141},
             },
         },
 
-        ['pet'] = {
+        ["pet"] = {
             scale = 1.193,
 
             auraSize = 22,
             disableAura = false,                                                            -- Disable Auras on this unitframe
 
             mouseoverText = true,
-            healthTag = '$cur/$max',
-            healthTagFull = '$cur',
-            powerTag = '$cur/$max',
-            powerTagFull = '$cur',
-            powerTagNoMana = '$cur',
+            healthTag = "$cur/$max",
+            healthTagFull = "$cur",
+            powerTag = "$cur/$max",
+            powerTagFull = "$cur",
+            powerTagNoMana = "$cur",
 
             showPowerPercent = false,
 
@@ -117,13 +117,13 @@ ns.Config = {
 
                 icon = {
                     show = false,
-                    position = 'LEFT',                                                      -- 'LEFT' 'RIGHT'
+                    position = "LEFT",                                                      -- "LEFT" "RIGHT"
                     positionOutside = true,
                 },
 
-                position = {'TOP', oUF_Neav_Player, 'BOTTOM', 0, -50},
+                position = {"TOP", oUF_Neav_Player, "BOTTOM", 0, -50},
 
-                ignoreSpells = true,                                                        -- Hides castbar for spells listed in 'ignoreList'
+                ignoreSpells = true,                                                        -- Hides castbar for spells listed in "ignoreList"
                 ignoreList = {
                     3110,   -- firebolt (imp)
                     31707,  -- waterbolt (water elemental)
@@ -131,7 +131,7 @@ ns.Config = {
             },
         },
 
-        ['target'] = {
+        ["target"] = {
             scale = 1.193,
 
             numBuffs = 20,
@@ -148,17 +148,17 @@ ns.Config = {
             onlyShowPlayerBuffs = false,
 
             mouseoverText = false,
-            healthTag = '$cur - $perc',
-            healthTagFull = '$cur',
-            powerTag = '$cur/$max',
-            powerTagFull = '$cur',
-            powerTagNoMana = '$cur',
+            healthTag = "$cur - $perc",
+            healthTagFull = "$cur",
+            powerTag = "$cur/$max",
+            powerTagFull = "$cur",
+            powerTagNoMana = "$cur",
 
             showCombatFeedback = false,
 
             showThreatValue = true,                                                         -- Show a Blizzard style threat indicator
 
-            position = {'TOPLEFT', UIParent, 300, -30},
+            position = {"TOPLEFT", UIParent, 300, -30},
 
             castbar = {
                 show = true,
@@ -172,24 +172,24 @@ ns.Config = {
 
                 icon = {
                     show = false,
-                    position = 'LEFT',                                                      -- 'LEFT' 'RIGHT'
+                    position = "LEFT",                                                      -- "LEFT" "RIGHT"
                     positionOutside = false,
                 },
 
-                position = {'BOTTOM', UIParent, 'BOTTOM', 0, 380},
+                position = {"BOTTOM", UIParent, "BOTTOM", 0, 380},
             },
         },
 
-        ['targettarget'] = {
+        ["targettarget"] = {
             scale = 1.193,
             disableAura = false,                                                             -- Disable Auras on this unitframe
 
             mouseoverText = false,
-            healthTag = '$perc',
-            healthTagFull = '',
+            healthTag = "$perc",
+            healthTagFull = "",
        },
 
-        ['focus'] = {
+        ["focus"] = {
             scale = 1.193,
 
             numDebuffs = 6,
@@ -197,20 +197,20 @@ ns.Config = {
             debuffsOnly = false,                                                            -- Only show debuffs.
 
             mouseoverText = false,
-            healthTag = '$cur - $perc',
-            healthTagFull = '$cur',
-            powerTag = '$cur/$max',
-            powerTagFull = '$cur',
-            powerTagNoMana = '$cur',
+            healthTag = "$cur - $perc",
+            healthTagFull = "$cur",
+            powerTag = "$cur/$max",
+            powerTagFull = "$cur",
+            powerTagNoMana = "$cur",
 
             showPowerPercent = false,
 
             showCombatFeedback = false,
 
             enableFocusToggleKeybind = true,
-            focusToggleKey = 'type4',                                                       -- type1, type2 (mousebutton 1 or 2, 3, 4, 5 etc. works too)
+            focusToggleKey = "type4",                                                       -- type1, type2 (mousebutton 1 or 2, 3, 4, 5 etc. works too)
 
-            position = {'LEFT', 30, 0},
+            position = {"LEFT", 30, 0},
 
             castbar = {
                 show = true,
@@ -224,46 +224,46 @@ ns.Config = {
 
                 icon = {
                     show = false,
-                    position = 'LEFT',   -- 'LEFT' or 'RIGHT'
+                    position = "LEFT",   -- "LEFT" or "RIGHT"
                     positionOutside = true,
                 },
             },
         },
 
-        ['focustarget'] = {
+        ["focustarget"] = {
             scale = 1.193,
 
             mouseoverText = false,
-            healthTag = '$perc',
-            healthTagFull = '',
+            healthTag = "$perc",
+            healthTagFull = "",
         },
 
-        ['party'] = {
+        ["party"] = {
             scale = 1.11,
             show = true,
             hideInRaid = true,
 
             mouseoverText = true,
-            healthTag = '$cur/$max',
-            healthTagFull = '$cur',
-            powerTag = '$cur/$max',
-            powerTagFull = '$cur',
-            powerTagNoMana = '$cur',
+            healthTag = "$cur/$max",
+            healthTagFull = "$cur",
+            powerTag = "$cur/$max",
+            powerTagFull = "$cur",
+            powerTagNoMana = "$cur",
 
-            position = {'TOPLEFT', UIParent, 25, -200},
+            position = {"TOPLEFT", UIParent, 25, -200},
         },
 
-        ['boss'] = {
+        ["boss"] = {
             scale = 1,
 
             mouseoverText = true,
-            healthTag = '$cur - $perc',
-            healthTagFull = '$cur',
-            powerTag = '$cur',
-            powerTagFull = '$cur',
-            powerTagNoMana = '$cur',
+            healthTag = "$cur - $perc",
+            healthTagFull = "$cur",
+            powerTag = "$cur",
+            powerTagFull = "$cur",
+            powerTagNoMana = "$cur",
 
-            position = {'RIGHT', UIParent, 'RIGHT', -101, -43},
+            position = {"RIGHT", UIParent, "RIGHT", -101, -43},
 
             castbar = {
                 color = {1, 0, 0},
@@ -272,12 +272,12 @@ ns.Config = {
                 icon = {
                     size = 22,
                     show = false,
-                    position = 'LEFT'   -- 'LEFT' or 'RIGHT'
+                    position = "LEFT"   -- "LEFT" or "RIGHT"
                 },
             },
         },
 
-        ['arena'] = {
+        ["arena"] = {
             show = true,
             scale = 1,
 
@@ -285,13 +285,13 @@ ns.Config = {
             filterBuffs = true,
 
             mouseoverText = true,
-            healthTag = '$cur/$max',
-            healthTagFull = '$cur',
-            powerTag = '$cur/$max',
-            powerTagFull = '$cur',
-            powerTagNoMana = '$cur',
+            healthTag = "$cur/$max",
+            healthTagFull = "$cur",
+            powerTag = "$cur/$max",
+            powerTagFull = "$cur",
+            powerTagNoMana = "$cur",
 
-            position = {'TOPRIGHT', UIParent, 'TOPRIGHT', -95, -300},
+            position = {"TOPRIGHT", UIParent, "TOPRIGHT", -95, -300},
 
             castbar = {
                 icon = {
@@ -302,7 +302,7 @@ ns.Config = {
             },
 
             buffList = { -- A whitelist for buffs to display on arena frames
-                ['Power Word: Shield'] = true,
+                ["Power Word: Shield"] = true,
             },
         },
     },

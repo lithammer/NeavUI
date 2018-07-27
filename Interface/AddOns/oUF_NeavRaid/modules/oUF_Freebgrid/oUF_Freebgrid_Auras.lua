@@ -5,14 +5,14 @@
 local _, ns = ...
 local oUF = ns.oUF or oUF
 
-local _, class = UnitClass('player')
+local _, class = UnitClass("player")
 local buffcolor = { r = 0.0, g = 1.0, b = 1.0 }
 
 local backdrop = {
-    bgFile = 'Interface\\Buttons\\WHITE8x8',
+    bgFile = "Interface\\Buttons\\WHITE8x8",
     tile = true,
     tileSize = 16,
-    edgeFile = 'Interface\\Buttons\\WHITE8x8',
+    edgeFile = "Interface\\Buttons\\WHITE8x8",
     edgeSize = 2,
     insets = {
         top = 2,
@@ -23,7 +23,7 @@ local backdrop = {
 }
 
 local BBackdrop = {
-    bgFile = 'Interface\\Buttons\\WHITE8x8',
+    bgFile = "Interface\\Buttons\\WHITE8x8",
     tile = true,
     tileSize = 16,
     insets = {
@@ -40,30 +40,30 @@ local day, hour, minute = 86400, 3600, 60
 
 local FormatTime = function(s)
     if (s >= day) then
-        return format('%dd', floor(s/day + 0.5))
+        return format("%dd", floor(s/day + 0.5))
     elseif (s >= hour) then
-        return format('%dh', floor(s/hour + 0.5))
+        return format("%dh", floor(s/hour + 0.5))
     elseif (s >= minute) then
-        return format('%dm', floor(s/minute + 0.5))
+        return format("%dm", floor(s/minute + 0.5))
     end
 
-    return format('%d', fmod(s, minute))
+    return format("%d", fmod(s, minute))
 end
 
 local CreateAuraIcon = function(auras)
     if (not auras.button) then
-        local button = CreateFrame('Frame', nil, auras)
+        local button = CreateFrame("Frame", nil, auras)
         button:EnableMouse(false)
         button:SetBackdrop(BBackdrop)
         button:SetBackdropColor(0, 0, 0, 1)
         button:SetBackdropBorderColor(0, 0, 0, 0)
         button:SetAllPoints(auras)
 
-        local icon = button:CreateTexture(nil, 'OVERLAY')
+        local icon = button:CreateTexture(nil, "OVERLAY")
         icon:SetAllPoints(button)
         icon:SetTexCoord(.1, .9, .1, .9)
 
-        local overlay = CreateFrame('Frame', nil, button)
+        local overlay = CreateFrame("Frame", nil, button)
         overlay:SetAllPoints(button)
         overlay:SetBackdrop(backdrop)
         overlay:SetBackdropColor(0, 0, 0, 0)
@@ -71,13 +71,13 @@ local CreateAuraIcon = function(auras)
         overlay:SetFrameLevel(6)
 
         local font, fontsize = GameFontNormalSmall:GetFont()
-        local count = overlay:CreateFontString(nil, 'OVERLAY')
-        count:SetFont(font, 10, 'THINOUTLINE')
-        count:SetPoint('BOTTOMRIGHT', button, 'BOTTOMRIGHT', 1, 1)
+        local count = overlay:CreateFontString(nil, "OVERLAY")
+        count:SetFont(font, 10, "THINOUTLINE")
+        count:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 1, 1)
 
-        local remaining = button:CreateFontString(nil, 'OVERLAY')
-        remaining:SetPoint('CENTER', icon, 0.5, 0)
-        remaining:SetFont(font, 11, 'THINOUTLINE')
+        local remaining = button:CreateFontString(nil, "OVERLAY")
+        remaining:SetPoint("CENTER", icon, 0.5, 0)
+        remaining:SetFont(font, 11, "THINOUTLINE")
         remaining:SetTextColor(1, 0.82, 0)
 
         button.overlay = overlay
@@ -166,29 +166,29 @@ local dispelClass = {
     --]]
 }
 
-local checkTalents = CreateFrame('Frame')
-checkTalents:RegisterEvent('PLAYER_ENTERING_WORLD')
-checkTalents:RegisterEvent('ACTIVE_TALENT_GROUP_CHANGED')
-checkTalents:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
-checkTalents:RegisterEvent('CHARACTER_POINTS_CHANGED')
-checkTalents:SetScript('OnEvent', function()
-    if (ns.MultiCheck(class, 'SHAMAN', 'PALADIN', 'DRUID', 'PRIEST', 'MONK')) then
+local checkTalents = CreateFrame("Frame")
+checkTalents:RegisterEvent("PLAYER_ENTERING_WORLD")
+checkTalents:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+checkTalents:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+checkTalents:RegisterEvent("CHARACTER_POINTS_CHANGED")
+checkTalents:SetScript("OnEvent", function()
+    if (ns.MultiCheck(class, "SHAMAN", "PALADIN", "DRUID", "PRIEST", "MONK")) then
         local spec = GetSpecialization()
-        if (class == 'SHAMAN') then
+        if (class == "SHAMAN") then
             dispelClass[class].Magic = spec == 3 and true
-        elseif (class == 'PALADIN') then
+        elseif (class == "PALADIN") then
             dispelClass[class].Magic = spec == 1 and true
-        elseif (class == 'DRUID') then
+        elseif (class == "DRUID") then
             dispelClass[class].Magic = spec == 4 and true
-        elseif (class == 'PRIEST') then
+        elseif (class == "PRIEST") then
             dispelClass[class].Disease = (spec == 1 or spec == 2) and true
-        elseif (class == 'MONK') then
+        elseif (class == "MONK") then
             dispelClass[class].Magic = spec == 2 and true
         end
     end
 
-    if (event == 'PLAYER_ENTERING_WORLD') then
-        self:UnregisterEvent('PLAYER_ENTERING_WORLD')
+    if (event == "PLAYER_ENTERING_WORLD") then
+        self:UnregisterEvent("PLAYER_ENTERING_WORLD")
     end
 end)
 
@@ -213,21 +213,21 @@ local zoneDelay = function(self, elapsed)
         instDebuffs = {}
     end
 
-    self:SetScript('OnUpdate', nil)
+    self:SetScript("OnUpdate", nil)
     delaytimer = 0
 end
 
-local getZone = CreateFrame('Frame')
-getZone:RegisterEvent('PLAYER_ENTERING_WORLD')
-getZone:RegisterEvent('ZONE_CHANGED_NEW_AREA')
-getZone:SetScript('OnEvent', function(self, event)
+local getZone = CreateFrame("Frame")
+getZone:RegisterEvent("PLAYER_ENTERING_WORLD")
+getZone:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+getZone:SetScript("OnEvent", function(self, event)
 
         -- Delay just in case zone data hasn't loaded
 
-    self:SetScript('OnUpdate', zoneDelay)
+    self:SetScript("OnUpdate", zoneDelay)
 
-    if (event == 'PLAYER_ENTERING_WORLD') then
-        self:UnregisterEvent('PLAYER_ENTERING_WORLD')
+    if (event == "PLAYER_ENTERING_WORLD") then
+        self:UnregisterEvent("PLAYER_ENTERING_WORLD")
     end
 end)
 
@@ -305,9 +305,9 @@ local updateDebuff = function(icon, texture, count, dtype, duration, expires, bu
     icon.duration = duration
 
     if (icon.asc) then
-        icon:SetScript('OnUpdate', AuraTimerAsc)
+        icon:SetScript("OnUpdate", AuraTimerAsc)
     else
-        icon:SetScript('OnUpdate', AuraTimer)
+        icon:SetScript("OnUpdate", AuraTimer)
     end
 end
 
@@ -410,7 +410,7 @@ local Enable = function(self)
     if (auras) then
         auras.button = CreateAuraIcon(auras)
 
-        self:RegisterEvent('UNIT_AURA', Update)
+        self:RegisterEvent("UNIT_AURA", Update)
         return true
     end
 end
@@ -419,8 +419,8 @@ local Disable = function(self)
     local auras = self.FreebAuras
 
     if (auras) then
-        self:UnregisterEvent('UNIT_AURA', Update)
+        self:UnregisterEvent("UNIT_AURA", Update)
     end
 end
 
-oUF:AddElement('FreebAuras', Update, Enable, Disable)
+oUF:AddElement("FreebAuras", Update, Enable, Disable)

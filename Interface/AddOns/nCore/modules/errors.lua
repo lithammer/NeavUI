@@ -1,5 +1,5 @@
 
-UIErrorsFrame:UnregisterEvent('UI_ERROR_MESSAGE')
+UIErrorsFrame:UnregisterEvent("UI_ERROR_MESSAGE")
 UIErrorsFrame:SetTimeVisible(1)
 UIErrorsFrame:SetFadeDuration(0.75)
 
@@ -52,11 +52,11 @@ local ignoreList = {
     [LE_GAME_ERR_SPELL_FAILED_ANOTHER_IN_PROGRESS] = true,
 }
 
-local event = CreateFrame('Frame')
-event:SetScript('OnEvent', function(self, event, messageType, message)
+local event = CreateFrame("Frame")
+event:SetScript("OnEvent", function(self, event, messageType, message)
     if (not ignoreList[messageType]) then
         UIErrorsFrame:AddMessage(message, 1, .1, .1)
     end
 end)
 
-event:RegisterEvent('UI_ERROR_MESSAGE')
+event:RegisterEvent("UI_ERROR_MESSAGE")

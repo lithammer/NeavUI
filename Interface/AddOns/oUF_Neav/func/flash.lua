@@ -2,7 +2,7 @@
 local _, ns = ...
 
 local flashObjects = {}
-local f = CreateFrame('Frame')
+local f = CreateFrame("Frame")
 
 local function Flash_OnUpdate(self, elapsed)
     local frame
@@ -33,7 +33,7 @@ local function Flash_OnUpdate(self, elapsed)
     end
 
     if (#flashObjects == 0) then
-        self:SetScript('OnUpdate', nil)
+        self:SetScript("OnUpdate", nil)
     end
 end
 
@@ -72,6 +72,6 @@ ns.StartFlash = function(frame, fadeInTime, fadeOutTime, flashInHoldTime, flashO
 
         tinsert(flashObjects, frame)
 
-        f:SetScript('OnUpdate', Flash_OnUpdate)
+        f:SetScript("OnUpdate", Flash_OnUpdate)
     end
 end

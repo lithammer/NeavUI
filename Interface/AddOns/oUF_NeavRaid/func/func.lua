@@ -7,18 +7,18 @@ local day, hour, minute = 86400, 3600, 60
 
 ns.FormatTime = function(time)
     if (time >= day) then
-        return format('%dd', floor(time/day + 0.5))
+        return format("%dd", floor(time/day + 0.5))
     elseif (time>= hour) then
-        return format('%dh', floor(time/hour + 0.5))
+        return format("%dh", floor(time/hour + 0.5))
     elseif (time >= minute) then
-        return format('%dm', floor(time/minute + 0.5))
+        return format("%dm", floor(time/minute + 0.5))
     end
 
-    return format('%d', fmod(time, minute))
+    return format("%d", fmod(time, minute))
 end
 
 ns.MultiCheck = function(what, ...)
-    for i = 1, select('#', ...) do
+    for i = 1, select("#", ...) do
         if (what == select(i, ...)) then
             return true
         end

@@ -8,26 +8,26 @@ local sort = _G.table.sort
 local gsub = _G.gsub
 local sort_func = function( a,b ) return a.name < b.name end
 
-local classColor = RAID_CLASS_COLORS[select(2, UnitClass('player'))]
+local classColor = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
 
-TimeManagerClockTicker:SetFont('Fonts\\ARIALN.ttf', 15, 'OUTLINE')
+TimeManagerClockTicker:SetFont("Fonts\\ARIALN.ttf", 15, "OUTLINE")
 TimeManagerClockTicker:SetShadowOffset(0, 0)
 TimeManagerClockTicker:SetTextColor(classColor.r, classColor.g, classColor.b)
-TimeManagerClockTicker:SetPoint('TOPRIGHT', TimeManagerClockButton, 0, 0)
+TimeManagerClockTicker:SetPoint("TOPRIGHT", TimeManagerClockButton, 0, 0)
 
 TimeManagerClockButton:GetRegions():Hide()
 TimeManagerClockButton:ClearAllPoints()
 TimeManagerClockButton:SetWidth(40)
 TimeManagerClockButton:SetHeight(18)
-TimeManagerClockButton:SetPoint('BOTTOM', Minimap, 0, 2)
+TimeManagerClockButton:SetPoint("BOTTOM", Minimap, 0, 2)
 
 TimeManagerAlarmFiredTexture:SetTexture(nil)
 
-hooksecurefunc(TimeManagerAlarmFiredTexture, 'Show', function()
+hooksecurefunc(TimeManagerAlarmFiredTexture, "Show", function()
     TimeManagerClockTicker:SetTextColor(1, 0, 1)
 end)
 
-hooksecurefunc(TimeManagerAlarmFiredTexture, 'Hide', function()
+hooksecurefunc(TimeManagerAlarmFiredTexture, "Hide", function()
     TimeManagerClockTicker:SetTextColor(classColor.r, classColor.g, classColor.b)
 end)
 
@@ -36,12 +36,12 @@ end)
 local instanceLockouts = {}
 local worldbossLockouts = {}
 
-TimeManagerClockButton:SetScript('OnEnter' ,function(self)
-    GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+TimeManagerClockButton:SetScript("OnEnter" ,function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_LEFT")
 
     -- Add default time info.
     GameTime_UpdateTooltip()
-    GameTooltip:AddLine(' ')
+    GameTooltip:AddLine(" ")
     GameTooltip:AddLine(GAMETIME_TOOLTIP_TOGGLE_CLOCK)
 
     -- Raid Lockout Info
@@ -58,12 +58,12 @@ TimeManagerClockButton:SetScript('OnEnter' ,function(self)
         if next(instanceLockouts) ~= nil then
             sort( instanceLockouts, sort_func )
 
-            GameTooltip:AddLine(' ')
+            GameTooltip:AddLine(" ")
             GameTooltip:AddLine(CALENDAR_FILTER_RAID_LOCKOUTS)
 
             for i, saved in ipairs(instanceLockouts) do
                 local bossColor = saved.defeated == saved.total and { 0.0, 1.0, 0.0 } or { 1.0, 0.0, 0.0 }
-                GameTooltip:AddDoubleLine(saved.name .. ' |cffffffff' .. saved.difficulty .. '|r', saved.defeated .. '/' .. saved.total, 1.0, 0.82, 0.0, unpack(bossColor))
+                GameTooltip:AddDoubleLine(saved.name .. " |cffffffff" .. saved.difficulty .. "|r", saved.defeated .. "/" .. saved.total, 1.0, 0.82, 0.0, unpack(bossColor))
             end
         end
 
@@ -80,7 +80,7 @@ TimeManagerClockButton:SetScript('OnEnter' ,function(self)
         if next(worldbossLockouts) ~= nil then
             sort( worldbossLockouts, sort_func )
 
-            GameTooltip:AddLine(' ')
+            GameTooltip:AddLine(" ")
             GameTooltip:AddLine(RAID_INFO_WORLD_BOSS)
 
             for i, boss in ipairs(worldbossLockouts) do
@@ -92,7 +92,7 @@ TimeManagerClockButton:SetScript('OnEnter' ,function(self)
     GameTooltip:Show()
 end)
 
-TimeManagerClockButton:SetScript('OnLeave', function(self)
+TimeManagerClockButton:SetScript("OnLeave", function(self)
     wipe(instanceLockouts)
     wipe(worldbossLockouts)
     GameTooltip:Hide()

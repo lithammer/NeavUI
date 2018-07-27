@@ -8,16 +8,16 @@ nMainbar.Config = {
         showVehicleKeybinds = true,
         showKeybinds = false,
         showMacronames = false,
-        outOfRangeType = 'icon',     -- Changes how out of range coloring is displayed. Options: icon, hotkey.
+        outOfRangeType = "icon",     -- Changes how out of range coloring is displayed. Options: icon, hotkey.
 
         countFontsize = 19,
-        countFont = 'Interface\\AddOns\\nMainbar\\media\\font.ttf',
+        countFont = "Interface\\AddOns\\nMainbar\\media\\font.ttf",
 
         macronameFontsize = 17,
-        macronameFont = 'Interface\\AddOns\\nMainbar\\media\\font.ttf',
+        macronameFont = "Interface\\AddOns\\nMainbar\\media\\font.ttf",
 
         hotkeyFontsize = 18,
-        hotkeyFont = 'Interface\\AddOns\\nMainbar\\media\\font.ttf',
+        hotkeyFont = "Interface\\AddOns\\nMainbar\\media\\font.ttf",
 
         petHotKeyFontsize = 15,
     },
@@ -39,7 +39,7 @@ nMainbar.Config = {
     statusTrackingBar = {
         mouseover = true,
         fontsize = 14,
-        font = 'Fonts\\ARIALN.ttf',
+        font = "Fonts\\ARIALN.ttf",
     },
 
     MainMenuBar = {
@@ -106,6 +106,6 @@ nMainbar.Config = {
         hiddenAlpha = 0,
         alpha = 1,
         orderVertical = false,
-        verticalPosition = 'LEFT', -- 'LEFT' or 'RIGHT'
+        verticalPosition = "LEFT", -- "LEFT" or "RIGHT"
     },
 }

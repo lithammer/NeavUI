@@ -118,7 +118,7 @@ local SetupGUID
 do 
 	local cache = setmetatable({}, {__type = "k"})
 
-	local frame = CreateFrame"Frame"
+	local frame = CreateFrame'Frame"
 	frame:SetScript("OnEvent", function(self, event)
 		for k,t in pairs(GUIDs) do
 			GUIDs[k] = nil
@@ -126,8 +126,8 @@ do
 			cache[t] = true
 		end
 	end)
-	frame:RegisterEvent"PLAYER_REGEN_ENABLED"
-	frame:RegisterEvent"PLAYER_ENTERING_WORLD"
+	frame:RegisterEvent'PLAYER_REGEN_ENABLED"
+	frame:RegisterEvent'PLAYER_ENTERING_WORLD"
 	
 	function SetupGUID(guid)
 		local t = next(cache)
@@ -267,7 +267,7 @@ local function SetupIcons(self)
 			icon.icon = tex
 			
 			local overlay = icon:CreateTexture(nil, "OVERLAY")
-			overlay:SetTexture"Interface\\Buttons\\UI-Debuff-Overlays"
+			overlay:SetTexture'Interface\\Buttons\\UI-Debuff-Overlays"
 			overlay:SetAllPoints(icon)
 			overlay:SetTexCoord(.296875, .5703125, 0, .515625)
 			overlay:SetVertexColor(1, 0, 0)

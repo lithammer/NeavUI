@@ -27,22 +27,22 @@ CharacterBag3Slot:ClearAllPoints()
 
     -- Set new frame position.
 
-MainMenuBarBackpackButton:SetPoint('BOTTOMRIGHT', WorldFrame, 'BOTTOMRIGHT',0, 0)
-CharacterBag0Slot:SetPoint('RIGHT', MainMenuBarBackpackButton, 'LEFT',0, 0)
-CharacterBag1Slot:SetPoint('RIGHT', CharacterBag0Slot, 'LEFT',0, 0)
-CharacterBag2Slot:SetPoint('RIGHT', CharacterBag1Slot, 'LEFT',0, 0)
-CharacterBag3Slot:SetPoint('RIGHT', CharacterBag2Slot, 'LEFT',0, 0)
+MainMenuBarBackpackButton:SetPoint("BOTTOMRIGHT", WorldFrame, "BOTTOMRIGHT",0, 0)
+CharacterBag0Slot:SetPoint("RIGHT", MainMenuBarBackpackButton, "LEFT",0, 0)
+CharacterBag1Slot:SetPoint("RIGHT", CharacterBag0Slot, "LEFT",0, 0)
+CharacterBag2Slot:SetPoint("RIGHT", CharacterBag1Slot, "LEFT",0, 0)
+CharacterBag3Slot:SetPoint("RIGHT", CharacterBag2Slot, "LEFT",0, 0)
 
 MicroButtonAndBagsBar.MicroBagBar:ClearAllPoints()
 MicroButtonAndBagsBar.MicroBagBar:Hide()
 
 CharacterMicroButton:ClearAllPoints()
-CharacterMicroButton:SetPoint('BOTTOMLEFT', UIParent, 9000, 9000)
+CharacterMicroButton:SetPoint("BOTTOMLEFT", UIParent, 9000, 9000)
 
-hooksecurefunc('MoveMicroButtons', function(anchor, achorTo, relAnchor, x, y, isStacked)
+hooksecurefunc("MoveMicroButtons", function(anchor, achorTo, relAnchor, x, y, isStacked)
     if not isStacked then
         CharacterMicroButton:ClearAllPoints()
-        CharacterMicroButton:SetPoint('BOTTOMLEFT', UIParent, 9000, 9000)
+        CharacterMicroButton:SetPoint("BOTTOMLEFT", UIParent, 9000, 9000)
     end
 end)
 
@@ -88,11 +88,11 @@ local function onEvent(self, event)
     end
 end
 
-local addon = CreateFrame('Frame')
-addon:SetScript('OnEvent', onEvent)
-addon:RegisterEvent('ADDON_LOADED')
+local addon = CreateFrame("Frame")
+addon:SetScript("OnEvent", onEvent)
+addon:RegisterEvent("ADDON_LOADED")
 
-SlashCmdList['nBag_Toggle'] = function()
+SlashCmdList["nBag_Toggle"] = function()
     ToggleBags()
 end
-SLASH_nBag_Toggle1 = '/neavbag'
+SLASH_nBag_Toggle1 = "/neavbag"

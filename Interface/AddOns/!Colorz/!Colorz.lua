@@ -6,7 +6,7 @@ local function CustomManaColor(manaBar)
         manaBar:SetStatusBarColor(0,0.55,1)
     end
 end
-hooksecurefunc('UnitFrameManaBar_UpdateType',CustomManaColor)
+hooksecurefunc("UnitFrameManaBar_UpdateType",CustomManaColor)
 
 CUSTOM_FACTION_BAR_COLORS = {
     [1] = {r = 1, g = 0, b = 0},
@@ -28,7 +28,7 @@ function GameTooltip_UnitColor(unit)
         g = 0.5
         b = 0.5
     elseif (UnitIsPlayer(unit)) then
-        if (UnitIsFriend(unit, 'player')) then
+        if (UnitIsFriend(unit, "player")) then
             local _, class = UnitClass(unit)
             if ( class ) then
                 r = RAID_CLASS_COLORS[class].r
@@ -39,14 +39,14 @@ function GameTooltip_UnitColor(unit)
                 g = 0.60
                 b = 0.60
             end
-        elseif (not UnitIsFriend(unit, 'player')) then
+        elseif (not UnitIsFriend(unit, "player")) then
             r = 1
             g = 0
             b = 0
         end
     elseif (UnitPlayerControlled(unit)) then
-        if (UnitCanAttack(unit, 'player')) then
-            if (not UnitCanAttack('player', unit)) then
+        if (UnitCanAttack(unit, "player")) then
+            if (not UnitCanAttack("player", unit)) then
                 r = 157/255
                 g = 197/255
                 b = 255/255
@@ -55,7 +55,7 @@ function GameTooltip_UnitColor(unit)
                 g = 0
                 b = 0
             end
-        elseif (UnitCanAttack('player', unit)) then
+        elseif (UnitCanAttack("player", unit)) then
             r = 1
             g = 1
             b = 0
@@ -69,7 +69,7 @@ function GameTooltip_UnitColor(unit)
             b = 255/255
         end
     else
-        local reaction = UnitReaction(unit, 'player')
+        local reaction = UnitReaction(unit, "player")
 
         if (reaction) then
             r = CUSTOM_FACTION_BAR_COLORS[reaction].r
