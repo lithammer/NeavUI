@@ -35,7 +35,7 @@ function ns.CreateCastbars(self, unit)
             self.Castbar:SetPoint(unpack(config.position))
         end
 
-        self.Castbar.Background = self.Castbar:CreateTexture(nil, 'BACKGROUND')
+        self.Castbar.Background = self.Castbar:CreateTexture('$parentBackground', 'BACKGROUND')
         self.Castbar.Background:SetTexture('Interface\\Buttons\\WHITE8x8')
         self.Castbar.Background:SetAllPoints(self.Castbar)
         self.Castbar.Background:SetVertexColor(config.color[1]*0.3, config.color[2]*0.3, config.color[3]*0.3, 0.8)
@@ -49,12 +49,12 @@ function ns.CreateCastbars(self, unit)
             end
 
             if (config.showSafezone) then
-                self.Castbar.SafeZone = self.Castbar:CreateTexture(nil, 'BORDER')
+                self.Castbar.SafeZone = self.Castbar:CreateTexture('$parentSafeZoneTexture', 'BORDER')
                 self.Castbar.SafeZone:SetColorTexture(unpack(config.safezoneColor))
             end
 
             if (config.showLatency) then
-                self.Castbar.Latency = self.Castbar:CreateFontString(nil, 'OVERLAY')
+                self.Castbar.Latency = self.Castbar:CreateFontString('$parentLatency', 'OVERLAY')
                 self.Castbar.Latency:SetFont(ns.Config.font.normal, ns.Config.font.normalSize - 1)
                 self.Castbar.Latency:SetShadowOffset(1, -1)
                 self.Castbar.Latency:SetVertexColor(0.6, 0.6, 0.6, 1)
@@ -67,7 +67,7 @@ function ns.CreateCastbars(self, unit)
         ns.CreateCastbarStrings(self)
 
         if (config.icon.show) then
-            self.Castbar.Icon = self.Castbar:CreateTexture(nil, 'ARTWORK')
+            self.Castbar.Icon = self.Castbar:CreateTexture('$parentIcon', 'ARTWORK')
             self.Castbar.Icon:SetSize(config.height + 2, config.height + 2)
             self.Castbar.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 
@@ -78,7 +78,7 @@ function ns.CreateCastbars(self, unit)
             end
 
             if (config.icon.positionOutside) then
-                self.Castbar.IconOverlay = CreateFrame('Frame', nil, self.Castbar)
+                self.Castbar.IconOverlay = CreateFrame('Frame', '$parentIconOverlay', self.Castbar)
                 self.Castbar.IconOverlay:SetAllPoints(self.Castbar.Icon)
                 self.Castbar.IconOverlay:CreateBeautyBorder(10)
                 self.Castbar.IconOverlay:SetBeautyBorderPadding(2)

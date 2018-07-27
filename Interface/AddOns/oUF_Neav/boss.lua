@@ -13,7 +13,7 @@ bossAnchor:SetBackdropColor(0, 1, 0, 0.55)
 bossAnchor:EnableMouse(true)
 bossAnchor:RegisterForDrag('LeftButton')
 bossAnchor:Hide()
-bossAnchor.text = bossAnchor:CreateFontString(nil, 'OVERLAY')
+bossAnchor.text = bossAnchor:CreateFontString('$parentText', 'OVERLAY')
 bossAnchor.text:SetAllPoints(bossAnchor)
 bossAnchor.text:SetFont('Fonts\\ARIALN.ttf', 13)
 bossAnchor.text:SetText('oUF_Neav\nBoss')
@@ -60,20 +60,9 @@ local function CreateBossLayout(self, unit)
 
     self:SetFrameStrata('LOW')
 
-        -- healthbar
+        -- Health bar
 
-    self.Health = CreateFrame('StatusBar', nil, self)
-
-        -- texture
-
-    self.Texture = self.Health:CreateTexture(nil, 'ARTWORK')
-    self.Texture:SetSize(250, 129)
-    self.Texture:SetPoint('CENTER', self, 31, -24)
-    self.Texture:SetTexture('Interface\\TargetingFrame\\UI-UnitFrame-Boss')
-
-        -- healthbar
-
-    self.Health = CreateFrame('StatusBar', nil, self)
+    self.Health = CreateFrame('StatusBar', '$parentHealthBar', self)
     self.Health:SetStatusBarTexture(config.media.statusbar, 'BORDER')
     self.Health:SetSize(115, 8)
     self.Health:SetPoint('TOPRIGHT', self.Texture, -105, -43)
@@ -86,16 +75,23 @@ local function CreateBossLayout(self, unit)
 
     self.Health.PostUpdate = UpdateHealth
 
-        -- health text
+        -- Texture
 
-    self.Health.Value = self.Health:CreateFontString(nil, 'ARTWORK')
+    self.Texture = self.Health:CreateTexture('$parentTexture', 'ARTWORK')
+    self.Texture:SetSize(250, 129)
+    self.Texture:SetPoint('CENTER', self, 31, -24)
+    self.Texture:SetTexture('Interface\\TargetingFrame\\UI-UnitFrame-Boss')
+
+        -- Health text
+
+    self.Health.Value = self.Health:CreateFontString('$parentHealthText', 'ARTWORK')
     self.Health.Value:SetFont('Fonts\\ARIALN.ttf', config.font.normalSize)
     self.Health.Value:SetShadowOffset(1, -1)
     self.Health.Value:SetPoint('CENTER', self.Health)
 
-        -- powerbar
+        -- Power bar
 
-    self.Power = CreateFrame('StatusBar', nil, self)
+    self.Power = CreateFrame('StatusBar', '$parentPowerBar', self)
     self.Power:SetStatusBarTexture(config.media.statusbar, 'BORDER')
     self.Power:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', 0, -4)
     self.Power:SetPoint('TOPRIGHT', self.Health, 'BOTTOMRIGHT', 0, -4)
@@ -110,16 +106,16 @@ local function CreateBossLayout(self, unit)
 
     self.Power.colorPower = true
 
-        -- power text
+        -- Power text
 
-    self.Power.Value = self.Health:CreateFontString(nil, 'ARTWORK')
+    self.Power.Value = self.Health:CreateFontString('$parentPowerText', 'ARTWORK')
     self.Power.Value:SetFont('Fonts\\ARIALN.ttf', config.font.normalSize)
     self.Power.Value:SetShadowOffset(1, -1)
     self.Power.Value:SetPoint('CENTER', self.Power)
 
-        -- name
+        -- Name text
 
-    self.Name = self.Health:CreateFontString(nil, 'ARTWORK')
+    self.Name = self.Health:CreateFontString('$parentNameText', 'ARTWORK')
     self.Name:SetFont(config.font.normalBig, config.font.normalBigSize)
     self.Name:SetShadowOffset(1, -1)
     self.Name:SetJustifyH('CENTER')
@@ -128,18 +124,18 @@ local function CreateBossLayout(self, unit)
 
     self:Tag(self.Name, '[name]')
 
-        -- colored name background
+        -- Colored name background
 
-    self.Name.Bg = self.Health:CreateTexture(nil, 'BACKGROUND')
+    self.Name.Bg = self.Health:CreateTexture('$parentBackground', 'BACKGROUND')
     self.Name.Bg:SetHeight(18)
     self.Name.Bg:SetTexCoord(0.2, 0.8, 0.3, 0.85)
     self.Name.Bg:SetPoint('BOTTOMRIGHT', self.Health, 'TOPRIGHT')
     self.Name.Bg:SetPoint('BOTTOMLEFT', self.Health, 'TOPLEFT')
     self.Name.Bg:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\nameBackground')
 
-        -- level
+        -- Level text
 
-    self.Level = self.Health:CreateFontString(nil, 'ARTWORK')
+    self.Level = self.Health:CreateFontString('$parentLevelText', 'ARTWORK')
     self.Level:SetFont('Interface\\AddOns\\oUF_Neav\\media\\fontNumber.ttf', 16, 'OUTLINE')
     self.Level:SetShadowOffset(0, 0)
     self.Level:SetPoint('CENTER', self.Texture, 24, -2)
@@ -148,21 +144,21 @@ local function CreateBossLayout(self, unit)
 
         -- Raid target indicator
 
-    self.RaidTargetIndicator = self.Health:CreateTexture(nil, 'OVERLAY', self)
+    self.RaidTargetIndicator = self.Health:CreateTexture('$parentRaidTargetIndicator', 'OVERLAY', self)
     self.RaidTargetIndicator:SetPoint('CENTER', self, 'TOPRIGHT', -9, -5)
     self.RaidTargetIndicator:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
     self.RaidTargetIndicator:SetSize(26, 26)
 
-        -- threat glow textures
+        -- Threat glow textures
 
-    self.ThreatGlow = self:CreateTexture(nil, 'OVERLAY')
+    self.ThreatGlow = self:CreateTexture('$parentThreatGlow', 'OVERLAY')
     self.ThreatGlow:SetAlpha(0)
     self.ThreatGlow:SetSize(241, 100)
     self.ThreatGlow:SetPoint('TOPRIGHT', self.Texture, -11, 3)
     self.ThreatGlow:SetTexture('Interface\\TargetingFrame\\UI-UnitFrame-Boss-Flash')
     self.ThreatGlow:SetTexCoord(0.0, 0.945, 0.0, 0.73125)
 
-    self.Buffs = CreateFrame('Frame', nil, self)
+    self.Buffs = CreateFrame('Frame', '$parentBuffs', self)
     self.Buffs.size = 30
     self.Buffs:SetHeight(self.Buffs.size * 3)
     self.Buffs:SetWidth(self.Buffs.size * 5)
@@ -188,7 +184,7 @@ local function CreateBossLayout(self, unit)
         self.Castbar:SetStatusBarColor(unpack(config.units.boss.castbar.color))
         self.Castbar:SetPoint('BOTTOM', self, 'TOP', 10, 13)
 
-        self.Castbar.Bg = self.Castbar:CreateTexture(nil, 'BACKGROUND')
+        self.Castbar.Bg = self.Castbar:CreateTexture('$parentBackground', 'BACKGROUND')
         self.Castbar.Bg:SetTexture('Interface\\Buttons\\WHITE8x8')
         self.Castbar.Bg:SetAllPoints(self.Castbar)
         self.Castbar.Bg:SetVertexColor(config.units.boss.castbar.color[1]*0.3, config.units.boss.castbar.color[2]*0.3, config.units.boss.castbar.color[3]*0.3, 0.8)

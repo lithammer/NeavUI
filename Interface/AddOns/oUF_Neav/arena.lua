@@ -19,7 +19,7 @@ arenaAnchor:SetBackdropColor(0, 1, 0, 0.55)
 arenaAnchor:EnableMouse(true)
 arenaAnchor:RegisterForDrag('LeftButton')
 arenaAnchor:Hide()
-arenaAnchor.text = arenaAnchor:CreateFontString(nil, 'OVERLAY')
+arenaAnchor.text = arenaAnchor:CreateFontString('$parentText', 'OVERLAY')
 arenaAnchor.text:SetAllPoints(arenaAnchor)
 arenaAnchor.text:SetFont('Fonts\\ARIALN.ttf', 13)
 arenaAnchor.text:SetText('oUF_Neav\nArena')
@@ -95,20 +95,9 @@ local function CreateArenaLayout(self, unit)
         self.arenaUnit = true
     end
 
-        -- healthbar
+        -- Health bar
 
-    self.Health = CreateFrame('StatusBar', nil, self)
-
-        -- texture
-
-    self.Texture = self.Health:CreateTexture(nil, 'ARTWORK')
-    self.Texture:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\arenaFrameTexture')
-    self.Texture:SetSize(250, 129)
-    self.Texture:SetPoint('CENTER', self, 31, -24)
-
-        -- healthbar
-
-    self.Health = CreateFrame('StatusBar', nil, self)
+    self.Health = CreateFrame('StatusBar', '$parentHealthBar', self)
     self.Health:SetStatusBarTexture(config.media.statusbar, 'BORDER')
     self.Health:SetSize(115, 8)
     self.Health:SetPoint('TOPRIGHT', self.Texture, -105, -43)
@@ -121,10 +110,17 @@ local function CreateArenaLayout(self, unit)
 
     self.Health.PostUpdate = UpdateHealth
 
-        -- powerbar
+        -- Texture
+
+    self.Texture = self.Health:CreateTexture('$parentTexture', 'ARTWORK')
+    self.Texture:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\arenaFrameTexture')
+    self.Texture:SetSize(250, 129)
+    self.Texture:SetPoint('CENTER', self, 31, -24)
+
+        -- Power bar
 
     if (self.arenaUnit) then
-        self.Power = CreateFrame('StatusBar', nil, self)
+        self.Power = CreateFrame('StatusBar', '$parentPowerBar', self)
         self.Power:SetStatusBarTexture(config.media.statusbar, 'BORDER')
         self.Power:SetPoint('TOPLEFT', self.Health, 'BOTTOMLEFT', 0, -3)
         self.Power:SetPoint('TOPRIGHT', self.Health, 'BOTTOMRIGHT', 0, -3)
@@ -140,9 +136,9 @@ local function CreateArenaLayout(self, unit)
         self.Power.colorPower = true
     end
 
-        -- name
+        -- Name text
 
-    self.Name = self.Health:CreateFontString(nil, 'ARTWORK')
+    self.Name = self.Health:CreateFontString('$parentNameText', 'ARTWORK')
     self.Name:SetFont(config.font.normalBig, config.font.normalBigSize)
     self.Name:SetShadowOffset(1, -1)
     self.Name:SetJustifyH('CENTER')
@@ -154,23 +150,23 @@ local function CreateArenaLayout(self, unit)
 
     if (self.arenaUnit) then
 
-            -- health text
+            -- Health text
 
-        self.Health.Value = self.Health:CreateFontString(nil, 'ARTWORK')
+        self.Health.Value = self.Health:CreateFontString('$parentHealthText', 'ARTWORK')
         self.Health.Value:SetFont('Fonts\\ARIALN.ttf', config.font.normalSize, nil)
         self.Health.Value:SetShadowOffset(1, -1)
         self.Health.Value:SetPoint('CENTER', self.Health)
 
-            -- power text
+            -- Power text
 
-        self.Power.Value = self.Health:CreateFontString(nil, 'ARTWORK')
+        self.Power.Value = self.Health:CreateFontString('$parentPowerText', 'ARTWORK')
         self.Power.Value:SetFont('Fonts\\ARIALN.ttf', config.font.normalSize, nil)
         self.Power.Value:SetShadowOffset(1, -1)
         self.Power.Value:SetPoint('CENTER', self.Power)
 
-            -- colored name background
+            -- Colored name background
 
-        self.Name.Bg = self.Health:CreateTexture(nil, 'BACKGROUND')
+        self.Name.Bg = self.Health:CreateTexture('$parentBackground', 'BACKGROUND')
         self.Name.Bg:SetHeight(18)
         self.Name.Bg:SetTexCoord(0.2, 0.8, 0.3, 0.85)
         self.Name.Bg:SetPoint('BOTTOMRIGHT', self.Health, 'TOPRIGHT')
@@ -179,12 +175,12 @@ local function CreateArenaLayout(self, unit)
 
             -- Raid target indicator
 
-        self.RaidTargetIndicator = self.Health:CreateTexture(nil, 'OVERLAY', self)
+        self.RaidTargetIndicator = self.Health:CreateTexture('$parentRaidTargetIndicator', 'OVERLAY', self)
         self.RaidTargetIndicator:SetPoint('CENTER', self, 'TOPRIGHT', -9, -5)
         self.RaidTargetIndicator:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
         self.RaidTargetIndicator:SetSize(26, 26)
 
-        self.Buffs = CreateFrame('Frame', nil, self)
+        self.Buffs = CreateFrame('Frame', '$parentBuffs', self)
         self.Buffs.size = 22
         self.Buffs:SetHeight(self.Buffs.size * 3)
         self.Buffs:SetWidth(self.Buffs.size * 4)
@@ -202,7 +198,7 @@ local function CreateArenaLayout(self, unit)
         self.Buffs.PostCreateIcon = ns.UpdateAuraIcons
         self.Buffs.PostUpdateIcon = ns.PostUpdateIcon
 
-        self.Debuffs = CreateFrame('Frame', nil, self)
+        self.Debuffs = CreateFrame('Frame', '$parentDebuffs', self)
         self.Debuffs.size = 22
         self.Debuffs:SetHeight(self.Debuffs.size * 3)
         self.Debuffs:SetWidth(self.Debuffs.size * 4)
@@ -224,7 +220,7 @@ local function CreateArenaLayout(self, unit)
         self.Castbar:SetStatusBarColor(unpack(config.units.arena.castbar.color))
         self.Castbar:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT', -16, 4)
 
-        self.Castbar.Bg = self.Castbar:CreateTexture(nil, 'BACKGROUND')
+        self.Castbar.Bg = self.Castbar:CreateTexture('$parentBackground', 'BACKGROUND')
         self.Castbar.Bg:SetTexture('Interface\\Buttons\\WHITE8x8')
         self.Castbar.Bg:SetAllPoints(self.Castbar)
         self.Castbar.Bg:SetVertexColor(config.units.arena.castbar.color[1]*0.3, config.units.arena.castbar.color[2]*0.3, config.units.arena.castbar.color[3]*0.3, 0.8)
@@ -232,18 +228,18 @@ local function CreateArenaLayout(self, unit)
         self.Castbar:CreateBeautyBorder(11)
         self.Castbar:SetBeautyBorderPadding(3)
 
-        self.Castbar.Icon = self.Castbar:CreateTexture(nil, 'BACKGROUND')
+        self.Castbar.Icon = self.Castbar:CreateTexture('$parentIcon', 'BACKGROUND')
         self.Castbar.Icon:SetSize(config.units.arena.castbar.icon.size, config.units.arena.castbar.icon.size)
         self.Castbar.Icon:SetPoint('TOPRIGHT', self.Castbar, 'TOPLEFT', -10, 0.45)
         self.Castbar.Icon:SetColorTexture(1, 1, 1)
 
-        self.Castbar.Icon.Overlay = self.Castbar:CreateTexture(nil, 'ARTWORK')
+        self.Castbar.Icon.Overlay = self.Castbar:CreateTexture('$parentOverlay', 'ARTWORK')
         self.Castbar.Icon.Overlay:SetPoint('TOPRIGHT', self.Castbar.Icon, 3, 3)
         self.Castbar.Icon.Overlay:SetPoint('BOTTOMLEFT', self.Castbar.Icon, -3, -3)
         self.Castbar.Icon.Overlay:SetTexture(config.media.border)
         self.Castbar.Icon.Overlay:SetVertexColor(1, 0, 0)
 
-        self.Castbar.Icon.Shadow = self.Castbar:CreateTexture(nil, 'BACKGROUND')
+        self.Castbar.Icon.Shadow = self.Castbar:CreateTexture('$parentShadow', 'BACKGROUND')
         self.Castbar.Icon.Shadow:SetPoint('TOPRIGHT', self.Castbar.Icon, 6, 6)
         self.Castbar.Icon.Shadow:SetPoint('BOTTOMLEFT', self.Castbar.Icon, -6, -6)
         self.Castbar.Icon.Shadow:SetTexture('Interface\\AddOns\\oUF_Neav\\media\\borderBackground')
@@ -256,19 +252,11 @@ local function CreateArenaLayout(self, unit)
 
             -- oUF_Trinket support
 
-        self.Trinket = CreateFrame('Frame', nil, self)
+        self.Trinket = CreateFrame('Frame', '$parentTrinket', self)
         self.Trinket:SetSize(30, 30)
         self.Trinket:SetPoint('RIGHT', self, 'LEFT', -10, 1)
         self.Trinket.trinketUseAnnounce = true
         self.Trinket.trinketUpAnnounce = true
-
-            -- oUF_Talents support
-        --[[
-        self.Talents = self.Health:CreateFontString(nil, 'OVERLAY')
-        self.Talents:SetFont(config.font.normal, 16)
-        self.Talents:SetTextColor(1, 0, 0)
-        self.Talents:SetPoint('BOTTOM', self.Health, 'TOP', 0, 12)
-        --]]
 
         self:SetSize(132, 46)
     end
@@ -276,7 +264,7 @@ local function CreateArenaLayout(self, unit)
     if (self.targetUnit) then
         self:SetSize(110, 20)
 
-        self.Portrait = self:CreateTexture(nil, 'BACKGROUND')
+        self.Portrait = self:CreateTexture('$parentPortrait', 'BACKGROUND')
         self.Portrait:SetSize(37, 37)
         self.Portrait:SetPoint('TOPLEFT', self.Texture, 7, -6)
 

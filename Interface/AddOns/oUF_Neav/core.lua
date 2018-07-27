@@ -73,7 +73,7 @@ __party:SetScript('OnDragStop', function(self)
 end)
 
 local function CreateFocusButton(self)
-    self.FTarget = CreateFrame('BUTTON', nil, self, 'SecureActionButtonTemplate')
+    self.FTarget = CreateFrame('BUTTON', '$parentFocusTarget', self, 'SecureActionButtonTemplate')
     self.FTarget:EnableMouse(true)
     self.FTarget:RegisterForClicks('AnyUp')
     self.FTarget:SetAttribute('type', 'macro')
@@ -523,7 +523,7 @@ local function CreateUnitLayout(self, unit)
 
         -- Healthbar
 
-    self.Health = CreateFrame('StatusBar', nil, self)
+    self.Health = CreateFrame('StatusBar', '$parentHealth', self)
     self.Health:SetStatusBarTexture(config.media.statusbar)
     self.Health:SetFrameLevel(self:GetFrameLevel() - 1)
     self.Health:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
@@ -635,7 +635,7 @@ local function CreateUnitLayout(self, unit)
 
         -- Powerbar
 
-    self.Power = CreateFrame('StatusBar', nil, self)
+    self.Power = CreateFrame('StatusBar', '$parentPower', self)
     self.Power:SetStatusBarTexture(config.media.statusbar)
     self.Power:SetFrameLevel(self:GetFrameLevel() - 2)
     self.Power:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
@@ -721,7 +721,7 @@ local function CreateUnitLayout(self, unit)
         -- Portrait
 
     if (config.show.threeDPortraits) then
-        self.Portrait = CreateFrame('PlayerModel', nil, self)
+        self.Portrait = CreateFrame('PlayerModel', '$parentPortrait', self)
         self.Portrait:SetFrameStrata('BACKGROUND')
         self.Portrait:SetFrameLevel(1)
 
@@ -784,7 +784,7 @@ local function CreateUnitLayout(self, unit)
         -- Portrait Timer
 
     if (config.show.portraitTimer) then
-        self.PortraitTimer = CreateFrame('Frame', nil, self.Health)
+        self.PortraitTimer = CreateFrame('Frame', '$parentPortraitTimer', self.Health)
 
         self.PortraitTimer.Icon = self.PortraitTimer:CreateTexture(nil, 'BACKGROUND')
         self.PortraitTimer.Icon:SetAllPoints(self.Portrait.Bg or self.Portrait)
@@ -981,7 +981,7 @@ local function CreateUnitLayout(self, unit)
             -- Alt Mana Frame for Druids, Shaman, and Shadow Priest
 
         if (playerClass == 'DRUID' or playerClass == 'SHAMAN' or playerClass == 'PRIEST') then
-            self.AdditionalPower = CreateFrame('StatusBar', nil, self)
+            self.AdditionalPower = CreateFrame('StatusBar', '$parentAdditionalPower', self)
             self.AdditionalPower:SetPoint('TOP', self.Power, 'BOTTOM', 0, -1)
             self.AdditionalPower:SetStatusBarTexture(config.media.statusbar, 'BORDER')
             self.AdditionalPower:SetSize(99, 9)
@@ -1002,7 +1002,7 @@ local function CreateUnitLayout(self, unit)
             self.AdditionalPower.Texture:SetPoint('TOP', self.Power, 'BOTTOM', 0, 6)
 
             if (unit == "player") then
-                self.PowerPredictionAlt = CreateFrame('StatusBar', '$parentAltPowerPrediction', self.AdditionalPower)
+                self.PowerPredictionAlt = CreateFrame('StatusBar', '$parentPowerPredictionAlt', self.AdditionalPower)
                 self.PowerPredictionAlt:SetStatusBarTexture(config.media.statusbar)
                 self.PowerPredictionAlt:SetStatusBarColor(0.8,0.8,0.8,.50)
                 self.PowerPredictionAlt:SetReverseFill(true)
@@ -1117,7 +1117,7 @@ local function CreateUnitLayout(self, unit)
         self:SetSize(175, 42)
 
         if (not config.units[ns.cUnit(unit)].disableAura) then
-            self.Debuffs = CreateFrame('Frame', nil, self)
+            self.Debuffs = CreateFrame('Frame', '$parentDebuffs', self)
             self.Debuffs.size = 20
             self.Debuffs:SetWidth(self.Debuffs.size * 4)
             self.Debuffs:SetHeight(self.Debuffs.size)
@@ -1175,7 +1175,7 @@ local function CreateUnitLayout(self, unit)
         if (not config.units[ns.cUnit(unit)].disableAura) then
             if (config.units.target.showDebuffsOnTop) then
                 -- Debuffs
-                self.Debuffs = CreateFrame('Frame', nil, self)
+                self.Debuffs = CreateFrame('Frame', '$parentDebuffs', self)
                 self.Debuffs.gap = true
                 self.Debuffs.size = 20
                 self.Debuffs:SetHeight(self.Debuffs.size * 3)
@@ -1189,7 +1189,7 @@ local function CreateUnitLayout(self, unit)
                 self.Debuffs.spacing = 4.5
 
                 -- Buffs
-                self.Buffs = CreateFrame('Frame', nil, self)
+                self.Buffs = CreateFrame('Frame', '$parentBuffs', self)
                 self.Buffs.gap = true
                 self.Buffs.size = 20
                 self.Buffs:SetHeight(self.Buffs.size * 3)
@@ -1203,7 +1203,7 @@ local function CreateUnitLayout(self, unit)
                 self.Buffs.spacing = 4.5
                 self.Buffs.showStealableBuffs = true
             else
-                self.Auras = CreateFrame('Frame', nil, self)
+                self.Auras = CreateFrame('Frame', '$parentAuras', self)
                 self.Auras.gap = true
                 self.Auras.size = 20
                 self.Auras:SetHeight(self.Auras.size * 3)
@@ -1225,7 +1225,7 @@ local function CreateUnitLayout(self, unit)
         end
 
         if (config.units.target.showThreatValue) then
-            self.NumericalThreat = CreateFrame('Frame', nil, self)
+            self.NumericalThreat = CreateFrame('Frame', '$parentNumericalThreat', self)
             self.NumericalThreat:SetSize(49, 18)
             self.NumericalThreat:SetPoint('BOTTOM', self, 'TOP', 0, 0)
             self.NumericalThreat:Hide()
@@ -1233,7 +1233,7 @@ local function CreateUnitLayout(self, unit)
             self.NumericalThreat.value = self.NumericalThreat:CreateFontString(nil, 'OVERLAY', 'GameFontHighlight')
             self.NumericalThreat.value:SetPoint('TOP', 0, -4)
 
-            self.NumericalThreat.bg = CreateFrame('StatusBar', nil, self.NumericalThreat)
+            self.NumericalThreat.bg = CreateFrame('StatusBar', '$parentNumericalThreatBackground', self.NumericalThreat)
             self.NumericalThreat.bg:SetStatusBarTexture(config.media.statusbar)
             self.NumericalThreat.bg:SetFrameStrata('LOW')
             self.NumericalThreat.bg:SetFrameLevel(2)
@@ -1260,7 +1260,7 @@ local function CreateUnitLayout(self, unit)
         self.T[4]:SetPoint('BOTTOM', self.T[1], -4, 2)
         self.T[1]:SetWidth(self.T[4]:GetWidth() + 4)
 
-        self.FClose = CreateFrame('Button', nil, self, 'SecureActionButtonTemplate')
+        self.FClose = CreateFrame('Button', '$parentFocusClose', self, 'SecureActionButtonTemplate')
         self.FClose:EnableMouse(true)
         self.FClose:RegisterForClicks('AnyUp')
         self.FClose:SetAttribute('type', 'macro')
@@ -1283,7 +1283,7 @@ local function CreateUnitLayout(self, unit)
 
         if (not config.units[ns.cUnit(unit)].disableAura) then
             if (config.units[ns.cUnit(unit)].debuffsOnly) then
-                self.Debuffs = CreateFrame('Frame', nil, self)
+                self.Debuffs = CreateFrame('Frame', '$parentDebuffs', self)
                 self.Debuffs.size = 26
                 self.Debuffs:SetHeight(self.Debuffs.size * 3)
                 self.Debuffs:SetWidth(self.Debuffs.size * 3)
@@ -1294,7 +1294,7 @@ local function CreateUnitLayout(self, unit)
                 self.Debuffs.num = config.units.focus.numDebuffs
                 self.Debuffs.spacing = 4
             else
-                self.Auras = CreateFrame('Frame', nil, self)
+                self.Auras = CreateFrame('Frame', '$parentAuras', self)
                 self.Auras.gap = true
                 self.Auras.size = 20
                 self.Auras:SetHeight(self.Auras.size * 3)
@@ -1319,7 +1319,7 @@ local function CreateUnitLayout(self, unit)
         self:SetSize(85, 20)
 
         if (not config.units[ns.cUnit(unit)].disableAura) then
-            self.Debuffs = CreateFrame('Frame', nil, self)
+            self.Debuffs = CreateFrame('Frame', '$parentDebuffs', self)
             self.Debuffs:SetHeight(20)
             self.Debuffs:SetWidth(20 * 3)
             self.Debuffs.size = 20
@@ -1336,7 +1336,7 @@ local function CreateUnitLayout(self, unit)
         self:SetSize(105, 30)
 
         if (not config.units[ns.cUnit(unit)].disableAura) then
-            self.Debuffs = CreateFrame('Frame', nil, self)
+            self.Debuffs = CreateFrame('Frame', '$parentDebuffs', self)
             self.Debuffs:SetFrameStrata('BACKGROUND')
             self.Debuffs:SetHeight(20)
             self.Debuffs:SetWidth(20 * 3)
