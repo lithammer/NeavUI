@@ -20,7 +20,7 @@ end
 
     -- instance name and the instance ID,
     -- find out the instance ID by typing this in the chat "/run print(select(8, GetInstanceInfo()))"
-	-- or find them on https://wow.gamepedia.com/InstanceMapID
+    -- or find them on https://wow.gamepedia.com/InstanceMapID
     -- Note: Just must be in this instance, when you run the script above
 
 local L = {
@@ -72,7 +72,7 @@ local L = {
     ["Ruby Sanctum"] = 724,
     ["Icecrown"] = 631,
 
-	-- ["Ragefire Chasm"] = 389,
+    -- ["Ragefire Chasm"] = 389,
 
     -- ["Tol Barad"] = 732,
     -- ["Lost City Tol'vir"] = 755,

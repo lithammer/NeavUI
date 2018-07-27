@@ -14,11 +14,11 @@ You can add much more complex callbacks:
 local lowManaThreshold = 0.2
 
 addon:AddWatch("Low Healer Mana", function(unit)
-	local class, classId = UnitClass(unit)
+    local class, classId = UnitClass(unit)
 
-	-- We only want to include healer classes
-	if healerClasses[classId] and UnitPowerType(unit) == 0 then
-		return (UnitMana(unit) / UnitMaxMana(unit) <= lowManaThreshold)
-	end
+    -- We only want to include healer classes
+    if healerClasses[classId] and UnitPowerType(unit) == 0 then
+        return (UnitMana(unit) / UnitMaxMana(unit) <= lowManaThreshold)
+    end
 end)
 </pre>

@@ -13,13 +13,13 @@ function nPower:FormatValue(self)
 end
 
 function nPower:Round(num, idp)
-	local mult = 10^(idp or 0)
-	return floor(num * mult + 0.5) / mult
+    local mult = 10^(idp or 0)
+    return floor(num * mult + 0.5) / mult
 end
 
 function nPower:Fade(frame, timeToFade, startAlpha, endAlpha)
-	if (self:Round(frame:GetAlpha(), 1) ~= endAlpha) then
-		local mode = startAlpha > endAlpha and "In" or "Out"
+    if (self:Round(frame:GetAlpha(), 1) ~= endAlpha) then
+        local mode = startAlpha > endAlpha and "In" or "Out"
         securecall("UIFrameFade"..mode, frame, timeToFade, startAlpha, endAlpha)
-	end
+    end
 end

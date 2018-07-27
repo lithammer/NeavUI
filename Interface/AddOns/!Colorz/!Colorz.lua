@@ -1,6 +1,6 @@
 -- Sets manabar color for default unit frames.
 local function CustomManaColor(manaBar)
-	local powerType = UnitPowerType(manaBar.unit);
+        local powerType = UnitPowerType(manaBar.unit);
 
     if ( powerType == 0 ) then
         manaBar:SetStatusBarColor(0,0.55,1)
@@ -86,7 +86,7 @@ function GameTooltip_UnitColor(unit)
 end
 
 hooksecurefunc("TargetFrame_CheckFaction", function(self)
-	if ( UnitPlayerControlled(self.unit) ) then
-		self.nameBackground:SetVertexColor(GameTooltip_UnitColor(self.unit));
-	end
+    if ( UnitPlayerControlled(self.unit) ) then
+        self.nameBackground:SetVertexColor(GameTooltip_UnitColor(self.unit));
+    end
 end)

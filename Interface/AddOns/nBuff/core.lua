@@ -72,7 +72,7 @@ end
 
 local function CheckFirstButton()
     if (BuffButton1) then
-		UpdateFirstButton(BuffButton1)
+        UpdateFirstButton(BuffButton1)
     end
 end
 
@@ -84,25 +84,25 @@ hooksecurefunc("BuffFrame_UpdateAllBuffAnchors", function()
     for i = 1, BUFF_ACTUAL_DISPLAY do
         local buff = _G["BuffButton"..i]
 
-		numBuffs = numBuffs + 1
-		numTotal = numTotal + 1
+        numBuffs = numBuffs + 1
+        numTotal = numTotal + 1
 
-		buff:ClearAllPoints()
-		if (numBuffs == 1) then
-			UpdateFirstButton(buff)
-		elseif (numBuffs > 1 and mod(numTotal, cfg.buffPerRow) == 1) then
-			if (numTotal == cfg.buffPerRow + 1) then
-				buff:SetPoint("TOP", TempEnchant1, "BOTTOM", 0, -cfg.paddingY)
-			else
-				buff:SetPoint("TOP", aboveBuff, "BOTTOM", 0, -cfg.paddingY)
-			end
+        buff:ClearAllPoints()
+        if (numBuffs == 1) then
+            UpdateFirstButton(buff)
+        elseif (numBuffs > 1 and mod(numTotal, cfg.buffPerRow) == 1) then
+            if (numTotal == cfg.buffPerRow + 1) then
+                buff:SetPoint("TOP", TempEnchant1, "BOTTOM", 0, -cfg.paddingY)
+            else
+                buff:SetPoint("TOP", aboveBuff, "BOTTOM", 0, -cfg.paddingY)
+            end
 
-			aboveBuff = buff
-		else
-			buff:SetPoint("TOPRIGHT", previousBuff, "TOPLEFT", -cfg.paddingX, 0)
-		end
+            aboveBuff = buff
+        else
+            buff:SetPoint("TOPRIGHT", previousBuff, "TOPLEFT", -cfg.paddingX, 0)
+        end
 
-		previousBuff = buff
+        previousBuff = buff
     end
 end)
 

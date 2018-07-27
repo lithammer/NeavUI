@@ -51,8 +51,8 @@ local function ApplyTooltipStyle(self)
 
         bgsize = 1
         bsize = 9
-	elseif (self == FloatingBattlePetTooltip or self == BattlePetTooltip) then
-		bgsize = 4
+    elseif (self == FloatingBattlePetTooltip or self == BattlePetTooltip) then
+        bgsize = 4
         bsize = 16
     else
         bgsize = 3
@@ -75,7 +75,7 @@ end
 for _, tooltip in pairs({
     GameTooltip,
     BattlePetTooltip,
-	EmbeddedItemTooltip,
+    EmbeddedItemTooltip,
     ItemRefTooltip,
     ItemRefShoppingTooltip1,
     ItemRefShoppingTooltip2,

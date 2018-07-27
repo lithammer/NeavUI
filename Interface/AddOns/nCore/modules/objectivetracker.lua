@@ -23,9 +23,9 @@ end)
 
 minimizeButton:SetScript("OnEnter", function()
     if (not InCombatLockdown()) then
-	GameTooltip:SetOwner(minimizeButton, "ANCHOR_TOPLEFT", 0, 10)
-	GameTooltip:ClearLines()
-	GameTooltip:AddLine("Shift + left-click to Drag")
+        GameTooltip:SetOwner(minimizeButton, "ANCHOR_TOPLEFT", 0, 10)
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine("Shift + left-click to Drag")
         GameTooltip:Show()
     end
 end)

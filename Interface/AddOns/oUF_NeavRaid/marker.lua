@@ -23,20 +23,20 @@ buttonHighlight:SetTexture(nil)
 
 
 SlashCmdList["WORLDMARKERS"] = function()
-	local instanceName, instanceType = GetInstanceInfo()
-	local isLeader = UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")
-	local isPvPZone = instanceType == "arena" or instanceType == "pvp" and instanceName == "Wintergrasp" or instanceName == "Tol Barad"
+    local instanceName, instanceType = GetInstanceInfo()
+    local isLeader = UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")
+    local isPvPZone = instanceType == "arena" or instanceType == "pvp" and instanceName == "Wintergrasp" or instanceName == "Tol Barad"
 
-	if (UnitInParty("player") and (not isPvPZone) and isLeader) then
+    if (UnitInParty("player") and (not isPvPZone) and isLeader) then
         ToggleFrame(button)
-	else
-		if (button:IsVisible()) then
-			button:Hide()
-		else
-			PlaySound(SOUNDKIT.IG_QUEST_CANCEL)
-			UIErrorsFrame:AddMessage("You are not in a party and/or not eligible for marking", 1, 0, 0)
-		end
-	end
+    else
+        if (button:IsVisible()) then
+            button:Hide()
+        else
+            PlaySound(SOUNDKIT.IG_QUEST_CANCEL)
+            UIErrorsFrame:AddMessage("You are not in a party and/or not eligible for marking", 1, 0, 0)
+        end
+    end
 end
 
 SLASH_WORLDMARKERS1 = "/wmarkers"

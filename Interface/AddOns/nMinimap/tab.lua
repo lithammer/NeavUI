@@ -603,11 +603,11 @@ local function BuildBNTable(total)
     wipe(BNTable)
 
     for i = 1, total do
-		local bnetIDAccount, accountName, battleTag, isBattleTag, characterName, bnetIDGameAccount, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText = BNGetFriendInfo(i)
-		
-		if (bnetIDGameAccount == nil) then return end 
-		
-		local _, _, _, realmName, realmID, faction, race, class, _, zoneName, level, gameText = BNGetGameAccountInfo(bnetIDGameAccount)
+        local bnetIDAccount, accountName, battleTag, isBattleTag, characterName, bnetIDGameAccount, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText = BNGetFriendInfo(i)
+
+        if (bnetIDGameAccount == nil) then return end 
+
+        local _, _, _, realmName, realmID, faction, race, class, _, zoneName, level, gameText = BNGetGameAccountInfo(bnetIDGameAccount)
 
         for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
             if (class == v) then
@@ -654,11 +654,11 @@ local function UpdateBNTable(total)
     totalBattleNetOnline = 0
 
     for i = 1, #BNTable do
-		local bnetIDAccount, accountName, battleTag, isBattleTag, characterName, bnetIDGameAccount, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText = BNGetFriendInfo(i)
+        local bnetIDAccount, accountName, battleTag, isBattleTag, characterName, bnetIDGameAccount, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText = BNGetFriendInfo(i)
 
-		if (bnetIDGameAccount == nil) then return end 
-		
-		local hasFocus, _, _, realmName, realmID, faction, race, class, _, zoneName, level, gameText = BNGetGameAccountInfo(bnetIDGameAccount)
+        if (bnetIDGameAccount == nil) then return end 
+
+        local hasFocus, _, _, realmName, realmID, faction, race, class, _, zoneName, level, gameText = BNGetGameAccountInfo(bnetIDGameAccount)
 
         for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
             if (class == v) then

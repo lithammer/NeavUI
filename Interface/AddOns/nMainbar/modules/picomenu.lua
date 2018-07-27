@@ -140,7 +140,7 @@ local menuList = {
         tooltipText = NEWBIE_TOOLTIP_MOUNTS_AND_PETS,
         notCheckable = true,
     },
-	{
+    {
         text = PETS,
         icon = "Interface\\MINIMAP\\TRACKING\\StableMaster",
         func = function()
