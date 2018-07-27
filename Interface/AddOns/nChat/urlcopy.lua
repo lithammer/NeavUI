@@ -30,11 +30,11 @@ local function ScanURL(frame, text, ...)
     end
         -- http://www.google.com
     if (not found) then
-        text = gsub(text, "(%s?)(%a+://[%w_/%.%?%%=~&-"%-]+)(%s?)", ColorURL)
+        text = gsub(text, "(%s?)(%a+://[%w_/%.%?%%=~&-\"%-]+)(%s?)", ColorURL)
     end
         -- www.google.com
     if (not found) then
-        text = gsub(text, "(%s?)(www%.[%w_/%.%?%%=~&-"%-]+)(%s?)", ColorURL)
+        text = gsub(text, "(%s?)(www%.[%w_/%.%?%%=~&-\"%-]+)(%s?)", ColorURL)
     end
         -- url@domain.com
     if (not found) then
