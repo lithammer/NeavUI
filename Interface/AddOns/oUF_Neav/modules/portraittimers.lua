@@ -165,7 +165,7 @@ local Update = function(self, event, unit)
     local pt = self.PortraitTimer
     for _, spellID in ipairs(ns.PortraitTimerDB) do
         local spell = GetSpellInfo(spellID)
-        local name, _, texture, _, _, duration, expires = AuraUtil.FindAuraByName(spell, unit)
+        local name, texture, _, _, duration, expires = AuraUtil.FindAuraByName(spell, unit)
         if (name) then
             UpdateIcon(pt, texture, duration, expires)
 
