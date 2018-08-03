@@ -25,7 +25,7 @@ end
 
 if (config.hp.show) then
     f:RegisterUnitEvent("UNIT_HEALTH", "player")
-    f:RegisterUnitEvent("UNIT_MAX_HEALTH", "player")
+    f:RegisterUnitEvent("UNIT_MAXHEALTH", "player")
     f:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", "player")
 end
 
