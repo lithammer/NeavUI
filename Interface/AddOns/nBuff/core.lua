@@ -88,10 +88,10 @@ hooksecurefunc("BuffFrame_UpdateAllBuffAnchors", function()
         numTotal = numTotal + 1
 
         buff:ClearAllPoints()
-		if numBuffs == 1 then
+        if numBuffs == 1 then
             UpdateFirstButton(buff)
-		elseif numBuffs > 1 and mod(numTotal, cfg.buffPerRow) == 1 then
-			if numTotal == cfg.buffPerRow + 1 then
+        elseif numBuffs > 1 and mod(numTotal, cfg.buffPerRow) == 1 then
+            if numTotal == cfg.buffPerRow + 1 then
                 buff:SetPoint("TOP", TempEnchant1, "BOTTOM", 0, -cfg.paddingY)
             else
                 buff:SetPoint("TOP", aboveBuff, "BOTTOM", 0, -cfg.paddingY)
