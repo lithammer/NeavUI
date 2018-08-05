@@ -9,18 +9,18 @@
     <!--
         Config files.
     -->
-    <Script file="Config.lua" />
+    <Script file="config.lua" />
 
     <!--
         Module files.
     -->
-    <Script file="Modules\ActionButtonSkin.lua" />
-    <Script file="Modules\Bags.lua" />
-    <Script file="Modules\Core.lua" />
-    <Script file="Modules\FakeBottomRightBar.lua" />
-    <Script file="Modules\Mouseover.lua" />
-    <Script file="Modules\MoveableExtraBars.lua" />
-    <Script file="Modules\PicoMenu.lua" />
-    <Script file="Modules\Slash.lua" />
-    <Script file="Modules\WatchBarCode.lua" />
+    <Script file="Modules\actionbuttonskin.lua" />
+    <Script file="Modules\bags.lua" />
+    <Script file="Modules\core.lua" />
+    <Script file="Modules\fakebottomrightbar.lua" />
+    <Script file="Modules\mouseover.lua" />
+    <Script file="Modules\moveableextrabars.lua" />
+    <Script file="Modules\picomenu.lua" />
+    <Script file="Modules\slash.lua" />
+    <Script file="Modules\watchbarcode.lua" />
 </Ui>

@@ -4,4 +4,4 @@
 ## SavedVariables: BagsShown
 
 nMainbar.xml
-Bindings.xml
+bindings.xml
