@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ]]
 
-local MAJOR_VERSION = "LibActionButton-1.0-ElvUI"
+local MAJOR_VERSION = "LibActionButton-1.0-ElvUI-Custom"
 local MINOR_VERSION = 14
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
