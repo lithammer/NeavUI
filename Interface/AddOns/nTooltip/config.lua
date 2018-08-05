@@ -30,7 +30,7 @@ nTooltip.Config = {
         healthFullFormat = "$cur",              -- if the tooltip unit has 100% hp
 
         fontSize = 13,
-        font = "Fonts\\ARIALN.ttf",
+        font = STANDARD_TEXT_FONT,
         showOutline = true,
         textPos = "CENTER",                     -- Possible "TOP" "BOTTOM" "CENTER"
 

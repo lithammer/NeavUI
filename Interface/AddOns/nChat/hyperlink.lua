@@ -5,11 +5,10 @@ local cfg = nChat.Config
     -- Mouseover Itemlinks in the chat
     -- Code provided by the Tukui crew (Tukui.org)
 
-if (not cfg.enableHyperlinkTooltip) then
+if not cfg.enableHyperlinkTooltip then
     return
 end
 
-local _G = getfenv(0)
 local orig1, orig2 = {}, {}
 local GameTooltip = GameTooltip
 
@@ -26,7 +25,7 @@ local linktypes = {
 
 local function OnHyperlinkEnter(frame, link, ...)
     local linktype = link:match("^([^:]+)")
-    if (linktype and linktypes[linktype]) then
+    if linktype and linktypes[linktype] then
         GameTooltip:SetOwner(ChatFrame1, "ANCHOR_CURSOR", 0, 20)
         GameTooltip:SetHyperlink(link)
         GameTooltip:Show()
@@ -34,7 +33,7 @@ local function OnHyperlinkEnter(frame, link, ...)
         GameTooltip:Hide()
     end
 
-    if (orig1[frame]) then
+    if orig1[frame] then
         return orig1[frame](frame, link, ...)
     end
 end
@@ -42,7 +41,7 @@ end
 local function OnHyperlinkLeave(frame, ...)
     GameTooltip:Hide()
 
-    if (orig2[frame]) then
+    if orig2[frame] then
         return orig2[frame](frame, ...)
     end
 end
@@ -50,7 +49,7 @@ end
 local function EnableItemLinkTooltip()
     for _, v in pairs(CHAT_FRAMES) do
         local chat = _G[v]
-        if (chat and not chat.URLCopy) then
+        if chat and not chat.URLCopy then
             orig1[chat] = chat:GetScript("OnHyperlinkEnter")
             chat:SetScript("OnHyperlinkEnter", OnHyperlinkEnter)
 

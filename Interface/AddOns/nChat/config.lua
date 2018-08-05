@@ -2,13 +2,14 @@
 local _, nChat = ...
 
 nChat.Config = {
+    alwaysAlertOnWhisper = true,
+
     disableFade = false,
     chatOutline = false,
 
     enableChatWindowBorder = false,
 
     enableQuickJoinButton = true,
-    enableBottomButton = false,
     enableHyperlinkTooltip = false,
     enableBorderColoring = true,
 

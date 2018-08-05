@@ -20,7 +20,7 @@ container:Hide()
 
 local title = container:CreateFontString(nil, "OVERLAY")
 title:SetPoint("TOPLEFT", 8, -8)
-title:SetFont("Fonts\\ARIALN.ttf", 18)
+title:SetFont(STANDARD_TEXT_FONT, 18)
 title:SetTextColor(1, 1, 0)
 title:SetShadowOffset(1, -1)
 title:SetJustifyH("LEFT")
@@ -58,8 +58,8 @@ end
 local function CopyChat(chat)
     ToggleFrame(container)
 
-    if (container:IsShown()) then
-        if (cfg.showInputBoxAbove) then
+    if container:IsShown() then
+        if cfg.showInputBoxAbove then
             local editBox = _G[chat:GetName().."EditBox"]
             container:SetPoint("BOTTOMLEFT", editBox, "TOPLEFT", 3, 10)
             container:SetPoint("BOTTOMRIGHT", editBox, "TOPRIGHT", -3, 10)
@@ -110,7 +110,7 @@ local function CreateCopyButton(self)
         self.Copy:GetNormalTexture():ClearAllPoints()
         self.Copy:GetNormalTexture():SetPoint("CENTER")
 
-        if (self.Copy:IsMouseOver()) then
+        if self.Copy:IsMouseOver() then
             CopyChat(self)
         end
     end)
@@ -119,7 +119,7 @@ end
 local function EnableCopyButton()
     for _, v in pairs(CHAT_FRAMES) do
         local chat = _G[v]
-        if (chat and not chat.Copy) then
+        if chat and not chat.Copy then
             CreateCopyButton(chat)
         end
     end

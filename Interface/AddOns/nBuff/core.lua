@@ -2,8 +2,10 @@
 local _, nBuff = ...
 local cfg = nBuff.Config
 
-local _G = _G
 local unpack = unpack
+local ceil = math.ceil
+local match = string.match
+local day, hour, minute = 86400, 3600, 60
 
 --[[
 _G.DAY_ONELETTER_ABBR = "|cffffffff%dd|r"
@@ -20,18 +22,18 @@ local function SecondsToTimeAbbrevHook(seconds)
     origSecondsToTimeAbbrev(seconds)
 
     local tempTime
-    if (seconds >= 86400) then
-        tempTime = ceil(seconds / 86400)
+    if seconds >= day then
+        tempTime = floor(seconds / day + 0.5)
         return "|cffffffff%dd|r", tempTime
     end
 
-    if (seconds >= 3600) then
-        tempTime = ceil(seconds / 3600)
+    if seconds >= hour then
+        tempTime = floor(seconds/hour + 0.5)
         return "|cffffffff%dh|r", tempTime
     end
 
-    if (seconds >= 60) then
-        tempTime = ceil(seconds / 60)
+    if seconds >= minute then
+        tempTime = floor(seconds / minute + 0.5)
         return "|cffffffff%dm|r", tempTime
     end
 
@@ -44,22 +46,20 @@ hooksecurefunc(BuffFrame, "Show", function(self)
     self:SetScript("OnUpdate", nil)
 end)
 
--- TemporaryEnchantFrame ...
 TempEnchant1:ClearAllPoints()
 TempEnchant1:SetPoint("TOPRIGHT", Minimap, "TOPLEFT", -15, 0)
--- TempEnchant1.SetPoint = function() end
 
 TempEnchant2:ClearAllPoints()
 TempEnchant2:SetPoint("TOPRIGHT", TempEnchant1, "TOPLEFT", -cfg.paddingX, 0)
 
 local function UpdateFirstButton(self)
-    if (self and self:IsShown()) then
+    if self and self:IsShown() then
         self:ClearAllPoints()
-        if (UnitHasVehicleUI("player")) then
+        if UnitHasVehicleUI("player") then
             self:SetPoint("TOPRIGHT", TempEnchant1)
             return
         else
-            if (BuffFrame.numEnchants > 0) then
+            if BuffFrame.numEnchants > 0 then
                 self:SetPoint("TOPRIGHT", _G["TempEnchant"..BuffFrame.numEnchants], "TOPLEFT", -cfg.paddingX, 0)
                 return
             else
@@ -71,7 +71,7 @@ local function UpdateFirstButton(self)
 end
 
 local function CheckFirstButton()
-    if (BuffButton1) then
+    if BuffButton1 then
         UpdateFirstButton(BuffButton1)
     end
 end
@@ -88,10 +88,10 @@ hooksecurefunc("BuffFrame_UpdateAllBuffAnchors", function()
         numTotal = numTotal + 1
 
         buff:ClearAllPoints()
-        if (numBuffs == 1) then
+		if numBuffs == 1 then
             UpdateFirstButton(buff)
-        elseif (numBuffs > 1 and mod(numTotal, cfg.buffPerRow) == 1) then
-            if (numTotal == cfg.buffPerRow + 1) then
+		elseif numBuffs > 1 and mod(numTotal, cfg.buffPerRow) == 1 then
+			if numTotal == cfg.buffPerRow + 1 then
                 buff:SetPoint("TOP", TempEnchant1, "BOTTOM", 0, -cfg.paddingY)
             else
                 buff:SetPoint("TOP", aboveBuff, "BOTTOM", 0, -cfg.paddingY)
@@ -112,7 +112,7 @@ hooksecurefunc("DebuffButton_UpdateAnchors", function(self, index)
     local debuffSpace = cfg.buffSize + cfg.paddingY
     local numRows = ceil(numBuffs/cfg.buffPerRow)
 
-    if (numRows and numRows > 1) then
+    if numRows and numRows > 1 then
         rowSpacing = -numRows * debuffSpace
     else
         rowSpacing = -debuffSpace
@@ -121,9 +121,9 @@ hooksecurefunc("DebuffButton_UpdateAnchors", function(self, index)
     local buff = _G[self..index]
     buff:ClearAllPoints()
 
-    if (index == 1) then
+    if index == 1 then
         buff:SetPoint("TOP", TempEnchant1, "BOTTOM", 0, rowSpacing)
-    elseif (index >= 2 and mod(index, cfg.buffPerRow) == 1) then
+    elseif index >= 2 and mod(index, cfg.buffPerRow) == 1 then
         buff:SetPoint("TOP", _G[self..(index-cfg.buffPerRow)], "BOTTOM", 0, -cfg.paddingY)
     else
         buff:SetPoint("TOPRIGHT", _G[self..(index-1)], "TOPLEFT", -cfg.paddingX, 0)
@@ -149,7 +149,7 @@ for i = 1, NUM_TEMP_ENCHANT_FRAMES do
     local duration = _G["TempEnchant"..i.."Duration"]
     duration:ClearAllPoints()
     duration:SetPoint("BOTTOM", button, "BOTTOM", 0, -2)
-    duration:SetFont(cfg.durationFont, cfg.buffFontSize, "THINOUTLINE")
+    duration:SetFont(cfg.durationFont, cfg.buffFontSize, "OUTLINE")
     duration:SetShadowOffset(0, 0)
     duration:SetDrawLayer("OVERLAY")
 
@@ -171,9 +171,9 @@ end
 hooksecurefunc("AuraButton_Update", function(self, index)
     local button = _G[self..index]
 
-    if (button and not button.Shadow) then
-        if (button) then
-            if (self:match("Debuff")) then
+    if button and not button.Shadow then
+        if button then
+            if self:match("Debuff") then
                 button:SetSize(cfg.debuffSize, cfg.debuffSize)
                 button:SetScale(cfg.debuffScale)
             else
@@ -183,46 +183,46 @@ hooksecurefunc("AuraButton_Update", function(self, index)
         end
 
         local icon = _G[self..index.."Icon"]
-        if (icon) then
+        if icon then
             icon:SetTexCoord(0.04, 0.96, 0.04, 0.96)
         end
 
         local duration = _G[self..index.."Duration"]
-        if (duration) then
+        if duration then
             duration:ClearAllPoints()
             duration:SetPoint("BOTTOM", button, "BOTTOM", 0, -2)
-            if (self:match("Debuff")) then
-                duration:SetFont(cfg.durationFont, cfg.debuffFontSize, "THINOUTLINE")
+            if self:match("Debuff") then
+                duration:SetFont(cfg.durationFont, cfg.debuffFontSize, "OUTLINE")
             else
-                duration:SetFont(cfg.durationFont, cfg.buffFontSize, "THINOUTLINE")
+                duration:SetFont(cfg.durationFont, cfg.buffFontSize, "OUTLINE")
             end
             duration:SetShadowOffset(0, 0)
             duration:SetDrawLayer("OVERLAY")
         end
 
         local count = _G[self..index.."Count"]
-        if (count) then
+        if count then
             count:ClearAllPoints()
             count:SetPoint("TOPRIGHT", button)
-            if (self:match("Debuff")) then
-                count:SetFont(cfg.countFont, cfg.debuffCountSize, "THINOUTLINE")
+            if self:match("Debuff") then
+                count:SetFont(cfg.countFont, cfg.debuffCountSize, "OUTLINE")
             else
-                count:SetFont(cfg.countFont, cfg.buffCountSize, "THINOUTLINE")
+                count:SetFont(cfg.countFont, cfg.buffCountSize, "OUTLINE")
             end
             count:SetShadowOffset(0, 0)
             count:SetDrawLayer("OVERLAY")
         end
 
         local border = _G[self..index.."Border"]
-        if (border) then
+        if border then
             border:SetTexture(cfg.borderDebuff)
             border:SetPoint("TOPRIGHT", button, 1, 1)
             border:SetPoint("BOTTOMLEFT", button, -1, -1)
             border:SetTexCoord(0, 1, 0, 1)
         end
 
-        if (button and not border) then
-            if (not button.texture) then
+        if button and not border then
+            if not button.texture then
                 button.texture = button:CreateTexture("$parentOverlay", "ARTWORK")
                 button.texture:SetParent(button)
                 button.texture:SetTexture(cfg.borderBuff)
@@ -232,8 +232,8 @@ hooksecurefunc("AuraButton_Update", function(self, index)
             end
         end
 
-        if (button) then
-            if (not button.Shadow) then
+        if button then
+            if not button.Shadow then
                 button.Shadow = button:CreateTexture("$parentShadow", "BACKGROUND")
                 button.Shadow:SetTexture("Interface\\AddOns\\nBuff\\media\\textureShadow")
                 button.Shadow:SetPoint("TOPRIGHT", button.texture or border, 3.35, 3.35)

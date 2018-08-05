@@ -2,7 +2,7 @@
 local _, nTooltip = ...
 local cfg = nTooltip.Config
 
-if (not cfg.healthbar.showHealthValue) then
+if not cfg.healthbar.showHealthValue then
     return
 end
 
@@ -17,7 +17,7 @@ local bar = GameTooltipStatusBar
 bar.Text = bar:CreateFontString(nil, "OVERLAY")
 bar.Text:SetPoint("CENTER", bar, cfg.healthbar.textPos, 0, 1)
 
-if (cfg.healthbar.showOutline) then
+if cfg.healthbar.showOutline then
     bar.Text:SetFont(cfg.healthbar.font, cfg.healthbar.fontSize, "THINOUTLINE")
     bar.Text:SetShadowOffset(0, 0)
 else
@@ -26,10 +26,10 @@ else
 end
 
 local function ColorGradient(perc, ...)
-    if (perc >= 1) then
+    if perc >= 1 then
         local r, g, b = select(select("#", ...) - 2, ...)
         return r, g, b
-    elseif (perc <= 0) then
+    elseif perc <= 0 then
         local r, g, b = ...
         return r, g, b
     end
@@ -43,9 +43,9 @@ local function ColorGradient(perc, ...)
 end
 
 local function FormatValue(value)
-    if (value >= 1e6) then
+    if value >= 1e6 then
         return tonumber(format("%.1f", value/1e6)).."m"
-    elseif (value >= 1e3) then
+    elseif value >= 1e3 then
         return tonumber(format("%.1f", value/1e3)).."k"
     else
         return value
@@ -53,7 +53,7 @@ local function FormatValue(value)
 end
 
 local function DeficitValue(value)
-    if (value == 0) then
+    if value == 0 then
         return ""
     else
         return "-"..FormatValue(value)
@@ -63,7 +63,7 @@ end
 local function GetHealthTag(text, cur, max)
     local perc = format("%d", (cur/max)*100)
 
-    if (max == 1) then
+    if max == 1 then
         return perc
     end
 
@@ -80,21 +80,21 @@ local function GetHealthTag(text, cur, max)
 end
 
 GameTooltipStatusBar:HookScript("OnValueChanged", function(self, value)
-    if (self.Text) then
+    if self.Text then
         self.Text:SetText("")
     end
 
-    if (not value) then
+    if not value then
         return
     end
 
     local min, max = self:GetMinMaxValues()
 
-    if ((value < min) or (value > max) or (value == 0) or (value == 1)) then
+    if (value < min) or (value > max) or (value == 0) or (value == 1) then
         return
     end
 
-    if (not self.Text) then
+    if not self.Text then
         CreateHealthString(self)
     end
 
@@ -102,9 +102,9 @@ GameTooltipStatusBar:HookScript("OnValueChanged", function(self, value)
     local normalString = GetHealthTag(cfg.healthbar.healthFormat, value, max)
 
     local perc = (value/max)*100
-    if (perc >= 100 and currentValue ~= 1) then
+    if perc >= 100 and currentValue ~= 1 then
         self.Text:SetText(fullString)
-    elseif (perc < 100 and currentValue ~= 1) then
+    elseif perc < 100 and currentValue ~= 1 then
         self.Text:SetText(normalString)
     else
         self.Text:SetText("")

@@ -22,6 +22,6 @@ nBuff.Config = {
     paddingY = 7,
     buffPerRow = 8,
 
-    durationFont = "Fonts\\ARIALN.ttf",
-    countFont = "Fonts\\ARIALN.ttf",
+    durationFont = STANDARD_TEXT_FONT,
+    countFont = STANDARD_TEXT_FONT,
 }
