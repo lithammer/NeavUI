@@ -1,23 +1,21 @@
-
 local _, nMainbar = ...
 local cfg = nMainbar.Config
 
-if (not cfg.MainMenuBar.shortBar and not cfg.MainMenuBar.moveableExtraBars) then
+if not cfg.MainMenuBar.moveableExtraBars then
     return
 end
 
-    -- moveable bars
+ -- Moveable Bars
 
 for _, frame in pairs({
     _G["PetActionBarFrame"],
     _G["StanceBarFrame"],
     _G["PossessBarFrame"],
-    _G["MultiCastActionBarFrame"],
 }) do
     frame:EnableMouse(false)
 end
 
-    -- key + alt-key and left mouse to move
+    -- Shift + alt-key and left mouse to move.
 
 for _, button in pairs({
     _G["PossessButton1"],
@@ -32,7 +30,7 @@ for _, button in pairs({
 
     button:RegisterForDrag("LeftButton")
     button:HookScript("OnDragStart", function(self)
-        if (IsShiftKeyDown() and IsAltKeyDown()) then
+        if IsShiftKeyDown() and IsAltKeyDown() then
             self:StartMoving()
         end
     end)

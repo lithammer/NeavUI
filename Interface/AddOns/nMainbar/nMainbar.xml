@@ -1,0 +1,26 @@
+<Ui>
+    <!--
+        Libraries
+    -->
+    <Script file="Libs\LibStub\LibStub.lua" />
+    <Include file="Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml" />
+    <Include file="Libs\LibActionButton-1.0-ElvUI\LibActionButton-1.0.xml" />
+
+    <!--
+        Config files.
+    -->
+    <Script file="Config.lua" />
+
+    <!--
+        Module files.
+    -->
+    <Script file="Modules\ActionButtonSkin.lua" />
+    <Script file="Modules\Bags.lua" />
+    <Script file="Modules\Core.lua" />
+    <Script file="Modules\FakeBottomRightBar.lua" />
+    <Script file="Modules\Mouseover.lua" />
+    <Script file="Modules\MoveableExtraBars.lua" />
+    <Script file="Modules\PicoMenu.lua" />
+    <Script file="Modules\Slash.lua" />
+    <Script file="Modules\WatchBarCode.lua" />
+</Ui>

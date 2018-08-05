@@ -1,15 +1,13 @@
-
 local _, nMainbar = ...
 local cfg = nMainbar.Config
 
-if (not cfg.MainMenuBar.shortBar) then
+BINDING_HEADER_NBAGS = "nMainbar"
+BINDING_NAME_NBAGS_TOGGLE = "Bag Bar Toggle"
+
+if not cfg.showPicomenu then
+    function ToggleBags() end
     return
 end
-
-    -- Binding Info (Used in keybinding ui.)
-
-BINDING_HEADER_NBAGS = "nBags"
-BINDING_NAME_NBAGS_TOGGLE = "Toggle Bags"
 
     -- Saved Variable Setup
 
@@ -27,11 +25,11 @@ CharacterBag3Slot:ClearAllPoints()
 
     -- Set new frame position.
 
-MainMenuBarBackpackButton:SetPoint("BOTTOMRIGHT", WorldFrame, "BOTTOMRIGHT",0, 0)
-CharacterBag0Slot:SetPoint("RIGHT", MainMenuBarBackpackButton, "LEFT",0, 0)
-CharacterBag1Slot:SetPoint("RIGHT", CharacterBag0Slot, "LEFT",0, 0)
-CharacterBag2Slot:SetPoint("RIGHT", CharacterBag1Slot, "LEFT",0, 0)
-CharacterBag3Slot:SetPoint("RIGHT", CharacterBag2Slot, "LEFT",0, 0)
+MainMenuBarBackpackButton:SetPoint("BOTTOMRIGHT", WorldFrame, "BOTTOMRIGHT", 0, 0)
+CharacterBag0Slot:SetPoint("BOTTOMRIGHT", MainMenuBarBackpackButton, "BOTTOMLEFT", 0, 0)
+CharacterBag1Slot:SetPoint("RIGHT", CharacterBag0Slot, "LEFT", 0, 0)
+CharacterBag2Slot:SetPoint("RIGHT", CharacterBag1Slot, "LEFT", 0, 0)
+CharacterBag3Slot:SetPoint("RIGHT", CharacterBag2Slot, "LEFT", 0, 0)
 
 MicroButtonAndBagsBar.MicroBagBar:ClearAllPoints()
 MicroButtonAndBagsBar.MicroBagBar:Hide()
@@ -66,7 +64,7 @@ local function BagHide()
     CharacterBag3Slot:Hide()
 end
 
-    -- Used to toggle bag with keybind.
+    -- Used to toggle bag with keybind or slash command /neavbag.
 
 function ToggleBags()
     if not BagsShown then
@@ -78,19 +76,24 @@ function ToggleBags()
     end
 end
 
-    -- Hides or shows bags on statup depending on saved variable.
+    -- Hides or shows bags on start up depending on saved variable.
 
-local function onEvent(self, event)
-    if BagsShown then
-        BagShow()
-    else
-        BagHide()
+local function onEvent(self, event, ...)
+    local name = ...
+    if name == "nMainbar" then
+        if BagsShown then
+            BagShow()
+        else
+            BagHide()
+        end
     end
 end
 
 local addon = CreateFrame("Frame")
 addon:SetScript("OnEvent", onEvent)
 addon:RegisterEvent("ADDON_LOADED")
+
+        -- Slash Command
 
 SlashCmdList["nBag_Toggle"] = function()
     ToggleBags()

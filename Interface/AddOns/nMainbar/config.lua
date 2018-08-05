@@ -1,23 +1,25 @@
-
 local _, nMainbar = ...
 
 nMainbar.Config = {
     showPicomenu = true,
+    useFakeBottomRightBar = true,
 
     button = {
         showVehicleKeybinds = true,
-        showKeybinds = false,
-        showMacronames = false,
-        outOfRangeType = "icon",     -- Changes how out of range coloring is displayed. Options: icon, hotkey.
+        showKeybinds = true,
+        showMacroNames = false,
+
+        watchbarFontsize = 13,
+        watchbarFont = STANDARD_TEXT_FONT,
 
         countFontsize = 19,
-        countFont = "Interface\\AddOns\\nMainbar\\media\\font.ttf",
+        countFont = "Interface\\AddOns\\nMainbar\\Media\\font.ttf",
 
-        macronameFontsize = 17,
-        macronameFont = "Interface\\AddOns\\nMainbar\\media\\font.ttf",
+        macronameFontsize = 15,
+        macronameFont = "Interface\\AddOns\\nMainbar\\Media\\font.ttf",
 
         hotkeyFontsize = 18,
-        hotkeyFont = "Interface\\AddOns\\nMainbar\\media\\font.ttf",
+        hotkeyFont = "Interface\\AddOns\\nMainbar\\Media\\font.ttf",
 
         petHotKeyFontsize = 15,
     },
@@ -26,30 +28,15 @@ nMainbar.Config = {
         Normal = { 1, 1, 1, 1 },
         IsEquipped = { 0, 1, 0 },
 
-        OutOfRange = { 0.9, 0, 0 },
-        OutOfMana = { 0.3, 0.3, 1 },
-
-        NotUsable = { 0.35, 0.35, 0.35 },
-
         HotKeyText = { 0.6, 0.6, 0.6 },
         MacroText = { 1, 1, 1 },
         CountText = { 1, 1, 1 },
     },
 
-    statusTrackingBar = {
-        mouseover = true,
-        fontsize = 14,
-        font = "Fonts\\ARIALN.ttf",
-    },
-
     MainMenuBar = {
-        scale = 1,
+        moveableExtraBars = true,
         hideGryphons = false,
-
-        shortBar = true,
-        skinButton = true,
-
-        moveableExtraBars = false,      -- Make the pet, possess, shapeshift and totembar moveable, even when the mainmenubar is not "short"
+        scale = 1,
     },
 
     vehicleBar = {
@@ -64,25 +51,15 @@ nMainbar.Config = {
         vertical = false,
     },
 
-    possessBar = {
-        scale = 1,
-        alpha = 1,
-    },
-
     stanceBar = {
-        mouseover = false,
         hide = false,
         scale = 1,
         alpha = 1,
-        hiddenAlpha = 0,
     },
 
-    multiBarLeft = {
-        mouseover = false,
+    possessBar = {
         scale = 1,
-        hiddenAlpha = 0,
         alpha = 1,
-        orderHorizontal = false,
     },
 
     multiBarRight = {
@@ -90,22 +67,18 @@ nMainbar.Config = {
         scale = 1,
         hiddenAlpha = 0,
         alpha = 1,
-        orderHorizontal = false,
     },
 
     multiBarBottomLeft = {
         mouseover = false,
-        scale = 1,
         hiddenAlpha = 0,
         alpha = 1,
     },
 
+    -- Only works with "useFakeBottomRightBar" option.
     multiBarBottomRight = {
-        mouseover = true,
-        scale = 1,
+        mouseover = false,
         hiddenAlpha = 0,
         alpha = 1,
-        orderVertical = false,
-        verticalPosition = "LEFT", -- "LEFT" or "RIGHT"
     },
 }

@@ -1,26 +1,7 @@
 ## Interface: 80000
-## Title: |cffCC3333 n|rMainBar
-## Notes: Yet another Blizzbar mod
+## Title: |cffCC3333 n|rMainbar
+## Notes: nMainBar
 ## SavedVariables: BagsShown
 
-config.lua
+nMainbar.xml
 Bindings.xml
-
-modules\core.lua
-modules\bottomLeft.lua
-modules\bottomRight.lua
-modules\left.lua
-modules\right.lua
-modules\skins.lua
-modules\statustrackingbar.lua
-modules\hotkey.lua
-modules\petbar.lua
-modules\possessbar.lua
-modules\stancebar.lua
-modules\mouseover.lua
-modules\slash.lua
-modules\picomenu.lua
-
-modules\short\short.lua
-modules\short\extras.lua
-modules\short\bags.lua
