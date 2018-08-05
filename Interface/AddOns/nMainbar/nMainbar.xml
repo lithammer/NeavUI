@@ -2,9 +2,9 @@
     <!--
         Libraries
     -->
-    <Script file="Libs\LibStub\LibStub.lua" />
-    <Include file="Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml" />
-    <Include file="Libs\LibActionButton-1.0-ElvUI\LibActionButton-1.0.xml" />
+    <Script file="libs\LibStub\LibStub.lua" />
+    <Include file="libs\CallbackHandler-1.0\CallbackHandler-1.0.xml" />
+    <Include file="libs\LibActionButton-1.0-ElvUI\LibActionButton-1.0.xml" />
 
     <!--
         Config files.
@@ -14,13 +14,13 @@
     <!--
         Module files.
     -->
-    <Script file="Modules\actionbuttonskin.lua" />
-    <Script file="Modules\bags.lua" />
-    <Script file="Modules\core.lua" />
-    <Script file="Modules\fakebottomrightbar.lua" />
-    <Script file="Modules\mouseover.lua" />
-    <Script file="Modules\moveableextrabars.lua" />
-    <Script file="Modules\picomenu.lua" />
-    <Script file="Modules\slash.lua" />
-    <Script file="Modules\watchbarcode.lua" />
+    <Script file="modules\actionbuttonskin.lua" />
+    <Script file="modules\bags.lua" />
+    <Script file="modules\core.lua" />
+    <Script file="modules\fakebottomrightbar.lua" />
+    <Script file="modules\mouseover.lua" />
+    <Script file="modules\moveableextrabars.lua" />
+    <Script file="modules\picomenu.lua" />
+    <Script file="modules\slash.lua" />
+    <Script file="modules\watchbarcode.lua" />
 </Ui>
