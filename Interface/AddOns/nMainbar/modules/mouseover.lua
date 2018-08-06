@@ -63,7 +63,7 @@ local function EnableMouseOver(self, bar, min, max, alpha, hiddenAlpha)
     end
 end
 
-	-- Set Mouseovers
+    -- Set Mouseovers
 
 C_Timer.After(0.001, function()
     if cfg.multiBarRight.mouseover then
