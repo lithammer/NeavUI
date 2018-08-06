@@ -22,6 +22,10 @@
 
 --]]
 
+local unpack = unpack
+local select = select
+local type = type
+
 local addonName = select(1, GetAddOnInfo("!Beautycase"))
 local formatName = "|cffFF0000"..addonName
 
@@ -84,8 +88,8 @@ local function SetBeautyBorderPadding(self, uL1, ...)
         self.beautyBorder[2]:SetPoint("TOPRIGHT", self, uR1 or 0, uR2 or 0)
         self.beautyShadow[2]:SetPoint("TOPRIGHT", self, (uR1 or 0)+space, (uR2 or 0)+space)
 
-        self.beautyBorder[3]:SetPoint("BOTTOMLEFT", self, -(bL1 or 0), -(bL2 or 0))
-        self.beautyShadow[3]:SetPoint("BOTTOMLEFT", self, -(bL1 or 0)-space, -(bL2 or 0)-space)
+        self.beautyBorder[3]:SetPoint('BOTTOMLEFT', self, -(bL1 or 0), -(bL2 or 0))
+        self.beautyShadow[3]:SetPoint('BOTTOMLEFT', self, -(bL1 or 0)-space, -(bL2 or 0)-space)
 
         self.beautyBorder[4]:SetPoint("BOTTOMRIGHT", self, bR1 or 0, -(bR2 or 0))
         self.beautyShadow[4]:SetPoint("BOTTOMRIGHT", self, (bR1 or 0)+space, -(bR2 or 0)-space)
