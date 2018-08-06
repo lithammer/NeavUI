@@ -15,24 +15,64 @@ local function IsSpecificButton(self, name)
     end
 end
 
-hooksecurefunc("PetActionBar_Update", function(self)
-    local petActionButton, petActionIcon
-    for i=1, NUM_PET_ACTION_SLOTS, 1 do
-        local buttonName = "PetActionButton" .. i
-        petActionButton = _G[buttonName]
-        petActionIcon = _G[buttonName.."Icon"]
+local function SkinButton(button, icon)
+    local buttonName = button:GetName()
 
-        local name, subtext, texture, isToken, isActive, autoCastAllowed, autoCastEnabled = GetPetActionInfo(i)
+    if not InCombatLockdown() then
+        local cooldown = _G[buttonName.."Cooldown"]
+        if cooldown then
+            cooldown:ClearAllPoints()
+            cooldown:SetPoint("TOPRIGHT", button, -2, -2)
+            cooldown:SetPoint("BOTTOMLEFT", button, 1, 1)
+        end
+    end
 
-        if texture then
-            petActionIcon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-            petActionButton:SetNormalTexture("Interface\\Buttons\\UI-Quickslot2")
-        else
-            petActionButton:SetNormalTexture("Interface\\Buttons\\UI-Quickslot2")
+    button:SetNormalTexture(MEDIA_PATH.."textureNormal")
+
+    if not button.Shadow then
+        icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
+        icon:SetPoint("TOPRIGHT", button, 1, 1)
+        icon:SetPoint("BOTTOMLEFT", button, -1, -1)
+
+        local normal = _G[buttonName.."NormalTexture2"] or _G[buttonName.."NormalTexture"]
+        normal:ClearAllPoints()
+        normal:SetPoint("TOPRIGHT", button, 1.5, 1.5)
+        normal:SetPoint("BOTTOMLEFT", button, -1.5, -1.5)
+        normal:SetVertexColor(unpack(cfg.color.Normal))
+
+        local flash = _G[buttonName.."Flash"]
+        if flash then
+            flash:SetTexture(flashtex)
         end
 
-        local hotkey = _G[buttonName.."HotKey"]
+        button:SetCheckedTexture(MEDIA_PATH.."textureChecked")
+        button:GetCheckedTexture():SetAllPoints(normal)
 
+        button:SetPushedTexture(MEDIA_PATH.."texturePushed")
+        button:GetPushedTexture():SetAllPoints(normal)
+
+        button:SetHighlightTexture(MEDIA_PATH.."textureHighlight")
+        button:GetHighlightTexture():SetAllPoints(normal)
+
+        button.Shadow = button:CreateTexture(nil, "BACKGROUND")
+        button.Shadow:SetParent(button)
+        button.Shadow:SetPoint("TOPRIGHT", normal, 4, 4)
+        button.Shadow:SetPoint("BOTTOMLEFT", normal, -4, -4)
+        button.Shadow:SetTexture(MEDIA_PATH.."textureShadow")
+        button.Shadow:SetVertexColor(0, 0, 0, 1)
+    end
+end
+
+hooksecurefunc("PetActionBar_Update", function(self)
+    local button, icon
+    for i=1, NUM_PET_ACTION_SLOTS, 1 do
+        local buttonName = "PetActionButton"..i
+        button = _G[buttonName]
+        icon = _G[buttonName.."Icon"]
+
+        SkinButton(button, icon)
+
+        local hotkey = _G[buttonName.."HotKey"]
         if hotkey then
             if cfg.button.showKeybinds then
                 hotkey:ClearAllPoints()
@@ -47,6 +87,16 @@ hooksecurefunc("PetActionBar_Update", function(self)
 end)
 securecall("PetActionBar_Update")
 
+hooksecurefunc("StanceBar_UpdateState", function(self)
+    local button, icon, buttonName;
+    for i=1, NUM_STANCE_SLOTS do
+        button = StanceBarFrame.StanceButtons[i]
+        icon = button.icon
+
+        SkinButton(button, icon)
+    end
+end)
+
 hooksecurefunc("PossessBar_UpdateState", function()
     local button, icon
 
@@ -54,49 +104,8 @@ hooksecurefunc("PossessBar_UpdateState", function()
         button = _G["PossessButton"..i]
         icon = _G["PossessButton"..i.."Icon"]
 
-        if not button.iconUpdated then
-            icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-
-            button:SetCheckedTexture(MEDIA_PATH.."textureChecked")
-            button:GetCheckedTexture():SetAllPoints(icon)
-
-            button:SetPushedTexture(MEDIA_PATH.."texturePushed")
-            button:GetPushedTexture():SetAllPoints(icon)
-
-            button:SetHighlightTexture(MEDIA_PATH.."textureHighlight")
-            button:GetHighlightTexture():SetAllPoints(icon)
-
-            button.iconUpdated = true
-        end
+        SkinButton(button, icon)
     end
-end)
-
-local stancesUpdated = false
-local oldNumForms = 0
-
-hooksecurefunc("StanceBar_UpdateState", function()
-    local numForms = GetNumShapeshiftForms()
-    if stancesUpdated and numForms == oldNumForms then
-        return
-    end
-
-    local button, icon
-    for i=1, NUM_STANCE_SLOTS do
-        button = StanceBarFrame.StanceButtons[i]
-        icon = button.icon
-        if i <= numForms then
-            button:SetCheckedTexture(MEDIA_PATH.."textureChecked")
-            button:GetCheckedTexture():SetAllPoints(button.icon)
-
-            button:SetPushedTexture(MEDIA_PATH.."texturePushed")
-            button:GetPushedTexture():SetAllPoints(button.icon)
-
-            button:SetHighlightTexture(MEDIA_PATH.."textureHighlight")
-            button:GetHighlightTexture():SetAllPoints(button.icon)
-        end
-    end
-    stancesUpdated = true
-    oldNumForms = numForms
 end)
 
 local function UpdateVehicleButton()
