@@ -118,7 +118,7 @@ hooksecurefunc("FloatingChatFrame_OnMouseScroll", function(self, direction)
             self:ScrollUp()
             self:ScrollUp()
         end
-    elseif direction < 0  then
+    elseif direction < 0 then
         if IsShiftKeyDown() then
             self:ScrollToBottom()
         else
@@ -316,8 +316,8 @@ local function SetChatStyle()
                         chat.BorderFrame:SetAllPoints(chat.Background)
                         chat.BorderFrame:CreateBeautyBorder(12)
                         chat.BorderFrame:SetBeautyBorderPadding(2)
-            end
-            end
+                    end
+                end
 
                 chat.hasModification = true
             end
@@ -361,18 +361,18 @@ eventWatcher:SetScript("OnEvent", function(self, event, ...)
     if event == "ADDON_LOADED" then
         local name = ...
         if name == "Blizzard_GMChatUI" then
-        GMChatFrame:EnableMouseWheel(true)
-        GMChatFrame:SetScript("OnMouseWheel", ChatFrame1:GetScript("OnMouseWheel"))
-        GMChatFrame:SetHeight(200)
+            GMChatFrame:EnableMouseWheel(true)
+            GMChatFrame:SetScript("OnMouseWheel", ChatFrame1:GetScript("OnMouseWheel"))
+            GMChatFrame:SetHeight(200)
 
-        GMChatFrameUpButton:SetAlpha(0)
-        GMChatFrameUpButton:EnableMouse(false)
+            GMChatFrameUpButton:SetAlpha(0)
+            GMChatFrameUpButton:EnableMouse(false)
 
-        GMChatFrameDownButton:SetAlpha(0)
-        GMChatFrameDownButton:EnableMouse(false)
+            GMChatFrameDownButton:SetAlpha(0)
+            GMChatFrameDownButton:EnableMouse(false)
 
-        GMChatFrameBottomButton:SetAlpha(0)
-        GMChatFrameBottomButton:EnableMouse(false)
+            GMChatFrameBottomButton:SetAlpha(0)
+            GMChatFrameBottomButton:EnableMouse(false)
         elseif name == "Blizzard_CombatLog" then
             hooksecurefunc("FCF_DockUpdate", function()
                 if COMBATLOG.isDocked then
@@ -384,8 +384,8 @@ eventWatcher:SetScript("OnEvent", function(self, event, ...)
 
     if event == "CHAT_MSG_WHISPER" then
         if cfg.alwaysAlertOnWhisper then
-        PlaySound(SOUNDKIT.TELL_MESSAGE)
-    end
+            PlaySound(SOUNDKIT.TELL_MESSAGE)
+        end
     end
 end)
 
