@@ -1,3 +1,4 @@
+local _, nCore = ...
 
 RaidWarningFrame:ClearAllPoints()
 RaidWarningFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 260)

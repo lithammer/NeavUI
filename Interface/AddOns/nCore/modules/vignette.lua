@@ -1,25 +1,35 @@
+local _, nCore = ...
 
 -- Forked from rVignette by zork - 2014
 
-local addon = CreateFrame("Frame")
-addon.vignettes = {}
+function nCore:VignetteAlert()
+    if not nCoreDB.VignetteAlert then return end
 
-local function OnEvent(self, event, guid)
-    if guid and not self.vignettes[guid] then
-        local vignetteInfo = C_VignetteInfo.GetVignetteInfo(guid)
-        if not vignetteInfo then
-            return
+    local addon = CreateFrame("Frame")
+
+    local function OnEvent(self, event, id)
+        if event == "VIGNETTE_MINIMAP_UPDATED" then
+            if not id then return end
+
+            self.vignettes = self.vignettes or {}
+            if self.vignettes[id] then return end
+
+            local vignetteInfo = C_VignetteInfo.GetVignetteInfo(id)
+            if not vignetteInfo then return end
+
+            local _, width, height, txLeft, txRight, txTop, txBottom = GetAtlasInfo(vignetteInfo.atlasName)
+
+            local str = "|TInterface\\MINIMAP\\ObjectIconsAtlas:0:0:0:0:256:256:"..(txLeft*256)..":"..(txRight*256)..":"..(txTop*256)..":"..(txBottom*256).."|t"
+
+            if vignetteInfo.name ~= "Garrison Cache" and vignetteInfo.name ~= "Full Garrison Cache" and vignetteInfo.name ~= nil then
+                RaidNotice_AddMessage(RaidWarningFrame, str.." "..vignetteInfo.name.." spotted!", ChatTypeInfo["RAID_WARNING"])
+                print(str.." "..vignetteInfo.name,"spotted!")
+                self.vignettes[id] = true
+            end
         end
-
-        local _, _, _, x1, x2, y1, y2 = GetAtlasInfo(vignetteInfo.atlasName)
-
-        local str = "|TInterface\\MINIMAP\\ObjectIconsAtlas:0:0:0:0:256:256:"..(x1*256)..":"..(x2*256)..":"..(y1*256)..":"..(y2*256).."|t"
-        RaidNotice_AddMessage(RaidWarningFrame, str..vignetteInfo.name.." spotted!", ChatTypeInfo["RAID_WARNING"])
-        print(str..vignetteInfo.name, "spotted!")
-        self.vignettes[guid] = true
     end
-end
 
--- Listen for vignette event.
-addon:RegisterEvent("VIGNETTE_MINIMAP_UPDATED")
-addon:SetScript("OnEvent", OnEvent)
+    -- Listen for vignette event.
+    addon:RegisterEvent("VIGNETTE_MINIMAP_UPDATED")
+    addon:SetScript("OnEvent", OnEvent)
+end

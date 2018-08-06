@@ -1,90 +1,96 @@
+local _, nCore = ...
 
---[[
-    -- A list of all fonts
+function nCore:Fonts()
+    if not nCoreDB.Fonts then return end
 
-    "GameFontNormal",
-    "GameFontHighlight",
-    "GameFontDisable",
-    "GameFontNormalSmall",
-    "GameFontHighlightExtraSmall",
-    "GameFontHighlightMedium",
-    "GameFontNormalLarge",
-    "GameFontNormalHuge",
+    --[[
+        -- A list of all fonts
 
-    "BossEmoteNormalHuge",
+        "GameFontNormal",
+        "GameFontHighlight",
+        "GameFontDisable",
+        "GameFontNormalSmall",
+        "GameFontHighlightExtraSmall",
+        "GameFontHighlightMedium",
+        "GameFontNormalLarge",
+        "GameFontNormalHuge",
 
-    "NumberFontNormal",
-    "NumberFontNormalSmall",
-    "NumberFontNormalLarge",
-    "NumberFontNormalHuge",
+        "BossEmoteNormalHuge",
 
-    "ChatFontNormal",
-    "ChatFontSmall",
+        "NumberFontNormal",
+        "NumberFontNormalSmall",
+        "NumberFontNormalLarge",
+        "NumberFontNormalHuge",
+        "NumberFontNormalSmallGray,
 
-    "QuestTitleFont",
-    "QuestFont",
-    "QuestFontNormalSmall",
-    "QuestFontHighlight",
+        "ChatFontNormal",
+        "ChatFontSmall",
 
-    "ItemTextFontNormal",
-    "MailTextFontNormal",
-    "SubSpellFont",
-    "DialogButtonNormalText",
-    "ZoneTextFont",
-    "SubZoneTextFont",
-    "PVPInfoTextFont",
-    "ErrorFont",
-    "TextStatusBarText",
-    "CombatLogFont",
+        "QuestTitleFont",
+        "QuestFont",
+        "QuestFontNormalSmall",
+        "QuestFontHighlight",
 
-    "GameTooltipText",
-    "GameTooltipTextSmall",
-    "GameTooltipHeaderText",
+        "ItemTextFontNormal",
+        "MailTextFontNormal",
+        "SubSpellFont",
+        "DialogButtonNormalText",
+        "ZoneTextFont",
+        "SubZoneTextFont",
+        "PVPInfoTextFont",
+        "ErrorFont",
+        "TextStatusBarText",
+        "CombatLogFont",
 
-    "WorldMapTextFont",
+        "GameTooltipText",
+        "GameTooltipTextSmall",
+        "GameTooltipHeaderText",
 
-    "InvoiceTextFontNormal",
-    "InvoiceTextFontSmall",
-    "CombatTextFont",
-    "MovieSubtitleFont",
+        "WorldMapTextFont",
 
-    "AchievementPointsFont",
-    "AchievementPointsFontSmall",
-    "AchievementDescriptionFont",
-    "AchievementCriteriaFont",
-    "AchievementDateFont",
-    "ReputationDetailFont",
---]]
+        "InvoiceTextFontNormal",
+        "InvoiceTextFontSmall",
+        "CombatTextFont",
+        "MovieSubtitleFont",
 
-for _, font in pairs({
-    GameFontHighlight,
+        "AchievementPointsFont",
+        "AchievementPointsFontSmall",
+        "AchievementDescriptionFont",
+        "AchievementCriteriaFont",
+        "AchievementDateFont",
+        "ReputationDetailFont",
+    --]]
 
-    GameFontDisable,
+    for _, font in pairs({
+        GameFontHighlight,
 
-    GameFontHighlightExtraSmall,
-    GameFontHighlightMedium,
+        GameFontDisable,
 
-    GameFontNormal,
-    GameFontNormalSmall,
+        GameFontHighlightExtraSmall,
+        GameFontHighlightMedium,
 
-    TextStatusBarText,
+        GameFontNormal,
+        GameFontNormalSmall,
 
-    GameFontDisableSmall,
-    GameFontHighlightSmall,
-}) do
-    font:SetFont("Fonts\\ARIALN.ttf", 13)
-    font:SetShadowOffset(1, -1)
+        TextStatusBarText,
+
+        GameFontDisableSmall,
+        GameFontHighlightSmall,
+    }) do
+        font:SetFont(STANDARD_TEXT_FONT, 13)
+        font:SetShadowOffset(1, -1)
+    end
+
+    for _, font in pairs({
+        AchievementPointsFont,
+        AchievementPointsFontSmall,
+        AchievementDescriptionFont,
+        AchievementCriteriaFont,
+        AchievementDateFont,
+    }) do
+        font:SetFont(STANDARD_TEXT_FONT, 12)
+    end
+
+    GameFontNormalHuge:SetFont(STANDARD_TEXT_FONT, 20, "OUTLINE")
+    GameFontNormalHuge:SetShadowOffset(0, 0)
 end
-
-for _, font in pairs({
-    AchievementPointsFont,
-    AchievementPointsFontSmall,
-    AchievementDescriptionFont,
-    AchievementCriteriaFont,
-    AchievementDateFont,
-}) do
-    font:SetFont("Fonts\\ARIALN.ttf", 12)
-end
-
-GameFontNormalHuge:SetFont("Fonts\\ARIALN.ttf", 20, "OUTLINE")
-GameFontNormalHuge:SetShadowOffset(0, 0)

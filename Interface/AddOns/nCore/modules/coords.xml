@@ -1,0 +1,106 @@
+<Ui>
+    <FontFamily name="nCore_Coords_Font" virtual="true">
+        <Member alphabet="roman">
+            <Font font="Fonts\FRIZQT__.TTF" height="15" outline="NORMAL">
+                <Shadow>
+                    <Offset>
+                        <AbsDimension x="1" y="-1"/>
+                    </Offset>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+            </Font>
+        </Member>
+        <Member alphabet="korean">
+            <Font font="Fonts\2002.TTF" height="13" outline="NORMAL">
+                <Shadow>
+                    <Offset>
+                        <AbsDimension x="1" y="-1"/>
+                    </Offset>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+            </Font>
+        </Member>
+        <Member alphabet="simplifiedchinese">
+            <Font font="Fonts\ARKai_T.ttf" height="16" outline="NORMAL">
+                <Shadow>
+                    <Offset>
+                        <AbsDimension x="1" y="-1"/>
+                    </Offset>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+            </Font>
+        </Member>
+        <Member alphabet="traditionalchinese">
+            <Font font="Fonts\blei00d.TTF" height="16" outline="NORMAL">
+                <Shadow>
+                    <Offset>
+                        <AbsDimension x="1" y="-1"/>
+                    </Offset>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+            </Font>
+        </Member>
+        <Member alphabet="russian">
+            <Font font="Fonts\FRIZQT___CYR.TTF" height="15" outline="NORMAL">
+                <Shadow>
+                    <Offset>
+                        <AbsDimension x="1" y="-1"/>
+                    </Offset>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+            </Font>
+        </Member>
+    </FontFamily>
+
+    <Frame name="nCore_Coords" parent="WorldMapFrame" frameStrata="HIGH" enableMouse="false" hidden="false" virtual="true">
+        <Size x="325" y="32" />
+        <Anchors>
+            <Anchor point="BOTTOMLEFT" relativeTo="WorldMapFrame" relativePoint="BOTTOMLEFT">
+                <Offset>
+                    <AbsDimension x="10" y="0" />
+                </Offset>
+            </Anchor>
+        </Anchors>
+        <Frames>
+            <Frame name="$parent_Player" parentKey="Player">
+                <Size x="150" y="32" />
+                <Anchors>
+                    <Anchor point="LEFT"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <FontString name="$parentText" parentKey="Text" text="" inherits="nCore_Coords_Font" justifyH="LEFT" justifyV="MIDDLE">
+                            <Anchors>
+                                <Anchor point="LEFT">
+                                    <Offset>
+                                        <AbsDimension x="0" y="0"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+            </Frame>
+            <Frame name="$parent_Mouse" parentKey="Mouse">
+                <Size x="150" y="32" />
+                <Anchors>
+                    <Anchor point="RIGHT"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <FontString name="$parentText" parentKey="Text" text="" inherits="nCore_Coords_Font" justifyH="LEFT" justifyV="MIDDLE">
+                            <Anchors>
+                                <Anchor point="LEFT">
+                                    <Offset>
+                                        <AbsDimension x="0" y="0"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+            </Frame>
+        </Frames>
+    </Frame>
+    <Script file="coords.lua" />
+</Ui>

@@ -1,19 +1,6 @@
 ## Interface: 80000
 ## Title: |cffCC3333 n|rCore
 ## OptionalDeps: !Beautycase, Recount, Omen, DBM, PitBull4, Skada, TinyDPS
+## SavedVariables: nCoreDB
 
-core.lua
-
-modules\altbuy.lua
-modules\autogreed.lua
-modules\coords.lua
-modules\durability.lua
-modules\errors.lua
-modules\fonts.lua
-modules\objectivetracker.lua
-modules\skins.lua
-modules\spellid.lua
-modules\warning.lua
-modules\orderhall.lua
-modules\dressroom.xml
-modules\vignette.lua
+nCore.xml
