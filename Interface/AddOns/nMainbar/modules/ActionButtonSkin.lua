@@ -283,6 +283,26 @@ hooksecurefunc("ActionButton_ShowGrid", function(self)
     end
 end)
 
+hooksecurefunc("ActionButton_UpdateUsable", function(self)
+    if IsAddOnLoaded("tullaRange") then
+        return
+    end
+
+    local normal = _G[self:GetName().."NormalTexture"]
+    if normal then
+        normal:SetVertexColor(unpack(cfg.color.Normal))
+    end
+
+    local isUsable, notEnoughMana = IsUsableAction(self.action)
+    if isUsable then
+        _G[self:GetName().."Icon"]:SetVertexColor(1, 1, 1)
+    elseif notEnoughMana then
+        _G[self:GetName().."Icon"]:SetVertexColor(unpack(cfg.color.OutOfMana))
+    else
+        _G[self:GetName().."Icon"]:SetVertexColor(unpack(cfg.color.NotUsable))
+    end
+end)
+
 -- Hide Possess Frame Background
 
 do

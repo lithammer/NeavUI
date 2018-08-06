@@ -27,6 +27,9 @@ nMainbar.Config = {
     color = {   -- Red, Green, Blue, Alpha
         Normal = { 1, 1, 1, 1 },
         IsEquipped = { 0, 1, 0 },
+        OutOfRange = { 0.9, 0, 0 },
+        OutOfMana = { 0.3, 0.3, 1 },
+        NotUsable = { 0.35, 0.35, 0.35 },
 
         HotKeyText = { 0.6, 0.6, 0.6 },
         MacroText = { 1, 1, 1 },
