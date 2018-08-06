@@ -541,7 +541,7 @@ GameTooltip:SetScript("OnEvent", function(self, event, GUID)
     local _, _, _, icon = GetSpecializationInfoByID(GetInspectSpecialization(unit))
     local now = GetTime()
 
-    local iconMarkup = CreateTextureMarkup(icon, 64,64, 13,13, 0.10,.90,0.10,0.90, 0,0)
+    local iconMarkup = CreateTextureMarkup(icon, 64,64, 12,12, 0.10,.90,0.10,0.90, 0,0)
 
     local matchFound
     for index, _ in pairs(self.inspectCache) do
