@@ -22,10 +22,7 @@ This is the development repository for Neav UI on WoWInterface.
 ## Credits
 
 - [Neav](https://github.com/Neav) for creating Neav UI.
-- [Grimsbain](https://github.com/Grimsbain) for an updated version of
-  [nPlates](https://github.com/Grimsbain/nPlates) and providing most fixes and
-  updates for Legion. And also taking his time to address feature requests from
-  the community.
+- [Grimsbain](https://github.com/Grimsbain) for being a co-maintainer.
 
 ## License
 
