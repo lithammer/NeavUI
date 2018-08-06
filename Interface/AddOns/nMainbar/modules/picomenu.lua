@@ -249,7 +249,7 @@ local function UpdateAddOnTable()
         addonMenuTable[2].menuList[n] = {
             text = "NeavRaid",
             func = function()
-                SlashCmdList["oUF_Neav_Raid"]("toggle")
+                SlashCmdList["oUF_Neav_Raid_AnchorToggle"]("toggle")
             end,
             notCheckable = true,
             keepShownOnClick = true,
