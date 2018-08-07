@@ -2,34 +2,36 @@
 local _, ns = ...
 local config = ns.Config
 
-local bossAnchor = CreateFrame("Frame", "oUF_Neav_Boss_Anchor", UIParent)
-bossAnchor:SetSize(250, 129)
-bossAnchor:SetPoint(unpack(config.units.boss.position))
-bossAnchor:SetMovable(true)
-bossAnchor:SetUserPlaced(true)
-bossAnchor:SetClampedToScreen(true)
-bossAnchor:SetBackdrop({bgFile = "Interface\\Buttons\\WHITE8x8"})
-bossAnchor:SetBackdropColor(0, 1, 0, 0.55)
-bossAnchor:EnableMouse(true)
-bossAnchor:RegisterForDrag("LeftButton")
-bossAnchor:Hide()
-bossAnchor.text = bossAnchor:CreateFontString("$parentText", "OVERLAY")
-bossAnchor.text:SetAllPoints(bossAnchor)
-bossAnchor.text:SetFont("Fonts\\ARIALN.ttf", 13)
-bossAnchor.text:SetText("oUF_Neav\nBoss")
+if not config.units.boss.show then
+    return
+end
 
-bossAnchor:SetScript("OnDragStart", function()
-    if (IsShiftKeyDown() and IsAltKeyDown()) then
-        bossAnchor:StartMoving()
+local function EnableMouseOver(self)
+    self.Health.Value:Hide()
+
+    if self.Power and self.Power.Value then
+        self.Power.Value:Hide()
     end
-end)
 
-bossAnchor:SetScript("OnDragStop", function()
-    bossAnchor:StopMovingOrSizing()
-end)
+    self:HookScript("OnEnter", function(self)
+        self.Health.Value:Show()
+
+        if self.Power and self.Power.Value then
+            self.Power.Value:Show()
+        end
+    end)
+
+    self:HookScript("OnLeave", function(self)
+        self.Health.Value:Hide()
+
+        if self.Power and self.Power.Value then
+            self.Power.Value:Hide()
+        end
+    end)
+end
 
 local function UpdateHealth(Health, unit, cur, max)
-    if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
+    if UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit) then
         Health:SetStatusBarColor(0.5, 0.5, 0.5)
     else
         Health:SetStatusBarColor(0, 1, 0)
@@ -38,13 +40,13 @@ local function UpdateHealth(Health, unit, cur, max)
     Health.Value:SetText(ns.GetHealthText(unit, cur, max))
 
     local self = Health:GetParent()
-    if (self.Name.Bg) then
+    if self.Name.Bg then
         self.Name.Bg:SetVertexColor(GameTooltip_UnitColor(unit))
     end
 end
 
 local function UpdatePower(Power, unit, cur, min, max)
-    if (UnitIsDead(unit)) then
+    if UnitIsDead(unit) then
         Power:SetValue(0)
     end
 
@@ -58,11 +60,21 @@ local function CreateBossLayout(self, unit)
     self:SetScript("OnEnter", UnitFrame_OnEnter)
     self:SetScript("OnLeave", UnitFrame_OnLeave)
 
+    self:SetSize(132, 46)
+    self:SetScale(config.units.boss.scale)
     self:SetFrameStrata("LOW")
 
-        -- Health bar
+        -- Healthbar
 
     self.Health = CreateFrame("StatusBar", "$parentHealthBar", self)
+
+        -- Texture
+
+    self.Texture = self.Health:CreateTexture("$parentTexture", "ARTWORK")
+    self.Texture:SetSize(250, 129)
+    self.Texture:SetPoint("CENTER", self, 31, -24)
+    self.Texture:SetTexture("Interface\\TargetingFrame\\UI-UnitFrame-Boss")
+
     self.Health:SetStatusBarTexture(config.media.statusbar, "BORDER")
     self.Health:SetSize(115, 8)
     self.Health:SetPoint("TOPRIGHT", self.Texture, -105, -43)
@@ -75,21 +87,14 @@ local function CreateBossLayout(self, unit)
 
     self.Health.PostUpdate = UpdateHealth
 
-        -- Texture
+        -- Health Text
 
-    self.Texture = self.Health:CreateTexture("$parentTexture", "ARTWORK")
-    self.Texture:SetSize(250, 129)
-    self.Texture:SetPoint("CENTER", self, 31, -24)
-    self.Texture:SetTexture("Interface\\TargetingFrame\\UI-UnitFrame-Boss")
-
-        -- Health text
-
-    self.Health.Value = self.Health:CreateFontString("$parentHealthText", "ARTWORK")
-    self.Health.Value:SetFont("Fonts\\ARIALN.ttf", config.font.normalSize)
+    self.Health.Value = self.Health:CreateFontString("$parentTexture", "ARTWORK")
+    self.Health.Value:SetFont(config.font.normal, config.font.normalSize)
     self.Health.Value:SetShadowOffset(1, -1)
     self.Health.Value:SetPoint("CENTER", self.Health)
 
-        -- Power bar
+        -- Powerbar
 
     self.Power = CreateFrame("StatusBar", "$parentPowerBar", self)
     self.Power:SetStatusBarTexture(config.media.statusbar, "BORDER")
@@ -106,25 +111,24 @@ local function CreateBossLayout(self, unit)
 
     self.Power.colorPower = true
 
-        -- Power text
+        -- Power Text
 
     self.Power.Value = self.Health:CreateFontString("$parentPowerText", "ARTWORK")
-    self.Power.Value:SetFont("Fonts\\ARIALN.ttf", config.font.normalSize)
+    self.Power.Value:SetFont(config.font.normal, config.font.normalSize)
     self.Power.Value:SetShadowOffset(1, -1)
     self.Power.Value:SetPoint("CENTER", self.Power)
 
-        -- Name text
+        -- Name
 
     self.Name = self.Health:CreateFontString("$parentNameText", "ARTWORK")
-    self.Name:SetFont(config.font.normalBig, config.font.normalBigSize)
-    self.Name:SetShadowOffset(1, -1)
+    self.Name:SetFontObject("Neav_FontName")
     self.Name:SetJustifyH("CENTER")
     self.Name:SetSize(110, 10)
     self.Name:SetPoint("BOTTOM", self.Health, "TOP", 0, 6)
 
-    self:Tag(self.Name, "[name]")
+    self:Tag(self.Name, "[neav:name]")
 
-        -- Colored name background
+        -- Name Background
 
     self.Name.Bg = self.Health:CreateTexture("$parentBackground", "BACKGROUND")
     self.Name.Bg:SetHeight(18)
@@ -133,51 +137,51 @@ local function CreateBossLayout(self, unit)
     self.Name.Bg:SetPoint("BOTTOMLEFT", self.Health, "TOPLEFT")
     self.Name.Bg:SetTexture("Interface\\AddOns\\oUF_Neav\\media\\nameBackground")
 
-        -- Level text
+        -- Level
 
     self.Level = self.Health:CreateFontString("$parentLevelText", "ARTWORK")
-    self.Level:SetFont("Interface\\AddOns\\oUF_Neav\\media\\fontNumber.ttf", 16, "OUTLINE")
+    self.Level:SetFont(config.font.numberFont, 16, "OUTLINE")
     self.Level:SetShadowOffset(0, 0)
-    self.Level:SetPoint("CENTER", self.Texture, 24, -2)
+    self.Level:SetPoint("CENTER", self.Texture, 23, -2)
 
-    self:Tag(self.Level, "[level]")
+    self:Tag(self.Level, "[neav:level]")
 
-        -- Raid target indicator
+        -- Raid Target Indicator
 
     self.RaidTargetIndicator = self.Health:CreateTexture("$parentRaidTargetIndicator", "OVERLAY", self)
     self.RaidTargetIndicator:SetPoint("CENTER", self, "TOPRIGHT", -9, -5)
     self.RaidTargetIndicator:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons")
     self.RaidTargetIndicator:SetSize(26, 26)
 
-        -- Threat glow textures
+        -- Threat Glow Texture
 
     self.ThreatGlow = self:CreateTexture("$parentThreatGlow", "OVERLAY")
     self.ThreatGlow:SetAlpha(0)
     self.ThreatGlow:SetSize(241, 100)
-    self.ThreatGlow:SetPoint("TOPRIGHT", self.Texture, -11, 3)
+    self.ThreatGlow:SetPoint("TOPRIGHT", self.Texture, -11, 4)
     self.ThreatGlow:SetTexture("Interface\\TargetingFrame\\UI-UnitFrame-Boss-Flash")
     self.ThreatGlow:SetTexCoord(0.0, 0.945, 0.0, 0.73125)
+    self.feedbackUnit = "player"
+
+        -- Buffs
 
     self.Buffs = CreateFrame("Frame", "$parentBuffs", self)
-    self.Buffs.size = 30
-    self.Buffs:SetHeight(self.Buffs.size * 3)
+    self.Buffs.size = 25
+    self.Buffs:SetHeight(self.Buffs.size * 1.1)
     self.Buffs:SetWidth(self.Buffs.size * 5)
-    self.Buffs:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 3, -6)
+    self.Buffs:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -5)
     self.Buffs.initialAnchor = "TOPLEFT"
     self.Buffs["growth-x"] = "RIGHT"
     self.Buffs["growth-y"] = "DOWN"
-    self.Buffs.numBuffs = 8
+    self.Buffs.num = 4
     self.Buffs.spacing = 4.5
-
-    self.Buffs.customColor = {1, 0, 0}
 
     self.Buffs.PostCreateIcon = ns.UpdateAuraIcons
     self.Buffs.PostUpdateIcon = ns.PostUpdateIcon
 
-    self:SetSize(132, 46)
-    self:SetScale(config.units.boss.scale)
+        -- Castbar
 
-    if (config.units.boss.castbar.show) then
+    if config.units.boss.castbar.show then
         self.Castbar = CreateFrame("StatusBar", self:GetName().."Castbar", self)
         self.Castbar:SetStatusBarTexture(config.media.statusbar)
         self.Castbar:SetSize(150, 18)
@@ -192,10 +196,24 @@ local function CreateBossLayout(self, unit)
         self.Castbar:CreateBeautyBorder(11)
         self.Castbar:SetBeautyBorderPadding(3)
 
-        ns.CreateCastbarStrings(self, true)
+        ns.CreateCastbarStrings(self, false)
 
         self.Castbar.CustomDelayText = ns.CustomDelayText
         self.Castbar.CustomTimeText = ns.CustomTimeText
+
+        self.Castbar.PostCastStart = function(self, unit)
+            if self.notInterruptible then
+                ns.ColorBorder(self, "white", config.units.boss.castbar.interruptColor[1], config.units.boss.castbar.interruptColor[2], config.units.boss.castbar.interruptColor[3], 0)
+            else
+                ns.ColorBorder(self, "default", 1, 1, 1, 0)
+            end
+        end
+    end
+
+        -- Mouseover Text
+
+    if config.units.boss.mouseoverText then
+        EnableMouseOver(self)
     end
 
     return self
@@ -210,8 +228,8 @@ oUF:Factory(function(self)
         boss[i] = self:Spawn("boss"..i, "oUF_Neav_BossFrame"..i)
         boss[i]:SetFrameStrata("LOW")
 
-        if (i == 1) then
-            boss[i]:SetPoint("TOPRIGHT", bossAnchor, "TOPRIGHT",0,0)
+        if i == 1 then
+            boss[i]:SetPoint(unpack(config.units.boss.position))
         else
             boss[i]:SetPoint("TOPLEFT", boss[i-1], "BOTTOMLEFT", 0, (config.units.boss.castbar.show and -80) or -50)
         end

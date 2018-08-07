@@ -9,7 +9,11 @@ function ns.ColorBorder(self, ...)
 end
 
 function ns.CustomTimeText(self, duration)
-    self.Time:SetFormattedText("%.1f/%.1f", duration, self.max)
+    if self.max > 86400 then
+        self.Time:SetFormattedText("%.1f/%.1f", floor(duration/86400 + 0.5), floor(self.max/86400 + 0.5))
+    else
+        self.Time:SetFormattedText("%.1f/%.1f", duration, self.max)
+    end
 end
 
 function ns.CustomDelayText(self, duration)
@@ -19,7 +23,7 @@ end
 function ns.CreateCastbarStrings(self, size)
     self.Castbar.Time = self.Castbar:CreateFontString(nil, "OVERLAY")
 
-    if (size) then
+    if size then
         self.Castbar.Time:SetFont(config.font.normal, 21)
         self.Castbar.Time:SetPoint("RIGHT", self.Castbar, -2, 0)
     else
@@ -36,7 +40,7 @@ function ns.CreateCastbarStrings(self, size)
     self.Castbar.Text:SetFont(config.font.normal, config.font.normalSize)
     self.Castbar.Text:SetPoint("LEFT", self.Castbar, 4, 0)
 
-    if (size) then
+    if size then
         self.Castbar.Text:SetPoint("RIGHT", self.Castbar.Time, "LEFT", -7, 0)
     else
         self.Castbar.Text:SetPoint("RIGHT", self.Castbar.Time, "LEFT", -4, 0)

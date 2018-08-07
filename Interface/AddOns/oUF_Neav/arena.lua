@@ -2,67 +2,20 @@
 local _, ns = ...
 local config = ns.Config
 
-if (not config.units.arena.show) then
+if not config.units.arena.show then
     return
 end
 
 SetCVar("showArenaEnemyFrames", 0)
 
-local arenaAnchor = CreateFrame("Frame", "oUF_Neav_Arena_Anchor", UIParent)
-arenaAnchor:SetSize(250, 129)
-arenaAnchor:SetPoint(unpack(config.units.boss.position))
-arenaAnchor:SetMovable(true)
-arenaAnchor:SetUserPlaced(true)
-arenaAnchor:SetClampedToScreen(true)
-arenaAnchor:SetBackdrop({bgFile = "Interface\\Buttons\\WHITE8x8"})
-arenaAnchor:SetBackdropColor(0, 1, 0, 0.55)
-arenaAnchor:EnableMouse(true)
-arenaAnchor:RegisterForDrag("LeftButton")
-arenaAnchor:Hide()
-arenaAnchor.text = arenaAnchor:CreateFontString("$parentText", "OVERLAY")
-arenaAnchor.text:SetAllPoints(arenaAnchor)
-arenaAnchor.text:SetFont("Fonts\\ARIALN.ttf", 13)
-arenaAnchor.text:SetText("oUF_Neav\nArena")
-
-arenaAnchor:SetScript("OnDragStart", function()
-    if (IsShiftKeyDown() and IsAltKeyDown()) then
-        arenaAnchor:StartMoving()
-    end
-end)
-
-arenaAnchor:SetScript("OnDragStop", function()
-    arenaAnchor:StopMovingOrSizing()
-end)
-
-local function ColorNameBackground(self, unit)
-    local _, class = UnitClass(unit)
-    local classColor = RAID_CLASS_COLORS[class]
-    if (classColor ~= nil) then
-        self.Name.Bg:SetVertexColor(classColor.r, classColor.g, classColor.b)
-    else
-        self.Name.Bg:SetVertexColor(0, 0, 0, 0.55)
-    end
-end
-
 local function UpdateHealth(Health, unit, cur, max)
-    if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
-        Health:SetStatusBarColor(0.5, 0.5, 0.5)
-    else
-        Health:SetStatusBarColor(0, 1, 0)
-    end
-
-    if (Health.Value) then
+    if Health.Value then
         Health.Value:SetText(ns.GetHealthText(unit, cur, max))
-    end
-
-    local self = Health:GetParent()
-    if (self.Name.Bg) then
-        ColorNameBackground(self, unit)
     end
 end
 
 local function UpdatePower(Power, unit, cur, min, max)
-    if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
+    if UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit) then
         Power:SetValue(0)
     end
 
@@ -74,7 +27,7 @@ local function FilterArenaBuffs(...)
     local icons, unit, icon, name, rank, texture, count, dtype, duration, timeLeft, caster = ...
     local buffList = config.units.arena.buffList
 
-    if (buffList[name]) then
+    if buffList[name] then
         return true
     end
     return false
@@ -89,42 +42,46 @@ local function CreateArenaLayout(self, unit)
 
     self:SetFrameStrata("LOW")
 
-    if (unit:match("arena%dtarget")) then
+    if unit:match("arena%dtarget") then
         self.targetUnit = true
     else
         self.arenaUnit = true
     end
 
-        -- Health bar
+        -- Health Bar
 
     self.Health = CreateFrame("StatusBar", "$parentHealthBar", self)
+
+        -- Frame Texture
+
+    self.Texture = self.Health:CreateTexture("$parentTexture", "ARTWORK", nil, 7)
+    self.Texture:SetSize(256, 128)
+    self.Texture:SetPoint("TOPLEFT", self, 0, 0)
+    self.Texture:SetAtlas("UnitFrame")
+
     self.Health:SetStatusBarTexture(config.media.statusbar, "BORDER")
-    self.Health:SetSize(115, 8)
-    self.Health:SetPoint("TOPRIGHT", self.Texture, -105, -43)
+    self.Health:SetPoint("TOPLEFT", self, "TOPLEFT", 71, -58)
+    self.Health:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -1, 22)
+    self.Health:SetSize(138,34.9999)
 
     self.Health:SetBackdrop({bgFile = "Interface\\Buttons\\WHITE8x8"})
     self.Health:SetBackdropColor(0, 0, 0, 0.55)
 
     self.Health.frequentUpdates = true
+    self.Health.colorClass = true
+    self.Health.colorDisconnected = true
+    self.Health.colorReaction = true
     self.Health.Smooth = true
 
     self.Health.PostUpdate = UpdateHealth
 
-        -- Texture
+        -- Power Bar
 
-    self.Texture = self.Health:CreateTexture("$parentTexture", "ARTWORK")
-    self.Texture:SetTexture("Interface\\AddOns\\oUF_Neav\\media\\arenaFrameTexture")
-    self.Texture:SetSize(250, 129)
-    self.Texture:SetPoint("CENTER", self, 31, -24)
-
-        -- Power bar
-
-    if (self.arenaUnit) then
+    if self.arenaUnit then
         self.Power = CreateFrame("StatusBar", "$parentPowerBar", self)
         self.Power:SetStatusBarTexture(config.media.statusbar, "BORDER")
-        self.Power:SetPoint("TOPLEFT", self.Health, "BOTTOMLEFT", 0, -3)
-        self.Power:SetPoint("TOPRIGHT", self.Health, "BOTTOMRIGHT", 0, -3)
-        self.Power:SetHeight(self.Health:GetHeight())
+        self.Power:SetPoint("TOPLEFT", self, "TOPLEFT", 71, -95)
+        self.Power:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -1, 4)
 
         self.Power:SetBackdrop({bgFile = "Interface\\Buttons\\WHITE8x8"})
         self.Power:SetBackdropColor(0, 0, 0, 0.55)
@@ -136,148 +93,232 @@ local function CreateArenaLayout(self, unit)
         self.Power.colorPower = true
     end
 
-        -- Name text
+        -- Name
 
     self.Name = self.Health:CreateFontString("$parentNameText", "ARTWORK")
-    self.Name:SetFont(config.font.normalBig, config.font.normalBigSize)
-    self.Name:SetShadowOffset(1, -1)
-    self.Name:SetJustifyH("CENTER")
-    self.Name:SetSize(110, 10)
-    self.Name:SetPoint("BOTTOM", self.Health, "TOP", 0, 6)
+    self.Name:SetFontObject("Neav_FontName")
+    self.Name:SetJustifyH("LEFT")
+    self.Name:SetPoint("TOPLEFT", self, 76, -26)
+    self.Name:SetPoint("BOTTOMRIGHT", self, -6, 60)
 
-    self:Tag(self.Name, "[name]")
+    self:Tag(self.Name, "[neav:name]")
     self.UNIT_NAME_UPDATE = UpdateFrame
 
-    if (self.arenaUnit) then
+        -- Spec Icon
 
-            -- Health text
+    self.PVPSpecIcon = CreateFrame("Frame", "$parentSpecIcon", self)
+    self.PVPSpecIcon:SetFrameStrata("BACKGROUND")
+    self.PVPSpecIcon.UseCircle = true
+
+    if self.arenaUnit then
+
+            -- Health Text
 
         self.Health.Value = self.Health:CreateFontString("$parentHealthText", "ARTWORK")
-        self.Health.Value:SetFont("Fonts\\ARIALN.ttf", config.font.normalSize, nil)
+        self.Health.Value:SetFont(config.font.normal, config.font.normalSize+2, nil)
         self.Health.Value:SetShadowOffset(1, -1)
         self.Health.Value:SetPoint("CENTER", self.Health)
 
-            -- Power text
+            -- Health Prediction
+
+        local myBar = CreateFrame("StatusBar", "$parentMyHealthPredictionBar", self)
+        myBar:SetStatusBarTexture(config.media.statusbar, "ARTWORK", nil, 6)
+        myBar:SetStatusBarColor(0, 0.827, 0.765, 1)
+        myBar:SetOrientation("HORIZONTAL")
+        myBar:SetPoint("TOPLEFT", self.Health:GetStatusBarTexture(), "TOPRIGHT")
+        myBar:SetPoint("BOTTOMLEFT", self.Health:GetStatusBarTexture(), "BOTTOMRIGHT")
+        myBar:SetWidth(self.Health:GetWidth())
+        myBar.Smooth = true
+
+        local otherBar = CreateFrame("StatusBar", "$parentOtherHealthPredictionBar", self)
+        otherBar:SetStatusBarTexture(config.media.statusbar, "ARTWORK", nil, 6)
+        otherBar:SetStatusBarColor(0.0, 0.631, 0.557, 1)
+        otherBar:SetOrientation("HORIZONTAL")
+        otherBar:SetPoint("TOPLEFT", myBar:GetStatusBarTexture(), "TOPRIGHT")
+        otherBar:SetPoint("BOTTOMLEFT", myBar:GetStatusBarTexture(), "BOTTOMRIGHT")
+        otherBar:SetWidth(self.Health:GetWidth())
+        otherBar.Smooth = true
+
+        local absorbBar = CreateFrame("StatusBar", "$parentTotalAbsorbBar", self)
+        absorbBar:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
+        absorbBar:SetStatusBarColor(0.85, 0.85, 0.9, 1)
+        absorbBar:SetOrientation("HORIZONTAL")
+        absorbBar:SetPoint("TOPLEFT", otherBar:GetStatusBarTexture(), "TOPRIGHT")
+        absorbBar:SetPoint("BOTTOMLEFT", otherBar:GetStatusBarTexture(), "BOTTOMRIGHT")
+        absorbBar:SetWidth(self.Health:GetWidth())
+        absorbBar.Smooth = true
+
+        absorbBar.Overlay = absorbBar:CreateTexture("$parentOverlay", "ARTWORK", "TotalAbsorbBarOverlayTemplate", 1)
+        absorbBar.Overlay:SetAllPoints(absorbBar:GetStatusBarTexture())
+
+        local healAbsorbBar = CreateFrame("StatusBar", "$parentHealAbsorbBar", self)
+        healAbsorbBar:SetReverseFill(true)
+        healAbsorbBar:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
+        healAbsorbBar:SetStatusBarColor(0.9, 0.1, 0.3, 1)
+        healAbsorbBar:SetOrientation("HORIZONTAL")
+        healAbsorbBar:SetPoint("TOP", self.Health:GetStatusBarTexture())
+        healAbsorbBar:SetPoint("BOTTOM", self.Health:GetStatusBarTexture())
+        healAbsorbBar:SetPoint("RIGHT", self.Health:GetStatusBarTexture())
+        healAbsorbBar:SetWidth(self.Health:GetWidth())
+        healAbsorbBar:SetHeight(self.Health:GetHeight())
+        healAbsorbBar.Smooth = true
+
+        local overAbsorb = self.Health:CreateTexture("$parentOverAbsorb", "OVERLAY")
+        overAbsorb:SetPoint("TOP")
+        overAbsorb:SetPoint("BOTTOM")
+        overAbsorb:SetPoint("RIGHT", self.Health, "RIGHT")
+        overAbsorb:SetWidth(10)
+        overAbsorb:SetHeight(self.Health:GetHeight())
+
+        local overHealAbsorb = self.Health:CreateTexture("$parentOverHealAbsorb", "OVERLAY")
+        overHealAbsorb:SetPoint("TOP")
+        overHealAbsorb:SetPoint("BOTTOM")
+        overHealAbsorb:SetPoint("RIGHT", self.Health, "LEFT")
+        overHealAbsorb:SetWidth(10)
+        overHealAbsorb:SetHeight(self.Health:GetHeight())
+
+        self.HealthPrediction = {
+            myBar = myBar,
+            otherBar = otherBar,
+            healAbsorbBar = healAbsorbBar,
+            absorbBar = absorbBar,
+            overAbsorb = overAbsorb,
+            overHealAbsorb = overHealAbsorb,
+            maxOverflow = 1.00,
+            frequentUpdates = true
+        }
+
+            -- Power Text
 
         self.Power.Value = self.Health:CreateFontString("$parentPowerText", "ARTWORK")
-        self.Power.Value:SetFont("Fonts\\ARIALN.ttf", config.font.normalSize, nil)
+        self.Power.Value:SetFont(config.font.normal, config.font.normalSize, nil)
         self.Power.Value:SetShadowOffset(1, -1)
         self.Power.Value:SetPoint("CENTER", self.Power)
 
-            -- Colored name background
+            -- Trinket Icon
 
-        self.Name.Bg = self.Health:CreateTexture("$parentBackground", "BACKGROUND")
-        self.Name.Bg:SetHeight(18)
-        self.Name.Bg:SetTexCoord(0.2, 0.8, 0.3, 0.85)
-        self.Name.Bg:SetPoint("BOTTOMRIGHT", self.Health, "TOPRIGHT")
-        self.Name.Bg:SetPoint("BOTTOMLEFT", self.Health, "TOPLEFT")
-        self.Name.Bg:SetTexture("Interface\\AddOns\\oUF_Neav\\media\\nameBackground")
+        self.Trinket = CreateFrame("Frame", "$parentTrinketIcon", self)
+        self.Trinket:SetSize(38, 38)
+        self.Trinket:SetFrameStrata("MEDIUM")
+        self.Trinket:SetPoint("CENTER", self, "BOTTOMLEFT", 46, 26)
+        self.Trinket:CreateBeautyBorder(11)
+        self.Trinket:SetBeautyBorderPadding(3)
 
-            -- Raid target indicator
+            -- Crowd Control Icon
+
+        self.CCIcon = CreateFrame("Frame", "$parentCCIcon", self)
+        self.CCIcon:SetFrameStrata("BACKGROUND")
+        self.CCIcon:SetSize(38, 38)
+        self.CCIcon:SetPoint("RIGHT", self.Trinket, "LEFT", -15, 0)
+        self.CCIcon:CreateBeautyBorder(11)
+        self.CCIcon:SetBeautyBorderPadding(3)
+
+            -- Spec Icon
+
+        self.PVPSpecIcon:SetSize(52, 52)
+        self.PVPSpecIcon:SetPoint("CENTER", self, "TOPLEFT", 42, -41)
+
+            -- Raid Target Indicator
 
         self.RaidTargetIndicator = self.Health:CreateTexture("$parentRaidTargetIndicator", "OVERLAY", self)
-        self.RaidTargetIndicator:SetPoint("CENTER", self, "TOPRIGHT", -9, -5)
+        self.RaidTargetIndicator:SetPoint("CENTER", self.PVPSpecIcon, "TOP", 0, 0)
         self.RaidTargetIndicator:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons")
         self.RaidTargetIndicator:SetSize(26, 26)
 
-        self.Buffs = CreateFrame("Frame", "$parentBuffs", self)
-        self.Buffs.size = 22
-        self.Buffs:SetHeight(self.Buffs.size * 3)
-        self.Buffs:SetWidth(self.Buffs.size * 4)
-        self.Buffs:SetPoint("TOPRIGHT", self.Power, "BOTTOMRIGHT", 2, -6)
-        self.Buffs.initialAnchor = "TOPRIGHT"
-        self.Buffs["growth-x"] = "LEFT"
-        self.Buffs["growth-y"] = "DOWN"
-        self.Buffs.num = 8
-        self.Buffs.spacing = 4.5
+            -- Buffs/Debuffs
 
-        if (config.units.arena.filterBuffs) then
-            self.Buffs.CustomFilter = FilterArenaBuffs
+        self.Auras = CreateFrame("Frame", "$parentAuras", self)
+        self.Auras.gap = true
+        self.Auras.size = config.units.arena.auraSize
+        self.Auras:SetHeight(self.Auras.size * 5)
+        self.Auras:SetWidth(self.Auras.size * 9)
+        self.Auras:SetPoint("TOPLEFT", self.Name, "TOPRIGHT", 13, 0)
+        self.Auras.initialAnchor = "TOPLEFT"
+        self.Auras["growth-x"] = "RIGHT"
+        self.Auras["growth-y"] = "DOWN"
+        self.Auras.numBuffs = (config.units.arena.debuffsOnly and 0 ) or config.units.arena.numBuffs
+        self.Auras.numDebuffs = 8
+        self.Auras.numTotal = 16
+        self.Auras.onlyShowPlayer = config.units.arena.onlyShowPlayer
+        self.Auras.spacing = 4.5
+        self.Auras.showStealableBuffs = true
+        self.Auras.showDebuffType = true
+
+        if config.units.arena.filterBuffs then
+            self.Auras.CustomFilter = FilterArenaBuffs
+        else
+            self.Auras.buffFilter = "HELPFUL|CANCELABLE"
         end
 
-        self.Buffs.PostCreateIcon = ns.UpdateAuraIcons
-        self.Buffs.PostUpdateIcon = ns.PostUpdateIcon
+        self.Auras.PostUpdateGapIcon = function(self, unit, icon, visibleBuffs)
+            icon:Hide()
+        end
+        self.Auras.PostCreateIcon = ns.UpdateAuraIcons
+        self.Auras.PostUpdateIcon = ns.PostUpdateIcon
 
-        self.Debuffs = CreateFrame("Frame", "$parentDebuffs", self)
-        self.Debuffs.size = 22
-        self.Debuffs:SetHeight(self.Debuffs.size * 3)
-        self.Debuffs:SetWidth(self.Debuffs.size * 4)
-        self.Debuffs:SetPoint("TOPLEFT", self, "TOPRIGHT", 6, -6)
-        self.Debuffs.initialAnchor = "TOPLEFT"
-        self.Debuffs["growth-x"] = "RIGHT"
-        self.Debuffs["growth-y"] = "DOWN"
-        self.Debuffs.num = 8
-        self.Debuffs.spacing = 4.5
-
-        self.Debuffs.PostCreateIcon = ns.UpdateAuraIcons
-        self.Debuffs.PostUpdateIcon = ns.PostUpdateIcon
+            -- Castbar
 
         self.Castbar = CreateFrame("StatusBar", self:GetName().."Castbar", self)
         self.Castbar:SetStatusBarTexture(config.media.statusbar)
         self.Castbar:SetParent(self)
-        self.Castbar:SetHeight(21)
-        self.Castbar:SetWidth(200)
+        self.Castbar:SetHeight(config.units.arena.castbar.height)
+        self.Castbar:SetWidth(config.units.arena.castbar.width)
         self.Castbar:SetStatusBarColor(unpack(config.units.arena.castbar.color))
-        self.Castbar:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", -16, 4)
 
-        self.Castbar.Bg = self.Castbar:CreateTexture("$parentBackground", "BACKGROUND")
+        self.Castbar:SetPoint("TOPLEFT", self.Trinket, "BOTTOMLEFT", 22, -10)
+
+        self.Castbar.IconSize = self.Castbar:GetHeight()
+
+        self.Castbar.Bg = self.Castbar:CreateTexture(nil, "BACKGROUND")
         self.Castbar.Bg:SetTexture("Interface\\Buttons\\WHITE8x8")
         self.Castbar.Bg:SetAllPoints(self.Castbar)
         self.Castbar.Bg:SetVertexColor(config.units.arena.castbar.color[1]*0.3, config.units.arena.castbar.color[2]*0.3, config.units.arena.castbar.color[3]*0.3, 0.8)
 
         self.Castbar:CreateBeautyBorder(11)
-        self.Castbar:SetBeautyBorderPadding(3)
+        self.Castbar:SetBeautyBorderPadding(4+self.Castbar.IconSize, 3, 3, 3, 4+self.Castbar.IconSize, 3, 3, 3, 3)
 
         self.Castbar.Icon = self.Castbar:CreateTexture("$parentIcon", "BACKGROUND")
-        self.Castbar.Icon:SetSize(config.units.arena.castbar.icon.size, config.units.arena.castbar.icon.size)
-        self.Castbar.Icon:SetPoint("TOPRIGHT", self.Castbar, "TOPLEFT", -10, 0.45)
+        self.Castbar.Icon:SetSize(self.Castbar.IconSize, self.Castbar.IconSize)
+        self.Castbar.Icon:SetPoint("TOPRIGHT", self.Castbar, "TOPLEFT", 0, 0)
         self.Castbar.Icon:SetColorTexture(1, 1, 1)
+        self.Castbar.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 
-        self.Castbar.Icon.Overlay = self.Castbar:CreateTexture("$parentOverlay", "ARTWORK")
-        self.Castbar.Icon.Overlay:SetPoint("TOPRIGHT", self.Castbar.Icon, 3, 3)
-        self.Castbar.Icon.Overlay:SetPoint("BOTTOMLEFT", self.Castbar.Icon, -3, -3)
-        self.Castbar.Icon.Overlay:SetTexture(config.media.border)
-        self.Castbar.Icon.Overlay:SetVertexColor(1, 0, 0)
-
-        self.Castbar.Icon.Shadow = self.Castbar:CreateTexture("$parentShadow", "BACKGROUND")
-        self.Castbar.Icon.Shadow:SetPoint("TOPRIGHT", self.Castbar.Icon, 6, 6)
-        self.Castbar.Icon.Shadow:SetPoint("BOTTOMLEFT", self.Castbar.Icon, -6, -6)
-        self.Castbar.Icon.Shadow:SetTexture("Interface\\AddOns\\oUF_Neav\\media\\borderBackground")
-        self.Castbar.Icon.Shadow:SetVertexColor(0, 0, 0, 1)
-
-        ns.CreateCastbarStrings(self, true)
+        ns.CreateCastbarStrings(self, false)
 
         self.Castbar.CustomDelayText = ns.CustomDelayText
         self.Castbar.CustomTimeText = ns.CustomTimeText
 
-            -- oUF_Trinket support
+        self.Castbar.PostCastStart = function(self, unit)
+            if self.notInterruptible then
+                ns.ColorBorder(self, "white", 1, 0, 0, 0)
+            else
+                ns.ColorBorder(self, "default", 1, 1, 1, 0)
+            end
+        end
 
-        self.Trinket = CreateFrame("Frame", "$parentTrinket", self)
-        self.Trinket:SetSize(30, 30)
-        self.Trinket:SetPoint("RIGHT", self, "LEFT", -10, 1)
-        self.Trinket.trinketUseAnnounce = true
-        self.Trinket.trinketUpAnnounce = true
-
-        self:SetSize(132, 46)
+        self:SetSize(210, 115)
     end
 
-    if (self.targetUnit) then
-        self:SetSize(110, 20)
+        -- Target of Target Frame
 
-        self.Portrait = self:CreateTexture("$parentPortrait", "BACKGROUND")
-        self.Portrait:SetSize(37, 37)
-        self.Portrait:SetPoint("TOPLEFT", self.Texture, 7, -6)
+    if self.targetUnit then
+        self:SetSize(110, 20)
 
         self.Texture:SetTexture("Interface\\AddOns\\oUF_Neav\\media\\customTargetTargetTexture")
         self.Texture:SetPoint("CENTER", self, 0, -2)
         self.Texture:SetSize(128, 64)
+        self.Texture:SetDrawLayer("ARTWORK", 2)
 
-        self.Name:SetPoint("TOPLEFT", self.Portrait, "BOTTOMRIGHT", 2, -7)
+        self.PVPSpecIcon:SetSize(37, 37)
+        self.PVPSpecIcon:SetPoint("TOPLEFT", self.Texture, 7, -6)
+
         self.Name:SetJustifyH("LEFT")
         self.Name:SetJustifyV("BOTTOM")
-        self.Name:SetSize(75, 10)
+        self.Name:SetSize(250, 10)
+        self.Name:ClearAllPoints()
+        self.Name:SetPoint("BOTTOMLEFT", self.Health, "TOPLEFT", 2, 2)
 
-        self.Health:SetSize(50, 5)
+        self.Health:SetSize(50, 6)
         self.Health:ClearAllPoints()
         self.Health:SetPoint("CENTER", self.Texture, 5, 8)
     end
@@ -297,13 +338,13 @@ oUF:Factory(function(self)
         arena[i] = self:Spawn("arena"..i, "oUF_Neav_ArenaFrame"..i)
         arena[i]:SetFrameStrata("LOW")
 
-        if (i == 1) then
-            arena[i]:SetPoint("TOPRIGHT", arenaAnchor, "TOPRIGHT",0,0)
+        if i == 1 then
+            arena[i]:SetPoint(unpack(config.units.arena.position))
         else
-            arena[i]:SetPoint("TOPLEFT", arena[i-1], "BOTTOMLEFT", 0, -80)
+            arena[i]:SetPoint("TOPLEFT", arena[i-1], "BOTTOMLEFT", 0, -45)
         end
 
         arenaTarget[i] = self:Spawn("arena"..i.."target", "oUF_Neav_ArenaFrame"..i.."Target")
-        arenaTarget[i]:SetPoint("TOPRIGHT", arena[i], "BOTTOMLEFT", 71, -7)
+        arenaTarget[i]:SetPoint("CENTER", arena[i], "TOPLEFT", 110, 0)
     end
 end)

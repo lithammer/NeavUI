@@ -2,1006 +2,746 @@
 local _, nMinimap = ...
 local cfg = nMinimap.Config
 
-if (not cfg.tab.show) then
-    return
-end
-
-local _, class = UnitClass("player")
-local a = CreateFrame("Frame")
-a:SetScript("OnEvent", function(self, event)
-    if (event=="PLAYER_LOGIN") then
-        if (not GuildFrame and IsInGuild()) then
-            LoadAddOn("Blizzard_GuildUI")
-        end
-    end
-end)
-a:RegisterEvent("PLAYER_LOGIN")
-
 local select = select
-local tostring = tostring
 local ceil = math.ceil
 local modf = math.modf
-local sort = table.sort
 local format = string.format
+local sort = table.sort
+local tinsert = tinsert
 
-local entry, total
-local addonTable = {}
+local playerName, _ = UnitName("player")
+local playerRealm = GetRealmName()
 
-local totalGuildOnline = 0
-local totalFriendsOnline = 0
-local totalBattleNetOnline = 0
+local NUM_ADDONS_TO_DISPLAY = cfg.tab.numberOfAddons or GetNumAddOns()
+local activezone = CreateColor(0.3, 1.0, 0.0, 1)
+local inactivezone = CreateColor(0.75, 0.75, 0.75, 1)
+local guildIcon = CreateTextureMarkup("Interface\\GossipFrame\\TabardGossipIcon", 16, 16, 16, 16, 0, 1, 0, 1, 0, 0)
+local friendIcon = CreateAtlasMarkup("groupfinder-icon-friend", 18, 18)
+local performanceIcon = CreateTextureMarkup("Interface\\AddOns\\nMinimap\\media\\texturePerformance", 32, 32, 10, 10, 0, 1, 0, 1, 0, 0)
 
-local guildTable = {}
+local FriendListEntries = { }
+local GuildListEntries = { }
+local MemoryListEntries = { }
+local AddonTable = { }
 
-local BNTable = {}
-local friendTable  = {}
+for i = 1, NUM_ADDONS_TO_DISPLAY do
+    AddonTable[i] = { value = 0, name = "" }
+end
 
-local statusTable = { "<AFK>", "<DND>", "" }
-local groupedTable = { "|cffaaaaaa*|r", "" }
-
-local activezone = {r = 0.3, g = 1.0, b = 0}
-local inactivezone = {r = 0.75, g = 0.75, b = 0.75}
-
-local guildIcon = "|TInterface\\GossipFrame\\TabardGossipIcon:13|t"
-local friendIcon = "|TInterface\\FriendsFrame\\PlusManz-BattleNet:13|t"
-local performanceIcon = "|TInterface\\AddOns\\nMinimap\\media\\texturePerformance:10|t"
-
-local gradientColor = {
-    0, 1, 0,
-    1, 1, 0,
-    1, 0, 0
+local statusText = {
+    [0] = "",
+    [1] = CHAT_MSG_AFK,
+    [2] = DEFAULT_DND_MESSAGE
 }
 
-local function ShortValue(v)
-    if (v >= 1e6) then
-        return ("%.1fm"):format(v / 1e6):gsub("%.?0+([km])$", "%1")
-    elseif (v >= 1e3 or v <= -1e3) then
-        return ("%.1fk"):format(v / 1e3):gsub("%.?0+([km])$", "%1")
+local gradientColor = {
+ [0] = CreateColor(0, 1, 0, 1),
+ [1] = CreateColor(1, 1, 0, 1),
+ [2] = CreateColor(1, 0, 0, 1)
+}
+
+local function ColorGradient(perc, colors)
+    local num = #colors
+
+    if perc >= 1 then
+        return colors[num]
+    elseif perc <= 0 then
+        return colors[0]
+    end
+
+    local segment, relperc = modf(perc*num)
+
+    local r1, g1, b1, r2, g2, b2
+    r1, g1, b1 = colors[segment]:GetRGB()
+    r2, g2, b2 = colors[segment+1]:GetRGB()
+
+    if not r2 or not g2 or not b2 then
+        return colors[0]
     else
-        return v
+        local r = r1 + (r2-r1)*relperc
+        local g = g1 + (g2-g1)*relperc
+        local b = b1 + (b2-b1)*relperc
+
+        return CreateColor(r, g, b, 1)
     end
-end
-
-local function FormatMemoryValue(i)
-    if (i > 1024) then
-        return format("%.2f |cffffffffMB|r", i/1024)
-    else
-        return format("%.2f |cffffffffkB|r", i)
-    end
-end
-
-local function ColorGradient(perc, ...)
-    if (perc > 1) then
-        local r, g, b = select(select("#", ...) - 2, ...) return r, g, b
-    elseif (perc < 0) then
-        local r, g, b = ... return r, g, b
-    end
-
-    local num = select("#", ...) / 3
-
-    local segment, relperc = modf(perc*(num-1))
-    local r1, g1, b1, r2, g2, b2 = select((segment*3)+1, ...)
-
-    return r1 + (r2-r1)*relperc, g1 + (g2-g1)*relperc, b1 + (b2-b1)*relperc
 end
 
 local function RGBGradient(num)
-    local r, g, b = ColorGradient(num, unpack(gradientColor))
+    num = num or 0
+    local r, g, b = ColorGradient(num, gradientColor):GetRGB()
     return r, g, b
 end
 
-local function RGBToHex(r, g, b)
-    r = r <= 1 and r >= 0 and r or 0
-    g = g <= 1 and g >= 0 and g or 0
-    b = b <= 1 and b >= 0 and b or 0
-    return format("|cff%02x%02x%02x", r*255, g*255, b*255)
+local function SetupChildFrames(self, template, numEntries, initialOffsetX, initialOffsetY, initialPoint, initialRelative, offsetX, offsetY, point, relativePoint)
+    local round = function (num) return math.floor(num + .5) end
+
+    local scrollChild = self.scrollChild
+    local entry, entryHeight, entries
+
+    local parentName = self:GetName()
+    local entryName = parentName and (parentName .. "Entry") or nil
+
+    initialPoint = initialPoint or "TOPLEFT"
+    initialRelative = initialRelative or "TOPLEFT"
+    point = point or "TOPLEFT"
+    relativePoint = relativePoint or "BOTTOMLEFT"
+    offsetX = offsetX or 0
+    offsetY = offsetY or 0
+
+    if self.entries then
+        entries = self.entries
+        entryHeight = entries[1]:GetHeight()
+    else
+        entry = CreateFrame("FRAME", entryName and (entryName .. 1) or nil, scrollChild, template)
+        entryHeight = entry:GetHeight()
+        entry:SetPoint(initialPoint, scrollChild, initialRelative, initialOffsetX, initialOffsetY)
+        entry:SetPoint("TOPRIGHT", scrollChild, initialOffsetX, initialOffsetY)
+        entries = {}
+        tinsert(entries, entry)
+    end
+
+    self.entryHeight = round(entryHeight) - offsetY
+
+    local numEntries = numEntries or math.ceil(self:GetHeight() / self.entryHeight) + 1
+
+    for i = #entries + 1, numEntries do
+        entry = CreateFrame("FRAME", entryName and (entryName .. i) or nil, scrollChild, template)
+        entry:SetPoint(point, entries[i-1], relativePoint, offsetX, offsetY)
+        entry:SetPoint("TOPRIGHT", entries[i-1], "BOTTOMRIGHT", offsetX, offsetY)
+        tinsert(entries, entry)
+    end
+
+    scrollChild:SetWidth(self:GetWidth())
+    scrollChild:SetHeight(numEntries * self.entryHeight)
+    self:SetVerticalScroll(0)
+    self:UpdateScrollChildRect()
+
+    self.entries = entries
 end
 
-    -- Create the tab frame
+local function CreateScrollFrame(name, width, height, numChild)
+    local scrollFrame = CreateFrame("ScrollFrame",  name.."ScrollFrame", UIParent, "TooltipScrollFrameTemplate")
+    scrollFrame:SetSize(width, height)
+    scrollFrame:SetPoint("CENTER")
+    scrollFrame:Hide()
 
-local f = CreateFrame("Frame", nil, Minimap)
-f:SetFrameStrata("BACKGROUND")
-f:SetFrameLevel(Minimap:GetFrameLevel() - 1)
-f:SetHeight(30)
-f:SetAlpha(cfg.tab.alphaNoMouseover)
-f:CreateBeautyBorder(11)
-f:SetBackdrop({bgFile = "Interface\\Buttons\\WHITE8x8"})
-f:SetBackdropColor(0, 0, 0, 0.6)
-f.parent = Minimap
+    scrollFrame.scrollChild = CreateFrame("FRAME",  name.."ScrollChild")
+    scrollFrame:SetScrollChild(scrollFrame.scrollChild)
 
-    -- The left button
+    scrollFrame.scrollBar = _G[scrollFrame:GetName().."ScrollBar"]
+    scrollFrame.scrollBar:SetAlpha(0)
 
-f.Left = CreateFrame("Button", nil, f)
-f.Left:RegisterForClicks("anyup")
-f.Left:RegisterEvent("PLAYER_ENTERING_WORLD")
-f.Left:RegisterEvent("MODIFIER_STATE_CHANGED")
-f.Left:RegisterEvent("PLAYER_GUILD_UPDATE")
-f.Left:RegisterEvent("GUILD_ROSTER_UPDATE")
-f.Left:RegisterEvent("GUILD_MOTD")
-f.Left:RegisterEvent("PLAYER_GUILD_UPDATE")
-f.Left:RegisterEvent("CHAT_MSG_SYSTEM")
+    SetupChildFrames(scrollFrame, "DoubleTemplate", numChild)
 
-f.Left.Text = f.Left:CreateFontString(nil, "BACKGROUND")
-f.Left.Text:SetFont("Fonts\\ARIALN.ttf", 12)
-f.Left.Text:SetShadowColor(0, 0, 0)
-f.Left.Text:SetShadowOffset(1, -1)
-f.Left:SetAllPoints(f.Left.Text)
+    scrollFrame:SetScript("OnSizeChanged", function(self, width, height)
+        if self:IsShown() then
+            GameTooltip:SetMinimumWidth(width)
+            GameTooltip:SetPadding(0, 0)
+        end
+    end)
 
-    -- The right button
+    return scrollFrame
+end
 
-f.Right = CreateFrame("Button", nil, f)
-f.Right:RegisterEvent("MODIFIER_STATE_CHANGED")
-
-f.Right.Text = f.Right:CreateFontString(nil, "BACKGROUND")
-f.Right.Text:SetFont("Fonts\\ARIALN.ttf", 12)
-f.Right.Text:SetShadowColor(0, 0, 0)
-f.Right.Text:SetShadowOffset(1, -1)
-f.Right.Text:SetText(performanceIcon..select(3, GetNetStats()))
-f.Right:SetAllPoints(f.Right.Text)
-
-local last = 0
-f.Right:SetScript("OnUpdate", function(_, elapsed)
-    last = last + elapsed
-
-    if (last > 5) then
-        f.Right.Text:SetText(performanceIcon..select(3, GetNetStats()))
-        last = 0
-    end
-end)
-
-    -- The middle button
-
-f.Center = CreateFrame("Button", nil, f)
-f.Center:RegisterForClicks("anyup")
-f.Center:RegisterEvent("BN_FRIEND_ACCOUNT_ONLINE")
-f.Center:RegisterEvent("BN_FRIEND_ACCOUNT_OFFLINE")
-f.Center:RegisterEvent("BN_FRIEND_INFO_CHANGED")
-f.Center:RegisterEvent("FRIENDLIST_UPDATE")
-f.Center:RegisterEvent("PLAYER_ENTERING_WORLD")
-
-f.Center.Text = f.Center:CreateFontString(nil, "BACKGROUND")
-f.Center.Text:SetFont("Fonts\\ARIALN.ttf", 12)
-f.Center.Text:SetShadowColor(0, 0, 0)
-f.Center.Text:SetShadowOffset(1, -1)
-f.Center:SetAllPoints(f.Center.Text)
-f.Center.Text:SetPoint("TOPLEFT", f.Left, "TOPRIGHT", 12, 0)
-f.Center.Text:SetPoint("TOPRIGHT", f.Right, "TOPLEFT", -12, 0)
-
-local function HideTab()
-    GameTooltip:Hide()
-
-    if (cfg.tab.showAlways) then
+function nMinimapTab_OnLoad(self)
+    if not cfg.tab.show then
+        self:Hide()
+        self:UnregisterAllEvents()
+        self.Guild:UnregisterAllEvents()
+        self.Friends:UnregisterAllEvents()
+        self.Info:UnregisterAllEvents()
         return
     end
 
-    securecall("UIFrameFadeOut", f.Left, 0.15, f.Left:GetAlpha(), 0)
-    securecall("UIFrameFadeOut", f.Right, 0.15, f.Right:GetAlpha(), 0)
-    securecall("UIFrameFadeOut", f.Center, 0.15, f.Center:GetAlpha(), 0)
-    securecall("UIFrameFadeOut", f, 0.15, f:GetAlpha(), cfg.tab.alphaNoMouseover)
-end
+    self.lastUpdate = 0
 
-local function ShowTab()
-    securecall("UIFrameFadeIn", f.Left, 0.15, f.Left:GetAlpha(), 1)
-    securecall("UIFrameFadeIn", f.Right, 0.15, f.Right:GetAlpha(), 1)
-    securecall("UIFrameFadeIn", f.Center, 0.15, f.Center:GetAlpha(), 1)
-    securecall("UIFrameFadeIn", f, 0.15, f:GetAlpha(), cfg.tab.alphaMouseover)
-end
+    self:RegisterEvent("PLAYER_LOGIN")
+    self:SetWidth(Minimap:GetWidth()-6)
+    self:CreateBeautyBorder(11)
+    nMinimapTab_HideTab()
 
-if (cfg.tab.showBelowMinimap) then
-    f.Left.Text:SetPoint("BOTTOMLEFT", f, 6, 5)
-    f.Right.Text:SetPoint("BOTTOMRIGHT", f, -6, 5)
-
-    if (cfg.tab.showAlways) then
-        ShowTab()
-
-        f:SetPoint("LEFT", Minimap, "BOTTOMLEFT", 10, -6)
-        f:SetPoint("RIGHT", Minimap, "BOTTOMRIGHT", -10, -6)
-    else
-        f:SetPoint("LEFT", Minimap, "BOTTOMLEFT", 10, 9)
-        f:SetPoint("RIGHT", Minimap, "BOTTOMRIGHT", -10, 9)
-    end
-else
-    f.Left.Text:SetPoint("TOPLEFT", f, 6, -5)
-    f.Right.Text:SetPoint("TOPRIGHT", f, -6, -5)
-
-    if (cfg.tab.showAlways) then
-        ShowTab()
-
-        f:SetPoint("LEFT", Minimap, "TOPLEFT", 10, 6)
-        f:SetPoint("RIGHT", Minimap, "TOPRIGHT", -10, 6)
-    else
-        f:SetPoint("LEFT", Minimap, "TOPLEFT", 10, -9)
-        f:SetPoint("RIGHT", Minimap, "TOPRIGHT", -10, -9)
+    if cfg.tab.showBelowMinimap then
+        self:ClearAllPoints()
+        self:SetPoint("TOP", Minimap, "BOTTOM", 0, 2)
     end
 end
 
-local function SlideFrame(self, t)
-    self.pos = self.pos + t * self.speed
-    self:SetPoint(self.point, self.parent, self.point, 0, self.pos or 0)
+function nMinimapTab_OnUpdate(self, elapsed)
+    self.lastUpdate = self.lastUpdate + elapsed
 
-    if (self.pos * self.mod >= self.limit * self.mod) then
-        self:SetPoint(self.point, self.parent, self.point, 0, self.limit or 0)
-        self.pos = self.limit
-        self:SetScript("OnUpdate", nil)
+    if self.lastUpdate > 5 then
+        local _, _, _, lagWorld = GetNetStats()
+        self.Info.Text:SetText(performanceIcon..lagWorld)
+        self.lastUpdate = 0
+    end
+end
 
-        if (self.finish_hide) then
-            self:Hide()
+function nMinimapTab_ShowTab()
+    if not cfg.tab.show then
+        return
+    end
+
+    securecall("UIFrameFadeIn", nMinimapTab, 0.20, nMinimapTab:GetAlpha(), 1)
+end
+
+function nMinimapTab_HideTab()
+    GameTooltip:Hide()
+
+    if cfg.tab.showAlways or not cfg.tab.show then
+        return
+    end
+
+    securecall("UIFrameFadeOut", nMinimapTab, 0.20, nMinimapTab:GetAlpha(), 0)
+end
+
+    --// Guild Frame
+
+function nMinimap:UpdateGuildText(self)
+    if IsInGuild() then
+        local totalMembers, onlineMembers, onlineAndMobileMembers = GetNumGuildMembers()
+        self.Text:SetFormattedText("%s%d", guildIcon, onlineMembers)
+    else
+        self.Text:SetText(guildIcon.." -")
+    end
+end
+
+local GuildScroll = CreateScrollFrame("Guild", 300, 340, 1000)
+
+function nMinimap_UpdateGuildButton(entry)
+    local scrollFrame = GuildScrollFrame
+
+    local index = entry.index
+    entry.id = GuildListEntries[index].id
+
+    local height = scrollFrame.entryHeight
+    local minWidth = scrollFrame:GetWidth()
+    local zonec, classc, levelc
+
+    local name, rank, _, level, _, zone, note, officernote, connected, status, class, _ = GetGuildRosterInfo(entry.id)
+
+    if connected then
+        zone = zone or UNKNOWN
+
+        if GetRealZoneText() == zone then
+            zonec = activezone
+        else
+            zonec = inactivezone
         end
 
-        if (self.finish_function) then
-            self:finish_function()
-        end
+        levelc = GetQuestDifficultyColor(level)
+        classc = RAID_CLASS_COLORS[class]
+
+        level = WrapTextInColorCode(level, CreateColor(levelc.r, levelc.g, levelc.b, 1):GenerateHexColor())
+        name = WrapTextInColorCode(name, classc:GenerateHexColor())
+        zone = WrapTextInColorCode(zone, zonec:GenerateHexColor())
+
+        entry.LeftText:SetFormattedText("%s %s %s", level, name, statusText[status])
+        entry.RightText:SetText(zone)
+
+        minWidth = math.max(minWidth, entry.LeftText:GetWidth()+entry.RightText:GetWidth()+100)
+        entry:Show()
     end
+
+    scrollFrame:SetWidth(minWidth)
+    scrollFrame.scrollChild:SetWidth(minWidth)
+
+    return height
 end
 
-if (cfg.tab.showBelowMinimap) then
-    f.point = "BOTTOM"
-    f.pos = -6
-else
-    f.point = "TOP"
-    f.pos = 6
-end
+function nMinimap_UpdateGuildMembers()
+    local scrollFrame = GuildScrollFrame
+    local offset = scrollFrame.offset
+    local entries = scrollFrame.entries
+    local numEntries = #entries
+    local numFrames = scrollFrame.numEntries
 
-local function SlideUp()
-    f.mod = 1
-    f.limit = cfg.tab.showBelowMinimap and -6 or 21
-    f.speed = 200
-    f:SetScript("OnUpdate", SlideFrame)
-end
+    sort(GuildListEntries, function(a, b)
+        if a.name and b.name then
+            return a.name < b.name
+        end
+    end)
 
-local function SlideDown()
-    f.mod = -1
-    f.limit = cfg.tab.showBelowMinimap and -21 or 6
-    f.speed = -200
-    f:SetScript("OnUpdate", SlideFrame)
-end
+    local usedHeight = 0
 
-local function AddonMem()
-    total = 0
-    collectgarbage()
-    UpdateAddOnMemoryUsage()
-    wipe(addonTable)
-
-    for i = 1, GetNumAddOns() do
-        if (IsAddOnLoaded(i)) then
-            local memory = GetAddOnMemoryUsage(i)
-            total = total + memory
-
-            entry = {
-                name = select(2, GetAddOnInfo(i)),
-                memory = GetAddOnMemoryUsage(i)
-            }
-
-            tinsert(addonTable, entry)
-
-            if (IsShiftKeyDown()) then
-                sort(addonTable, function(a, b)
-                    return a.memory > b.memory
-                end)
+    for i = 1, numEntries do
+        local frame = entries[i]
+        local index = offset + i
+        if frame then
+            if index <= numFrames then
+                frame.index = index
+                local height = nMinimap_UpdateGuildButton(frame)
+                frame:SetHeight(height)
+                usedHeight = usedHeight + height
+            else
+                frame.index = nil
+                frame:Hide()
             end
         end
     end
-end
 
-local function ShowMemoryTip(self)
-    local _, _, lagHome, lagWorld = GetNetStats()
-    if not lagHome then return end
-    
-    GameTooltip:ClearLines()
-    GameTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT")
+    usedHeight = math.min(usedHeight, 340)
 
-    AddonMem()
-
-    GameTooltip:AddLine(COMBAT_MISC_INFO)
-    GameTooltip:AddLine(" ")
-
-    GameTooltip:AddLine("|cffffffffHome:|r "..format("%d ms", lagHome), RGBGradient(select(3, GetNetStats()) / 100))
-    GameTooltip:AddLine("|cffffffff"..CHANNEL_CATEGORY_WORLD..":|r "..format("%d ms", lagWorld), RGBGradient(select(4, GetNetStats()) / 100))
-
-    GameTooltip:AddLine(" ")
-
-    for _, table in pairs(addonTable) do
-        GameTooltip:AddDoubleLine(table.name, FormatMemoryValue(table.memory), 1, 1, 1, RGBGradient(table.memory / 800))
-    end
-
-    GameTooltip:AddLine(" ")
-    GameTooltip:AddDoubleLine(ALL, FormatMemoryValue(total), nil, nil, nil, RGBGradient(total / (1024*10)))
-
-    if (SHOW_NEWBIE_TIPS == "1") then
-        GameTooltip:AddLine(" ")
-        GameTooltip:AddLine(NEWBIE_TOOLTIP_MEMORY, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1)
-    end
-
-    GameTooltip:Show()
-end
-
-local function InfoOnEvent(self)
-    if (IsShiftKeyDown()) then
-        if (self:IsMouseOver() and not DropDownList1:IsShown()) then
-            GameTooltip:Hide()
-            ShowMemoryTip(self)
-        end
+    if not scrollFrame:IsVisible() then
+        scrollFrame:SetHeight(usedHeight)
     else
-        if (self:IsMouseOver() and not DropDownList1:IsShown()) then
-            GameTooltip:Hide()
-            ShowMemoryTip(self)
-        end
+        scrollFrame.isPendingHeight = true
+        scrollFrame.pendingHeight = usedHeight
     end
+    scrollFrame.scrollChild:SetHeight(usedHeight)
 end
 
-    -- source TukUI - www.tukui.org
+function nMinimapTab_Guild_UpdateScrollFrame()
+    local scrollFrame = GuildScrollFrame
 
-local function GetTableIndex(table, fieldIndex, value)
-    for k, v in ipairs(table) do
-        if (v[fieldIndex] == value) then
-            return k
+    local addButtonIndex = 0
+    local totalButtonHeight = 0
+    local function AddButtonInfo(id, name)
+        addButtonIndex = addButtonIndex + 1
+        if not GuildListEntries[addButtonIndex] then
+            GuildListEntries[addButtonIndex] = { }
         end
+        GuildListEntries[addButtonIndex].id = id
+        GuildListEntries[addButtonIndex].name = name
+        totalButtonHeight = totalButtonHeight + scrollFrame.entryHeight
     end
-
-    return -1
-end
-
-local menuFrame = CreateFrame("Frame", "ContactDropDownMenu", UIParent, "UIDropDownMenuTemplate")
-local menuList = {
-    {
-        text = OPTIONS_MENU,
-        isTitle = true,
-        notCheckable = true
-    },
-    {
-        text = INVITE,
-        hasArrow = true,
-        notCheckable = true,
-    },
-    {
-        text = CHAT_MSG_WHISPER_INFORM,
-        hasArrow = true,
-        notCheckable = true,
-    }
-}
-
-local function BuildGuildTable()
-    totalGuildOnline = 0
-    wipe(guildTable)
 
     for i = 1, GetNumGuildMembers() do
-        local name, rank, _, level, _, zone, note, officernote, connected, status, class, reputationStanding = GetGuildRosterInfo(i)
-        local statusText = {
-            [0] = "",
-            [1] = "Away",
-            [2] = "DND"
-        }
-
-        guildTable[i] = {
-            name,
-            rank,
-            level,
-            zone,
-            note,
-            officernote,
-            connected,
-            statusText[status],
-            class
-        }
-
-        if (connected) then
-            totalGuildOnline = totalGuildOnline + 1
+        local name, rank, _, level, _, zone, note, officernote, connected, status, class, _ = GetGuildRosterInfo(i)
+        if connected and name ~= playerName.."-"..playerRealm then
+            AddButtonInfo(i, name)
         end
     end
 
-    sort(guildTable, function(a, b)
-        if (a and b) then
-            return a[1] < b[1]
-        end
-    end)
+    scrollFrame.totalEntriesHeight = totalButtonHeight
+    scrollFrame.numEntries = addButtonIndex
+
+    nMinimap_UpdateGuildMembers()
 end
 
-local function GuildTip(self)
-    if (not IsInGuild()) then
+function nMinimapTab_Guild_OnEvent(self, event, ...)
+    if event == "PLAYER_GUILD_UPDATE" or event == "GUILD_ROSTER_UPDATE" then
+        GuildRoster()
+    end
+    nMinimap:UpdateGuildText(self)
+    nMinimapTab_Guild_UpdateScrollFrame()
+end
+
+function nMinimapTab_Guild_ShowTooltip(self)
+    if not IsInGuild() then
         return
     end
 
+    local totalMembers, onlineMembers, onlineAndMobileMembers = GetNumGuildMembers()
     local zonec, classc, levelc
-    local online = totalGuildOnline
 
-    GameTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT")
+    GameTooltip:ClearLines()
+    GameTooltip:ClearAllPoints()
+    GameTooltip:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, 2)
+    GameTooltip:SetOwner(self, "ANCHOR_PRESERVE")
     GameTooltip:AddLine(GetGuildInfo("player"))
     GameTooltip:AddLine(" ")
-    GameTooltip:AddLine(GUILD_MOTD, nil, nil, nil)
+    GameTooltip:AddLine(GUILD_MOTD)
     GameTooltip:AddLine(GetGuildRosterMOTD() or "-", 1, 1, 1, true)
     GameTooltip:AddLine(" ")
 
-    if (online > 1) then
-        GameTooltip:AddLine(" ")
-
-        for i = 1, #guildTable do
-            if (online <= 1) then
-                if (online > 1) then
-                    GameTooltip:AddLine(format("+ %d More...", online - modules.Guild.maxguild), nil, nil, nil)
-                end
-
-                break
-            end
-
-            local name, rank, level, zone, note, officernote, connected, status, class = unpack(guildTable[i])
-            if (connected and name ~= select(1, UnitName("player"))) then
-                if (GetRealZoneText() == zone) then
-                    zonec = activezone
-                else
-                    zonec = inactivezone
-                end
-
-                local classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class], GetQuestDifficultyColor(level)
-                if (IsShiftKeyDown()) then
-                    GameTooltip:AddDoubleLine(format("|cff%02x%02x%02x%d|r %s |r", levelc.r*255, levelc.g*255, levelc.b*255, level, name), RGBToHex(0.75, 0.75, 0.75)..rank, classc.r, classc.g, classc.b)
-
-                    if (note ~= "") then
-                        GameTooltip:AddLine(format("        |cffffffff%s|r", note), 1, 1, 0, 1)
-                    end
-
-                    if (officernote ~= "") then
-                        GameTooltip:AddLine(format(RGBToHex(0.3, 1, 0).."        %s", officernote), 1, 0, 1, 1)
-                    end
-                else
-                    GameTooltip:AddDoubleLine(format("|cff%02x%02x%02x%d|r %s %s", levelc.r*255, levelc.g*255, levelc.b*255, level, name, status), zone, classc.r, classc.g, classc.b, zonec.r, zonec.g, zonec.b)
-                end
-            end
-        end
+    if onlineMembers > 1 then
+        GameTooltip_InsertFrame(GameTooltip, GuildScroll)
     end
 
     GameTooltip:AddLine(" ")
-    GameTooltip:AddLine(GUILD_MEMBERS_ONLINE_COLON.." "..format("|cffffffff%d/%d|r", online, #guildTable))
+    GameTooltip:AddLine(GUILD_MEMBERS_ONLINE_COLON.." "..format("|cffffffff%d/%d|r", onlineMembers, totalMembers))
     GameTooltip:Show()
 end
 
-local function UpdateGuildText()
-    if (IsInGuild()) then
-        BuildGuildTable()
+    -- // Friends Frame
 
-        f.Left.Text:SetFormattedText(format("%s|cffffffff%d|r", guildIcon, (totalGuildOnline == 1 and 0) or totalGuildOnline))
-    else
-        f.Left.Text:SetText(guildIcon.." -")
-    end
-end
+local FriendsScroll = CreateScrollFrame("Friends", 300, 340, 200)
 
-local function GuildOnEvent(self, event)
-    UpdateGuildText()
+function nMinimap_UpdateFriendButton(entry)
+    local scrollFrame = FriendsScrollFrame
 
-    if (event == "MODIFIER_STATE_CHANGED") then
-        if (IsShiftKeyDown()) then
-            if (self:IsMouseOver() and not DropDownList1:IsShown()) then
-                GameTooltip:Hide()
-                GuildTip(self)
+    local index = entry.index
+    entry.buttonType = FriendListEntries[index].buttonType
+    entry.id = FriendListEntries[index].id
+    local height = scrollFrame.entryHeight
+    local minWidth = scrollFrame:GetWidth()
+    local zonec, classc, levelc
+
+    if entry.buttonType == FRIENDS_BUTTON_TYPE_BNET then
+        local _, accountName, battleTag, _, characterName, bnetIDGameAccount, client, isOnline, _, isAFK, isDND = BNGetFriendInfo(FriendListEntries[index].id)
+
+        if isOnline then
+            local _, _, _, realmName, realmID, faction, race, class, _, zoneName, level, gameText = BNGetGameAccountInfo(bnetIDGameAccount)
+
+            characterName = BNet_GetValidatedCharacterName(characterName, battleTag, client)
+            accountName = WrapTextInColorCode(accountName, FRIENDS_BNET_NAME_COLOR:GenerateHexColor())
+            local clientIcon = BNet_GetClientEmbeddedTexture(client, 14)
+
+            for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
+                if class == v then
+                    class = k
+                end
             end
-        else
-            if (self:IsMouseOver() and not DropDownList1:IsShown()) then
-                GameTooltip:Hide()
-                GuildTip(self)
-            end
-        end
-    end
-end
 
-f.Left:SetScript("OnClick", function(self, button)
-    if (not IsInGuild()) then
-        return
-    end
-
-    if (button == "LeftButton") then
-        GuildFrame_Toggle()
-    else
-        GameTooltip:Hide()
-
-        local classc, levelc, grouped
-        local menuCountWhispers = 0
-        local menuCountInvites = 0
-        menuList[2].menuList = {}
-        menuList[3].menuList = {}
-
-        for i = 1, #guildTable do
-            if (guildTable[i][7] and guildTable[i][1] ~= select(1, UnitName("player"))) then
-                local classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[guildTable[i][9]], GetQuestDifficultyColor(guildTable[i][3])
-                if (UnitInParty(guildTable[i][1]) or UnitInRaid(guildTable[i][1])) then
-                    grouped = "|cffaaaaaa*|r"
+            if client == BNET_CLIENT_WOW then
+                if isAFK == true then
+                    status = 1
+                elseif isDND == true then
+                    status = 2
                 else
-                    menuCountInvites = menuCountInvites +1
-                    grouped = ""
-                    menuList[2].menuList[menuCountInvites] = {
-                        text = format("|cff%02x%02x%02x%d|r |cff%02x%02x%02x%s|r %s", levelc.r*255, levelc.g*255, levelc.b*255, guildTable[i][3], classc.r*255, classc.g*255, classc.b*255, guildTable[i][1], ""),
-                        arg1 = guildTable[i][1],
-                        notCheckable = true,
-                        func = function(self, arg1)
-                            menuFrame:Hide()
-                            InviteUnit(arg1)
-                        end
-                    }
+                    status = 0
                 end
 
-                menuCountWhispers = menuCountWhispers + 1
-                menuList[3].menuList[menuCountWhispers] = {
-                    text = format("|cff%02x%02x%02x%d|r |cff%02x%02x%02x%s|r %s", levelc.r*255, levelc.g*255, levelc.b*255, guildTable[i][3], classc.r*255, classc.g*255, classc.b*255, guildTable[i][1], grouped),
-                    arg1 = guildTable[i][1],
-                    notCheckable = true,
-                    func = function(self, arg1)
-                        menuFrame:Hide()
-                        SetItemRef("player:"..arg1, ("|Hplayer:%1$s|h[%1$s]|h"):format(arg1), "LeftButton")
-                    end
-                }
-            end
-        end
-
-        EasyMenu(menuList, menuFrame, self, 0, 0, "MENU", 2)
-    end
-end)
-
-local function BuildFriendTable(total)
-    totalFriendsOnline = 0
-    wipe(friendTable)
-
-    for i = 1, total do
-        local name, level, class, area, connected, status, note = GetFriendInfo(i)
-        for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-            if (class == v) then
-                class = k
-            end
-        end
-
-        friendTable[i] = {
-            name,
-            level,
-            class,
-            area,
-            connected,
-            status,
-            note
-        }
-
-        if (connected) then
-            totalFriendsOnline = totalFriendsOnline + 1
-        end
-    end
-
-    sort(friendTable, function(a, b)
-        if a[1] and b[1] then
-            return a[1] < b[1]
-        end
-    end)
-end
-
-local function UpdateFriendTable(total)
-    totalFriendsOnline = 0
-
-    for i = 1, #friendTable do
-        local name, level, class, area, connected, status, note = GetFriendInfo(i)
-        for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-            if class == v then
-                class = k
-            end
-        end
-
-        local index = GetTableIndex(friendTable, 1, name)
-        if (index == -1) then
-            BuildFriendTable(total)
-            break
-        end
-
-        friendTable[index][5] = connected
-
-        if (connected) then
-            friendTable[index][2] = level
-            friendTable[index][3] = class
-            friendTable[index][4] = area
-            friendTable[index][6] = status
-            friendTable[index][7] = note
-            totalFriendsOnline = totalFriendsOnline + 1
-        end
-    end
-end
-
-local function BuildBNTable(total)
-    totalBattleNetOnline = 0
-    wipe(BNTable)
-
-    for i = 1, total do
-        local bnetIDAccount, accountName, battleTag, isBattleTag, characterName, bnetIDGameAccount, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText = BNGetFriendInfo(i)
-
-        if (bnetIDGameAccount == nil) then return end 
-
-        local _, _, _, realmName, realmID, faction, race, class, _, zoneName, level, gameText = BNGetGameAccountInfo(bnetIDGameAccount)
-
-        for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-            if (class == v) then
-                class = k
-            end
-        end
-
-        BNTable[i] = {
-            bnetIDAccount,
-            accountName,
-            battleTag or "",
-            characterName,
-            bnetIDGameAccount,
-            client,
-            isOnline,
-            isAFK,
-            isDND,
-            noteText,
-            realmName,
-            faction,
-            race,
-            class,
-            zoneName,
-            level
-        }
-
-        if (isOnline) then
-            totalBattleNetOnline = totalBattleNetOnline + 1
-        end
-    end
-
-    sort(BNTable, function(a, b)
-        if (a[2] and b[2]) then
-            if (a[2] == b[2] and a[3] and b[3]) then
-                return a[3] < b[3]
-            end
-
-            return a[2] < b[2]
-        end
-    end)
-end
-
-local function UpdateBNTable(total)
-    totalBattleNetOnline = 0
-
-    for i = 1, #BNTable do
-        local bnetIDAccount, accountName, battleTag, isBattleTag, characterName, bnetIDGameAccount, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText = BNGetFriendInfo(i)
-
-        if (bnetIDGameAccount == nil) then return end 
-
-        local hasFocus, _, _, realmName, realmID, faction, race, class, _, zoneName, level, gameText = BNGetGameAccountInfo(bnetIDGameAccount)
-
-        for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-            if (class == v) then
-                class = k
-            end
-        end
-
-        local index = GetTableIndex(BNTable, 1, bnetIDAccount)
-        if (index == -1) then
-            BuildBNTable(total)
-            return
-        end
-
-        BNTable[index][7] = isOnline
-        if (isOnline) then
-            BNTable[index][2] = accountName
-            BNTable[index][3] = battleTag
-            BNTable[index][4] = characterName
-            BNTable[index][5] = bnetIDGameAccount
-            BNTable[index][6] = client
-            BNTable[index][8] = isAFK
-            BNTable[index][9] = isDND
-            BNTable[index][10] = noteText
-            BNTable[index][11] = realmName
-            BNTable[index][12] = faction
-            BNTable[index][13] = race
-            BNTable[index][14] = class
-            BNTable[index][15] = zoneName
-            BNTable[index][16] = level
-            totalBattleNetOnline = totalBattleNetOnline + 1
-        end
-    end
-end
-
-f.Center:SetScript("OnClick", function(self, button)
-    if (button == "LeftButton") then
-        ToggleFriendsFrame(1)
-    else
-        GameTooltip:Hide()
-
-        local menuCountWhispers = 0
-        local menuCountInvites = 0
-        local classc, levelc
-
-        menuList[2].menuList = {}
-        menuList[3].menuList = {}
-
-        if (totalFriendsOnline > 0) then
-            for i = 1, #friendTable do
-                if (friendTable[i][5]) then
-                    menuCountInvites = menuCountInvites + 1
-                    menuCountWhispers = menuCountWhispers + 1
-
-                    classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[friendTable[i][3]], GetQuestDifficultyColor(friendTable[i][2])
-                    if (classc == nil) then
-                        classc = GetQuestDifficultyColor(friendTable[i][2])
-                    end
-
-                    menuList[2].menuList[menuCountInvites] = {
-                        text = format("|cff%02x%02x%02x%d|r |cff%02x%02x%02x%s|r", levelc.r*255, levelc.g*255, levelc.b*255, friendTable[i][2], classc.r*255, classc.g*255, classc.b*255, friendTable[i][1]),
-                        arg1 = friendTable[i][1],
-                        notCheckable = true,
-                        func = function(self, arg1)
-                            menuFrame:Hide()
-                            InviteUnit(arg1)
-                        end
-                    }
-
-                    menuList[3].menuList[menuCountWhispers] = {
-                        text = format("|cff%02x%02x%02x%d|r |cff%02x%02x%02x%s|r", levelc.r*255, levelc.g*255, levelc.b*255, friendTable[i][2], classc.r*255, classc.g*255, classc.b*255, friendTable[i][1]),
-                        arg1 = friendTable[i][1],
-                        notCheckable = true,
-                        func = function(self, arg1)
-                            menuFrame:Hide()
-                            SetItemRef("player:"..arg1, ("|Hplayer:%1$s|h[%1$s]|h"):format(arg1), "LeftButton")
-                        end
-                    }
-                end
-            end
-        end
-
-        if (totalBattleNetOnline > 0) then
-            local realID, playerFaction, grouped
-            for i = 1, #BNTable do
-                if (BNTable[i][7]) then
-                    realID = BNTable[i][2] --(BATTLENET_NAME_FORMAT):format(BNTable[i][2], BNTable[i][3])
-                    menuCountWhispers = menuCountWhispers + 1
-                    menuList[3].menuList[menuCountWhispers] = {
-                        text = realID,
-                        arg1 = realID,
-                        notCheckable = true,
-                        func = function(self, arg1)
-                            menuFrame:Hide()
-                            ChatFrame_SendSmartTell(arg1)
-                        end
-                    }
-
-                    if (select(1, UnitFactionGroup("player")) == "Horde") then
-                        playerFaction = 0
-                    else
-                        playerFaction = 1
-                    end
-
-                    if (BNTable[i][6] == BNET_CLIENT_WOW and BNTable[i][11] == GetRealmName() and playerFaction == BNTable[i][12]) then
-                        classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[BNTable[i][14]], GetQuestDifficultyColor(BNTable[i][16])
-                        if (classc == nil) then
-                            classc = GetQuestDifficultyColor(BNTable[i][16])
-                        end
-
-                        if (UnitInParty(BNTable[i][4]) or UnitInRaid(BNTable[i][4])) then
-                            grouped = 1
-                        else
-                            grouped = 2
-                        end
-
-                        menuCountInvites = menuCountInvites + 1
-                        menuList[2].menuList[menuCountInvites] = {
-                            text = format("|cff%02x%02x%02x%d|r |cff%02x%02x%02x%s|r", levelc.r*255, levelc.g*255, levelc.b*255, BNTable[i][16], classc.r*255, classc.g*255, classc.b*255, BNTable[i][4]),
-                            arg1 = BNTable[i][4],
-                            notCheckable = true,
-                            func = function(self, arg1)
-                                menuFrame:Hide()
-                                InviteUnit(arg1)
-                            end
-                        }
-                    end
-                end
-            end
-        end
-
-        EasyMenu(menuList, menuFrame, self, 0, 0, "MENU", 2)
-    end
-end)
-
-local function FriendsOnEvent(self, event)
-    if (event:match("BN_FRIEND") or  event == "PLAYER_ENTERING_WORLD") then
-        local BNTotal, BNNetOnline = BNGetNumFriends()
-        if (BNTotal == #BNTable) then
-            UpdateBNTable(BNTotal)
-        else
-            BuildBNTable(BNTotal)
-        end
-    end
-
-    if (event == "FRIENDLIST_UPDATE" or event == "PLAYER_ENTERING_WORLD") then
-        local total = GetNumFriends()
-        if (total == #friendTable) then
-            UpdateFriendTable(total)
-        else
-            BuildFriendTable(total)
-        end
-    end
-
-    f.Center.Text:SetFormattedText(format("%s|cffffffff%d|r", friendIcon, totalFriendsOnline + totalBattleNetOnline))
-end
-
-local function FriendsOnEnter(self)
-    local totalFriendsOnline = totalFriendsOnline + totalBattleNetOnline
-    local totalfriends = #friendTable + #BNTable
-    local zonec, classc, levelc, realmc, grouped
-
-    if (totalFriendsOnline > 0) then
-        GameTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddLine(FRIENDS_LIST_ONLINE..format(": %s/%s", totalFriendsOnline, totalfriends))
-        GameTooltip:AddLine(" ")
-        GameTooltip:AddLine("World of Warcraft")
-
-        for i = 1, #friendTable do
-            if (friendTable[i][5]) then
-                if (GetRealZoneText() == friendTable[i][4]) then
-                    zonec = activezone
-                else
-                    zonec = inactivezone
-                end
-
-                classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[friendTable[i][3]], GetQuestDifficultyColor(friendTable[i][2])
-                if (classc == nil) then
-                    classc = GetQuestDifficultyColor(friendTable[i][2])
-                end
-
-                if (UnitInParty(friendTable[i][1]) or UnitInRaid(friendTable[i][1])) then
-                    grouped = 1
-                else
-                    grouped = 2
-                end
-
-                GameTooltip:AddDoubleLine(format("|cff%02x%02x%02x%d|r %s%s%s", levelc.r*255, levelc.g*255, levelc.b*255, friendTable[i][2], friendTable[i][1], groupedTable[grouped], " "..friendTable[i][6]), friendTable[i][4], classc.r, classc.g, classc.b, zonec.r, zonec.g, zonec.b)
-            end
-        end
-
-        if (totalBattleNetOnline > 0) then
-            GameTooltip:AddLine(" ")
-            GameTooltip:AddLine("Battle.NET")
-
-            local status = 0
-            for i = 1, #BNTable do
-                if (BNTable[i][7]) then
-                    if (BNTable[i][6] == BNET_CLIENT_WOW) then
-                        if (BNTable[i][8] == true) then
-                            status = 1
-                        elseif (BNTable[i][9] == true) then
-                            status = 2
-                        else
-                            status = 3
-                        end
-
-                        classc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[BNTable[i][14]]
-                        -- XXX: Stupid challengeLevel bug/error
-                        if (type(BNTable[i][16]) == "string") then
-                            levelc = {r = 1, g = 1, b = 1}
-                        else
-                            levelc = GetQuestDifficultyColor(BNTable[i][16])
-
-                            if (classc == nil) then
-                                classc = GetQuestDifficultyColor(BNTable[i][16])
-                            end
-                        end
-
-                        if (not classc) then
-                            classc = {r = 1, g = 1, b = 1}
-                        end
-
-                        if (UnitInParty(BNTable[i][4]) or UnitInRaid(BNTable[i][4])) then
-                            grouped = 1
-                        else
-                            grouped = 2
-                        end
-
-                        GameTooltip:AddDoubleLine(format("%s (|cff%02x%02x%02x%d|r |cff%02x%02x%02x%s|r%s) |cff%02x%02x%02x%s|r", BNTable[i][6], levelc.r*255, levelc.g*255, levelc.b*255, BNTable[i][16], classc.r*255, classc.g*255, classc.b*255, BNTable[i][4], groupedTable[grouped], 255, 0, 0, statusTable[status]), BNTable[i][2], 238, 238, 238, 238, 238, 238)
-                    else
-                        GameTooltip:AddDoubleLine("|cffeeeeee"..BNTable[i][6].." ("..BNTable[i][3]..")|r", "|cffeeeeee"..BNTable[i][2].."|r")
-                    end
-                end
-            end
-        end
-
-        GameTooltip:Show()
-    else
-        return
-    end
-end
-
-    -- the "OnEnter" functions
-
-f:SetScript("OnEnter", function()
-    if (not cfg.tab.showAlways) then
-        ShowTab()
-        if (cfg.tab.showBelowMinimap) then
-            SlideDown()
-        else
-            SlideUp()
-        end
-    end
-end)
-
-f.Center:SetScript("OnEnter", function(self)
-    FriendsOnEnter(self)
-
-    if (not cfg.tab.showAlways) then
-        ShowTab()
-        if (cfg.tab.showBelowMinimap) then
-            SlideDown()
-        else
-            SlideUp()
-        end
-    end
-end)
-
-f.Right:SetScript("OnEnter", function(self)
-    ShowMemoryTip(self)
-
-    if (not cfg.tab.showAlways) then
-        ShowTab()
-        if (cfg.tab.showBelowMinimap) then
-            SlideDown()
-        else
-            SlideUp()
-        end
-    end
-end)
-
-f.Left:SetScript("OnEnter", function(self)
-    GuildTip(self)
-    UpdateGuildText()
-
-    if (not cfg.tab.showAlways) then
-        ShowTab()
-        if (cfg.tab.showBelowMinimap) then
-            SlideDown()
-        else
-            SlideUp()
-        end
-    end
-end)
-
-    -- the "OnLeave" functions
-
-for _, leaveFrame in pairs({
-    f,
-    f.Right,
-    f.Left,
-    f.Center,
-}) do
-    leaveFrame:SetScript("OnLeave", function()
-        HideTab()
-
-        if (not cfg.tab.showAlways) then
-            if (cfg.tab.showBelowMinimap) then
-                SlideUp()
+                level = tonumber(level)
+                levelc = GetQuestDifficultyColor(level)
+                classc = RAID_CLASS_COLORS[class]
+
+                level = WrapTextInColorCode(level, CreateColor(levelc.r, levelc.g, levelc.b, 1):GenerateHexColor())
+                characterName = WrapTextInColorCode(characterName, classc:GenerateHexColor())
+
+                entry.LeftText:SetFormattedText("%s (%s %s) %s", accountName, level, characterName, statusText[status])
+                entry.RightText:SetText(clientIcon)
             else
-                SlideDown()
+                 entry.LeftText:SetFormattedText(accountName)
+                 entry.RightText:SetText(clientIcon)
             end
+
+            minWidth = math.max(minWidth, entry.LeftText:GetWidth()+entry.RightText:GetWidth()+100)
+            entry:Show()
         end
-    end)
+    elseif entry.buttonType == FRIENDS_BUTTON_TYPE_WOW then
+        local name, level, class, zone, connected, status, note, isRaF, guid = GetFriendInfo(FriendListEntries[index].id)
+
+        if connected then
+            for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
+                if class == v then
+                    class = k
+                end
+            end
+
+            name = name or UNKNOWN
+
+            if status == CHAT_FLAG_AFK then
+                status = CHAT_MSG_AFK
+            elseif status == CHAT_FLAG_DND then
+                status = DEFAULT_DND_MESSAGE
+            end
+
+            if GetRealZoneText() == zone then
+                zonec = activezone
+            else
+                zonec = inactivezone
+            end
+
+            classc = RAID_CLASS_COLORS[class]
+            levelc = GetQuestDifficultyColor(level)
+
+            level = WrapTextInColorCode(level, CreateColor(levelc.r, levelc.g, levelc.b, 1):GenerateHexColor())
+            name = WrapTextInColorCode(name, classc:GenerateHexColor())
+            zone = WrapTextInColorCode(zone, zonec:GenerateHexColor())
+
+            entry.LeftText:SetFormattedText("%s %s %s", level, name, status)
+            entry.RightText:SetFormattedText(zone)
+
+            minWidth = math.max(minWidth, entry.LeftText:GetWidth()+entry.RightText:GetWidth()+100)
+            entry:Show()
+        end
+    end
+
+    scrollFrame.scrollChild:SetWidth(minWidth)
+    scrollFrame:SetWidth(minWidth)
+
+    return height
 end
 
-    -- the Minimap scripts
+function nMinimap_UpdateFriends()
+    local scrollFrame = FriendsScrollFrame
+    local offset = 0
+    local entries = scrollFrame.entries
+    local numEntries = #entries
+    local numFrames = scrollFrame.numEntries
 
-if (not cfg.tab.showAlways) then
-    Minimap:HookScript("OnEnter",function()
-        ShowTab()
+    local usedHeight = 0
 
-        if (cfg.tab.showBelowMinimap) then
-            SlideDown()
+    for i = 1, numEntries do
+        local frame = entries[i]
+        local index = offset + i
+        if index <= numFrames then
+            frame.index = index
+            local height = nMinimap_UpdateFriendButton(frame)
+            frame:SetHeight(height)
+            usedHeight = usedHeight + height
         else
-            SlideUp()
+            frame.index = nil
+            frame:Hide()
         end
+    end
+
+    usedHeight = math.min(usedHeight, 340)
+
+    if not scrollFrame:IsVisible() then
+        scrollFrame:SetHeight(usedHeight)
+    else
+        scrollFrame.isPendingHeight = true
+        scrollFrame.pendingHeight = usedHeight
+    end
+    scrollFrame.scrollChild:SetHeight(usedHeight)
+end
+
+function nMinimapTab_Friends_UpdateScrollFrame()
+    local BNTotal, BNOnline = BNGetNumFriends()
+    local WoWTotal, WoWOnline = GetNumFriends()
+
+    local scrollFrame = FriendsScrollFrame
+
+    local addButtonIndex = 0
+    local totalButtonHeight = 0
+    local function AddButtonInfo(buttonType, id)
+        addButtonIndex = addButtonIndex + 1
+        if not FriendListEntries[addButtonIndex] then
+            FriendListEntries[addButtonIndex] = { }
+        end
+        FriendListEntries[addButtonIndex].buttonType = buttonType
+        FriendListEntries[addButtonIndex].id = id
+        totalButtonHeight = totalButtonHeight + scrollFrame.entryHeight
+    end
+
+    -- Online Battlenet Friends
+    for i = 1, BNOnline do
+        AddButtonInfo(FRIENDS_BUTTON_TYPE_BNET, i)
+    end
+    -- Online WoW Friends
+    for i = 1, WoWOnline do
+        AddButtonInfo(FRIENDS_BUTTON_TYPE_WOW, i)
+    end
+
+    scrollFrame.totalEntriesHeight = totalButtonHeight
+    scrollFrame.numEntries = addButtonIndex
+
+    nMinimap_UpdateFriends()
+end
+
+function nMinimapTab_Friends_ShowTooltip(self)
+    local BNTotal, BNOnline = BNGetNumFriends()
+    local WoWTotal, WoWOnline = GetNumFriends()
+    local totalFriendsOnline = BNOnline + WoWOnline
+    local totalfriends = BNTotal + WoWTotal
+    local invites = BNGetNumFriendInvites()
+    local zonec, classc, levelc, realmc
+
+    if totalFriendsOnline == 0 then return end
+
+    GameTooltip:ClearAllPoints()
+    GameTooltip:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, 2)
+    GameTooltip:SetOwner(self, "ANCHOR_PRESERVE")
+    GameTooltip:ClearLines()
+    GameTooltip:AddLine(format("%s: %s/%s", FRIENDS_LIST_ONLINE, totalFriendsOnline, totalfriends))
+
+    if totalFriendsOnline > 0 then
+        GameTooltip:AddLine(" ")
+        GameTooltip_InsertFrame(GameTooltip, FriendsScroll)
+    end
+
+    if invites > 0 then
+        GameTooltip:AddLine(format(BN_INLINE_TOAST_FRIEND_PENDING, invites))
+    end
+    GameTooltip:Show()
+end
+
+function nMinimapTab_Friends_OnEvent(self, event, ...)
+    local BNTotal, BNOnline = BNGetNumFriends()
+    local WoWTotal, WoWOnline = GetNumFriends()
+    local totalFriendsOnline = BNOnline + WoWOnline
+
+    self.Text:SetFormattedText("%s%d", friendIcon, totalFriendsOnline)
+    nMinimapTab_Friends_UpdateScrollFrame()
+end
+
+    --// Info Frame
+
+local function AddonMem()
+    local totalMem = 0
+
+    if IsAltKeyDown() then
+        collectgarbage()
+    end
+
+    for i=1, NUM_ADDONS_TO_DISPLAY, 1 do
+        AddonTable[i].value = 0
+    end
+
+    UpdateAddOnMemoryUsage()
+
+    for i=1, GetNumAddOns(), 1 do
+        local mem = GetAddOnMemoryUsage(i)
+        totalMem = totalMem + mem
+        for j = 1, NUM_ADDONS_TO_DISPLAY, 1 do
+            if mem > AddonTable[j].value then
+                for k = NUM_ADDONS_TO_DISPLAY, 1, -1 do
+                    if k == j then
+                        AddonTable[k].value = mem
+                        AddonTable[k].name = GetAddOnInfo(i)
+                        break
+                    elseif k ~= 1 then
+                        AddonTable[k].value = AddonTable[k-1].value
+                        AddonTable[k].name = AddonTable[k-1].name
+                    end
+                end
+                break
+            end
+        end
+    end
+
+    return totalMem
+end
+
+local function NumberOfActiveAddon()
+    local active = 0
+    for i=1, NUM_ADDONS_TO_DISPLAY, 1 do
+        if AddonTable[i].value ~= 0 then
+            active = active+1
+        end
+    end
+    return active
+end
+
+local MemoryScroll = CreateScrollFrame("Memory", 300, 340, NUM_ADDONS_TO_DISPLAY)
+
+function nMinimap_UpdateMemoryButton(entry)
+    local scrollFrame = MemoryScrollFrame
+
+    local index = entry.index
+    entry.id = MemoryListEntries[index].id
+    local height = scrollFrame.entryHeight
+    local minWidth = scrollFrame:GetWidth()
+
+    local name = AddonTable[entry.id].name
+    local value = AddonTable[entry.id].value
+
+    if value ~= 0 then
+        entry.LeftText:SetText(name)
+
+        if value > 1000 then
+            value = value / 1000
+            entry.RightText:SetFormattedText("%.2f MB", value)
+        else
+            entry.RightText:SetFormattedText("%.0f KB", value)
+        end
+    end
+
+    minWidth = math.max(minWidth, entry.LeftText:GetWidth()+entry.RightText:GetWidth()+75)
+
+    scrollFrame.scrollChild:SetWidth(minWidth)
+    scrollFrame:SetWidth(minWidth)
+
+    return height
+end
+
+function nMinimap_UpdateMemory()
+    local scrollFrame = MemoryScrollFrame
+    local entries = scrollFrame.entries
+    local numEntries = #entries
+    local numFrames = scrollFrame.numEntries
+
+    local usedHeight = 0
+
+    for index = 1, numEntries do
+        local frame = entries[index]
+        if index <= numFrames then
+            frame.index = index
+            local height = nMinimap_UpdateMemoryButton(frame)
+            frame:SetHeight(height)
+            usedHeight = usedHeight + height
+        else
+            frame.index = nil
+            frame:Hide()
+        end
+    end
+
+    usedHeight = math.min(usedHeight, 340)
+
+    scrollFrame:SetHeight(usedHeight)
+    scrollFrame.scrollChild:SetHeight(usedHeight)
+end
+
+function nMinimapTab_Memory_UpdateScrollFrame()
+    local scrollFrame = MemoryScrollFrame
+
+    local addButtonIndex = 0
+    local totalButtonHeight = 0
+    local function AddButtonInfo(id, name)
+        addButtonIndex = addButtonIndex + 1
+        if not MemoryListEntries[addButtonIndex] then
+            MemoryListEntries[addButtonIndex] = { }
+        end
+        MemoryListEntries[addButtonIndex].id = id
+        totalButtonHeight = totalButtonHeight + scrollFrame.entryHeight
+    end
+
+    for i = 1, NumberOfActiveAddon() do
+        AddButtonInfo(i)
+    end
+
+    scrollFrame.totalEntriesHeight = totalButtonHeight
+    scrollFrame.numEntries = addButtonIndex
+
+    nMinimap_UpdateMemory()
+end
+
+function nMinimapTab_Info_ShowTooltip(self)
+    local totalMem = AddonMem()
+
+    GameTooltip:ClearLines()
+    GameTooltip:ClearAllPoints()
+    GameTooltip:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, 2)
+    GameTooltip:SetOwner(self, "ANCHOR_PRESERVE")
+    GameTooltip:AddLine(COMBAT_MISC_INFO)
+    GameTooltip:AddLine(" ")
+
+    -- Ping
+    local _, _, lagHome, lagWorld = GetNetStats()
+
+    GameTooltip:AddLine("|cffFFFFFF"..HOME..":|r "..format("%s ms", lagHome), RGBGradient(lagHome / 100))
+    GameTooltip:AddLine("|cffFFFFFF"..WORLD..":|r "..format("%d ms", lagWorld), RGBGradient(lagWorld / 100))
+
+    -- Protocol Types
+    if GetCVarBool("useIPv6") then
+        local ipTypes = { "IPv4", "IPv6" }
+        local ipTypeHome, ipTypeWorld = GetNetIpTypes()
+        local ip6 = format(MAINMENUBAR_PROTOCOLS_LABEL, ipTypes[ipTypeHome or 0] or UNKNOWN, ipTypes[ipTypeWorld or 0] or UNKNOWN)
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddLine(ip6, 1.0, 1.0, 1.0)
+    end
+
+    -- Bandwidth
+    local bandwidth = GetAvailableBandwidth()
+    if bandwidth > 0 then
+        local bandwidthText = format(MAINMENUBAR_BANDWIDTH_LABEL, bandwidth)
+        local downloadText = format(MAINMENUBAR_DOWNLOAD_PERCENT_LABEL, floor(GetDownloadedPercentage()*100+0.5))
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddDoubleLine(bandwidthText, downloadText, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0)
+    end
+
+    -- Memory
+    GameTooltip:AddLine(" ")
+    GameTooltip:AddLine(format(TOTAL_MEM_MB_ABBR, totalMem/1000), 1.0, 1.0, 1.0)
+
+    if NUM_ADDONS_TO_DISPLAY > 0 then
+        nMinimapTab_Memory_UpdateScrollFrame()
+        GameTooltip_InsertFrame(GameTooltip, MemoryScroll)
+    end
+
+    GameTooltip:Show()
+end
+
+    --// Minimap Scripts
+
+if not cfg.tab.showAlways then
+    Minimap:HookScript("OnEnter",function()
+        nMinimapTab_ShowTab()
     end)
 
     Minimap:HookScript("OnLeave", function()
-        HideTab()
-
-        if (cfg.tab.showBelowMinimap) then
-            SlideUp()
-        else
-            SlideDown()
-        end
+        nMinimapTab_HideTab()
     end)
 end
-
-    -- the "OnEvent" functions
-
-f.Center:SetScript("OnEvent", FriendsOnEvent)
-f.Left:SetScript("OnEvent", GuildOnEvent)
-f.Right:SetScript("OnEvent", InfoOnEvent)

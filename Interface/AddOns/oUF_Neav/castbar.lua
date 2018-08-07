@@ -1,17 +1,57 @@
 
 local _, ns = ...
 
+local function CreateAnchor(unit, text)
+    local config = ns.Config.units[ns.cUnit(unit)].castbar
+    local width = (config.width + config.height) * config.scale
+    local height = config.height * config.scale
+
+    local anchorFrame = CreateFrame("Frame", "oUF_Neav "..unit.."_Castbar_Anchor", UIParent)
+    anchorFrame:SetSize(width, height)
+    anchorFrame:SetScale(1.193)
+    anchorFrame:SetPoint(unpack(config.position))
+    anchorFrame:SetFrameStrata("HIGH")
+    anchorFrame:SetMovable(true)
+    anchorFrame:SetClampedToScreen(true)
+    anchorFrame:SetUserPlaced(true)
+    anchorFrame:SetBackdrop({bgFile="Interface\\MINIMAP\\TooltipBackdrop-Background",})
+    anchorFrame:CreateBeautyBorder(11)
+    anchorFrame:SetBeautyBorderPadding(2.66)
+    anchorFrame:EnableMouse(true)
+    anchorFrame:RegisterForDrag("LeftButton")
+    anchorFrame:Hide()
+
+    anchorFrame.text = anchorFrame:CreateFontString(nil, "OVERLAY")
+    anchorFrame.text:SetAllPoints(anchorFrame)
+    anchorFrame.text:SetFont(STANDARD_TEXT_FONT, 13)
+    anchorFrame.text:SetText(text.." Castbar Anchor")
+
+    anchorFrame:SetScript("OnDragStart", function(self)
+        self:StartMoving()
+    end)
+
+    anchorFrame:SetScript("OnDragStop", function(self)
+        self:StopMovingOrSizing()
+    end)
+
+    return anchorFrame
+end
+
+local playerCastbarHolder = CreateAnchor("player","Player")
+local targetCastbarHolder = CreateAnchor("target","Target")
+local petCastbarHolder = CreateAnchor("pet","Pet")
+
 local function UpdateCastbarColor(self, unit, config)
-    if (self.notInterruptible) then
+    if self.notInterruptible then
         ns.ColorBorder(self, "white", unpack(config and config.interruptColor or {1, 0, 1}))
 
-        if (self.IconOverlay) then
+        if self.IconOverlay then
             ns.ColorBorder(self.IconOverlay, "white", unpack(config and config.interruptColor or {1, 0, 1}))
         end
     else
         ns.ColorBorder(self, "default", 1, 1, 1, 0)
 
-        if (self.IconOverlay) then
+        if self.IconOverlay then
             ns.ColorBorder(self.IconOverlay, "default", 1, 1, 1, 0)
         end
     end
@@ -22,17 +62,21 @@ end
 function ns.CreateCastbars(self, unit)
     local config = ns.Config.units[ns.cUnit(unit)].castbar
 
-    if (ns.MultiCheck(unit, "player", "target", "focus", "pet") and config and config.show) then
+    if ns.MultiCheck(unit, "player", "target", "focus", "pet") and config and config.show then
         self.Castbar = CreateFrame("StatusBar", self:GetName().."Castbar", self)
         self.Castbar:SetStatusBarTexture(ns.Config.media.statusbar)
-        self.Castbar:SetScale(config.scale)
         self.Castbar:SetSize(config.width, config.height)
+        self.Castbar:SetScale(config.scale)
         self.Castbar:SetStatusBarColor(unpack(config.color))
 
-        if (unit == "focus") then
+        if unit == "focus" then
             self.Castbar:SetPoint("BOTTOM", self, "TOP", 0, 25)
-        else
-            self.Castbar:SetPoint(unpack(config.position))
+        elseif unit == "player" then
+            self.Castbar:SetPoint("BOTTOMRIGHT", playerCastbarHolder)
+        elseif unit == "target" then
+            self.Castbar:SetPoint("BOTTOMRIGHT", targetCastbarHolder)
+        elseif unit == "pet" then
+            self.Castbar:SetPoint("BOTTOMRIGHT", petCastbarHolder)
         end
 
         self.Castbar.Background = self.Castbar:CreateTexture("$parentBackground", "BACKGROUND")
@@ -40,20 +84,20 @@ function ns.CreateCastbars(self, unit)
         self.Castbar.Background:SetAllPoints(self.Castbar)
         self.Castbar.Background:SetVertexColor(config.color[1]*0.3, config.color[2]*0.3, config.color[3]*0.3, 0.8)
 
-        if (unit == "player") then
+        if unit == "player" then
             local playerColor = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
 
-            if (config.classcolor) then
+            if config.classcolor then
                 self.Castbar:SetStatusBarColor(playerColor.r, playerColor.g, playerColor.b)
                 self.Castbar.Background:SetVertexColor(playerColor.r * 0.3, playerColor.g * 0.3, playerColor.b * 0.3, 0.8)
             end
 
-            if (config.showSafezone) then
+            if config.showSafezone then
                 self.Castbar.SafeZone = self.Castbar:CreateTexture("$parentSafeZoneTexture", "BORDER")
                 self.Castbar.SafeZone:SetColorTexture(unpack(config.safezoneColor))
             end
 
-            if (config.showLatency) then
+            if config.showLatency then
                 self.Castbar.Latency = self.Castbar:CreateFontString("$parentLatency", "OVERLAY")
                 self.Castbar.Latency:SetFont(ns.Config.font.normal, ns.Config.font.normalSize - 1)
                 self.Castbar.Latency:SetShadowOffset(1, -1)
@@ -66,24 +110,24 @@ function ns.CreateCastbars(self, unit)
 
         ns.CreateCastbarStrings(self)
 
-        if (config.icon.show) then
+        if config.icon.show then
             self.Castbar.Icon = self.Castbar:CreateTexture("$parentIcon", "ARTWORK")
             self.Castbar.Icon:SetSize(config.height + 2, config.height + 2)
             self.Castbar.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 
-            if (config.icon.position == "LEFT") then
+            if config.icon.position == "LEFT" then
                 self.Castbar.Icon:SetPoint("RIGHT", self.Castbar, "LEFT", (config.icon.positionOutside and -8) or 0, 0)
             else
                 self.Castbar.Icon:SetPoint("LEFT", self.Castbar, "RIGHT", (config.icon.positionOutside and 8) or 0, 0)
             end
 
-            if (config.icon.positionOutside) then
+            if config.icon.positionOutside then
                 self.Castbar.IconOverlay = CreateFrame("Frame", "$parentIconOverlay", self.Castbar)
                 self.Castbar.IconOverlay:SetAllPoints(self.Castbar.Icon)
                 self.Castbar.IconOverlay:CreateBeautyBorder(10)
                 self.Castbar.IconOverlay:SetBeautyBorderPadding(2)
             else
-                if (config.icon.position == "LEFT") then
+                if config.icon.position == "LEFT" then
                     self.Castbar:SetBeautyBorderPadding(4 + config.height, 3, 3, 3, 4 + config.height, 3, 3, 3, 3)
                 else
                     self.Castbar:SetBeautyBorderPadding(3, 3, 4 + config.height, 3, 3, 3, 4 + config.height, 3, 3)
@@ -94,8 +138,8 @@ function ns.CreateCastbars(self, unit)
             -- Interrupt indicator
 
         self.Castbar.PostCastStart = function(self, unit)
-            if (unit == "player") then
-                if (self.Latency) then
+            if unit == "player" then
+                if self.Latency then
                     local down, up, lagHome, lagWorld = GetNetStats()
                     local avgLag = (lagHome + lagWorld) / 2
 
@@ -105,18 +149,18 @@ function ns.CreateCastbars(self, unit)
                 end
             end
 
-            if (unit == "target" or unit == "focus") then
+            if unit == "target" or unit == "focus" then
                 UpdateCastbarColor(self, unit, config)
             end
 
                 -- Hide some special spells like waterbold or firebold (pets) because it gets really spammy
 
-            if (ns.Config.units.pet.castbar.ignoreSpells) then
-                if (unit == "pet") then
+            if ns.Config.units.pet.castbar.ignoreSpells then
+                if unit == "pet" then
                     self:SetAlpha(1)
 
                     for _, spellID in pairs(ns.Config.units.pet.castbar.ignoreList) do
-                        if (UnitCastingInfo("pet") == GetSpellInfo(spellID)) then
+                        if UnitCastingInfo("pet") == GetSpellInfo(spellID) then
                             self:SetAlpha(0)
                         end
                     end
@@ -125,8 +169,8 @@ function ns.CreateCastbars(self, unit)
         end
 
         self.Castbar.PostChannelStart = function(self, unit)
-            if (unit == "player") then
-                if (self.Latency) then
+            if unit == "player" then
+                if self.Latency then
                     local down, up, lagHome, lagWorld = GetNetStats()
                     local avgLag = (lagHome + lagWorld) / 2
 
@@ -136,12 +180,12 @@ function ns.CreateCastbars(self, unit)
                 end
             end
 
-            if (unit == "target" or unit == "focus") then
+            if unit == "target" or unit == "focus" then
                 UpdateCastbarColor(self, unit, config)
             end
 
-            if (ns.Config.units.pet.castbar.ignoreSpells) then
-                if (unit == "pet" and self:GetAlpha() == 0) then
+            if ns.Config.units.pet.castbar.ignoreSpells then
+                if unit == "pet" and self:GetAlpha() == 0 then
                     self:SetAlpha(1)
                 end
             end
@@ -166,7 +210,7 @@ for i = 1, MIRRORTIMER_NUMTIMERS do
     bar:CreateBeautyBorder(11)
     bar:SetBeautyBorderPadding(3)
 
-    if (i > 1) then
+    if i > 1 then
         local p1, p2, p3, p4, p5 = bar:GetPoint()
         bar:SetPoint(p1, p2, p3, p4, p5 - 15)
     end
@@ -195,7 +239,7 @@ local f = CreateFrame("Frame")
 f:RegisterEvent("START_TIMER")
 f:SetScript("OnEvent", function(self, event)
     for _, b in pairs(TimerTracker.timerList) do
-        if (not b["bar"].beautyBorder) then
+        if not b["bar"].beautyBorder then
             local bar = b["bar"]
             bar:SetScale(1.132)
             bar:SetSize(220, 18)
@@ -203,11 +247,11 @@ f:SetScript("OnEvent", function(self, event)
             for i = 1, select("#", bar:GetRegions()) do
                 local region = select(i, bar:GetRegions())
 
-                if (region and region:GetObjectType() == "Texture") then
+                if region and region:GetObjectType() == "Texture" then
                     region:SetTexture(nil)
                 end
 
-                if (region and region:GetObjectType() == "FontString") then
+                if region and region:GetObjectType() == "FontString" then
                     region:ClearAllPoints()
                     region:SetPoint("CENTER", bar)
                     region:SetFont(ns.Config.font.normal, ns.Config.font.normalSize)
@@ -225,3 +269,20 @@ f:SetScript("OnEvent", function(self, event)
         end
     end
 end)
+
+SlashCmdList["oUF_Neav_Castbar_AnchorToggle"] = function()
+    if InCombatLockdown() then
+        print("oUF_Neav: You cant do this in combat!")
+        return
+    end
+    if not playerCastbarHolder:IsShown() then
+        playerCastbarHolder:Show()
+        targetCastbarHolder:Show()
+        petCastbarHolder:Show()
+    else
+        playerCastbarHolder:Hide()
+        targetCastbarHolder:Hide()
+        petCastbarHolder:Hide()
+    end
+end
+SLASH_oUF_Neav_Castbar_AnchorToggle1 = "/neavcast"

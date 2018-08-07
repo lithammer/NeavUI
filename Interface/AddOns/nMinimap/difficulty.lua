@@ -2,7 +2,7 @@
 local _, nMinimap = ...
 local cfg = nMinimap.Config
 
-local isGuildGroup = isGuildGroup
+local isGuildGroup = nil
 
 local function HideDifficultyFrame()
     GuildInstanceDifficulty:EnableMouse(false)
@@ -12,9 +12,10 @@ local function HideDifficultyFrame()
     MiniMapInstanceDifficulty:SetAlpha(0)
 end
 
-function GetDifficultyText()
+local function GetDifficultyText()
     local inInstance, instancetype = IsInInstance()
     local _, _, difficultyIndex, _, _, _, _, _, instanceGroupSize = GetInstanceInfo()
+    local _, _, isHeroic, isChallengeMode, displayHeroic, displayMythic, _, isLFR = GetDifficultyInfo(difficultyIndex)
 
     local instanceText = ""
     local guildStyle
@@ -23,53 +24,24 @@ function GetDifficultyText()
     local lookingForRaidStyle = "|cffffffffLFR|r"
     local timewalkerStyle = "|cffffffffTW|r"
 
-    if (isGuildGroup or GuildInstanceDifficulty:IsShown()) then
+    if isGuildGroup or GuildInstanceDifficulty:IsShown() then
         guildStyle = "|cffffff00G|r"
     else
         guildStyle = ""
     end
 
-    local DIFFICULTY_DUNGEON_MYTHIC = 23      -- TODO: Use Blizzard constant
-    local DIFFICULTY_DUNGEON_TIMEWALKER = 24  -- TODO: Use Blizzard constant
-
-    local isMythicIndex = {
-        [DIFFICULTY_PRIMARYRAID_MYTHIC] = true,
-        [DIFFICULTY_DUNGEON_MYTHIC] = true
-    }
-
-    local isHeroicIndex = {
-        [DIFFICULTY_DUNGEON_HEROIC] = true,
-        [DIFFICULTY_PRIMARYRAID_HEROIC] = true,
-        [DIFFICULTY_RAID10_HEROIC] = true,
-        [DIFFICULTY_RAID25_HEROIC] = true,
-        [DIFFICULTY_DUNGEON_CHALLENGE] = true
-    }
-
-    local isLookingForRaidIndex = {
-        [DIFFICULTY_PRIMARYRAID_LFR] = true,
-        [DIFFICULTY_RAID_LFR] = true
-    }
-
-    local isTimewalkerIndex = {
-        [DIFFICULTY_DUNGEON_TIMEWALKER] = true
-    }
-
-    if (inInstance) then
+    if inInstance then
         instanceText = instanceGroupSize..guildStyle
 
-        if (isMythicIndex[difficultyIndex]) then
+        if displayMythic then
             instanceText = instanceText..mythicStyle
-        end
-
-        if (isHeroicIndex[difficultyIndex]) then
+        elseif displayHeroic or isHeroic then
             instanceText = instanceText..heroStyle
-        end
-
-        if (isLookingForRaidIndex[difficultyIndex]) then
+        elseif isLFR then
             instanceText = lookingForRaidStyle
         end
 
-        if (isTimewalkerIndex[difficultyIndex]) then
+        if difficultyIndex == 24 then
             instanceText = timewalkerStyle
         end
     end
@@ -77,63 +49,27 @@ function GetDifficultyText()
     return instanceText
 end
 
-local f = Minimap
-f.InstanceText = f:CreateFontString(nil, "OVERLAY")
-f.InstanceText:SetFont("Fonts\\ARIALN.ttf", 15, "OUTLINE")
-f.InstanceText:SetPoint("TOP", Minimap, 0, -3.5)
-f.InstanceText:SetTextColor(1, 1, 1)
-f.InstanceText:Show()
+function nMinimapDifficulty_OnLoad(self)
+    if cfg.mouseover.instanceDifficulty then
+        self.Text:SetAlpha(0)
 
---[[
-MiniMapInstanceDifficulty:UnregisterAllEvents()
-MiniMapInstanceDifficulty:Hide()
-MiniMapInstanceDifficulty:ClearAllPoints()
-MiniMapInstanceDifficulty:SetPoint("TOPLEFT", Minimap, 1, 5)
-MiniMapInstanceDifficulty:SetScale(0.9)
+        Minimap:HookScript("OnEnter", function(self)
+            securecall("UIFrameFadeIn", nMinimapDifficulty.Overlay.Text, 0.15, 0, 1)
+        end)
 
-GuildInstanceDifficulty:UnregisterAllEvents()
-GuildInstanceDifficulty:Hide()
-GuildInstanceDifficulty:Show()
-GuildInstanceDifficulty:ClearAllPoints()
-GuildInstanceDifficulty:SetPoint("TOPLEFT", Minimap, 1, 5)
-GuildInstanceDifficulty:SetScale(0.9)
---]]
-
-hooksecurefunc(GuildInstanceDifficulty, "Show", function()
-    isGuildGroup = true
-    HideDifficultyFrame()
-end)
-
-hooksecurefunc(GuildInstanceDifficulty, "Hide", function()
-    isGuildGroup = false
-end)
-
-hooksecurefunc(MiniMapInstanceDifficulty, "Show", function()
-    HideDifficultyFrame()
-end)
-
-GuildInstanceDifficulty:HookScript("OnEvent", function(self)
-    if (self:IsShown()) then
-        isGuildGroup = true
-    else
-        isGuildGroup = false
+        Minimap:HookScript("OnLeave", function(self)
+            securecall("UIFrameFadeOut", nMinimapDifficulty.Overlay.Text, 0.15, 1, 0)
+        end)
     end
-
-    Minimap.InstanceText:SetText(GetDifficultyText())
-end)
-
-MiniMapInstanceDifficulty:HookScript("OnEvent", function(self)
-    Minimap.InstanceText:SetText(GetDifficultyText())
-end)
-
-if (cfg.mouseover.instanceDifficulty) then
-    Minimap.InstanceText:SetAlpha(0)
-
-    Minimap:HookScript("OnEnter", function(self)
-        securecall("UIFrameFadeIn", self.InstanceText, 0.235, 0, 1)
-    end)
-
-    Minimap:HookScript("OnLeave", function(self)
-        securecall("UIFrameFadeOut", self.InstanceText, 0.235, 1, 0)
-    end)
 end
+
+hooksecurefunc("MiniMapInstanceDifficulty_Update", function(self, event, ...)
+    if event == "GUILD_PARTY_STATE_UPDATED" then
+        local isGuild = ...
+        if isGuild ~= isGuildGroup then
+            isGuildGroup = isGuild
+        end
+    end
+    HideDifficultyFrame()
+    nMinimapDifficulty.Overlay.Text:SetText(GetDifficultyText())
+end)

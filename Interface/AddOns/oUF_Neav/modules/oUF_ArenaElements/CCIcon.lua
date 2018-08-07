@@ -1,8 +1,8 @@
-
 local _, ns = ...
 local oUF = ns.oUF or oUF
+assert(oUF, "oUF not loaded")
 
-ns.PortraitTimerDB = {
+local ccList = {
 
         -- Immunitys
 
@@ -35,7 +35,7 @@ ns.PortraitTimerDB = {
     [179057] = true,   -- Chaos Nova
     [221562] = true,   -- Asphyxiate
     [199804] = true,   -- Between the Eyes
-    [207165] = true,   -- Abomination's Might
+    [207165] = true,   -- Abomination[s Might
     [211794] = true,   -- Winter is Coming
     [211881] = true,   -- Fel Eruption
 
@@ -55,33 +55,10 @@ ns.PortraitTimerDB = {
     [187650] = true,   -- Freezing Trap
     [20066] = true,    -- Repentance
     [339] = true,      -- Entangling Roots
-    [31661] = true,    -- Dragon's Breath
+    [31661] = true,    -- Dragon[s Breath
     [217832] = true,   -- Imprison
     [9484] = true,     -- Shackle Undead
     [115078] = true,   -- Paralysis
-
-        -- CC immune
-
-    [53271] = true,    -- Master's Call
-    [1044] = true,     -- Hand of Freedom
-    [31224] = true,    -- Cloak of Shadows
-    [51271] = true,    -- Pillar of Frost
-
-        -- Dmg reductions
-
-    [48707] = true,    -- Anti-Magic Shell
-    [33206] = true,    -- Pain Suppression
-    [47585] = true,    -- Dispersion
-    [871] = true,      -- Shield Wall
-    [48792] = true,    -- Icebound Fortitude
-    [498] = true,      -- Divine Protection
-    [22812] = true,    -- Barkskin
-    [61336] = true,    -- Survival Instincts
-    [5277] = true,     -- Evasion
-    [186265] = true,   -- Aspect of the Turtle
-    [198589] = true,   -- Blur
-    [203720] = true,   -- Demon Spikes
-    [218256] = true,   -- Empower Wards
 
         -- Silences
 
@@ -91,74 +68,28 @@ ns.PortraitTimerDB = {
     [19647] = true,    -- Spell Lock
     [183752] = true,   -- Consume Magic
     [202137] = true,   -- Sigil of Silence
-
-        -- Dmg buffs
-
-    [31884] = true,    -- Avenging Wrath
-    [211048] = true,   -- Chaos Blades
-
-        -- Helpful buffs
-
-    [6940] = true,     -- Hand of Sacrifice
-    [23920] = true,    -- Spell Reflection (warrior)
-    [68992] = true,    -- Darkflight (Worgen racial)
-    [2983] = true,     -- Sprint
-    [47788] = true,    -- Guardian Spirit
-    [1850] = true,     -- Dash
-    [121557] = true,   -- Feather
 }
 
 local Update = function(self, event, unit)
-    if self.unit ~= unit or self.IsTargetFrame then
-        return
-    end
+    if not unit or unit ~= self.unit then return end
 
-    local element = self.PortraitTimer
-    local name, texture, _, _, duration, expirationTime, _, _, _, spellId
-    local results
+    local element = self.CCIcon
 
     for i = 1, 40 do
-        name, texture, _, _, duration, expirationTime, _, _, _, spellId = UnitBuff(unit, i)
+        local name, icon, _, _, duration, expirationTime, _, _, _, spellId = UnitDebuff(unit, i)
 
         if name then
-            results = ns.PortraitTimerDB[spellId]
+            local results = ccList[spellId] -- ccFilter(spellId)
 
             if results then
-                element.Icon:SetTexture(texture)
                 CooldownFrame_Set(element.cooldownFrame, expirationTime - duration, duration, duration > 0)
+                element.Icon:SetTexture(icon)
                 element:Show()
-
-                if self.CombatFeedbackText then
-                    self.CombatFeedbackText.maxAlpha = 0
-                end
                 return
             end
         end
     end
-
-    for i = 1, 40 do
-        name, texture, _, _, duration, expirationTime, _, _, _, spellId = UnitDebuff(unit, i)
-
-        if name then
-            results = ns.PortraitTimerDB[spellId]
-
-            if results then
-                element.Icon:SetTexture(texture)
-                CooldownFrame_Set(element.cooldownFrame, expirationTime - duration, duration, duration > 0)
-                element:Show()
-
-                if self.CombatFeedbackText then
-                    self.CombatFeedbackText.maxAlpha = 0
-                end
-                return
-            end
-        end
-    end
-
     element:Hide()
-    if self.CombatFeedbackText then
-        self.CombatFeedbackText.maxAlpha = 1
-    end
 
     if event == "PLAYER_ENTERING_WORLD" then
         CooldownFrame_Set(element.cooldownFrame, 1, 1, 1)
@@ -166,41 +97,35 @@ local Update = function(self, event, unit)
 end
 
 local Enable = function(self)
-    local element = self.PortraitTimer
-
+    local element = self.CCIcon
     if element then
-        self:RegisterEvent("UNIT_AURA", Update, false)
+        self:RegisterEvent("UNIT_AURA", Update, true)
         self:RegisterEvent("PLAYER_ENTERING_WORLD", Update, true)
-
-        if not element.Icon then
-            local mask = element:CreateMaskTexture()
-            mask:SetTexture("Interface\\CHARACTERFRAME\\TempPortraitAlphaMask", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
-            mask:SetAllPoints(element)
-
-            element.Icon = element:CreateTexture(nil, "BACKGROUND")
-            element.Icon:SetAllPoints(element)
-            element.Icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
-            element.Icon:AddMaskTexture(mask)
-        end
 
         if not element.cooldownFrame then
             element.cooldownFrame = CreateFrame("Cooldown", nil, element, "CooldownFrameTemplate")
             element.cooldownFrame:SetAllPoints(element)
             element.cooldownFrame:SetHideCountdownNumbers(false)
-            element.cooldownFrame:SetDrawSwipe(false)
         end
 
+        if not element.Icon then
+            element.Icon = element:CreateTexture(nil, "BORDER")
+            element.Icon:SetAllPoints(element)
+            element.Icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+            element.Icon:SetTexture([[INTERFACE\ICONS\INV_MISC_QUESTIONMARK]])
+        end
         element:Hide()
-
         return true
     end
 end
 
 local Disable = function(self)
-    local element = self.PortraitTimer
+    local element = self.CCIcon
     if element then
         self:UnregisterEvent("UNIT_AURA", Update)
+        self:UnregisterEvent("PLAYER_ENTERING_WORLD", Update)
+        element:Hide()
     end
 end
 
-oUF:AddElement("PortraitTimer", Update, Enable, Disable)
+oUF:AddElement("CCIcon", Update, Enable, Disable)

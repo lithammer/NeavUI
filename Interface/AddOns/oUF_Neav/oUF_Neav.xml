@@ -1,0 +1,96 @@
+<Ui>
+    <Frame>
+        <Scripts>
+            <OnLoad>
+            </OnLoad>
+        </Scripts>
+    </Frame>
+
+    <FontFamily name="Neav_FontName" virtual="true">
+        <Member alphabet="roman">
+            <Font font="Fonts\FRIZQT__.TTF" height="13">
+                <Shadow>
+                    <Offset>
+            <AbsDimension x="0.64" y="-0.64"/>
+          </Offset>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+            </Font>
+        </Member>
+        <Member alphabet="korean">
+            <Font font="Fonts\2002.TTF" height="13">
+                <Shadow>
+                    <Offset>
+            <AbsDimension x="0.64" y="-0.64"/>
+          </Offset>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+            </Font>
+        </Member>
+        <Member alphabet="simplifiedchinese">
+            <Font font="Fonts\ARKai_T.ttf" height="13">
+                <Shadow>
+                    <Offset>
+            <AbsDimension x="0.64" y="-0.64"/>
+          </Offset>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+            </Font>
+        </Member>
+        <Member alphabet="traditionalchinese">
+            <Font font="Fonts\blei00d.TTF" height="13">
+                <Shadow>
+                    <Offset>
+            <AbsDimension x="0.64" y="-0.64"/>
+          </Offset>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+            </Font>
+        </Member>
+        <Member alphabet="russian">
+            <Font font="Fonts\FRIZQT___CYR.TTF" height="13">
+                <Shadow>
+                    <Offset>
+            <AbsDimension x="0.64" y="-0.64"/>
+          </Offset>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+            </Font>
+        </Member>
+    </FontFamily>
+
+    <!--
+        Config files.
+    -->
+    <Script file="config.lua"/>
+
+    <!--
+        Embeded oUF Modules
+    -->
+    <Script file="modules\offline.lua"/>
+    <Script file="modules\portraittimers.lua"/>
+    <Script file="modules\smartthreat.lua"/>
+    <Script file="modules\petBattleIcon.lua"/>
+    <Script file="modules\oUF_ArenaElements\PVPSpecIcon.lua"/>
+    <Script file="modules\oUF_ArenaElements\Trinkets.lua"/>
+    <Script file="modules\oUF_ArenaElements\CCIcon.lua"/>
+    <Script file="modules\oUF_LootSpecIndicator\lootspecindicator.lua"/>
+    <Script file="modules\oUF_MovableFrames\movable.lua"/>
+
+    <!--
+        Function files.
+    -->
+    <Script file="func\aura.lua"/>
+    <Script file="func\castbar.lua"/>
+    <Script file="func\func.lua"/>
+    <Script file="func\tags.lua"/>
+
+    <!--
+        Core files.
+    -->
+    <Script file="kill.lua"/>
+    <Script file="core.lua"/>
+    <Script file="castbar.lua"/>
+    <Script file="arena.lua"/>
+    <Script file="boss.lua"/>
+</Ui>

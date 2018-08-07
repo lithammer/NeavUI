@@ -2,15 +2,13 @@
 local _, nMinimap = ...
 local cfg = nMinimap.Config
 
-local _G = getfenv(0)
-local unpack = _G.unpack
-local sort = _G.table.sort
-local gsub = _G.gsub
+local unpack = unpack
+local sort = table.sort
 local sort_func = function( a,b ) return a.name < b.name end
 
 local classColor = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
 
-TimeManagerClockTicker:SetFont("Fonts\\ARIALN.ttf", 15, "OUTLINE")
+TimeManagerClockTicker:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
 TimeManagerClockTicker:SetShadowOffset(0, 0)
 TimeManagerClockTicker:SetTextColor(classColor.r, classColor.g, classColor.b)
 TimeManagerClockTicker:SetPoint("TOPRIGHT", TimeManagerClockButton, 0, 0)
@@ -46,7 +44,7 @@ TimeManagerClockButton:SetScript("OnEnter" ,function(self)
 
     -- Raid Lockout Info
     local savedInstances = GetNumSavedInstances()
-    if ( savedInstances > 0 ) then
+    if savedInstances > 0 then
         for index=1, savedInstances do
             local instanceName, _, _, _, locked, _, _, isRaid, _, difficultyName, maxBosses, defeatedBosses = GetSavedInstanceInfo(index)
 
@@ -56,7 +54,7 @@ TimeManagerClockButton:SetScript("OnEnter" ,function(self)
         end
 
         if next(instanceLockouts) ~= nil then
-            sort( instanceLockouts, sort_func )
+            sort(instanceLockouts, sort_func)
 
             GameTooltip:AddLine(" ")
             GameTooltip:AddLine(CALENDAR_FILTER_RAID_LOCKOUTS)
@@ -71,14 +69,14 @@ TimeManagerClockButton:SetScript("OnEnter" ,function(self)
 
     -- World Boss Lockout Info
     local savedWorldBosses = GetNumSavedWorldBosses()
-    if ( savedWorldBosses > 0 ) then
+    if savedWorldBosses > 0 then
         for index=1, savedWorldBosses do
             local instanceName, _, _ = GetSavedWorldBossInfo(index)
             worldbossLockouts[index] = { name = instanceName }
         end
 
         if next(worldbossLockouts) ~= nil then
-            sort( worldbossLockouts, sort_func )
+            sort(worldbossLockouts, sort_func)
 
             GameTooltip:AddLine(" ")
             GameTooltip:AddLine(RAID_INFO_WORLD_BOSS)

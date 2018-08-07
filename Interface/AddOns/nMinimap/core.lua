@@ -2,6 +2,8 @@
 local _, nMinimap = ...
 local cfg = nMinimap.Config
 
+local find = string.find
+
     -- Texture Fix
 
 Minimap:SetBlipTexture("Interface\\Minimap\\ObjectIconsAtlas")
@@ -16,7 +18,7 @@ MiniMapMailBorder:SetTexture(nil)
 MiniMapMailIcon:SetTexture(nil)
 
 MiniMapMailFrame.Text = MiniMapMailFrame:CreateFontString(nil, "OVERLAY")
-MiniMapMailFrame.Text:SetFont("Fonts\\ARIALN.ttf", 15, "OUTLINE")
+MiniMapMailFrame.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
 MiniMapMailFrame.Text:SetPoint("BOTTOMRIGHT", MiniMapMailFrame)
 MiniMapMailFrame.Text:SetTextColor(1, 0, 1)
 
@@ -45,7 +47,7 @@ hooksecurefunc("EyeTemplate_StartAnimating", function(self)
 end)
 
 QueueStatusMinimapButton.Text = QueueStatusMinimapButton:CreateFontString(nil, "OVERLAY")
-QueueStatusMinimapButton.Text:SetFont("Fonts\\ARIALN.ttf", 15, "OUTLINE")
+QueueStatusMinimapButton.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
 QueueStatusMinimapButton.Text:SetPoint("TOP", QueueStatusMinimapButton)
 QueueStatusMinimapButton.Text:SetTextColor(1, 0.4, 0)
 QueueStatusMinimapButton.Text:SetText("Q")
@@ -55,6 +57,14 @@ QueueStatusMinimapButton.Text:SetText("Q")
 GarrisonLandingPageMinimapButton:SetSize(36, 36)
 GarrisonLandingPageMinimapButton:ClearAllPoints()
 GarrisonLandingPageMinimapButton:SetPoint("BOTTOMLEFT", Minimap, 0, 0)
+
+hooksecurefunc("GarrisonLandingPageMinimapButton_UpdateIcon", function(self)
+    if C_Garrison.GetLandingPageGarrisonType() == LE_GARRISON_TYPE_8_0 then
+        GarrisonLandingPageMinimapButton:SetScale(.70)
+    else
+        GarrisonLandingPageMinimapButton:SetScale(1)
+    end
+end)
 
     -- Hide all unwanted things
 
@@ -82,20 +92,24 @@ MinimapZoneTextButton:UnregisterAllEvents()
 MiniMapTracking:UnregisterAllEvents()
 MiniMapTracking:Hide()
 
-    -- hide the durability frame (the armored man)
+    -- Hide the durability frame (the armored man)
 
 DurabilityFrame:Hide()
 DurabilityFrame:UnregisterAllEvents()
 
+    -- Smaller Vehicle/Mount Seat Indicator
+
+VehicleSeatIndicator:SetScale(.50)
+
     -- Bigger minimap
 
-MinimapCluster:SetScale(1.1)
+MinimapCluster:SetScale(cfg.scale)
 MinimapCluster:EnableMouse(false)
 
     -- New position
 
 Minimap:ClearAllPoints()
-Minimap:SetPoint("TOPRIGHT", UIParent, -26, -26)
+Minimap:SetPoint(unpack(cfg.location))
 
     -- Square minimap and create a border
 
@@ -111,7 +125,7 @@ Minimap:SetBeautyBorderPadding(1)
 
 Minimap:EnableMouseWheel(true)
 Minimap:SetScript("OnMouseWheel", function(self, delta)
-    if (delta > 0) then
+    if delta > 0 then
         _G.MinimapZoomIn:Click()
     elseif delta < 0 then
         _G.MinimapZoomOut:Click()
@@ -121,8 +135,8 @@ end)
     -- Modify the minimap tracking
 
 Minimap:SetScript("OnMouseUp", function(self, button)
-    if (button == "RightButton") then
-        ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, self, - (Minimap:GetWidth() * 0.7), -3)
+    if button == "RightButton" then
+        ToggleDropDownMenu(level, value, MiniMapTrackingDropDown, self, - (Minimap:GetWidth() * 0.7), -3)
     else
         Minimap_OnClick(self)
     end
@@ -148,15 +162,15 @@ end)
 
 local function GetZoneColor()
     local zoneType = GetZonePVPInfo()
-    if (zoneType == "sanctuary") then
+    if zoneType == "sanctuary" then
         return 0.4, 0.8, 0.94
-    elseif (zoneType == "arena") then
+    elseif zoneType == "arena" then
         return 1, 0.1, 0.1
-    elseif (zoneType == "friendly") then
+    elseif zoneType == "friendly" then
         return 0.1, 1, 0.1
-    elseif (zoneType == "hostile") then
+    elseif zoneType == "hostile" then
         return 1, 0.1, 0.1
-    elseif (zoneType == "contested") then
+    elseif zoneType == "contested" then
         return 1, 0.8, 0
     else
         return 1, 1, 1
@@ -165,25 +179,31 @@ end
 
     -- Mouseover zone text
 
-if (cfg.mouseover.zoneText) then
+if cfg.mouseover.zoneText then
     local MainZone = Minimap:CreateFontString(nil, "OVERLAY")
-    MainZone:SetFont("Fonts\\ARIALN.ttf", 16, "THINOUTLINE")
+    MainZone:SetFont(STANDARD_TEXT_FONT, 15, "THINOUTLINE")
     MainZone:SetPoint("TOP", Minimap, 0, -22)
     MainZone:SetTextColor(1, 1, 1)
     MainZone:SetAlpha(0)
     MainZone:SetSize(130, 32)
     MainZone:SetJustifyV("BOTTOM")
+    MainZone:SetWordWrap(true)
+    MainZone:SetNonSpaceWrap(true)
+    MainZone:SetMaxLines(2)
 
     local SubZone = Minimap:CreateFontString(nil, "OVERLAY")
-    SubZone:SetFont("Fonts\\ARIALN.ttf", 13, "THINOUTLINE")
+    SubZone:SetFont(STANDARD_TEXT_FONT, 13, "THINOUTLINE")
     SubZone:SetPoint("TOP", MainZone, "BOTTOM", 0, -1)
     SubZone:SetTextColor(1, 1, 1)
     SubZone:SetAlpha(0)
     SubZone:SetSize(130, 26)
     SubZone:SetJustifyV("TOP")
+    SubZone:SetWordWrap(true)
+    SubZone:SetNonSpaceWrap(true)
+    SubZone:SetMaxLines(2)
 
-    Minimap:HookScript("OnEnter", function()
-        if (not IsShiftKeyDown()) then
+    Minimap:HookScript("OnEnter", function(self)
+        if not IsShiftKeyDown() then
             SubZone:SetTextColor(GetZoneColor())
             SubZone:SetText(GetSubZoneText())
             securecall("UIFrameFadeIn", SubZone, 0.15, SubZone:GetAlpha(), 1)
@@ -194,7 +214,7 @@ if (cfg.mouseover.zoneText) then
         end
     end)
 
-    Minimap:HookScript("OnLeave", function()
+    Minimap:HookScript("OnLeave", function(self)
         securecall("UIFrameFadeOut", SubZone, 0.15, SubZone:GetAlpha(), 0)
         securecall("UIFrameFadeOut", MainZone, 0.15, MainZone:GetAlpha(), 0)
     end)

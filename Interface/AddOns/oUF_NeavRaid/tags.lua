@@ -2,50 +2,31 @@
 local _, ns = ...
 local config = ns.Config
 
+local tags = oUF.Tags.Methods
+local events = oUF.Tags.Events
 local timer = {}
 
-oUF.Tags.Events["status:raid"] = "PLAYER_FLAGS_CHANGED UNIT_CONNECTION"
-oUF.Tags.Methods["status:raid"] = function(unit)
+tags["status:raid"] = function(unit)
     local name = UnitName(unit) or UNKNOWN
 
-    if (UnitIsAFK(unit) or not UnitIsConnected(unit)) then
-        if (not timer[name]) then
+    if UnitIsAFK(unit) or not UnitIsConnected(unit) then
+        if not timer[name] then
             timer[name] = GetTime()
         end
 
-        local time = (GetTime() - timer[name])
+        local time = GetTime() - timer[name]
 
         return ns.FormatTime(time)
     elseif timer[name] then
         timer[name] = nil
     end
 end
+events["status:raid"] = "PLAYER_FLAGS_CHANGED UNIT_CONNECTION"
 
-oUF.Tags.Events["role:raid"] = "GROUP_ROSTER_UPDATE PLAYER_ROLES_ASSIGNED"
-if (not oUF.Tags["role:raid"]) then
-    oUF.Tags.Methods["role:raid"] = function(unit)
-        local role = UnitGroupRolesAssigned(unit)
-        if (role) then
-            if (role == "TANK") then
-                role = ">"
-            elseif (role == "HEALER") then
-                role = "+"
-            elseif (role == "DAMAGER") then
-                role = "-"
-            elseif (role == "NONE") then
-                role = ""
-            end
 
-            return role
-        else
-            return ""
-        end
-    end
-end
-
-oUF.Tags.Events["name:raid"] = "UNIT_NAME_UPDATE"
-oUF.Tags.Methods["name:raid"] = function(unit)
+tags["name:raid"] = function(unit)
     local name = UnitName(unit) or UNKNOWN
 
-    return ns.utf8sub(name, config.units.raid.nameLength)
+    return ns.utf8sub(name)
 end
+events["name:raid"] = "UNIT_NAME_UPDATE"

@@ -1,9 +1,8 @@
-
 local parent, ns = ...
-local oUF = ns.oUF or _G.oUF
+local oUF = ns.oUF or oUF
 
 local Update = function(self, event, unit)
-    if (unit ~= self.unit) then
+    if unit ~= self.unit then
         return
     end
 
@@ -11,27 +10,27 @@ local Update = function(self, event, unit)
     local unit = unit or self.unit
 
     local status
-    -- if (UnitCanAttack(unit, "player")) then
-    if (UnitCanAttack("player", "target")) then
-        status = UnitThreatSituation("player", "target")
+
+    if self.feedbackUnit and self.feedbackUnit ~= unit then
+        status = UnitThreatSituation(self.feedbackUnit, unit)
     else
         status = UnitThreatSituation(unit)
     end
 
-    if (status and status > 0) then
+    if status and status > 0 then
         local r, g, b = GetThreatStatusColor(status)
 
-        if (threat:IsObjectType("Texture")) then
+        if threat:IsObjectType("Texture") then
             threat:SetVertexColor(r, g, b, 1)
-        elseif (threat:IsObjectType("FontString")) then
+        elseif threat:IsObjectType("FontString") then
             threat:SetTextColor(r, g, b, 1)
-        elseif (threat:IsObjectType("Frame") and threat:GetBackdropBorderColor()) then
+        elseif threat:IsObjectType("Frame") and threat:GetBackdropBorderColor() then
             threat:SetBackdropBorderColor(r, g, b, 1)
         else
             return
         end
     else
-        if (threat:IsObjectType("Frame") and threat:GetBackdropBorderColor()) then
+        if threat:IsObjectType("Frame") and threat:GetBackdropBorderColor() then
             threat:SetBackdropBorderColor(0, 0, 0, 0)
         else
             threat:SetAlpha(0)
@@ -50,7 +49,7 @@ end
 local Enable = function(self)
     local threat = self.ThreatGlow
 
-    if (threat and not self.ThreatGlow.ignore) then
+    if threat and not self.ThreatGlow.ignore then
         threat.__owner = self
         threat.ForceUpdate = ForceUpdate
 
@@ -65,7 +64,7 @@ end
 local Disable = function(self)
     local threat = self.ThreatGlow
 
-    if (threat and not self.ThreatGlow.ignore) then
+    if threat and not self.ThreatGlow.ignore then
         self:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE", Path)
         self:UnregisterEvent("UNIT_THREAT_LIST_UPDATE", Path)
         self:UnregisterEvent("UNIT_TARGET", Path)

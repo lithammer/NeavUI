@@ -168,9 +168,7 @@ local dispelClass = {
 
 local checkTalents = CreateFrame("Frame")
 checkTalents:RegisterEvent("PLAYER_ENTERING_WORLD")
-checkTalents:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 checkTalents:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
-checkTalents:RegisterEvent("CHARACTER_POINTS_CHANGED")
 checkTalents:SetScript("OnEvent", function()
     if (ns.MultiCheck(class, "SHAMAN", "PALADIN", "DRUID", "PRIEST", "MONK")) then
         local spec = GetSpecialization()
@@ -185,10 +183,6 @@ checkTalents:SetScript("OnEvent", function()
         elseif (class == "MONK") then
             dispelClass[class].Magic = spec == 2 and true
         end
-    end
-
-    if (event == "PLAYER_ENTERING_WORLD") then
-        self:UnregisterEvent("PLAYER_ENTERING_WORLD")
     end
 end)
 
@@ -220,15 +214,11 @@ end
 local getZone = CreateFrame("Frame")
 getZone:RegisterEvent("PLAYER_ENTERING_WORLD")
 getZone:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-getZone:SetScript("OnEvent", function(self, event)
+getZone:SetScript("OnEvent", function(self, event, ...)
 
         -- Delay just in case zone data hasn't loaded
 
     self:SetScript("OnUpdate", zoneDelay)
-
-    if (event == "PLAYER_ENTERING_WORLD") then
-        self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-    end
 end)
 
 local CustomFilter = function(icons, ...)

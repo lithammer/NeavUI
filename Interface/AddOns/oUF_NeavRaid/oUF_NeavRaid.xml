@@ -1,0 +1,425 @@
+<Ui>
+    <!--
+        Config files.
+    -->
+    <Script file="config.lua"/>
+
+    <!--
+        Libs
+    -->
+    <Script file="modules\oUF_AuraWatch\oUF_AuraWatch.lua"/>
+    <Script file="modules\oUF_Freebgrid\oUF_Freebgrid_AurasPriority.lua"/>
+    <Script file="modules\oUF_Freebgrid\oUF_Freebgrid_AurasList.lua"/>
+    <Script file="modules\oUF_Freebgrid\oUF_Freebgrid_Auras.lua"/>
+
+    <!--
+        Core files.
+    -->
+    <Script file="functions.lua"/>
+    <Script file="tags.lua"/>
+    <Script file="core.lua"/>
+    <Script file="raidmanager.lua"/>
+
+     <!--
+        Options xml.
+    -->
+    <Frame name="NeavRaidOptions">
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString name="$parentDisplayHeader" text="oUF_|cffCC3333N|r|cffE53300e|r|cffFF4D00a|r|cffFF6633v|rRaid" inherits="GameFontNormalLarge" justifyH="LEFT" justifyV="TOP">
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset>
+                                <AbsDimension x="16" y="-16"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <!--
+                General Options
+            -->
+            <Frame name="$parentGeneral" inherits="OptionsBoxTemplate">
+                <Size x="250" y="290"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset x="16" y="-60"/>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        self:SetBackdropBorderColor(0.4, 0.4, 0.4, 0)
+                        self:SetBackdropColor(0.15, 0.15, 0.15)
+                        _G[self:GetName().."Title"]:SetText(COMPACT_UNIT_FRAME_PROFILE_SUBTYPE_ALL)
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+            <CheckButton name="ShowSolo" inherits="UICheckButtonTemplate">
+            <Size>
+                <AbsDimension x="24" y="24"/>
+            </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parentGeneral">
+                        <Offset x="8" y="-8"/>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        _G[self:GetName().."Text"]:SetText(" "..SHOW.." "..SOLO)
+                    </OnLoad>
+                    <OnClick>
+                        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+                        nRaidDB.showSolo = self:GetChecked()
+                    </OnClick>
+                </Scripts>
+            </CheckButton>
+            <CheckButton name="ShowParty" inherits="UICheckButtonTemplate">
+            <Size>
+                <AbsDimension x="24" y="24"/>
+            </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="ShowSolo" relativePoint="BOTTOMLEFT">
+                        <Offset x="0" y="-8"/>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        _G[self:GetName().."Text"]:SetText(" "..SHOW.." "..PARTY)
+                    </OnLoad>
+                    <OnClick>
+                        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+                        nRaidDB.showParty = self:GetChecked()
+                    </OnClick>
+                </Scripts>
+            </CheckButton>
+            <CheckButton name="AssistFrame" inherits="UICheckButtonTemplate">
+            <Size>
+                <AbsDimension x="24" y="24"/>
+            </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="ShowParty" relativePoint="BOTTOMLEFT">
+                        <Offset x="0" y="-8"/>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        _G[self:GetName().."Text"]:SetText(" "..COMPACT_UNIT_FRAME_PROFILE_DISPLAYMAINTANKANDASSIST)
+                    </OnLoad>
+                    <OnClick>
+                        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+                        nRaidDB.assistFrame = self:GetChecked()
+                    </OnClick>
+                </Scripts>
+            </CheckButton>
+            <CheckButton name="SortByRole" inherits="UICheckButtonTemplate">
+            <Size>
+                <AbsDimension x="24" y="24"/>
+            </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="AssistFrame" relativePoint="BOTTOMLEFT">
+                        <Offset x="0" y="-8"/>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        _G[self:GetName().."Text"]:SetText(" "..COMPACT_UNIT_FRAME_PROFILE_SORTBY.." "..COMPACT_UNIT_FRAME_PROFILE_SORTBY_ROLE)
+                    </OnLoad>
+                    <OnClick>
+                        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+                        nRaidDB.sortByRole = self:GetChecked()
+                    </OnClick>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                        GameTooltip:SetText(OPTION_RAID_SORT_BY_ROLE, nil, nil, nil, nil, true)
+                        GameTooltip:Show()
+                    </OnEnter>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </CheckButton>
+            <CheckButton name="AnchorToControls" inherits="UICheckButtonTemplate">
+            <Size>
+                <AbsDimension x="24" y="24"/>
+            </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="SortByRole" relativePoint="BOTTOMLEFT">
+                        <Offset x="0" y="-8"/>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        _G[self:GetName().."Text"]:SetText(" "..UNLOCK_FRAME)
+                    </OnLoad>
+                    <OnClick>
+                        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+                        nRaidDB.anchorToControls = self:GetChecked()
+                    </OnClick>
+                </Scripts>
+            </CheckButton>
+
+            <CheckButton name="HorizontalHealthBars" inherits="UICheckButtonTemplate">
+            <Size>
+                <AbsDimension x="24" y="24"/>
+            </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="AnchorToControls" relativePoint="BOTTOMLEFT">
+                        <Offset x="0" y="-8"/>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        _G[self:GetName().."Text"]:SetText(" Horizontal Health Bars")
+                    </OnLoad>
+                    <OnClick>
+                        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+                        nRaidDB.horizontalHealthBars = self:GetChecked()
+                    </OnClick>
+                </Scripts>
+            </CheckButton>
+            <CheckButton name="ShowPowerBars" inherits="UICheckButtonTemplate">
+            <Size>
+                <AbsDimension x="24" y="24"/>
+            </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="HorizontalHealthBars" relativePoint="BOTTOMLEFT">
+                        <Offset x="0" y="-8"/>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        _G[self:GetName().."Text"]:SetText(" "..COMPACT_UNIT_FRAME_PROFILE_DISPLAYPOWERBAR)
+                    </OnLoad>
+                    <OnClick>
+                        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+                        nRaidDB.powerBars = self:GetChecked()
+                    </OnClick>
+                </Scripts>
+            </CheckButton>
+            <CheckButton name="HorizontalPowerBars" inherits="UICheckButtonTemplate">
+            <Size>
+                <AbsDimension x="24" y="24"/>
+            </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="ShowPowerBars" relativePoint="BOTTOMLEFT">
+                        <Offset x="0" y="-8"/>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        _G[self:GetName().."Text"]:SetText(" Horizontal Power Bars")
+                    </OnLoad>
+                    <OnClick>
+                        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+                        nRaidDB.horizontalPowerBars = self:GetChecked()
+                    </OnClick>
+                </Scripts>
+            </CheckButton>
+            <!--
+                Layout Options
+            -->
+            <Frame name="$parentLayout" inherits="OptionsBoxTemplate">
+                <Size x="200" y="400"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parentGeneral" relativePoint="TOPRIGHT">
+                        <Offset x="16" y="0"/>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        self:SetBackdropBorderColor(0.4, 0.4, 0.4, 0)
+                        self:SetBackdropColor(0.15, 0.15, 0.15)
+                        _G[self:GetName().."Title"]:SetText(DISPLAY_OPTIONS)
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+            <Frame name="OrientationDropdown" inherits="UIDropDownMenuTemplate" enableMouse="true">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parentLayout">
+                        <Offset>
+                            <AbsDimension x="4" y="-32"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <FontString name="$parentTitle" inherits="GameFontNormalSmall">
+                            <Anchors>
+                                <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="20" y="5"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad function="OrientationDropdown_OnLoad"/>
+                </Scripts>
+            </Frame>
+            <Frame name="InitialAnchorDropdown" inherits="UIDropDownMenuTemplate" enableMouse="true">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="OrientationDropdown" relativePoint="BOTTOMLEFT">
+                        <Offset>
+                            <AbsDimension x="0" y="-32"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <FontString name="$parentTitle" inherits="GameFontNormalSmall">
+                            <Anchors>
+                                <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="20" y="5"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad function="InitialAnchorDropdown_OnLoad"/>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
+                        GameTooltip:SetText("Only applies in unlocked mode.", nil, nil, nil, nil, true)
+                        GameTooltip:Show()
+                    </OnEnter>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Slider name="NameLengthSlider" inherits="OptionsSliderTemplate">
+                <Size x="150" y="17"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="InitialAnchorDropdown" relativePoint="BOTTOMLEFT">
+                        <Offset x="22" y="-42"/>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad function="NameLengthSlider_OnLoad"/>
+                    <OnValueChanged function="NameLengthSlider_OnValueChanged"/>
+                </Scripts>
+            </Slider>
+            <Slider name="FrameWidthSlider" inherits="OptionsSliderTemplate">
+                <Size x="150" y="17"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="NameLengthSlider" relativePoint="BOTTOMLEFT">
+                        <Offset x="0" y="-42"/>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad function="FrameWidthSlider_OnLoad"/>
+                    <OnValueChanged function="FrameWidthSlider_OnValueChanged"/>
+                </Scripts>
+            </Slider>
+            <Slider name="FrameHeightSlider" inherits="OptionsSliderTemplate">
+                <Size x="150" y="17"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="FrameWidthSlider" relativePoint="BOTTOMLEFT">
+                        <Offset x="0" y="-42"/>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad function="FrameHeightSlider_OnLoad"/>
+                    <OnValueChanged function="FrameHeightSlider_OnValueChanged"/>
+                </Scripts>
+            </Slider>
+            <Slider name="FrameScaleSlider" inherits="OptionsSliderTemplate">
+                <Size x="150" y="17"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="FrameHeightSlider" relativePoint="BOTTOMLEFT">
+                        <Offset x="0" y="-42"/>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad function="FrameScaleSlider_OnLoad"/>
+                    <OnValueChanged function="FrameScaleSlider_OnValueChanged"/>
+                </Scripts>
+            </Slider>
+            <!--
+                Buff/Debuff Options
+            -->
+            <Frame name="$parentAuras" inherits="OptionsBoxTemplate">
+                <Size x="250" y="175"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parentGeneral" relativePoint="BOTTOMLEFT">
+                        <Offset x="0" y="-16"/>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        self:SetBackdropBorderColor(0.4, 0.4, 0.4, 0)
+                        self:SetBackdropColor(0.15, 0.15, 0.15)
+                        _G[self:GetName().."Title"]:SetText(BUFFOPTIONS_LABEL)
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+            <Slider name="IndicatorSizeSlider" inherits="OptionsSliderTemplate">
+                <Size x="150" y="17"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parentAuras">
+                        <Offset x="16" y="-24"/>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad function="IndicatorSizeSlider_OnLoad"/>
+                    <OnValueChanged function="IndicatorSizeSlider_OnValueChanged"/>
+                </Scripts>
+            </Slider>
+            <Slider name="DebuffSizeSlider" inherits="OptionsSliderTemplate">
+                <Size x="150" y="17"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="IndicatorSizeSlider" relativePoint="BOTTOMLEFT">
+                        <Offset x="0" y="-42"/>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad function="DebuffSizeSlider_OnLoad"/>
+                    <OnValueChanged function="DebuffSizeSlider_OnValueChanged"/>
+                </Scripts>
+            </Slider>
+            <!-- Reload Button -->
+            <Button name="ReloadUI" inherits="UIPanelButtonTemplate" text="RELOADUI">
+                <Size x="100" y="24"/>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativeTo="NeavRaidOptions">
+                        <Offset x="-10" y="10"/>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        ReloadUI()
+                    </OnClick>
+                </Scripts>
+            </Button>
+        </Frames>
+        <Scripts>
+            <OnLoad function="NeavRaid_OnLoad"/>
+            <OnEvent function="NeavRaid_OnEvent"/>
+        </Scripts>
+    </Frame>
+
+    <!--
+        Tank/Assist Frame Template
+    -->
+    <Button name="oUF_NeavRaid_MT_Target_Template" inherits="SecureUnitButtonTemplate" hidden="true" virtual="true">
+        <Frames>
+            <Button name="$parentTarget" inherits="SecureUnitButtonTemplate">
+                <Anchors>
+                    <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$parent">
+                        <Offset>
+                            <AbsDimension x="7" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Attributes>
+                    <Attribute name="unitsuffix" type="string" value="target"/>
+                    <Attribute name="useparent-unit" type="boolean" value="true"/>
+                    <Attribute name="type1" type="string" value="target"/>
+                    <Attribute name="initial-unitWatch" type="boolean" value="true"/>
+                </Attributes>
+            </Button>
+        </Frames>
+    </Button>
+</Ui>

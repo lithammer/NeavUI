@@ -1,0 +1,186 @@
+<Ui>
+    <ScrollFrame name="TooltipScrollFrameTemplate" virtual="true" inherits="UIPanelScrollFrameCodeTemplate">
+        <Frames>
+            <Slider name="$parentScrollBar" inherits="UIPanelScrollBarTemplate" parentKey="ScrollBar"> <!-- UIPanelScrollBarTemplate -->
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="0" y="-16"/>
+                    <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="0" y="16"/>
+                </Anchors>
+            </Slider>
+        </Frames>
+    </ScrollFrame>
+
+    <Frame name="DoubleTemplate" virtual="true">
+        <Size x="0" y="17"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString name="$parentLeftText" inherits="GameTooltipText" parentKey="LeftText" justifyH="LEFT" justifyV="MIDDLE">
+                    <Anchors>
+                        <Anchor point="LEFT" x="0" y="0"/>
+                    </Anchors>
+                    <Color r="1" g="1" b="1" a="1"/>
+                </FontString>
+                <FontString name="$parentRightText" inherits="GameTooltipText" parentKey="RightText" justifyH="RIGHT" justifyV="MIDDLE">
+                    <Anchors>
+                        <Anchor point="RIGHT" x="0" y="0"/>
+                    </Anchors>
+                    <Color r="1" g="1" b="1" a="1"/>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Frame>
+
+    <Script file="tab.lua" />
+    <Frame name="nMinimapTab" parent="Minimap" frameStrata="BACKGROUND" enableMouse="true" hidden="false">
+        <Size x="124" y="25" /> <!-- Reset in code. -->
+        <Anchors>
+            <Anchor point="BOTTOM" relativePoint="TOP">
+                <Offset>
+                    <AbsDimension x="0" y="-2" />
+                </Offset>
+            </Anchor>
+        </Anchors>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture name="$parentBackground" parentKey="Background" setAllPoints="true">
+                    <Color r="0" g="0" b="0" a="0.60"/>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Frame name="$parentCenter" parentKey="Friends" virtual="false" enableMouse="true">
+                <Size x="45" y="25" />
+                <Anchors>
+                    <Anchor point="CENTER" />
+                </Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <FontString name="$parentText" text="" inherits="SystemFont_Shadow_Med1" justifyH="CENTER" justifyV="MIDDLE" parentKey="Text" enableMouse="true">
+                            <Anchors>
+                                <Anchor point="CENTER"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad>
+                        self:RegisterEvent("PLAYER_ENTERING_WORLD")
+                        self:RegisterEvent("BN_FRIEND_ACCOUNT_ONLINE")
+                        self:RegisterEvent("BN_FRIEND_ACCOUNT_OFFLINE")
+                        self:RegisterEvent("BN_FRIEND_INFO_CHANGED")
+                        self:RegisterEvent("FRIENDLIST_UPDATE")
+                        self:RegisterEvent("ZONE_CHANGED")
+                    </OnLoad>
+                    <OnEvent function="nMinimapTab_Friends_OnEvent" />
+                    <OnMouseDown>
+                        ToggleFriendsFrame(1)
+                    </OnMouseDown>
+                    <OnEnter>
+                        nMinimapTab_Friends_ShowTooltip(self)
+                        nMinimapTab_ShowTab()
+                    </OnEnter>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        nMinimapTab_HideTab()
+
+                        if ( FriendsScrollFrame.isPendingHeight ) then
+                            FriendsScrollFrame.isPendingHeight = nil
+                            FriendsScrollFrame:SetHeight(FriendsScrollFrame.pendingHeight)
+                        end
+                    </OnLeave>
+                    <OnMouseWheel>
+                        ScrollFrameTemplate_OnMouseWheel(FriendsScrollFrame, delta)
+                    </OnMouseWheel>
+                </Scripts>
+            </Frame>
+            <Frame name="$parentLeft" parentKey="Guild" virtual="false" enableMouse="true">
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeTo="$parentCenter" relativePoint="TOPLEFT" />
+                    <Anchor point="TOPLEFT" relativeTo="$parent" />
+                    <Anchor point="BOTTOMRIGHT" relativeTo="$parentCenter" relativePoint="BOTTOMLEFT" />
+                </Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <FontString name="$parentText" text="" inherits="SystemFont_Shadow_Med1" justifyH="CENTER" justifyV="MIDDLE" parentKey="Text">
+                            <Anchors>
+                                <Anchor point="CENTER"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad>
+                        self:RegisterEvent("PLAYER_ENTERING_WORLD")
+                        self:RegisterEvent("PLAYER_GUILD_UPDATE")
+                        self:RegisterEvent("GUILD_ROSTER_UPDATE")
+                        self:RegisterEvent("GUILD_MOTD")
+                        self:RegisterEvent("ZONE_CHANGED")
+                    </OnLoad>
+                    <OnEvent function="nMinimapTab_Guild_OnEvent" />
+                    <OnMouseDown>
+                        ToggleGuildFrame()
+                    </OnMouseDown>
+                    <OnEnter>
+                        nMinimapTab_Guild_ShowTooltip(self)
+                        nMinimapTab_ShowTab()
+                    </OnEnter>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        nMinimapTab_HideTab()
+
+                        if ( GuildScrollFrame.isPendingHeight ) then
+                            GuildScrollFrame.isPendingHeight = nil
+                            GuildScrollFrame:SetHeight(GuildScrollFrame.pendingHeight)
+                        end
+                    </OnLeave>
+                    <OnMouseWheel>
+                        ScrollFrameTemplate_OnMouseWheel(GuildScrollFrame, delta)
+                    </OnMouseWheel>
+                </Scripts>
+            </Frame>
+            <Frame name="$parentRight" parentKey="Info" virtual="false" enableMouse="true">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parentCenter" relativePoint="TOPRIGHT" />
+                    <Anchor point="TOPRIGHT" relativeTo="$parent" />
+                    <Anchor point="BOTTOMLEFT" relativeTo="$parentCenter" relativePoint="BOTTOMRIGHT" />
+                </Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <FontString name="$parentText" text="" inherits="SystemFont_Shadow_Med1" justifyH="CENTER" justifyV="MIDDLE" parentKey="Text">
+                            <Anchors>
+                                <Anchor point="CENTER"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad>
+                        local performanceIcon = CreateTextureMarkup("Interface\\AddOns\\nMinimap\\media\\texturePerformance", 32, 32, 10, 10, 0, 1, 0, 1, 0, 0) -- "|TInterface\\AddOns\\nMinimap\\media\\texturePerformance:10|t"
+                        local _, _, _, lagWorld = GetNetStats()
+                        self.Text:SetText(performanceIcon..lagWorld)
+                    </OnLoad>
+                    <OnEnter>
+                        nMinimapTab_Info_ShowTooltip(self)
+                        nMinimapTab_ShowTab()
+                    </OnEnter>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        nMinimapTab_HideTab()
+                    </OnLeave>
+                    <OnMouseDown>
+                        if ( IsAddOnLoaded("AddonUsage") ) then
+                            AddonUsage:Toggle()
+                        end
+                    </OnMouseDown>
+                    <OnMouseWheel>
+                        ScrollFrameTemplate_OnMouseWheel(MemoryScrollFrame, delta)
+                    </OnMouseWheel>
+                </Scripts>
+            </Frame>
+        </Frames>
+        <Scripts>
+            <OnLoad function="nMinimapTab_OnLoad" />
+            <OnUpdate function="nMinimapTab_OnUpdate" />
+        </Scripts>
+    </Frame>
+</Ui>
