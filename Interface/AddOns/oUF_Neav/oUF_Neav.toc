@@ -2,24 +2,10 @@
 ## Author: Neav
 ## Title: oUF_|cffCC3333N|r|cffE53300e|r|cffFF4D00a|r|cffFF6633v|r
 ## RequiredDeps: oUF, !Beautycase
-## OptionalDeps: oUF_AuraWatch, oUF_SpellRange, oUF_CombatFeedback, oUF_Smooth
+## OptionalDeps: oUF_AuraWatch
+## SavedVariablesPerCharacter: oUF_NeavDB
+## X-SavedVariablesPerCharacter: oUF_NeavDB
+## X-SlashCmdList: /neav
+## X-oUF: oUF_Neav
 
-config.lua
-
-func\aura.lua
-func\castbar.lua
-func\func.lua
-func\flash.lua
-
-modules\offline.lua
-modules\portraittimers.lua
-modules\smartthreat.lua
-modules\oUF_CombatFeedback\oUF_CombatFeedback.lua
-modules\oUF_Smooth\oUF_Smooth.lua
-
-kill.lua
-tags.lua
-castbar.lua
-core.lua
-boss.lua
-arena.lua
+oUF_Neav.xml

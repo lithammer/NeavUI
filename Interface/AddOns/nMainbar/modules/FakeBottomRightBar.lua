@@ -7,7 +7,7 @@ end
 
 local MEDIA_PATH = "Interface\\AddOns\\nMainbar\\Media\\"
 
-local LAB = LibStub("LibActionButton-1.0-ElvUI-Custom")
+local LAB = LibStub("LibActionButton-1.0-nMainbar")
 
 local DefaultConfig = {
     outOfRangeColoring = "hotkey",

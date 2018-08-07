@@ -15,6 +15,9 @@ local format = string.format
 local GetTime = GetTime
 local day, hour, minute = 86400, 3600, 60
 
+local charTexPath = "Interface\\CharacterFrame\\"
+local tarTexPath = "Interface\\TargetingFrame\\"
+
 local function FormatValue(value)
     if value < 1e3 then
         return floor(value)
@@ -30,7 +33,7 @@ local function FormatValue(value)
 end
 
 local function DeficitValue(value)
-    if (value == 0) then
+    if value == 0 then
         return ""
     else
         return "-"..FormatValue(value)
@@ -38,15 +41,15 @@ local function DeficitValue(value)
 end
 
 ns.cUnit = function(unit)
-    if (unit:match("vehicle")) then
+    if unit:match("vehicle") then
         return "player"
-    elseif (unit:match("party%d")) then
+    elseif unit:match("party%d") then
         return "party"
-    elseif (unit:match("arena%d")) then
+    elseif unit:match("arena%d") then
         return "arena"
-    elseif (unit:match("boss%d")) then
+    elseif unit:match("boss%d") then
         return "boss"
-    elseif (unit:match("partypet%d")) then
+    elseif unit:match("partypet%d") then
         return "pet"
     else
         return unit
@@ -54,11 +57,11 @@ ns.cUnit = function(unit)
 end
 
 ns.FormatTime = function(time)
-    if (time >= day) then
+    if time >= day then
         return format("%dd", floor(time/day + 0.5))
-    elseif (time>= hour) then
+    elseif time>= hour then
         return format("%dh", floor(time/hour + 0.5))
-    elseif (time >= minute) then
+    elseif time >= minute then
         return format("%dm", floor(time/minute + 0.5))
     end
 
@@ -66,11 +69,11 @@ ns.FormatTime = function(time)
 end
 
 local function GetUnitStatus(unit)
-    if (UnitIsDead(unit)) then
+    if UnitIsDead(unit) then
         return DEAD
-    elseif (UnitIsGhost(unit)) then
+    elseif UnitIsGhost(unit) then
         return "Ghost"
-    elseif (not UnitIsConnected(unit)) then
+    elseif not UnitIsConnected(unit) then
         return PLAYER_OFFLINE
     else
         return ""
@@ -80,7 +83,7 @@ end
 local function GetFormattedText(text, cur, max, alt)
     local perc = (cur/max)*100
 
-    if (alt) then
+    if alt then
         text = gsub(text, "$alt", ((alt > 0) and format("%s", FormatValue(alt)) or ""))
     end
 
@@ -99,20 +102,20 @@ end
 ns.GetHealthText = function(unit, cur, max)
     local uconf = config.units[ns.cUnit(unit)]
 
-    if (not cur) then
+    if not cur then
         cur = UnitHealth(unit)
         max = UnitHealthMax(unit)
     end
 
     local healthString
-    if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
+    if UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit) then
         healthString = GetUnitStatus(unit)
-    elseif ((cur == max) and uconf and uconf.healthTagFull)then
+    elseif cur == max and uconf and uconf.healthTagFull then
         healthString = GetFormattedText(uconf.healthTagFull, cur, max)
-    elseif (uconf and uconf.healthTag) then
+    elseif uconf and uconf.healthTag then
         healthString = GetFormattedText(uconf.healthTag, cur, max)
     else
-        if (cur == max) then
+        if cur == max then
             healthString = FormatValue(cur)
         else
             healthString = FormatValue(cur).."/"..FormatValue(max)
@@ -125,7 +128,7 @@ end
 ns.GetPowerText = function(unit, cur, max)
     local uconf = config.units[ns.cUnit(unit)]
 
-    if (not cur) then
+    if not cur then
         max = UnitPower(unit)
         cur = UnitPowerMax(unit)
     end
@@ -134,19 +137,19 @@ ns.GetPowerText = function(unit, cur, max)
     local powerType = UnitPowerType(unit)
 
     local powerString
-    if (UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)) then
+    if UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit) then
         powerString = ""
-    elseif (max == 0) then
+    elseif max == 0 then
         powerString = ""
-    elseif (not UnitHasMana(unit) or powerType ~= 0 or UnitHasVehicleUI(unit) and uconf and uconf.powerTagNoMana) then
+    elseif not UnitHasMana(unit) or powerType ~= 0 or UnitHasVehicleUI(unit) and uconf and uconf.powerTagNoMana then
         powerString = GetFormattedText(uconf.powerTagNoMana, cur, max, alt)
-    elseif ((cur == max) and uconf and uconf.powerTagFull)then
+    elseif (cur == max) and uconf and uconf.powerTagFull then
         powerString = GetFormattedText(uconf.powerTagFull, cur, max, alt)
-    elseif (uconf and uconf.powerTag) then
+    elseif uconf and uconf.powerTag then
         powerString = GetFormattedText(uconf.powerTag, cur, max, alt)
 
     else
-        if (cur == max) then
+        if cur == max then
             powerString = FormatValue(cur)
         else
             powerString = FormatValue(cur).."/"..FormatValue(max)
@@ -158,7 +161,7 @@ end
 
 ns.MultiCheck = function(what, ...)
     for i = 1, select("#", ...) do
-        if (what == select(i, ...)) then
+        if what == select(i, ...) then
             return true
         end
     end
@@ -168,7 +171,7 @@ end
 
 ns.utf8sub = function(string, index)
     local bytes = string:len()
-    if (bytes <= index) then
+    if bytes <= index then
         return string
     else
         local length, currentIndex = 0, 1
@@ -177,22 +180,22 @@ ns.utf8sub = function(string, index)
             length = length + 1
             local char = string:byte(currentIndex)
 
-            if (char > 240) then
+            if char > 240 then
                 currentIndex = currentIndex + 4
-            elseif (char > 225) then
+            elseif char > 225 then
                 currentIndex = currentIndex + 3
-            elseif (char > 192) then
+            elseif char > 192 then
                 currentIndex = currentIndex + 2
             else
                 currentIndex = currentIndex + 1
             end
 
-            if (length == index) then
+            if length == index then
                 break
             end
         end
 
-        if (length == index and currentIndex <= bytes) then
+        if length == index and currentIndex <= bytes then
             return string:sub(1, currentIndex - 1)
         else
             return string
@@ -200,8 +203,10 @@ ns.utf8sub = function(string, index)
     end
 end
 
-if (not IsAddOnLoaded("!Colorz")) then
-    CUSTOM_FACTION_BAR_COLORS = {
+    -- Class Coloring
+
+if not IsAddOnLoaded("!Colorz") then
+    TOOLTIP_FACTION_COLORS = {
         [1] = {r = 1, g = 0, b = 0},
         [2] = {r = 1, g = 0, b = 0},
         [3] = {r = 1, g = 1, b = 0},
@@ -216,30 +221,30 @@ if (not IsAddOnLoaded("!Colorz")) then
 
         local r, g, b
 
-        if (UnitIsDead(unit) or UnitIsGhost(unit) or UnitIsTapDenied(unit)) then
+        if UnitIsDead(unit) or UnitIsGhost(unit) or UnitIsTapDenied(unit) then
             r = 0.5
             g = 0.5
             b = 0.5
-        elseif (UnitIsPlayer(unit)) then
-            if (UnitIsFriend(unit, "player")) then
-                local _, class = UnitClass(unit)
-                if ( class ) then
-                    r = RAID_CLASS_COLORS[class].r
-                    g = RAID_CLASS_COLORS[class].g
-                    b = RAID_CLASS_COLORS[class].b
-                else
+        elseif UnitIsPlayer(unit) then
+            local _, class = UnitClass(unit)
+            if class then
+                r = RAID_CLASS_COLORS[class].r
+                g = RAID_CLASS_COLORS[class].g
+                b = RAID_CLASS_COLORS[class].b
+            else
+                if UnitIsFriend(unit, "player") then
                     r = 0.60
                     g = 0.60
                     b = 0.60
+                else
+                    r = 1
+                    g = 0
+                    b = 0
                 end
-            elseif (not UnitIsFriend(unit, "player")) then
-                r = 1
-                g = 0
-                b = 0
             end
-        elseif (UnitPlayerControlled(unit)) then
-            if (UnitCanAttack(unit, "player")) then
-                if (not UnitCanAttack("player", unit)) then
+        elseif UnitPlayerControlled(unit) then
+            if UnitCanAttack(unit, "player") then
+                if not UnitCanAttack("player", unit) then
                     r = 157/255
                     g = 197/255
                     b = 255/255
@@ -248,11 +253,11 @@ if (not IsAddOnLoaded("!Colorz")) then
                     g = 0
                     b = 0
                 end
-            elseif (UnitCanAttack("player", unit)) then
+            elseif UnitCanAttack("player", unit) then
                 r = 1
                 g = 1
                 b = 0
-            elseif (UnitIsPVP(unit)) then
+            elseif UnitIsPVP(unit) then
                 r = 0
                 g = 1
                 b = 0
@@ -264,10 +269,10 @@ if (not IsAddOnLoaded("!Colorz")) then
         else
             local reaction = UnitReaction(unit, "player")
 
-            if (reaction) then
-                r = CUSTOM_FACTION_BAR_COLORS[reaction].r
-                g = CUSTOM_FACTION_BAR_COLORS[reaction].g
-                b = CUSTOM_FACTION_BAR_COLORS[reaction].b
+            if reaction then
+                r = TOOLTIP_FACTION_COLORS[reaction].r
+                g = TOOLTIP_FACTION_COLORS[reaction].g
+                b = TOOLTIP_FACTION_COLORS[reaction].b
             else
                 r = 157/255
                 g = 197/255

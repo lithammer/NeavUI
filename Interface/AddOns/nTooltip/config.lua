@@ -6,7 +6,7 @@ nTooltip.Config = {
     fontOutline = false,
 
     position = {
-        "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -27.35, 27.35
+        "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -39, 82
     },
 
     showOnMouseover = false,

@@ -7,5 +7,5 @@ core.lua
 capture.lua
 calendar.lua
 clock.lua
-difficulty.lua
-tab.lua
+difficulty.xml
+tab.xml

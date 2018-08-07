@@ -26,10 +26,8 @@ local _, ns = ...
 ns.Config = {
     show = {
         castbars = true,
-        pvpicons = true,
-        classHealth = false,                                                                 -- Colors health bars by player class color.
+        classHealth = false,                                                                -- Colors health bars by player class color.
         classPortraits = false,
-        threeDPortraits = false,                                                            -- 3DPortraits; Overrides classPortraits
         disableCooldown = false,                                                            -- Disable custom cooldown text to use addons like omnicc
         portraitTimer = true,
     },
@@ -40,11 +38,10 @@ ns.Config = {
     },
 
     font = {
-        normal = "Interface\\AddOns\\oUF_Neav\\media\\fontSmall.ttf",                       -- General font for all other
+        normal = STANDARD_TEXT_FONT,                                                        -- General font for all other
         normalSize = 13,
 
-        normalBig = "Interface\\AddOns\\oUF_Neav\\media\\fontThick.ttf",                    -- Name font
-        normalBigSize = 14,
+        numberFont = "Interface\\AddOns\\oUF_Neav\\media\\fontNumber.ttf",
     },
 
     units = {
@@ -60,8 +57,7 @@ ns.Config = {
             powerTagFull = "$cur",
             powerTagNoMana = "$cur",
 
-            showStatusFlash = true,
-            showCombatFeedback = false,
+            showAFKTimer = true,
 
             position = {"TOPLEFT", UIParent, 34, -30},
 
@@ -80,12 +76,12 @@ ns.Config = {
                 color = {1, 0.7, 0},
 
                 icon = {
-                    show = false,
+                    show = true,
                     position = "LEFT",                                                      -- "LEFT" "RIGHT"
-                    positionOutside = true,
+                    positionOutside = false,
                 },
 
-                position = {"BOTTOM", UIParent, "BOTTOM", 0, 141},
+                position = {"BOTTOM", UIParent, "BOTTOM", 0, 170},
             },
         },
 
@@ -107,7 +103,7 @@ ns.Config = {
             position = {43, -20},
 
             castbar = {
-                show = true,
+                show = false,
 
                 width = 220,
                 height = 19,
@@ -140,7 +136,7 @@ ns.Config = {
             disableAura = false,                                                            -- Disable Auras on this unitframe
             colorPlayerDebuffsOnly = true,
             showAllTimers = false,                                                          -- If false, only the player debuffs have timer
-            onlyShowPlayer = false,                                                          -- Only shows player created buffs/debuffs.
+            onlyShowPlayer = false,                                                         -- Only shows player created buffs/debuffs.
 
             -- Debuffs on top options. Overrides onlyShowPlayer option.
             showDebuffsOnTop = false,
@@ -153,8 +149,6 @@ ns.Config = {
             powerTag = "$cur/$max",
             powerTagFull = "$cur",
             powerTagNoMana = "$cur",
-
-            showCombatFeedback = false,
 
             showThreatValue = true,                                                         -- Show a Blizzard style threat indicator
 
@@ -171,12 +165,12 @@ ns.Config = {
                 interruptColor = {1, 0, 1},
 
                 icon = {
-                    show = false,
+                    show = true,
                     position = "LEFT",                                                      -- "LEFT" "RIGHT"
                     positionOutside = false,
                 },
 
-                position = {"BOTTOM", UIParent, "BOTTOM", 0, 380},
+                position = {"BOTTOM", UIParent, "BOTTOM", 0, 205},
             },
         },
 
@@ -194,7 +188,8 @@ ns.Config = {
 
             numDebuffs = 6,
             disableAura = false,                                                            -- Disable Auras on this unitframe.
-            debuffsOnly = false,                                                            -- Only show debuffs.
+            debuffsOnly = true,                                                             -- Only show debuffs.
+            onlyShowPlayer = true,
 
             mouseoverText = false,
             healthTag = "$cur - $perc",
@@ -205,12 +200,10 @@ ns.Config = {
 
             showPowerPercent = false,
 
-            showCombatFeedback = false,
-
             enableFocusToggleKeybind = true,
             focusToggleKey = "type4",                                                       -- type1, type2 (mousebutton 1 or 2, 3, 4, 5 etc. works too)
 
-            position = {"LEFT", 30, 0},
+            position = {"TOPLEFT", 250, -240},
 
             castbar = {
                 show = true,
@@ -223,9 +216,9 @@ ns.Config = {
                 interruptColor = {1, 0, 1},
 
                 icon = {
-                    show = false,
-                    position = "LEFT",   -- "LEFT" or "RIGHT"
-                    positionOutside = true,
+                    show = true,
+                    position = "LEFT",
+                    positionOutside = false,
                 },
             },
         },
@@ -239,7 +232,7 @@ ns.Config = {
         },
 
         ["party"] = {
-            scale = 1.11,
+            scale = 1.193,
             show = true,
             hideInRaid = true,
 
@@ -254,6 +247,7 @@ ns.Config = {
         },
 
         ["boss"] = {
+            show = true,
             scale = 1,
 
             mouseoverText = true,
@@ -266,14 +260,9 @@ ns.Config = {
             position = {"RIGHT", UIParent, "RIGHT", -101, -43},
 
             castbar = {
-                color = {1, 0, 0},
-                interruptColor = {1, 0, 1},
-
-                icon = {
-                    size = 22,
-                    show = false,
-                    position = "LEFT"   -- "LEFT" or "RIGHT"
-                },
+                show = true,
+                color = {1.0, 0.7, 0.0},
+                interruptColor = {1.0, 0.0, 0.0},
             },
         },
 
@@ -281,8 +270,12 @@ ns.Config = {
             show = true,
             scale = 1,
 
-            auraSize = 22,
-            filterBuffs = true,
+            auraSize = 32,
+            numBuffs = 8,
+            numDebuffs = 8,
+
+            debuffsOnly = true,
+            onlyShowPlayer = false,
 
             mouseoverText = true,
             healthTag = "$cur/$max",
@@ -294,13 +287,14 @@ ns.Config = {
             position = {"TOPRIGHT", UIParent, "TOPRIGHT", -95, -300},
 
             castbar = {
-                icon = {
-                    size = 22,
-                },
+                width = 160,
+                height = 22,
+                scale = 0.93,
 
-                color = {1, 0, 0},
+                color = {1.0,0.7,0.0},
             },
 
+            filterBuffs = false,
             buffList = { -- A whitelist for buffs to display on arena frames
                 ["Power Word: Shield"] = true,
             },

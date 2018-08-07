@@ -29,8 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ]]
 
-local MAJOR_VERSION = "LibActionButton-1.0-ElvUI-Custom"
-local MINOR_VERSION = 14
+local MAJOR_VERSION = "LibActionButton-1.0-nMainbar"
+local MINOR_VERSION = 15
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib, oldversion = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
@@ -43,8 +43,8 @@ local setmetatable, wipe, unpack, pairs, next = setmetatable, wipe, unpack, pair
 local str_match, format, tinsert, tremove = string.match, format, tinsert, tremove
 local C_ToyBox = C_ToyBox
 
--- Global vars/functions that we don"t upvalue since they might get hooked, or upgraded
--- List them here for Mikk"s FindGlobals script
+-- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
+-- List them here for Mikk's FindGlobals script
 -- Note: No WoW API function get upvalued to allow proper interaction with any addons that try to hook them.
 -- GLOBALS: LibStub, CreateFrame, InCombatLockdown, ClearCursor, GetCursorInfo, GameTooltip, GameTooltip_SetDefaultAnchor
 -- GLOBALS: GetBindingKey, GetBindingText, SetBinding, SetBindingClick, GetCVar, GetMacroInfo
@@ -59,8 +59,13 @@ local C_ToyBox = C_ToyBox
 -- GLOBALS: RANGE_INDICATOR, ATTACK_BUTTON_FLASH_TIME, TOOLTIP_UPDATE_TIME
 -- GLOBALS: ZoneAbilityFrame, HasZoneAbility, GetLastZoneAbilitySpellTexture
 
+-- GLOBALS: GetCVarBool, IsAltKeyDown, IsControlKeyDown, IsShiftKeyDown, COOLDOWN_TYPE_NORMAL, COOLDOWN_TYPE_LOSS_OF_CONTROL
+-- GLOBALS: GetSpellInfo, FlyoutHasSpell, GetModifiedClick, GetActionLossOfControlCooldown, CooldownFrame_Set
+
+-- local KeyBound = LibStub("LibKeyBound-1.0", true)
 local CBH = LibStub("CallbackHandler-1.0")
 local LBG = LibStub("LibButtonGlow-1.0", true)
+-- local Masque = LibStub("Masque", true)
 
 lib.eventFrame = lib.eventFrame or CreateFrame("Frame")
 lib.eventFrame:UnregisterAllEvents()
@@ -119,6 +124,7 @@ local StartFlash, StopFlash, UpdateFlash, UpdateHotkeys, UpdateRangeTimer, Updat
 local UpdateFlyout, ShowGrid, HideGrid, UpdateGrid, SetupSecureSnippets, WrapOnClick
 local ShowOverlayGlow, HideOverlayGlow
 local EndChargeCooldown
+local UpdateRange -- Sezz: new method
 
 local InitializeEventHandler, OnEvent, ForAllButtons, OnUpdate
 
@@ -145,6 +151,7 @@ local DefaultConfig = {
 		hotkey = false,
 		equipped = false,
 	},
+	-- keyBoundTarget = false,
 	clickOnDown = false,
 	flyoutDirection = "UP",
 	disableCountDownNumbers = false,
@@ -163,6 +170,10 @@ function lib:CreateButton(id, name, header, config)
 	if not header then
 		error("Usage: CreateButton(id, name, header): Buttons without a secure header are not yet supported!", 2)
 	end
+
+	-- if not KeyBound then
+		-- KeyBound = LibStub("LibKeyBound-1.0", true)
+	-- end
 
 	local button = setmetatable(CreateFrame("CheckButton", name, header, "SecureActionButtonTemplate, ActionButtonTemplate"), Generic_MT)
 	button:RegisterForDrag("LeftButton", "RightButton")
@@ -183,11 +194,18 @@ function lib:CreateButton(id, name, header, config)
 	-- Store the LAB Version that created this button for debugging
 	button.__LAB_Version = MINOR_VERSION
 
-	-- just in case we"re not run by a header, default to state 0
+	-- just in case we're not run by a header, default to state 0
 	button:SetAttribute("state", 0)
 
 	SetupSecureSnippets(button)
 	WrapOnClick(button)
+
+	-- adjust hotkey style for better readability
+	-- button.HotKey:SetFont(button.HotKey:GetFont(), 13, "OUTLINE")
+	-- button.HotKey:SetVertexColor(0.75, 0.75, 0.75)
+
+	-- adjust count/stack size
+	-- button.Count:SetFont(button.Count:GetFont(), 16, "OUTLINE")
 
 	-- Store the button in the registry, needed for event and OnUpdate handling
 	if not next(ButtonRegistry) then
@@ -257,7 +275,7 @@ function SetupSecureSnippets(button)
 		if (self:GetAttribute("buttonlock") and not IsModifiedClick("PICKUPACTION")) or self:GetAttribute("LABdisableDragNDrop") then return false end
 		local state = self:GetAttribute("state")
 		local type = self:GetAttribute("type")
-		-- if the button is empty, we can"t drag anything off it
+		-- if the button is empty, we can't drag anything off it
 		if type == "empty" or type == "custom" then
 			return false
 		end
@@ -286,7 +304,7 @@ function SetupSecureSnippets(button)
 		local buttonType, buttonAction = self:GetAttribute("type"), nil
 		if buttonType == "custom" then return false end
 		-- action buttons can do their magic themself
-		-- for all other buttons, we"ll need to update the content now
+		-- for all other buttons, we'll need to update the content now
 		if buttonType ~= "action" and buttonType ~= "pet" then
 			-- with "spell" types, the 4th value contains the actual spell id
 			if kind == "spell" then
@@ -306,7 +324,7 @@ function SetupSecureSnippets(button)
 
 			-- TODO: validate what kind of action is being fed in here
 			-- We can only use a handful of the possible things on the cursor
-			-- return false for all those we can"t put on buttons
+			-- return false for all those we can't put on buttons
 
 			self:SetAttribute(format("labtype-%s", state), kind)
 			self:SetAttribute(format("labaction-%s", state), value)
@@ -327,7 +345,7 @@ function SetupSecureSnippets(button)
 		return self:RunAttribute("OnDragStart")
 	]])
 	-- Wrap twice, because the post-script is not run when the pre-script causes a pickup (doh)
-	-- we also need some phony message, or it won"t work =/
+	-- we also need some phony message, or it won't work =/
 	button.header:WrapScript(button, "OnDragStart", [[
 		return "message", "update"
 	]], [[
@@ -340,7 +358,7 @@ function SetupSecureSnippets(button)
 		return self:RunAttribute("OnReceiveDrag", kind, value, ...)
 	]])
 	-- Wrap twice, because the post-script is not run when the pre-script causes a pickup (doh)
-	-- we also need some phony message, or it won"t work =/
+	-- we also need some phony message, or it won't work =/
 	button.header:WrapScript(button, "OnReceiveDrag", [[
 		return "message", "update"
 	]], [[
@@ -479,6 +497,22 @@ function Generic:DisableDragNDrop(flag)
 	end
 end
 
+--[[function Generic:AddToButtonFacade(group)
+	if type(group) ~= "table" or type(group.AddButton) ~= "function" then
+		error("LibActionButton-1.0:AddToButtonFacade: You need to supply a proper group to use!", 2)
+	end
+	group:AddButton(self)
+	self.LBFSkinned = true
+end
+
+function Generic:AddToMasque(group)
+	if type(group) ~= "table" or type(group.AddButton) ~= "function" then
+		error("LibActionButton-1.0:AddToMasque: You need to supply a proper group to use!", 2)
+	end
+	group:AddButton(self)
+	self.MasqueSkinned = true
+end]]
+
 function Generic:UpdateAlpha()
 	UpdateCooldown(self)
 end
@@ -493,44 +527,44 @@ local function PickupAny(kind, target, detail, ...)
 		kind, target, detail = target, detail, ...
 	end
 
-	if kind == "action" then
+	if kind == 'action' then
 		PickupAction(target)
-	elseif kind == "item" then
+	elseif kind == 'item' then
 		PickupItem(target)
-	elseif kind == "macro" then
+	elseif kind == 'macro' then
 		PickupMacro(target)
-	elseif kind == "petaction" then
+	elseif kind == 'petaction' then
 		PickupPetAction(target)
-	elseif kind == "spell" then
+	elseif kind == 'spell' then
 		PickupSpell(target)
-	elseif kind == "companion" then
+	elseif kind == 'companion' then
 		PickupCompanion(target, detail)
-	elseif kind == "equipmentset" then
+	elseif kind == 'equipmentset' then
 		PickupEquipmentSet(target)
 	end
 end
 
 function Generic:OnUpdate(elapsed)
-	if not GetCVarBool("lockActionBars") then return; end
+	if not GetCVarBool('lockActionBars') then return; end
 
 	self.lastupdate = (self.lastupdate or 0) + elapsed;
 	if (self.lastupdate < .2) then return end
 	self.lastupdate = 0
 
 	local isDragKeyDown
-	if GetModifiedClick("PICKUPACTION") == "ALT" then
+	if GetModifiedClick("PICKUPACTION") == 'ALT' then
 		isDragKeyDown = IsAltKeyDown()
-	elseif GetModifiedClick("PICKUPACTION") == "CTRL" then
+	elseif GetModifiedClick("PICKUPACTION") == 'CTRL' then
 		isDragKeyDown = IsControlKeyDown()
-	elseif GetModifiedClick("PICKUPACTION") == "SHIFT" then
+	elseif GetModifiedClick("PICKUPACTION") == 'SHIFT' then
 		isDragKeyDown = IsShiftKeyDown()
 	end
 
-	if isDragKeyDown and (self.clickState == "AnyDown" or self.clickState == nil) then
-		self.clickState = "AnyUp"
+	if isDragKeyDown and (self.clickState == 'AnyDown' or self.clickState == nil) then
+		self.clickState = 'AnyUp'
 		self:RegisterForClicks(self.clickState)
-	elseif self.clickState == "AnyUp" and not isDragKeyDown then
-		self.clickState = "AnyDown"
+	elseif self.clickState == 'AnyUp' and not isDragKeyDown then
+		self.clickState = 'AnyDown'
 		self:RegisterForClicks(self.clickState)
 	end
 end
@@ -549,14 +583,14 @@ function Generic:OnEnter()
 	end
 
 	if self.config.clickOnDown then
-		self:SetScript("OnUpdate", Generic.OnUpdate)
+		self:SetScript('OnUpdate', Generic.OnUpdate)
 	end
 end
 
 function Generic:OnLeave()
 	if GameTooltip:IsForbidden() then return end
 	GameTooltip:Hide()
-	self:SetScript("OnUpdate", nil)
+	self:SetScript('OnUpdate', nil)
 end
 
 -- Insecure drag handler to allow clicking on the button with an action on the cursor
@@ -634,19 +668,10 @@ function Generic:UpdateConfig(config)
 	if config and type(config) ~= "table" then
 		error("LibActionButton-1.0: UpdateConfig requires a valid configuration!", 2)
 	end
-	local oldconfig = self.config
-	if not self.config then self.config = {} end
+
+	self.config = {}
 	-- merge the two configs
 	merge(self.config, config, DefaultConfig)
-
-	if self.config.outOfRangeColoring == "button" or (oldconfig and oldconfig.outOfRangeColoring == "button") then
-		UpdateUsable(self)
-	end
-	if self.config.outOfRangeColoring == "hotkey" then
-		self.outOfRange = nil
-	elseif oldconfig and oldconfig.outOfRangeColoring == "hotkey" then
-		self.HotKey:SetVertexColor(0.75, 0.75, 0.75)
-	end
 
 	if self.config.hideElements.macro then
 		self.Name:Hide()
@@ -658,7 +683,8 @@ function Generic:UpdateConfig(config)
 
 	UpdateHotkeys(self)
 	UpdateGrid(self)
-	Update(self)
+	Update(self, true)
+
 	self:RegisterForClicks(self.config.clickOnDown and "AnyDown" or "AnyUp")
 end
 
@@ -889,28 +915,7 @@ function OnUpdate(_, elapsed)
 
 			-- Range
 			if rangeTimer <= 0 then
-				local inRange = button:IsInRange()
-				local oldRange = button.outOfRange
-				button.outOfRange = (inRange == false)
-				if oldRange ~= button.outOfRange then
-					if button.config.outOfRangeColoring == "button" then
-						UpdateUsable(button)
-					elseif button.config.outOfRangeColoring == "hotkey" then
-						local hotkey = button.HotKey
-						if hotkey:GetText() == RANGE_INDICATOR then
-							if inRange == false then
-								hotkey:Show()
-							else
-								hotkey:Hide()
-							end
-						end
-						if inRange == false then
-							hotkey:SetVertexColor(unpack(button.config.colors.range))
-						else
-							hotkey:SetVertexColor(0.75, 0.75, 0.75)
-						end
-					end
-				end
+				UpdateRange(button) -- Sezz
 			end
 		end
 
@@ -971,14 +976,105 @@ function UpdateGrid(self)
 	end
 end
 
+function UpdateRange(self, force) -- Sezz: moved from OnUpdate
+	local inRange = self:IsInRange()
+	local oldRange = self.outOfRange
+	self.outOfRange = (inRange == false)
+	if force or (oldRange ~= self.outOfRange) then
+		if self.config.outOfRangeColoring == "button" then
+			UpdateUsable(self)
+		elseif self.config.outOfRangeColoring == "hotkey" then
+			local hotkey = self.HotKey
+			if hotkey:GetText() == RANGE_INDICATOR then
+				if inRange == false then
+					hotkey:Show()
+				else
+					hotkey:Hide()
+				end
+			end
+
+			if inRange == false then
+				hotkey:SetVertexColor(unpack(self.config.colors.range))
+			else
+				hotkey:SetVertexColor(unpack(self.config.colors.usable))
+			end
+		end
+	end
+end
+
+-----------------------------------------------------------
+--- KeyBound integration
+
+function Generic:GetBindingAction()
+	return self.config.keyBoundTarget or "CLICK "..self:GetName()..":LeftButton"
+end
+
+function Generic:GetHotkey()
+	local name = "CLICK "..self:GetName()..":LeftButton"
+	local key = GetBindingKey(self.config.keyBoundTarget or name)
+	if not key and self.config.keyBoundTarget then
+		key = GetBindingKey(name)
+	end
+	if key then
+		return KeyBound and KeyBound:ToShortKey(key) or key
+	end
+end
+
+local function getKeys(binding, keys)
+	keys = keys or ""
+	for i = 1, select("#", GetBindingKey(binding)) do
+		local hotKey = select(i, GetBindingKey(binding))
+		if keys ~= "" then
+			keys = keys .. ", "
+		end
+		keys = keys .. GetBindingText(hotKey)
+	end
+	return keys
+end
+
+function Generic:GetBindings()
+	local keys
+
+	if self.config.keyBoundTarget then
+		keys = getKeys(self.config.keyBoundTarget)
+	end
+
+	keys = getKeys("CLICK "..self:GetName()..":LeftButton", keys)
+
+	return keys
+end
+
+function Generic:SetKey(key)
+	if self.config.keyBoundTarget then
+		SetBinding(key, self.config.keyBoundTarget)
+	else
+		SetBindingClick(key, self:GetName(), "LeftButton")
+	end
+	lib.callbacks:Fire("OnKeybindingChanged", self, key)
+end
+
+local function clearBindings(binding)
+	while GetBindingKey(binding) do
+		SetBinding(GetBindingKey(binding), nil)
+	end
+end
+
+function Generic:ClearBindings()
+	if self.config.keyBoundTarget then
+		clearBindings(self.config.keyBoundTarget)
+	end
+	clearBindings("CLICK "..self:GetName()..":LeftButton")
+	lib.callbacks:Fire("OnKeybindingChanged", self, nil)
+end
+
 -----------------------------------------------------------
 --- button management
 
 function Generic:UpdateAction(force)
 	local type, action = self:GetAction()
-	if force or type ~= self._state_type or action ~= self._state_action then
+	if force or (type ~= self._state_type) or (action ~= self._state_action) then
 		-- type changed, update the metatable
-		if force or self._state_type ~= type then
+		if force or (self._state_type ~= type) then
 			local meta = type_meta_map[type] or type_meta_map.empty
 			setmetatable(self, meta)
 			self._state_type = type
@@ -988,7 +1084,7 @@ function Generic:UpdateAction(force)
 	end
 end
 
-function Update(self)
+function Update(self, fromUpdateConfig)
 	if self:HasAction() then
 		ActiveButtons[self] = true
 		if self._state_type == "action" then
@@ -999,7 +1095,6 @@ function Update(self)
 			NonActionButtons[self] = true
 		end
 		self:SetAlpha(1.0)
-		UpdateButtonState(self)
 		UpdateUsable(self)
 		UpdateCooldown(self)
 		UpdateFlash(self)
@@ -1019,7 +1114,7 @@ function Update(self)
 	end
 
 	-- Add a green border if button is an equipped item
-	if self:IsEquipped() then
+	if self:IsEquipped() and not self.config.hideElements.equipped then
 		self.Border:SetVertexColor(0, 1.0, 0, 0.35)
 		self.Border:Show()
 	else
@@ -1060,18 +1155,25 @@ function Update(self)
 		self.icon:SetTexture(texture)
 		self.icon:Show()
 		self.rangeTimer = - 1
+		--self:SetNormalTexture("Interface\\Buttons\\UI-Quickslot2")
+
+		--if not self.LBFSkinned and not self.MasqueSkinned then
+			--self.NormalTexture:SetTexCoord(0, 0, 0, 0)
+		--end
 	else
 		self.icon:Hide()
 		self.cooldown:Hide()
 		self.rangeTimer = nil
-		if self.HotKey:GetText() == RANGE_INDICATOR then
-			self.HotKey:Hide()
-		else
-			self.HotKey:SetVertexColor(0.75, 0.75, 0.75)
-		end
+        --self:SetNormalTexture("Interface\\Buttons\\UI-Quickslot")
+
+		--if not self.LBFSkinned and not self.MasqueSkinned then
+			--self.NormalTexture:SetTexCoord(-0.15, 1.15, -0.15, 1.17)
+		--end
 	end
 
 	self:UpdateLocal()
+
+	UpdateRange(self, fromUpdateConfig) -- Sezz: update range check on state change
 
 	UpdateCount(self)
 
@@ -1081,11 +1183,13 @@ function Update(self)
 
 	UpdateNewAction(self)
 
+	UpdateButtonState(self)
+
 	if GameTooltip_GetOwnerForbidden() == self then
 		UpdateTooltip(self)
 	end
 
-	-- this could"ve been a spec change, need to call OnStateChanged for action buttons, if present
+	-- this could've been a spec change, need to call OnStateChanged for action buttons, if present
 	if not InCombatLockdown() and self._state_type == "action" then
 		local onStateChanged = self:GetAttribute("OnStateChanged")
 		if onStateChanged then
@@ -1120,10 +1224,13 @@ function UpdateUsable(self)
 			local isUsable, notEnoughMana = self:IsUsable()
 			if isUsable then
 				self.icon:SetVertexColor(unpack(self.config.colors.usable))
+				--self.NormalTexture:SetVertexColor(1.0, 1.0, 1.0)
 			elseif notEnoughMana then
 				self.icon:SetVertexColor(unpack(self.config.colors.mana))
+				--self.NormalTexture:SetVertexColor(0.5, 0.5, 1.0)
 			else
 				self.icon:SetVertexColor(unpack(self.config.colors.notUsable))
+				--self.NormalTexture:SetVertexColor(1.0, 1.0, 1.0)
 			end
 		end
 	else
@@ -1183,6 +1290,11 @@ local function StartChargeCooldown(parent, chargeStart, chargeDuration, chargeMo
 	parent.chargeCooldown:SetDrawSwipe(parent.config.useDrawSwipeOnCharges)
 	parent.chargeCooldown:SetSwipeColor(0.0, 0.0, 0.0, 0.0)
 	CooldownFrame_Set(parent.chargeCooldown, chargeStart, chargeDuration, true, true, chargeModRate)
+
+	-- update charge cooldown skin when masque is used
+	--if Masque and Masque.UpdateCharge then
+		--Masque:UpdateCharge(parent)
+	--end
 
 	if not chargeStart or chargeStart == 0 then
 		EndChargeCooldown(parent.chargeCooldown)
@@ -1268,9 +1380,11 @@ function UpdateHotkeys(self)
 	local key = self.HotKey:GetText()
 	if not key or key == "" or self.config.hideElements.hotkey then
 		self.HotKey:SetText(RANGE_INDICATOR)
+		--self.HotKey:SetPoint("TOPLEFT", self, "TOPLEFT", 1, - 2)
 		self.HotKey:Hide()
 	else
 		self.HotKey:SetText(key)
+		--self.HotKey:SetPoint("TOPLEFT", self, "TOPLEFT", - 2, - 2)
 		self.HotKey:Show()
 	end
 

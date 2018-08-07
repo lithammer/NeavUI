@@ -83,21 +83,21 @@ function GameTooltip_UnitColor(unit)
         g = 0.5
         b = 0.5
     elseif UnitIsPlayer(unit) then
-        if UnitIsFriend(unit, "player") then
-            local _, class = UnitClass(unit)
-            if class then
-                r = RAID_CLASS_COLORS[class].r
-                g = RAID_CLASS_COLORS[class].g
-                b = RAID_CLASS_COLORS[class].b
-            else
+        local _, class = UnitClass(unit)
+        if class then
+            r = RAID_CLASS_COLORS[class].r
+            g = RAID_CLASS_COLORS[class].g
+            b = RAID_CLASS_COLORS[class].b
+        else
+            if UnitIsFriend(unit, "player") then
                 r = 0.60
                 g = 0.60
                 b = 0.60
+            else
+                r = 1
+                g = 0
+                b = 0
             end
-        elseif not UnitIsFriend(unit, "player") then
-            r = 1
-            g = 0
-            b = 0
         end
     elseif UnitPlayerControlled(unit) then
         if UnitCanAttack(unit, "player") then
