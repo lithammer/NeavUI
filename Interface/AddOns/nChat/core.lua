@@ -376,7 +376,7 @@ eventWatcher:SetScript("OnEvent", function(self, event, ...)
         elseif name == "Blizzard_CombatLog" then
             hooksecurefunc("FCF_DockUpdate", function()
                 if COMBATLOG.isDocked then
-                    COMBATLOG:SetClampRectInsets(-37, 56, 0, -12)
+                    COMBATLOG:SetClampRectInsets(0, -1, 0, 0)
                 end
             end)
         end
