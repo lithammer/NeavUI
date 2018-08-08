@@ -5,12 +5,12 @@ local floor = math.floor
 
     -- Set Defaults
 
-function nCore:RegisterDefaultSetting(database, key, value)
-    if database == nil then
-        database = {}
+function nCore:RegisterDefaultSetting(key, value)
+    if nCoreDB == nil then
+        nCoreDB = {}
     end
-    if database[key] == nil then
-        database[key] = value
+    if nCoreDB[key] == nil then
+        nCoreDB[key] = value
     end
 end
 
@@ -18,21 +18,21 @@ end
 
 function nCore:SetDefaultOptions()
     -- Global
-    nCore:RegisterDefaultSetting(nCoreDB, "AltBuy", true)
-    nCore:RegisterDefaultSetting(nCoreDB, "ArchaeologyHelper", true)
-    nCore:RegisterDefaultSetting(nCoreDB, "AutoGreed", true)
-    nCore:RegisterDefaultSetting(nCoreDB, "AutoQuest", true)
-    nCore:RegisterDefaultSetting(nCoreDB, "Dressroom", true)
-    nCore:RegisterDefaultSetting(nCoreDB, "Durability", true)
-    nCore:RegisterDefaultSetting(nCoreDB, "ErrorFilter", true)
-    nCore:RegisterDefaultSetting(nCoreDB, "Fonts", true)
-    nCore:RegisterDefaultSetting(nCoreDB, "ObjectiveTracker", true)
-    nCore:RegisterDefaultSetting(nCoreDB, "MapCoords", true)
-    nCore:RegisterDefaultSetting(nCoreDB, "MoveTalkingHeads", true)
-    nCore:RegisterDefaultSetting(nCoreDB, "QuestTracker", true)
-    nCore:RegisterDefaultSetting(nCoreDB, "Skins", true)
-    nCore:RegisterDefaultSetting(nCoreDB, "SpellID", true)
-    nCore:RegisterDefaultSetting(nCoreDB, "VignetteAlert", true)
+    nCore:RegisterDefaultSetting("AltBuy", true)
+    nCore:RegisterDefaultSetting("ArchaeologyHelper", true)
+    nCore:RegisterDefaultSetting("AutoGreed", true)
+    nCore:RegisterDefaultSetting("AutoQuest", true)
+    nCore:RegisterDefaultSetting("Dressroom", true)
+    nCore:RegisterDefaultSetting("Durability", true)
+    nCore:RegisterDefaultSetting("ErrorFilter", true)
+    nCore:RegisterDefaultSetting("Fonts", true)
+    nCore:RegisterDefaultSetting("ObjectiveTracker", true)
+    nCore:RegisterDefaultSetting("MapCoords", true)
+    nCore:RegisterDefaultSetting("MoveTalkingHeads", true)
+    nCore:RegisterDefaultSetting("QuestTracker", true)
+    nCore:RegisterDefaultSetting("Skins", true)
+    nCore:RegisterDefaultSetting("SpellID", true)
+    nCore:RegisterDefaultSetting("VignetteAlert", true)
 end
 
 function nCore:LockInCombat(frame)
