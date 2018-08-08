@@ -304,7 +304,7 @@ local function SetChatStyle()
         local chat = _G[frame]
 
         if chat then
-            chat:SetClampRectInsets(-37, 56, 0, -12)
+            chat:SetClampRectInsets(0, -1, 0, 0)
 
             if not chat.hasModification then
                 ModChat(chat:GetName())

@@ -434,6 +434,8 @@ local function UpdatePlayerFrame(self, event, ...)
         UpdateTotemFrameAnchor(self)
     elseif event == "PLAYER_TOTEM_UPDATE" then
         UpdateTotemFrameAnchor(self)
+    elseif event == "PLAYER_SPECIALIZATION_CHANGED" then
+        CheckVehicleStatus(self)
     elseif event == "CINEMATIC_STOP" then
         UpdateFlashStatus(self)
     elseif event == "GROUP_ROSTER_UPDATE" then
@@ -1154,6 +1156,7 @@ local function CreateUnitLayout(self, unit)
         self:RegisterEvent("PLAYER_UPDATE_RESTING", UpdatePlayerFrame)
         self:RegisterEvent("PLAYER_TALENT_UPDATE", UpdatePlayerFrame)
         self:RegisterEvent("PLAYER_TOTEM_UPDATE", UpdatePlayerFrame)
+        self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", UpdatePlayerFrame)
         self:RegisterEvent("CINEMATIC_STOP", UpdatePlayerFrame)
         self:RegisterEvent("GROUP_ROSTER_UPDATE", UpdatePlayerFrame)
         self:RegisterEvent("UNIT_ENTERED_VEHICLE", UpdatePlayerFrame)
