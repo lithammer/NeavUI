@@ -945,6 +945,7 @@ function ShowGrid(event)
 		for button in next, ButtonRegistry do
 			if button:IsShown() then
 				button:SetAlpha(1.0)
+                button.NormalTexture:SetVertexColor(unpack(button.config.colors.usable))
 			end
 		end
 	end
