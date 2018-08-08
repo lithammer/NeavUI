@@ -1223,14 +1223,14 @@ function UpdateUsable(self)
 		else
 			local isUsable, notEnoughMana = self:IsUsable()
 			if isUsable then
-				self.icon:SetVertexColor(unpack(self.config.colors.usable))
-				--self.NormalTexture:SetVertexColor(1.0, 1.0, 1.0)
+				self.icon:SetVertexColor(1.0, 1.0, 1.0)
+				self.NormalTexture:SetVertexColor(unpack(self.config.colors.usable))
 			elseif notEnoughMana then
 				self.icon:SetVertexColor(unpack(self.config.colors.mana))
-				--self.NormalTexture:SetVertexColor(0.5, 0.5, 1.0)
+				self.NormalTexture:SetVertexColor(unpack(self.config.colors.mana))
 			else
 				self.icon:SetVertexColor(unpack(self.config.colors.notUsable))
-				--self.NormalTexture:SetVertexColor(1.0, 1.0, 1.0)
+				self.NormalTexture:SetVertexColor(unpack(self.config.colors.notUsable))
 			end
 		end
 	else

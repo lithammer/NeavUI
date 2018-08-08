@@ -1,8 +1,8 @@
 local _, nMainbar = ...
 local cfg = nMainbar.Config
+local Color = cfg.color
 
 local pairs = pairs
-local unpack = unpack
 
 local MEDIA_PATH = "Interface\\AddOns\\nMainbar\\Media\\"
 
@@ -38,7 +38,7 @@ local function SkinButton(button, icon)
         normal:ClearAllPoints()
         normal:SetPoint("TOPRIGHT", button, 1.5, 1.5)
         normal:SetPoint("BOTTOMLEFT", button, -1.5, -1.5)
-        normal:SetVertexColor(unpack(cfg.color.Normal))
+        normal:SetVertexColor(Color.Normal:GetRGBA())
 
         local flash = _G[buttonName.."Flash"]
         if flash then
@@ -59,7 +59,7 @@ local function SkinButton(button, icon)
         button.Shadow:SetPoint("TOPRIGHT", normal, 4, 4)
         button.Shadow:SetPoint("BOTTOMLEFT", normal, -4, -4)
         button.Shadow:SetTexture(MEDIA_PATH.."textureShadow")
-        button.Shadow:SetVertexColor(0, 0, 0, 1)
+        button.Shadow:SetVertexColor(0.0, 0.0, 0.0, 1.0)
     end
 end
 
@@ -78,7 +78,7 @@ hooksecurefunc("PetActionBar_Update", function(self)
                 hotkey:ClearAllPoints()
                 hotkey:SetPoint("TOPRIGHT", buttonName, 0, -3)
                 hotkey:SetFont(cfg.button.hotkeyFont, cfg.button.petHotKeyFontsize, "OUTLINE")
-                hotkey:SetVertexColor(unpack(cfg.color.HotKeyText))
+                hotkey:SetVertexColor(Color.HotKeyText:GetRGB())
             else
                 hotkey:Hide()
             end
@@ -88,7 +88,7 @@ end)
 securecall("PetActionBar_Update")
 
 hooksecurefunc("StanceBar_UpdateState", function(self)
-    local button, icon, buttonName;
+    local button, icon, buttonName
     for i=1, NUM_STANCE_SLOTS do
         button = StanceBarFrame.StanceButtons[i]
         icon = button.icon
@@ -114,7 +114,7 @@ local function UpdateVehicleButton()
         local hotkey = _G["OverrideActionBarButton"..i.."HotKey"]
         if cfg.button.showVehicleKeybinds then
             hotkey:SetFont(cfg.button.hotkeyFont, cfg.button.hotkeyFontsize + 3, "OUTLINE")
-            hotkey:SetVertexColor(unpack(cfg.color.HotKeyText))
+            hotkey:SetVertexColor(Color.HotKeyText:GetRGB())
             hotkey:ClearAllPoints()
             hotkey:SetPoint("TOPRIGHT", button, -4, -8)
         else
@@ -163,7 +163,7 @@ hooksecurefunc("ActionButton_UpdateHotkeys", function(self, actionButtonType)
             hotkey:ClearAllPoints()
             hotkey:SetPoint("TOPRIGHT", self, 0, -3)
             hotkey:SetFont(cfg.button.hotkeyFont, cfg.button.hotkeyFontsize, "OUTLINE")
-            hotkey:SetVertexColor(unpack(cfg.color.HotKeyText))
+            hotkey:SetVertexColor(Color.HotKeyText:GetRGB())
             self.hotkeyUpdated = true
         else
             hotkey:Hide()
@@ -189,7 +189,7 @@ hooksecurefunc("ActionButton_Update", function(self)
             actionName:SetText("")
         else
             actionName:SetFont(cfg.button.macronameFont, cfg.button.macronameFontsize, "OUTLINE")
-            actionName:SetVertexColor(unpack(cfg.color.MacroText))
+            actionName:SetVertexColor(Color.MacroText:GetRGB())
         end
     end
 
@@ -204,7 +204,7 @@ hooksecurefunc("ActionButton_Update", function(self)
                 normalTexture:ClearAllPoints()
                 normalTexture:SetPoint("TOPRIGHT", button, 1, 1)
                 normalTexture:SetPoint("BOTTOMLEFT", button, -1, -1)
-                normalTexture:SetVertexColor(unpack(cfg.color.Normal))
+                normalTexture:SetVertexColor(Color.Normal:GetRGBA())
             end
 
             button:SetNormalTexture(MEDIA_PATH.."textureNormal")
@@ -232,7 +232,7 @@ hooksecurefunc("ActionButton_Update", function(self)
             local border = self.Border
             if border then
                 if IsEquippedAction(action) then
-                    border:SetVertexColor(unpack(cfg.color.IsEquipped))
+                    border:SetVertexColor(Color.IsEquipped:GetRGB())
                     border:SetAlpha(1)
                 else
                     border:SetAlpha(0)
@@ -245,7 +245,7 @@ hooksecurefunc("ActionButton_Update", function(self)
                 floatingBG:SetPoint("TOPRIGHT", button, 5, 5)
                 floatingBG:SetPoint("BOTTOMLEFT", button, -5, -5)
                 floatingBG:SetTexture(MEDIA_PATH.."textureShadow")
-                floatingBG:SetVertexColor(0, 0, 0, 1)
+                floatingBG:SetVertexColor(0.0, 0.0, 0.0, 1.0)
             end
         end
     end
@@ -282,13 +282,13 @@ hooksecurefunc("ActionButton_UpdateCount", function(self)
     if text then
         text:SetPoint("BOTTOMRIGHT", self, 0, 1)
         text:SetFont(cfg.button.countFont, cfg.button.countFontsize, "OUTLINE")
-        text:SetVertexColor(unpack(cfg.color.CountText))
+        text:SetVertexColor(Color.CountText:GetRGB())
     end
 end)
 
 hooksecurefunc("ActionButton_ShowGrid", function(self)
     if self.NormalTexture then
-        self.NormalTexture:SetVertexColor(unpack(cfg.color.Normal))
+        self.NormalTexture:SetVertexColor(Color.Normal:GetRGBA())
     end
 end)
 
@@ -297,18 +297,57 @@ hooksecurefunc("ActionButton_UpdateUsable", function(self)
         return
     end
 
-    local normal = _G[self:GetName().."NormalTexture"]
-    if normal then
-        normal:SetVertexColor(unpack(cfg.color.Normal))
+    local icon = self.icon
+    local normalTexture = self.NormalTexture
+    if not normalTexture then
+        return
     end
 
     local isUsable, notEnoughMana = IsUsableAction(self.action)
     if isUsable then
-        _G[self:GetName().."Icon"]:SetVertexColor(1, 1, 1)
+        icon:SetVertexColor(1.0, 1.0, 1.0)
+        normalTexture:SetVertexColor(Color.Normal:GetRGBA())
     elseif notEnoughMana then
-        _G[self:GetName().."Icon"]:SetVertexColor(unpack(cfg.color.OutOfMana))
+        icon:SetVertexColor(Color.OutOfMana:GetRGB())
+        normalTexture:SetVertexColor(Color.OutOfMana:GetRGB())
     else
-        _G[self:GetName().."Icon"]:SetVertexColor(unpack(cfg.color.NotUsable))
+        icon:SetVertexColor(Color.NotUsable:GetRGB())
+        normalTexture:SetVertexColor(Color.NotUsable:GetRGB())
+    end
+end)
+
+hooksecurefunc("ActionButton_UpdateRangeIndicator", function(self, checksRange, inRange)
+    local icon = self.icon
+
+    if self.HotKey:GetText() == RANGE_INDICATOR then
+        if checksRange then
+            self.HotKey:Show()
+            if inRange then
+                self.HotKey:SetVertexColor(Color.HotKeyText:GetRGB())
+                if cfg.button.buttonOutOfRange then
+                    icon:SetVertexColor(1.0, 1.0, 1.0)
+                end
+            else
+                self.HotKey:SetVertexColor(Color.OutOfRange:GetRGB())
+                if cfg.button.buttonOutOfRange then
+                    icon:SetVertexColor(Color.OutOfRange:GetRGB())
+                end
+            end
+        else
+            self.HotKey:Hide()
+        end
+    else
+        if checksRange and not inRange then
+            self.HotKey:SetVertexColor(Color.OutOfRange:GetRGB())
+            if cfg.button.buttonOutOfRange then
+                icon:SetVertexColor(Color.OutOfRange:GetRGB())
+            end
+        else
+            self.HotKey:SetVertexColor(Color.HotKeyText:GetRGB())
+            if cfg.button.buttonOutOfRange then
+                icon:SetVertexColor(1.0, 1.0, 1.0)
+            end
+        end
     end
 end)
 

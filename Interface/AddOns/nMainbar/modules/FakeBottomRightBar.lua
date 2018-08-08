@@ -1,24 +1,25 @@
 local _, nMainbar = ...
 local cfg = nMainbar.Config
+local Color = cfg.color
 
 if not cfg.useFakeBottomRightBar then
     return
 end
 
-local MEDIA_PATH = "Interface\\AddOns\\nMainbar\\Media\\"
+local MEDIA_PATH = "Interface\\AddOns\\nMainbar\\media\\"
 
 local LAB = LibStub("LibActionButton-1.0-nMainbar")
 
 local DefaultConfig = {
-    outOfRangeColoring = "hotkey",
+    outOfRangeColoring = cfg.button.buttonOutOfRange and "button" or "hotkey",
     tooltip = "enabled",
     showGrid = false,
     useColoring = true,
     colors = {
-        range = { 0.8, 0.1, 0.1 },
-        mana = { 0.5, 0.5, 1.0 },
-        usable = { 1.0, 1.0, 1.0 },
-        notUsable = { 0.4, 0.4, 0.4 },
+        range = {Color.OutOfRange:GetRGB()},
+        mana = {Color.OutOfMana:GetRGB()},
+        usable = {Color.Normal:GetRGB()},
+        notUsable = {Color.NotUsable:GetRGB()},
     },
     hideElements = {
         macro = not cfg.button.showMacroNames,
@@ -86,18 +87,18 @@ local function StyleButton(self)
         hotkey:ClearAllPoints()
         hotkey:SetPoint("TOPRIGHT", self, 0, -3)
         hotkey:SetFont(cfg.button.hotkeyFont, cfg.button.hotkeyFontsize, "OUTLINE")
-        hotkey:SetVertexColor(unpack(cfg.color.HotKeyText))
+        hotkey:SetVertexColor(Color.HotKeyText:GetRGB())
     end
 
     if count then
         count:SetPoint("BOTTOMRIGHT", self, 0, 1)
         count:SetFont(cfg.button.countFont, cfg.button.countFontsize, "OUTLINE")
-        count:SetVertexColor(unpack(cfg.color.CountText))
+        count:SetVertexColor(Color.CountText:GetRGB())
     end
 
     if macro then
         macro:SetFont(cfg.button.macronameFont, cfg.button.macronameFontsize, "OUTLINE")
-        macro:SetVertexColor(unpack(cfg.color.MacroText))
+        macro:SetVertexColor(Color.MacroText:GetRGB())
     end
 
     if icon then
@@ -108,7 +109,7 @@ local function StyleButton(self)
         normal:ClearAllPoints()
         normal:SetPoint("TOPRIGHT", self, 1, 1)
         normal:SetPoint("BOTTOMLEFT", self, -1, -1)
-        normal:SetVertexColor(unpack(cfg.color.Normal))
+        normal:SetVertexColor(Color.Normal:GetRGBA())
 
         self:SetNormalTexture(MEDIA_PATH.."textureNormal")
 
@@ -140,7 +141,7 @@ local function StyleButton(self)
         self.floatingBG:SetPoint("TOPRIGHT", self, 5, 5)
         self.floatingBG:SetPoint("BOTTOMLEFT", self, -5, -5)
         self.floatingBG:SetTexture(MEDIA_PATH.."textureShadow")
-        self.floatingBG:SetVertexColor(0, 0, 0, 1)
+        self.floatingBG:SetVertexColor(0.0, 0.0, 0.0, 1.0)
     end
 end
 

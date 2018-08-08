@@ -8,6 +8,7 @@ nMainbar.Config = {
         showVehicleKeybinds = true,
         showKeybinds = true,
         showMacroNames = false,
+        buttonOutOfRange = false,
 
         watchbarFontsize = 13,
         watchbarFont = STANDARD_TEXT_FONT,
@@ -25,15 +26,15 @@ nMainbar.Config = {
     },
 
     color = {   -- Red, Green, Blue, Alpha
-        Normal = { 1, 1, 1, 1 },
-        IsEquipped = { 0, 1, 0 },
-        OutOfRange = { 0.9, 0, 0 },
-        OutOfMana = { 0.3, 0.3, 1 },
-        NotUsable = { 0.35, 0.35, 0.35 },
+        Normal = CreateColor(1.0, 1.0, 1.0, 1.0),
+        IsEquipped = CreateColor(0.0, 1.0, 0.0, 1.0),
+        OutOfRange = CreateColor(0.8, 0.1, 0.1, 1.0),
+        OutOfMana = CreateColor(0.3, 0.3, 1.0, 1.0),
+        NotUsable = CreateColor(0.35, 0.35, 0.35, 1.0),
 
-        HotKeyText = { 0.6, 0.6, 0.6 },
-        MacroText = { 1, 1, 1 },
-        CountText = { 1, 1, 1 },
+        HotKeyText = CreateColor(0.6, 0.6, 0.6, 1.0),
+        MacroText = CreateColor(1.0, 1.0, 1.0, 1.0),
+        CountText = CreateColor(1.0, 1.0, 1.0, 1.0),
     },
 
     MainMenuBar = {
