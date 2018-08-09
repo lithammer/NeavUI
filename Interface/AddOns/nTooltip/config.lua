@@ -16,8 +16,7 @@ nTooltip.Config = {
     itemqualityBorderColor = true,
 
     abbrevRealmNames = false,
-    hideRealmText = false,                      -- Hide the coalesced/interactive realm text
-    showPlayerTitles = true,
+    showPlayerTitles = false,
     showUnitRole = true,
     showPVPIcons = false,                       -- Show pvp icons instead of just a prefix
     showMouseoverTarget = true,

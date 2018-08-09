@@ -445,34 +445,6 @@ if cfg.healthbar.reactionColoring or cfg.healthbar.customColor.apply then
     end)
 end
 
-    -- Hide coalesced/interactive realm information
-
-if cfg.hideRealmText then
-    local COALESCED_REALM_TOOLTIP1 = string.split(FOREIGN_SERVER_LABEL, COALESCED_REALM_TOOLTIP)
-    local INTERACTIVE_REALM_TOOLTIP1 = string.split(INTERACTIVE_SERVER_LABEL, INTERACTIVE_REALM_TOOLTIP)
-    -- Dirty checking of the coalesced realm text because it's added
-    -- after the initial OnShow
-    GameTooltip:HookScript("OnUpdate", function(self)
-        for i = 3, self:NumLines() do
-            local row = _G["GameTooltipTextLeft"..i]
-            local rowText = row:GetText()
-
-            if rowText then
-                if rowText:find(COALESCED_REALM_TOOLTIP1) or rowText:find(INTERACTIVE_REALM_TOOLTIP1) then
-                    row:SetText(nil)
-                    row:Hide()
-
-                    local previousRow = _G["GameTooltipTextLeft"..(i - 1)]
-                    previousRow:SetText(nil)
-                    previousRow:Hide()
-
-                    self:Show()
-                end
-            end
-        end
-    end)
-end
-
 local function CreateAnchor()
     local anchorFrame = CreateFrame("Frame", "nTooltip_Anchor", UIParent)
     anchorFrame:SetSize(50, 50)
