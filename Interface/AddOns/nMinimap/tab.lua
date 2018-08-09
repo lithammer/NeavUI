@@ -379,7 +379,17 @@ function nMinimap_UpdateFriendButton(entry)
 
             for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
                 if class == v then
-                    class = k
+                    classc = RAID_CLASS_COLORS[k]
+                    break
+                end
+            end
+
+            if not classc then
+                for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
+                    if class == v then
+                        classc = RAID_CLASS_COLORS[k]
+                        break
+                    end
                 end
             end
 
@@ -394,7 +404,6 @@ function nMinimap_UpdateFriendButton(entry)
 
                 level = tonumber(level)
                 levelc = GetQuestDifficultyColor(level)
-                classc = RAID_CLASS_COLORS[class]
 
                 level = WrapTextInColorCode(level, CreateColor(levelc.r, levelc.g, levelc.b, 1):GenerateHexColor())
                 characterName = WrapTextInColorCode(characterName, classc:GenerateHexColor())
@@ -415,7 +424,17 @@ function nMinimap_UpdateFriendButton(entry)
         if connected then
             for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
                 if class == v then
-                    class = k
+                    classc = RAID_CLASS_COLORS[k]
+                    break
+                end
+            end
+
+            if not classc then
+                for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
+                    if class == v then
+                        classc = RAID_CLASS_COLORS[k]
+                        break
+                    end
                 end
             end
 
@@ -433,7 +452,6 @@ function nMinimap_UpdateFriendButton(entry)
                 zonec = inactivezone
             end
 
-            classc = RAID_CLASS_COLORS[class]
             levelc = GetQuestDifficultyColor(level)
 
             level = WrapTextInColorCode(level, CreateColor(levelc.r, levelc.g, levelc.b, 1):GenerateHexColor())
