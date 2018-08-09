@@ -222,6 +222,29 @@ function FrameHeightSlider_OnValueChanged(self)
     if nRaidDB then nRaidDB.frameHeight = tonumber(self.value) end
 end
 
+function FrameOffsetSlider_OnLoad(self)
+    local name = self:GetName()
+
+    self.type = CONTROLTYPE_SLIDER
+    self.text = _G[name.."Text"]
+    self.textLow = _G[name.."Low"]
+    self.textHigh = _G[name.."High"]
+    self:SetMinMaxValues(1, 15)
+    self:SetValue(7)
+    self.minValue, self.maxValue = self:GetMinMaxValues()
+    self.text:SetText("|cffffd200Frame Offset:|r "..self:GetValue())
+    self.textLow:SetText(self.minValue)
+    self.textHigh:SetText(self.maxValue)
+    self:SetObeyStepOnDrag(true)
+    self:SetValueStep(1)
+end
+
+function FrameOffsetSlider_OnValueChanged(self)
+    self.value = self:GetValue()
+    self.text:SetText("|cffffd200Frame Offset:|r "..self.value)
+    if nRaidDB then nRaidDB.frameOffset = tonumber(self.value) end
+end
+
 function FrameScaleSlider_OnLoad(self)
     local name = self:GetName()
 

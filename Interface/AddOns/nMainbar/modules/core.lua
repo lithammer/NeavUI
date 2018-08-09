@@ -65,11 +65,6 @@ hooksecurefunc("MultiActionBar_Update", function(self)
         return
     end
 
-    -- Main / Vehicle Action Bars
-
-    MainMenuBar:SetScale(cfg.MainMenuBar.scale)
-    OverrideActionBar:SetScale(cfg.vehicleBar.scale)
-
     -- Right Bars Scale & Alpha
 
     MultiBarLeft:SetAlpha(cfg.multiBarRight.alpha)

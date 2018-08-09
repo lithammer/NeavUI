@@ -91,14 +91,42 @@ function manager:CreateWorldMarkerButtons()
     end
 end
 
-local function DisableBlizzard()
-    local isLoaded = LoadAddOn("Blizzard_CompactRaidFrames")
+---------------------------
+-- Hide Blizzard Raid Frames
+---------------------------
 
-    if isLoaded then
-        CompactRaidFrameManager:UnregisterAllEvents()
-        CompactRaidFrameManager:Hide()
+local hiddenParent = CreateFrame("Frame")
+hiddenParent:Hide()
+
+local function Kill(object)
+    if object.UnregisterAllEvents then
+        object:UnregisterAllEvents()
+        object:SetParent(hiddenParent)
+    else
+        object.Show = object.Hide
+    end
+
+    object:Hide()
+end
+
+local function HideRaid()
+    if InCombatLockdown() then return end
+    Kill(CompactRaidFrameManager)
+    local compact_raid = CompactRaidFrameManager_GetSetting("IsShown")
+    if compact_raid and compact_raid ~= "0" then
+        CompactRaidFrameManager_SetSetting("IsShown", "0")
+    end
+end
+
+local function DisableBlizzard()
+    if CompactRaidFrameManager_UpdateShown then
+        if not CompactRaidFrameManager.hookedHide then
+            hooksecurefunc("CompactRaidFrameManager_UpdateShown", HideRaid)
+            CompactRaidFrameManager:HookScript("OnShow", HideRaid)
+            CompactRaidFrameManager.hookedHide = true
+        end
         CompactRaidFrameContainer:UnregisterAllEvents()
-        CompactRaidFrameContainer:Hide()
+        HideRaid()
     end
 end
 

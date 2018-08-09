@@ -40,11 +40,6 @@ nMainbar.Config = {
     MainMenuBar = {
         moveableExtraBars = true,
         hideGryphons = false,
-        scale = 1,
-    },
-
-    vehicleBar = {
-        scale = 0.8,
     },
 
     petBar = {

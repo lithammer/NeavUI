@@ -42,7 +42,7 @@
                 General Options
             -->
             <Frame name="$parentGeneral" inherits="OptionsBoxTemplate">
-                <Size x="250" y="290"/>
+                <Size x="250" y="330"/>
                 <Anchors>
                     <Anchor point="TOPLEFT">
                         <Offset x="16" y="-60"/>
@@ -138,12 +138,31 @@
                     <OnLeave function="GameTooltip_Hide"/>
                 </Scripts>
             </CheckButton>
-            <CheckButton name="AnchorToControls" inherits="UICheckButtonTemplate">
+            <CheckButton name="ShowRoleIcons" inherits="UICheckButtonTemplate">
             <Size>
                 <AbsDimension x="24" y="24"/>
             </Size>
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="SortByRole" relativePoint="BOTTOMLEFT">
+                        <Offset x="0" y="-8"/>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        _G[self:GetName().."Text"]:SetText(" Show Role Icons")
+                    </OnLoad>
+                    <OnClick>
+                        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+                        nRaidDB.showRoleIcons = self:GetChecked()
+                    </OnClick>
+                </Scripts>
+            </CheckButton>
+            <CheckButton name="AnchorToControls" inherits="UICheckButtonTemplate">
+            <Size>
+                <AbsDimension x="24" y="24"/>
+            </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="ShowRoleIcons" relativePoint="BOTTOMLEFT">
                         <Offset x="0" y="-8"/>
                     </Anchor>
                 </Anchors>
@@ -196,13 +215,32 @@
                     </OnClick>
                 </Scripts>
             </CheckButton>
-            <CheckButton name="HorizontalPowerBars" inherits="UICheckButtonTemplate">
+            <CheckButton name="ManaPowerBarsOnly" inherits="UICheckButtonTemplate">
             <Size>
                 <AbsDimension x="24" y="24"/>
             </Size>
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="ShowPowerBars" relativePoint="BOTTOMLEFT">
-                        <Offset x="0" y="-8"/>
+                        <Offset x="15" y="-8"/>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        _G[self:GetName().."Text"]:SetText(" Mana Only")
+                    </OnLoad>
+                    <OnClick>
+                        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+                        nRaidDB.manaOnlyPowerBars = self:GetChecked()
+                    </OnClick>
+                </Scripts>
+            </CheckButton>
+            <CheckButton name="HorizontalPowerBars" inherits="UICheckButtonTemplate">
+            <Size>
+                <AbsDimension x="24" y="24"/>
+            </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="ManaPowerBarsOnly" relativePoint="BOTTOMLEFT">
+                        <Offset x="-15" y="-8"/>
                     </Anchor>
                 </Anchors>
                 <Scripts>
@@ -325,10 +363,22 @@
                     <OnValueChanged function="FrameHeightSlider_OnValueChanged"/>
                 </Scripts>
             </Slider>
-            <Slider name="FrameScaleSlider" inherits="OptionsSliderTemplate">
+            <Slider name="FrameOffsetSlider" inherits="OptionsSliderTemplate">
                 <Size x="150" y="17"/>
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="FrameHeightSlider" relativePoint="BOTTOMLEFT">
+                        <Offset x="0" y="-42"/>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad function="FrameOffsetSlider_OnLoad"/>
+                    <OnValueChanged function="FrameOffsetSlider_OnValueChanged"/>
+                </Scripts>
+            </Slider>
+            <Slider name="FrameScaleSlider" inherits="OptionsSliderTemplate">
+                <Size x="150" y="17"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="FrameOffsetSlider" relativePoint="BOTTOMLEFT">
                         <Offset x="0" y="-42"/>
                     </Anchor>
                 </Anchors>

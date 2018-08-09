@@ -21,10 +21,12 @@ function NeavRaid_OnLoad(self)
         ShowSolo:SetChecked(nRaidDB.showSolo)
         ShowParty:SetChecked(nRaidDB.showParty)
         SortByRole:SetChecked(nRaidDB.sortByRole)
+        ShowRoleIcons:SetChecked(nRaidDB.showRoleIcons)
         AnchorToControls:SetChecked(nRaidDB.anchorToControls)
         AssistFrame:SetChecked(nRaidDB.assistFrame)
         HorizontalHealthBars:SetChecked(nRaidDB.horizontalHealthBars)
         ShowPowerBars:SetChecked(nRaidDB.powerBars)
+        ManaPowerBarsOnly:SetChecked(nRaidDB.manaOnlyPowerBars)
         HorizontalPowerBars:SetChecked(nRaidDB.horizontalPowerBars)
 
         local OrientationText = NeavRaid_GetLabelText(nRaidDB.orientation or "VERTICAL")
@@ -36,6 +38,7 @@ function NeavRaid_OnLoad(self)
         NameLengthSlider:SetValue(nRaidDB.nameLength)
         FrameWidthSlider:SetValue(nRaidDB.frameWidth)
         FrameHeightSlider:SetValue(nRaidDB.frameHeight)
+        FrameOffsetSlider:SetValue(nRaidDB.frameOffset)
         FrameScaleSlider:SetValue(nRaidDB.frameScale)
 
         IndicatorSizeSlider:SetValue(nRaidDB.indicatorSize)
@@ -52,9 +55,11 @@ function NeavRaid_OnEvent(self, event, ...)
             ns.RegisterDefaultSetting("showParty", true)
             ns.RegisterDefaultSetting("assistFrame", false)
             ns.RegisterDefaultSetting("sortByRole", true)
+            ns.RegisterDefaultSetting("showRoleIcons", true)
             ns.RegisterDefaultSetting("anchorToControls", false)
             ns.RegisterDefaultSetting("horizontalHealthBars", false)
             ns.RegisterDefaultSetting("powerBars", true)
+            ns.RegisterDefaultSetting("manaOnlyPowerBars", true)
             ns.RegisterDefaultSetting("horizontalPowerBars", false)
 
             ns.RegisterDefaultSetting("orientation", "VERTICAL")
@@ -63,6 +68,7 @@ function NeavRaid_OnEvent(self, event, ...)
             ns.RegisterDefaultSetting("nameLength", 4)
             ns.RegisterDefaultSetting("frameWidth", 48)
             ns.RegisterDefaultSetting("frameHeight", 46)
+            ns.RegisterDefaultSetting("frameOffset", 7)
             ns.RegisterDefaultSetting("frameScale", 1.2)
 
             ns.RegisterDefaultSetting("indicatorSize", 7)
@@ -272,16 +278,20 @@ local function UpdatePower(self, _, unit)
 
     local _, powerToken = UnitPowerType(unit)
 
-    if  powerToken == "MANA"
-        or powerToken == "RAGE"
-        or powerToken == "ENERGY"
-        or powerToken == "RUNIC_POWER"
-        or powerToken == "FOCUS"
-        or powerToken == "MAELSTROM"
-        or powerToken == "INSANITY"
-        or powerToken == "FURY"
-        or powerToken == "PAIN"
-    then
+    if powerToken == "MANA" and nRaidDB.manaOnlyPowerBars then
+        if not self.Power:IsVisible() then
+            self.Health:ClearAllPoints()
+            if nRaidDB.horizontalPowerBars then
+                self.Health:SetPoint("BOTTOMLEFT", self, 0, 3)
+                self.Health:SetPoint("TOPRIGHT", self)
+            else
+                self.Health:SetPoint("BOTTOMLEFT", self)
+                self.Health:SetPoint("TOPRIGHT", self, -3.5, 0)
+            end
+
+            self.Power:Show()
+        end
+    elseif not nRaidDB.manaOnlyPowerBars then
         if not self.Power:IsVisible() then
             self.Health:ClearAllPoints()
             if nRaidDB.horizontalPowerBars then
@@ -634,9 +644,11 @@ local function CreateRaidLayout(self, unit)
 
         -- Group Role Indicator
 
-    self.GroupRoleIndicator = self.Health:CreateTexture("$parentRoleIcon", "OVERLAY", nil, 6)
-    self.GroupRoleIndicator:SetSize(12, 12)
-    self.GroupRoleIndicator:SetPoint("BOTTOM", self.Health, 0, -6)
+    if nRaidDB.showRoleIcons then
+        self.GroupRoleIndicator = self.Health:CreateTexture("$parentRoleIcon", "OVERLAY", nil, 6)
+        self.GroupRoleIndicator:SetSize(12, 12)
+        self.GroupRoleIndicator:SetPoint("BOTTOM", self.Health, 0, -6)
+    end
 
         -- Resurrect Indicator
 
@@ -704,7 +716,7 @@ oUF:Factory(function(self)
     self:SetActiveStyle("oUF_Neav_Raid")
 
     local relpoint, anchpoint, xOffset, yOffset, columnRelPoint
-    local spacing = 7
+    local spacing = nRaidDB.frameOffset
     local orientation = nRaidDB.orientation
     local initialAnchor = nRaidDB.initialAnchor
 
@@ -849,12 +861,10 @@ oUF:Factory(function(self)
     if nRaidDB.assistFrame then
         self:SetActiveStyle("oUF_Neav_Raid_MT")
 
-        local offset = 7
-
         local tanks = self:SpawnHeader("oUF_Neav_Raid_MT", nil, "solo,party,raid",
             "showRaid", true,
             "showParty", false,
-            "yOffset", -offset,
+            "yOffset", -spacing,
             "template", "oUF_NeavRaid_MT_Target_Template",     -- Target
             "sortMethod", "INDEX",
             "groupFilter", "MAINTANK,MAINASSIST",
