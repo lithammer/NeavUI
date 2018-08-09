@@ -55,6 +55,7 @@ function ns.CreateCastbars(self, unit)
         self.Castbar.channeledColor = config.channeledColor
         self.Castbar.nonInterruptibleColor = config.nonInterruptibleColor
         self.Castbar.failedCastColor = config.failedCastColor
+        self.Castbar.unit = unit
         self.Castbar.timeToHold = 1
 
         if unit == "focus" then

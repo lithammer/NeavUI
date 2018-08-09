@@ -15,11 +15,19 @@ function ns.UpdateCastbarColor(self)
     self:SetStatusBarColor(unpack(startColor))
     self.Background:SetVertexColor(startColor[1]*0.3, startColor[2]*0.3, startColor[3]*0.3)
 
-    if self.notInterruptible then
-        ns.ColorBorder(self, "white", unpack(nonInterruptibleColor))
+    if self.unit ~= "player" then
+        if self.notInterruptible then
+            ns.ColorBorder(self, "white", unpack(nonInterruptibleColor))
 
-        if self.IconOverlay then
-            ns.ColorBorder(self.IconOverlay, "white", unpack(nonInterruptibleColor))
+            if self.IconOverlay then
+                ns.ColorBorder(self.IconOverlay, "white", unpack(nonInterruptibleColor))
+            end
+        else
+            ns.ColorBorder(self, "default", 1.0, 1.0, 1.0)
+
+            if self.IconOverlay then
+                ns.ColorBorder(self.IconOverlay, "default", 1.0, 1.0, 1.0)
+            end
         end
     else
         ns.ColorBorder(self, "default", 1.0, 1.0, 1.0)
