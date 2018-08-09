@@ -964,6 +964,8 @@ function HideGrid(event)
 		for button in next, ButtonRegistry do
 			if button:IsShown() and not button:HasAction() and not button.config.showGrid then
 				button:SetAlpha(0.0)
+            elseif button:IsShown() and button:HasAction() then
+                UpdateUsable(button)
 			end
 		end
 	end
