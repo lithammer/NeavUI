@@ -124,7 +124,7 @@ function ns.CreateCastbars(self, unit)
             -- Interrupt indicator
 
         self.Castbar.PostCastStart = function(self, unit)
-            ns.UpdateCastbarColor(self, unit)
+            ns.UpdateCastbarColor(self)
 
             if unit == "player" then
                 if self.Latency then
@@ -153,7 +153,7 @@ function ns.CreateCastbars(self, unit)
         end
 
         self.Castbar.PostChannelStart = function(self, unit)
-            ns.UpdateCastbarColor(self, unit)
+            ns.UpdateCastbarColor(self)
 
             if unit == "player" then
                 if self.Latency then
