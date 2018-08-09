@@ -41,22 +41,6 @@ local playerCastbarHolder = CreateAnchor("player","Player")
 local targetCastbarHolder = CreateAnchor("target","Target")
 local petCastbarHolder = CreateAnchor("pet","Pet")
 
-local function UpdateCastbarColor(self, unit, config)
-    if self.notInterruptible then
-        ns.ColorBorder(self, "white", unpack(config and config.interruptColor or {1, 0, 1}))
-
-        if self.IconOverlay then
-            ns.ColorBorder(self.IconOverlay, "white", unpack(config and config.interruptColor or {1, 0, 1}))
-        end
-    else
-        ns.ColorBorder(self, "default", 1, 1, 1, 0)
-
-        if self.IconOverlay then
-            ns.ColorBorder(self.IconOverlay, "default", 1, 1, 1, 0)
-        end
-    end
-end
-
     -- Create the castbars
 
 function ns.CreateCastbars(self, unit)
@@ -67,7 +51,11 @@ function ns.CreateCastbars(self, unit)
         self.Castbar:SetStatusBarTexture(ns.Config.media.statusbar)
         self.Castbar:SetSize(config.width, config.height)
         self.Castbar:SetScale(config.scale)
-        self.Castbar:SetStatusBarColor(unpack(config.color))
+        self.Castbar.castColor = config.castColor
+        self.Castbar.channeledColor = config.channeledColor
+        self.Castbar.nonInterruptibleColor = config.nonInterruptibleColor
+        self.Castbar.failedCastColor = config.failedCastColor
+        self.Castbar.timeToHold = 1
 
         if unit == "focus" then
             self.Castbar:SetPoint("BOTTOM", self, "TOP", 0, 25)
@@ -82,14 +70,12 @@ function ns.CreateCastbars(self, unit)
         self.Castbar.Background = self.Castbar:CreateTexture("$parentBackground", "BACKGROUND")
         self.Castbar.Background:SetTexture("Interface\\Buttons\\WHITE8x8")
         self.Castbar.Background:SetAllPoints(self.Castbar)
-        self.Castbar.Background:SetVertexColor(config.color[1]*0.3, config.color[2]*0.3, config.color[3]*0.3, 0.8)
 
         if unit == "player" then
-            local playerColor = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
-
             if config.classcolor then
-                self.Castbar:SetStatusBarColor(playerColor.r, playerColor.g, playerColor.b)
-                self.Castbar.Background:SetVertexColor(playerColor.r * 0.3, playerColor.g * 0.3, playerColor.b * 0.3, 0.8)
+                local playerColor = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
+                self.Castbar.castColor = {playerColor.r, playerColor.g, playerColor.b}
+                self.Castbar.channeledColor = {playerColor.r, playerColor.g, playerColor.b}
             end
 
             if config.showSafezone then
@@ -138,6 +124,8 @@ function ns.CreateCastbars(self, unit)
             -- Interrupt indicator
 
         self.Castbar.PostCastStart = function(self, unit)
+            ns.UpdateCastbarColor(self, unit)
+
             if unit == "player" then
                 if self.Latency then
                     local down, up, lagHome, lagWorld = GetNetStats()
@@ -147,10 +135,6 @@ function ns.CreateCastbars(self, unit)
                     self.Latency:SetPoint("RIGHT", self, "BOTTOMRIGHT", -1, -2)
                     self.Latency:SetText(string.format("%.0f", avgLag).."ms")
                 end
-            end
-
-            if unit == "target" or unit == "focus" then
-                UpdateCastbarColor(self, unit, config)
             end
 
                 -- Hide some special spells like waterbold or firebold (pets) because it gets really spammy
@@ -169,6 +153,8 @@ function ns.CreateCastbars(self, unit)
         end
 
         self.Castbar.PostChannelStart = function(self, unit)
+            ns.UpdateCastbarColor(self, unit)
+
             if unit == "player" then
                 if self.Latency then
                     local down, up, lagHome, lagWorld = GetNetStats()
@@ -180,10 +166,6 @@ function ns.CreateCastbars(self, unit)
                 end
             end
 
-            if unit == "target" or unit == "focus" then
-                UpdateCastbarColor(self, unit, config)
-            end
-
             if ns.Config.units.pet.castbar.ignoreSpells then
                 if unit == "pet" and self:GetAlpha() == 0 then
                     self:SetAlpha(1)
@@ -191,8 +173,13 @@ function ns.CreateCastbars(self, unit)
             end
         end
 
-        self.Castbar.PostCastInterruptible = UpdateCastbarColor
-        self.Castbar.PostCastNotInterruptible = UpdateCastbarColor
+        self.Castbar.PostCastInterrupted = function(self, unit)
+            self:SetStatusBarColor(unpack(self.failedCastColor))
+            self.Background:SetVertexColor(self.failedCastColor[1]*0.3, self.failedCastColor[2]*0.3, self.failedCastColor[3]*0.3)
+        end
+
+        self.Castbar.PostCastInterruptible = ns.UpdateCastbarColor
+        self.Castbar.PostCastNotInterruptible = ns.UpdateCastbarColor
 
         self.Castbar.CustomDelayText = ns.CustomDelayText
         self.Castbar.CustomTimeText = ns.CustomTimeText

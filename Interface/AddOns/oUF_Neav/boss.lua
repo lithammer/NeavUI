@@ -184,14 +184,18 @@ local function CreateBossLayout(self, unit)
     if config.units.boss.castbar.show then
         self.Castbar = CreateFrame("StatusBar", self:GetName().."Castbar", self)
         self.Castbar:SetStatusBarTexture(config.media.statusbar)
-        self.Castbar:SetSize(150, 18)
-        self.Castbar:SetStatusBarColor(unpack(config.units.boss.castbar.color))
         self.Castbar:SetPoint("BOTTOM", self, "TOP", 10, 13)
+        self.Castbar:SetHeight(config.units.boss.castbar.height)
+        self.Castbar:SetWidth(config.units.boss.castbar.width)
+        self.Castbar.castColor = config.units.boss.castbar.castColor
+        self.Castbar.channeledColor = config.units.boss.castbar.channeledColor
+        self.Castbar.nonInterruptibleColor = config.units.boss.castbar.nonInterruptibleColor
+        self.Castbar.failedCastColor = config.units.boss.castbar.failedCastColor
+        self.Castbar.timeToHold = 1
 
-        self.Castbar.Bg = self.Castbar:CreateTexture("$parentBackground", "BACKGROUND")
-        self.Castbar.Bg:SetTexture("Interface\\Buttons\\WHITE8x8")
-        self.Castbar.Bg:SetAllPoints(self.Castbar)
-        self.Castbar.Bg:SetVertexColor(config.units.boss.castbar.color[1]*0.3, config.units.boss.castbar.color[2]*0.3, config.units.boss.castbar.color[3]*0.3, 0.8)
+        self.Castbar.Background = self.Castbar:CreateTexture("$parentBackground", "BACKGROUND")
+        self.Castbar.Background:SetTexture("Interface\\Buttons\\WHITE8x8")
+        self.Castbar.Background:SetAllPoints(self.Castbar)
 
         self.Castbar:CreateBeautyBorder(11)
         self.Castbar:SetBeautyBorderPadding(3)
@@ -201,12 +205,14 @@ local function CreateBossLayout(self, unit)
         self.Castbar.CustomDelayText = ns.CustomDelayText
         self.Castbar.CustomTimeText = ns.CustomTimeText
 
-        self.Castbar.PostCastStart = function(self, unit)
-            if self.notInterruptible then
-                ns.ColorBorder(self, "white", config.units.boss.castbar.interruptColor[1], config.units.boss.castbar.interruptColor[2], config.units.boss.castbar.interruptColor[3], 0)
-            else
-                ns.ColorBorder(self, "default", 1, 1, 1, 0)
-            end
+        self.Castbar.PostCastStart = ns.UpdateCastbarColor
+        self.Castbar.PostChannelStart = ns.UpdateCastbarColor
+        self.Castbar.PostCastInterruptible = ns.UpdateCastbarColor
+        self.Castbar.PostCastNotInterruptible = ns.UpdateCastbarColor
+
+        self.Castbar.PostCastInterrupted = function(self, unit)
+            self:SetStatusBarColor(unpack(self.failedCastColor))
+            self.Background:SetVertexColor(self.failedCastColor[1]*0.3, self.failedCastColor[2]*0.3, self.failedCastColor[3]*0.3)
         end
     end
 

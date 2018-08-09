@@ -23,6 +23,13 @@ local _, ns = ...
         So you have a red deficit value
 --]]
 
+-- Global Castbar Colors
+
+local START_CAST_COLOR = {1.0, 0.7, 0.0} -- Normal Casts
+local START_CHANNEL_COLOR = {0.0, 1.0, 0.0} -- Channeled Casts
+local NONINTERRUPTIBLE_COLOR = {0.75, 0.0, 0.0} -- Non-Interruptible Cast Border Colors
+local FAILED_CAST_COLOR = {1.0, 0.0, 0.0} -- Failed / Interrupted Cast
+
 ns.Config = {
     show = {
         castbars = true,
@@ -73,7 +80,10 @@ ns.Config = {
                 safezoneColor = {1, 0, 1},
 
                 classcolor = true,
-                color = {1, 0.7, 0},
+                castColor = START_CAST_COLOR,
+                channeledColor = START_CHANNEL_COLOR,
+                nonInterruptibleColor = NONINTERRUPTIBLE_COLOR,
+                failedCastColor = FAILED_CAST_COLOR,
 
                 icon = {
                     show = true,
@@ -109,7 +119,10 @@ ns.Config = {
                 height = 19,
                 scale = 0.93,
 
-                color = {0, 0.65, 1},
+                castColor = START_CAST_COLOR,
+                channeledColor = START_CHANNEL_COLOR,
+                nonInterruptibleColor = NONINTERRUPTIBLE_COLOR,
+                failedCastColor = FAILED_CAST_COLOR,
 
                 icon = {
                     show = false,
@@ -161,8 +174,10 @@ ns.Config = {
                 height = 19,
                 scale = 0.93,
 
-                color = {0.9, 0.1, 0.1},
-                interruptColor = {1, 0, 1},
+                castColor = START_CAST_COLOR,
+                channeledColor = START_CHANNEL_COLOR,
+                nonInterruptibleColor = NONINTERRUPTIBLE_COLOR,
+                failedCastColor = FAILED_CAST_COLOR,
 
                 icon = {
                     show = true,
@@ -212,8 +227,10 @@ ns.Config = {
                 height = 19,
                 scale = 0.93,
 
-                color = {0, 0.65, 1},
-                interruptColor = {1, 0, 1},
+                castColor = START_CAST_COLOR,
+                channeledColor = START_CHANNEL_COLOR,
+                nonInterruptibleColor = NONINTERRUPTIBLE_COLOR,
+                failedCastColor = FAILED_CAST_COLOR,
 
                 icon = {
                     show = true,
@@ -261,8 +278,15 @@ ns.Config = {
 
             castbar = {
                 show = true,
-                color = {1.0, 0.7, 0.0},
-                interruptColor = {1.0, 0.0, 0.0},
+
+                width = 150,
+                height = 18,
+                scale = 0.93,
+
+                castColor = START_CAST_COLOR,
+                channeledColor = START_CHANNEL_COLOR,
+                nonInterruptibleColor = NONINTERRUPTIBLE_COLOR,
+                failedCastColor = FAILED_CAST_COLOR,
             },
         },
 
@@ -287,11 +311,16 @@ ns.Config = {
             position = {"TOPRIGHT", UIParent, "TOPRIGHT", -95, -300},
 
             castbar = {
+                show = true,
+
                 width = 160,
                 height = 22,
                 scale = 0.93,
 
-                color = {1.0,0.7,0.0},
+                castColor = START_CAST_COLOR,
+                channeledColor = START_CHANNEL_COLOR,
+                nonInterruptibleColor = NONINTERRUPTIBLE_COLOR,
+                failedCastColor = FAILED_CAST_COLOR,
             },
 
             filterBuffs = false,

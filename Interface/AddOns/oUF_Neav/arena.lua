@@ -258,41 +258,47 @@ local function CreateArenaLayout(self, unit)
 
             -- Castbar
 
-        self.Castbar = CreateFrame("StatusBar", self:GetName().."Castbar", self)
-        self.Castbar:SetStatusBarTexture(config.media.statusbar)
-        self.Castbar:SetParent(self)
-        self.Castbar:SetHeight(config.units.arena.castbar.height)
-        self.Castbar:SetWidth(config.units.arena.castbar.width)
-        self.Castbar:SetStatusBarColor(unpack(config.units.arena.castbar.color))
+        if config.units.arena.castbar.show then
+            self.Castbar = CreateFrame("StatusBar", self:GetName().."Castbar", self)
+            self.Castbar:SetPoint("TOPLEFT", self.Trinket, "BOTTOMLEFT", 22, -10)
+            self.Castbar:SetStatusBarTexture(config.media.statusbar)
+            self.Castbar:SetParent(self)
+            self.Castbar:SetHeight(config.units.arena.castbar.height)
+            self.Castbar:SetWidth(config.units.arena.castbar.width)
+            self.Castbar.castColor = config.units.arena.castbar.castColor
+            self.Castbar.channeledColor = config.units.arena.castbar.channeledColor
+            self.Castbar.nonInterruptibleColor = config.units.arena.castbar.nonInterruptibleColor
+            self.Castbar.failedCastColor = config.units.arena.castbar.failedCastColor
+            self.Castbar.timeToHold = 1
 
-        self.Castbar:SetPoint("TOPLEFT", self.Trinket, "BOTTOMLEFT", 22, -10)
+            self.Castbar.IconSize = self.Castbar:GetHeight()
 
-        self.Castbar.IconSize = self.Castbar:GetHeight()
+            self.Castbar.Background = self.Castbar:CreateTexture(nil, "BACKGROUND")
+            self.Castbar.Background:SetTexture("Interface\\Buttons\\WHITE8x8")
+            self.Castbar.Background:SetAllPoints(self.Castbar)
 
-        self.Castbar.Bg = self.Castbar:CreateTexture(nil, "BACKGROUND")
-        self.Castbar.Bg:SetTexture("Interface\\Buttons\\WHITE8x8")
-        self.Castbar.Bg:SetAllPoints(self.Castbar)
-        self.Castbar.Bg:SetVertexColor(config.units.arena.castbar.color[1]*0.3, config.units.arena.castbar.color[2]*0.3, config.units.arena.castbar.color[3]*0.3, 0.8)
+            self.Castbar:CreateBeautyBorder(11)
+            self.Castbar:SetBeautyBorderPadding(4+self.Castbar.IconSize, 3, 3, 3, 4+self.Castbar.IconSize, 3, 3, 3, 3)
 
-        self.Castbar:CreateBeautyBorder(11)
-        self.Castbar:SetBeautyBorderPadding(4+self.Castbar.IconSize, 3, 3, 3, 4+self.Castbar.IconSize, 3, 3, 3, 3)
+            self.Castbar.Icon = self.Castbar:CreateTexture("$parentIcon", "BACKGROUND")
+            self.Castbar.Icon:SetSize(self.Castbar.IconSize, self.Castbar.IconSize)
+            self.Castbar.Icon:SetPoint("TOPRIGHT", self.Castbar, "TOPLEFT", 0, 0)
+            self.Castbar.Icon:SetColorTexture(1, 1, 1)
+            self.Castbar.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 
-        self.Castbar.Icon = self.Castbar:CreateTexture("$parentIcon", "BACKGROUND")
-        self.Castbar.Icon:SetSize(self.Castbar.IconSize, self.Castbar.IconSize)
-        self.Castbar.Icon:SetPoint("TOPRIGHT", self.Castbar, "TOPLEFT", 0, 0)
-        self.Castbar.Icon:SetColorTexture(1, 1, 1)
-        self.Castbar.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+            ns.CreateCastbarStrings(self, false)
 
-        ns.CreateCastbarStrings(self, false)
+            self.Castbar.CustomDelayText = ns.CustomDelayText
+            self.Castbar.CustomTimeText = ns.CustomTimeText
 
-        self.Castbar.CustomDelayText = ns.CustomDelayText
-        self.Castbar.CustomTimeText = ns.CustomTimeText
+            self.Castbar.PostCastStart = ns.UpdateCastbarColor
+            self.Castbar.PostChannelStart = ns.UpdateCastbarColor
+            self.Castbar.PostCastInterruptible = ns.UpdateCastbarColor
+            self.Castbar.PostCastNotInterruptible = ns.UpdateCastbarColor
 
-        self.Castbar.PostCastStart = function(self, unit)
-            if self.notInterruptible then
-                ns.ColorBorder(self, "white", 1, 0, 0, 0)
-            else
-                ns.ColorBorder(self, "default", 1, 1, 1, 0)
+            self.Castbar.PostCastInterrupted = function(self, unit)
+                self:SetStatusBarColor(unpack(self.failedCastColor))
+                self.Background:SetVertexColor(self.failedCastColor[1]*0.3, self.failedCastColor[2]*0.3, self.failedCastColor[3]*0.3)
             end
         end
 
