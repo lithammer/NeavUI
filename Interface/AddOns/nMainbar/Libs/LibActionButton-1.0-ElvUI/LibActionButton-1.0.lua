@@ -945,7 +945,7 @@ function ShowGrid(event)
 		for button in next, ButtonRegistry do
 			if button:IsShown() then
 				button:SetAlpha(1.0)
-                button.NormalTexture:SetVertexColor(unpack(button.config.colors.usable))
+				button.NormalTexture:SetVertexColor(unpack(button.config.colors.usable))
 			end
 		end
 	end
@@ -964,8 +964,8 @@ function HideGrid(event)
 		for button in next, ButtonRegistry do
 			if button:IsShown() and not button:HasAction() and not button.config.showGrid then
 				button:SetAlpha(0.0)
-            elseif button:IsShown() and button:HasAction() then
-                UpdateUsable(button)
+			elseif button:IsShown() and button:HasAction() then
+				UpdateUsable(button)
 			end
 		end
 	end
