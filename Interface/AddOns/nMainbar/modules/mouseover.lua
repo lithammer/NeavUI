@@ -25,6 +25,14 @@ local function EnableMouseOver(self, bar, min, max, alpha, hiddenAlpha)
             end
         end)
 
+        hooksecurefunc("ValidateActionBarTransition", function(self)
+            if bar:IsShown() then
+                if not MouseIsOver(mouseOverFrame) then
+                    bar:SetAlpha(minAlpha)
+                end
+            end
+        end)
+
         mouseOverFrame:SetScript("OnShow", function()
             if not MouseIsOver(button) then
                 bar:SetAlpha(minAlpha)
@@ -39,14 +47,6 @@ local function EnableMouseOver(self, bar, min, max, alpha, hiddenAlpha)
             if not MouseIsOver(button) then
                 bar:SetAlpha(minAlpha)
             end
-        end)
-
-        button:HookScript("OnShow", function()
-            C_Timer.After(0.5, function()
-                if not MouseIsOver(mouseOverFrame) then
-                    bar:SetAlpha(minAlpha)
-                end
-            end)
         end)
 
         button:HookScript("OnEnter", function()
