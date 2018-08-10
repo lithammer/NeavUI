@@ -139,7 +139,7 @@ function ns.CreateCheckBox(name, parent, label, tooltip, relativeTo, x, y, disab
     end
 
     if ( disableInCombat ) then
-        nPlates:LockInCombat(checkBox)
+        ns.LockInCombat(checkBox)
     end
 
     return checkBox
@@ -179,7 +179,7 @@ function ns.CreateSlider(name, parent, label, relativeTo, x, y, cvar, data, from
     slider.textLow:SetJustifyH("LEFT")
 
     if ( disableInCombat ) then
-        nPlates:LockInCombat(slider)
+        ns.LockInCombat(slider)
     end
 
     return slider
