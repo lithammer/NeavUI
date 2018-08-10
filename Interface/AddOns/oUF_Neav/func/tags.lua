@@ -67,8 +67,8 @@ tags["neav:name"] = function(unit)
     local name, _ = UnitName(unit) or UNKNOWN
     local _, class = UnitClass(unit)
 
-    if unit == "player" or unit:match("party(%d)") then
-        local color = oUF.colors.class[class]
+    if unit == "player" or unit:match("party") then
+        local color = class and oUF.colors.class[class] or GameTooltip_UnitColor(unit)
         r, g, b = color[1], color[2], color[3]
     elseif unit == "targettarget" or unit == "focustarget" or unit:match("arena(%d)target") then
         r, g, b = GameTooltip_UnitColor(unit)
