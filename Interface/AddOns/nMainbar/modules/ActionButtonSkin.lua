@@ -292,7 +292,7 @@ hooksecurefunc("ActionButton_ShowGrid", function(self)
     end
 end)
 
-hooksecurefunc("ActionButton_UpdateUsable", function(self)
+local function UpdateUsable(self, checksRange, inRange)
     if IsAddOnLoaded("tullaRange") then
         return
     end
@@ -314,29 +314,27 @@ hooksecurefunc("ActionButton_UpdateUsable", function(self)
         icon:SetVertexColor(Color.NotUsable:GetRGB())
         normalTexture:SetVertexColor(Color.NotUsable:GetRGB())
     end
-end)
+
+    if checksRange and not inRange then
+        icon:SetVertexColor(Color.OutOfRange:GetRGB())
+    end
+end
+hooksecurefunc("ActionButton_UpdateUsable", UpdateUsable)
 
 hooksecurefunc("ActionButton_UpdateRangeIndicator", function(self, checksRange, inRange)
     local icon = self.icon
-    local isUsable, notEnoughMana = IsUsableAction(self.action)
+
+    if self.action and cfg.button.buttonOutOfRange then
+        UpdateUsable(self, checksRange, inRange)
+    end
 
     if self.HotKey:GetText() == RANGE_INDICATOR then
         if checksRange then
             self.HotKey:Show()
             if inRange then
                 self.HotKey:SetVertexColor(Color.HotKeyText:GetRGB())
-                if cfg.button.buttonOutOfRange then
-                    if isUsable then
-                        icon:SetVertexColor(1.0, 1.0, 1.0)
-                    else
-                        icon:SetVertexColor(Color.NotUsable:GetRGB())
-                    end
-                end
             else
                 self.HotKey:SetVertexColor(Color.OutOfRange:GetRGB())
-                if cfg.button.buttonOutOfRange then
-                    icon:SetVertexColor(Color.OutOfRange:GetRGB())
-                end
             end
         else
             self.HotKey:Hide()
@@ -344,18 +342,8 @@ hooksecurefunc("ActionButton_UpdateRangeIndicator", function(self, checksRange, 
     else
         if checksRange and not inRange then
             self.HotKey:SetVertexColor(Color.OutOfRange:GetRGB())
-            if cfg.button.buttonOutOfRange then
-                icon:SetVertexColor(Color.OutOfRange:GetRGB())
-            end
         else
             self.HotKey:SetVertexColor(Color.HotKeyText:GetRGB())
-            if cfg.button.buttonOutOfRange then
-                if isUsable then
-                    icon:SetVertexColor(1.0, 1.0, 1.0)
-                else
-                    icon:SetVertexColor(Color.NotUsable:GetRGB())
-                end
-            end
         end
     end
 end)
