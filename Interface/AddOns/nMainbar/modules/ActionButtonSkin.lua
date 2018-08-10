@@ -318,6 +318,7 @@ end)
 
 hooksecurefunc("ActionButton_UpdateRangeIndicator", function(self, checksRange, inRange)
     local icon = self.icon
+    local isUsable, notEnoughMana = IsUsableAction(self.action)
 
     if self.HotKey:GetText() == RANGE_INDICATOR then
         if checksRange then
@@ -325,7 +326,11 @@ hooksecurefunc("ActionButton_UpdateRangeIndicator", function(self, checksRange, 
             if inRange then
                 self.HotKey:SetVertexColor(Color.HotKeyText:GetRGB())
                 if cfg.button.buttonOutOfRange then
-                    icon:SetVertexColor(1.0, 1.0, 1.0)
+                    if isUsable then
+                        icon:SetVertexColor(1.0, 1.0, 1.0)
+                    else
+                        icon:SetVertexColor(Color.NotUsable:GetRGB())
+                    end
                 end
             else
                 self.HotKey:SetVertexColor(Color.OutOfRange:GetRGB())
@@ -345,7 +350,11 @@ hooksecurefunc("ActionButton_UpdateRangeIndicator", function(self, checksRange, 
         else
             self.HotKey:SetVertexColor(Color.HotKeyText:GetRGB())
             if cfg.button.buttonOutOfRange then
-                icon:SetVertexColor(1.0, 1.0, 1.0)
+                if isUsable then
+                    icon:SetVertexColor(1.0, 1.0, 1.0)
+                else
+                    icon:SetVertexColor(Color.NotUsable:GetRGB())
+                end
             end
         end
     end
