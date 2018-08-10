@@ -144,7 +144,7 @@ Options:SetScript("OnShow", function()
         { text = L.Horizontal, value = "HORIZONTAL", },
     }
 
-    local OrientationDropdown = ns.CreateDropdown(OrientationTable, "OrientationDropdown", L.Orientation, nRaidDB.orientation, RightSide, LayoutOptions, 0, -32)
+    local OrientationDropdown = ns.CreateDropdown(OrientationTable, "OrientationDropdown", L.Orientation, "orientation", RightSide, LayoutOptions, 0, -32)
 
     local InitialAnchorTable = {
         { text = L.TopLeft, value = "TOPLEFT", },
@@ -153,7 +153,7 @@ Options:SetScript("OnShow", function()
         { text = L.BottomRight, value = "BOTTOMRIGHT", },
     }
 
-    local InitialAnchorDropdown = ns.CreateDropdown(InitialAnchorTable, "InitialAnchorDropdown", L.InitialAnchor, nRaidDB.initialAnchor, RightSide, _G["OrientationDropdown"], 0, -32)
+    local InitialAnchorDropdown = ns.CreateDropdown(InitialAnchorTable, "InitialAnchorDropdown", L.InitialAnchor, "initialAnchor", RightSide, _G["OrientationDropdown"], 0, -32)
 
     local nameLength = nRaidDB.nameLength or 4
     local NameLengthSlider = ns.CreateSlider("NameLengthSlider", RightSide, L.NameLengthSlider, _G["InitialAnchorDropdown"], 22, -42, nil, nRaidDB.nameLength, "%.0f", nameLength, 4, 20, 1, false)
