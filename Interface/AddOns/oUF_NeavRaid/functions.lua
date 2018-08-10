@@ -119,14 +119,6 @@ ns.CreateAnchor = function(name)
     return anchorFrame
 end
 
-function ns.SetData(name, value)
-    if name == "OrientationDropdown" then
-        nRaidDB.orientation = value
-    elseif name == "InitialAnchorDropdown" then
-        nRaidDB.initialAnchor = value
-    end
-end
-
 function ns.LockInCombat(frame)
     frame:SetScript("OnUpdate", function(self)
         if ( not InCombatLockdown() ) then
@@ -193,7 +185,7 @@ function ns.CreateSlider(name, parent, label, relativeTo, x, y, cvar, data, from
     return slider
 end
 
-function ns.CreateDropdown(optionsTable, name, desc, data, parent, relativeTo, x, y)
+function ns.CreateDropdown(optionsTable, name, desc, var, parent, relativeTo, x, y)
     --[[
     Example optionsTable
 
@@ -217,7 +209,7 @@ function ns.CreateDropdown(optionsTable, name, desc, data, parent, relativeTo, x
     dropdown.dummyFrame:SetAllPoints(dropdown)
 
     local function Dropdown_OnClick(self)
-        ns.SetData(name, optionsTable[self.value].value)
+        nRaidDB[var] = optionsTable[self.value].value
         UIDropDownMenu_SetText(dropdown, optionsTable[self.value].text)
         UIDropDownMenu_SetSelectedValue(dropdown, self.value)
     end
@@ -230,7 +222,7 @@ function ns.CreateDropdown(optionsTable, name, desc, data, parent, relativeTo, x
             info.value = i
             info.value2 = filter.value
             info.func = Dropdown_OnClick
-            if ( info.value2 == data ) then
+            if ( info.value2 == nRaidDB[var] ) then
                 info.checked = 1
                 UIDropDownMenu_SetText(self, filter.text)
             else
