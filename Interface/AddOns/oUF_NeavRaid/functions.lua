@@ -121,7 +121,7 @@ end
 
 function ns.LockInCombat(frame)
     frame:SetScript("OnUpdate", function(self)
-        if ( not InCombatLockdown() ) then
+        if not InCombatLockdown() then
             self:Enable()
         else
             self:Disable()
@@ -134,21 +134,21 @@ function ns.CreateCheckBox(name, parent, label, tooltip, relativeTo, x, y, disab
     checkBox:SetPoint("TOPLEFT", relativeTo, "BOTTOMLEFT", x, y)
     checkBox.Text:SetText(label)
 
-    if ( tooltip ) then
+    if tooltip then
         checkBox.tooltipText = tooltip
     end
 
-    if ( disableInCombat ) then
+    if disableInCombat then
         ns.LockInCombat(checkBox)
     end
 
     return checkBox
 end
 
-function ns.CreateSlider(name, parent, label, relativeTo, x, y, cvar, data, fromatString, defaultValue, minValue, maxValue, step, disableInCombat)
+function ns.CreateSlider(name, parent, label, relativeTo, x, y, isCvar, data, fromatString, defaultValue, minValue, maxValue, step, disableInCombat)
     local value
-    if ( cvar ) then
-        value = BlizzardOptionsPanel_GetCVarSafe(cvar)
+    if isCvar then
+        value = BlizzardOptionsPanel_GetCVarSafe(data)
     else
         value = data
     end
@@ -178,7 +178,7 @@ function ns.CreateSlider(name, parent, label, relativeTo, x, y, cvar, data, from
     slider.textLow:SetText(label)
     slider.textLow:SetJustifyH("LEFT")
 
-    if ( disableInCombat ) then
+    if disableInCombat then
         ns.LockInCombat(slider)
     end
 
@@ -222,7 +222,7 @@ function ns.CreateDropdown(optionsTable, name, desc, var, parent, relativeTo, x,
             info.value = i
             info.value2 = filter.value
             info.func = Dropdown_OnClick
-            if ( info.value2 == nRaidDB[var] ) then
+            if info.value2 == nRaidDB[var] then
                 info.checked = 1
                 UIDropDownMenu_SetText(self, filter.text)
             else
