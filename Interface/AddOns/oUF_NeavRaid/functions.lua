@@ -35,22 +35,6 @@ ns.RegisterDefaultSetting = function(key, value)
     end
 end
 
-function NeavRaid_GetLabelText(value)
-    if value == "VERTICAL" then
-        return "Vertical"
-    elseif value == "HORIZONTAL" then
-        return "Horizontal"
-    elseif value == "TOPLEFT" then
-        return "Top Left"
-    elseif value == "TOPRIGHT" then
-        return "Top Right"
-    elseif value == "BOTTOMLEFT" then
-        return "Bottom Left"
-    elseif value == "BOTTOMRIGHT" then
-        return "Bottom Right"
-    end
-end
-
 local function chsize(char)
     if not char then
         return 0
@@ -133,4 +117,129 @@ ns.CreateAnchor = function(name)
     end)
 
     return anchorFrame
+end
+
+function ns.SetData(name, value)
+    if name == "OrientationDropdown" then
+        nRaidDB.orientation = value
+    elseif name == "InitialAnchorDropdown" then
+        nRaidDB.initialAnchor = value
+    end
+end
+
+function ns.LockInCombat(frame)
+    frame:SetScript("OnUpdate", function(self)
+        if ( not InCombatLockdown() ) then
+            self:Enable()
+        else
+            self:Disable()
+        end
+    end)
+end
+
+function ns.CreateCheckBox(name, parent, label, tooltip, relativeTo, x, y, disableInCombat)
+    local checkBox = CreateFrame("CheckButton", name, parent, "InterfaceOptionsCheckButtonTemplate")
+    checkBox:SetPoint("TOPLEFT", relativeTo, "BOTTOMLEFT", x, y)
+    checkBox.Text:SetText(label)
+
+    if ( tooltip ) then
+        checkBox.tooltipText = tooltip
+    end
+
+    if ( disableInCombat ) then
+        nPlates:LockInCombat(checkBox)
+    end
+
+    return checkBox
+end
+
+function ns.CreateSlider(name, parent, label, relativeTo, x, y, cvar, data, fromatString, defaultValue, minValue, maxValue, step, disableInCombat)
+    local value
+    if ( cvar ) then
+        value = BlizzardOptionsPanel_GetCVarSafe(cvar)
+    else
+        value = data
+    end
+
+    local slider = CreateFrame("Slider", name, parent, "OptionsSliderTemplate")
+    slider:SetWidth(180)
+    slider:SetPoint("TOPLEFT", relativeTo, "BOTTOMLEFT", x, y)
+    slider.textLow = _G[name.."Low"]
+    slider.textHigh = _G[name.."High"]
+    slider.text = _G[name.."Text"]
+
+    slider:SetMinMaxValues(minValue, maxValue)
+    slider.minValue, slider.maxValue = slider:GetMinMaxValues()
+    slider:SetValue(value)
+    slider:SetValueStep(step)
+    slider:SetObeyStepOnDrag(true)
+
+    slider.text:SetFormattedText(fromatString, defaultValue)
+    slider.text:ClearAllPoints()
+    slider.text:SetPoint("BOTTOMRIGHT", slider, "TOPRIGHT")
+
+    slider.textHigh:Hide()
+
+    slider.textLow:ClearAllPoints()
+    slider.textLow:SetPoint("BOTTOMLEFT", slider, "TOPLEFT")
+    slider.textLow:SetPoint("BOTTOMRIGHT", slider.text, "BOTTOMLEFT", -4, 0)
+    slider.textLow:SetText(label)
+    slider.textLow:SetJustifyH("LEFT")
+
+    if ( disableInCombat ) then
+        nPlates:LockInCombat(slider)
+    end
+
+    return slider
+end
+
+function ns.CreateDropdown(optionsTable, name, desc, data, parent, relativeTo, x, y)
+    --[[
+    Example optionsTable
+
+    local optionsTable = {
+        { text = L.OptionOne, value = ValueOne, },
+        { text = L.OptionTwo, value = ValueTwo, },
+        { text = L.OptionThree, value = ValueThree, },
+        { text = L.OptionFour, value = ValueFour, },
+    }
+    ]]
+
+    local dropdown = CreateFrame("Button", name, parent, "UIDropDownMenuTemplate")
+    dropdown:SetPoint("TOPLEFT", relativeTo, "BOTTOMLEFT", x, y)
+    dropdown:EnableMouse(true)
+
+    dropdown.title = dropdown:CreateFontString("$parentTitle", "BACKGROUND", "GameFontNormalSmall")
+    dropdown.title:SetPoint("BOTTOMLEFT", dropdown, "TOPLEFT", 20, 5)
+    dropdown.title:SetText(desc)
+
+    dropdown.dummyFrame = CreateFrame("Frame", "$parentDummyFrame", dropdown)
+    dropdown.dummyFrame:SetAllPoints(dropdown)
+
+    local function Dropdown_OnClick(self)
+        ns.SetData(name, optionsTable[self.value].value)
+        UIDropDownMenu_SetText(dropdown, optionsTable[self.value].text)
+        UIDropDownMenu_SetSelectedValue(dropdown, self.value)
+    end
+
+    local function Initialize(self, level)
+        local info = UIDropDownMenu_CreateInfo()
+
+        for i, filter in ipairs(optionsTable) do
+            info.text = filter.text
+            info.value = i
+            info.value2 = filter.value
+            info.func = Dropdown_OnClick
+            if ( info.value2 == data ) then
+                info.checked = 1
+                UIDropDownMenu_SetText(self, filter.text)
+            else
+                info.checked = nil
+            end
+            UIDropDownMenu_AddButton(info)
+        end
+    end
+
+    UIDropDownMenu_SetWidth(dropdown, 180)
+    UIDropDownMenu_Initialize(dropdown, Initialize)
 end

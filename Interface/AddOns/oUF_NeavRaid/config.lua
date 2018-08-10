@@ -1,5 +1,6 @@
 
-local _, ns = ...
+local addon, ns = ...
+local L = ns.L
 
 ns.Config = {
     media = {
@@ -15,301 +16,214 @@ ns.Config = {
     },
 }
 
------------------------------
--- UI Code
------------------------------
 
-OrientationTable = {
-    {
-        text = "Vertical",
-        func = function()
-            nRaidDB.orientation = "VERTICAL"
-            UIDropDownMenu_SetSelectedValue(OrientationDropdown, OrientationDropdown:GetID())
-        end,
-        checked = function()
-            if nRaidDB and nRaidDB.orientation == "VERTICAL" then
-                return true
-            else
-                return false
-            end
-        end,
-        isNotRadio = true,
-    },
-    {
-        text = "Horizontal",
-        func = function()
-            nRaidDB.orientation = "HORIZONTAL"
-            UIDropDownMenu_SetSelectedValue(OrientationDropdown, OrientationDropdown:GetID())
-        end,
-        checked = function()
-            if nRaidDB and nRaidDB.orientation == "HORIZONTAL" then
-                return true
-            else
-                return false
-            end
-        end,
-        isNotRadio = true,
-    },
-}
+local floor = math.floor
 
-local function OrientationDropdown_Initialize(self, level)
-    local sourceTable = OrientationTable
-    for index = 1, #sourceTable do
-        local value = sourceTable[index]
-        if value.text then
-            value.index = index
-            UIDropDownMenu_AddButton(value, level)
+local Options = CreateFrame("Frame", "nRaidOptions", InterfaceOptionsFramePanelContainer)
+Options.name = "oUF_|cffCC3333N|r|cffE53300e|r|cffFF4D00a|r|cffFF6633v|rRaid"
+InterfaceOptions_AddCategory(Options)
+
+Options:Hide()
+Options:SetScript("OnShow", function()
+    local panelWidth = Options:GetWidth()/2
+
+    local LeftSide = CreateFrame("Frame", "LeftSide", Options)
+    LeftSide:SetHeight(Options:GetHeight())
+    LeftSide:SetWidth(panelWidth)
+    LeftSide:SetPoint("TOPLEFT", Options)
+
+    local RightSide = CreateFrame("Frame", "RightSide", Options)
+    RightSide:SetHeight(Options:GetHeight())
+    RightSide:SetWidth(panelWidth)
+    RightSide:SetPoint("TOPRIGHT", Options)
+
+    -- Left Side
+
+    local GeneralOptions = Options:CreateFontString("GeneralOptions", "ARTWORK", "GameFontNormalLarge")
+    GeneralOptions:SetPoint("TOPLEFT", LeftSide, 16, -16)
+    GeneralOptions:SetText(L.GeneralOptions)
+
+    local ShowSolo = ns.CreateCheckBox("ShowSolo", LeftSide, L.ShowSolo, nil, GeneralOptions, 8, -8, false)
+    ShowSolo:SetScript("OnClick", function(self)
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+        nRaidDB.showSolo = self:GetChecked()
+    end)
+
+    local ShowParty = ns.CreateCheckBox("ShowParty", LeftSide, L.ShowParty, nil, ShowSolo, 0, -8, false)
+    ShowParty:SetScript("OnClick", function(self)
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+        nRaidDB.showParty = self:GetChecked()
+    end)
+
+    local AssistFrame = ns.CreateCheckBox("AssistFrame", LeftSide, L.AssistFrame, nil, ShowParty, 0, -8, false)
+    AssistFrame:SetScript("OnClick", function(self)
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+        nRaidDB.assistFrame = self:GetChecked()
+    end)
+
+    local SortByRole = ns.CreateCheckBox("SortByRole", LeftSide, L.SortByRole, L.SortByRoleTooltip, AssistFrame, 0, -8, false)
+    SortByRole:SetScript("OnClick", function(self)
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+        nRaidDB.sortByRole = self:GetChecked()
+    end)
+
+    local ShowRoleIcons = ns.CreateCheckBox("ShowRoleIcons", LeftSide, L.ShowRoleIcons, nil, SortByRole, 0, -8, false)
+    ShowRoleIcons:SetScript("OnClick", function(self)
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+        nRaidDB.showRoleIcons = self:GetChecked()
+    end)
+
+    local AnchorToControls = ns.CreateCheckBox("AnchorToControls", LeftSide, L.AnchorToControls, nil, ShowRoleIcons, 0, -8, false)
+    AnchorToControls:SetScript("OnClick", function(self)
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+        nRaidDB.anchorToControls = self:GetChecked()
+    end)
+
+    local HorizontalHealthBars = ns.CreateCheckBox("HorizontalHealthBars", LeftSide, L.HorizontalHealthBars, nil, AnchorToControls, 0, -8, false)
+    HorizontalHealthBars:SetScript("OnClick", function(self)
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+        nRaidDB.horizontalHealthBars = self:GetChecked()
+    end)
+
+    local ShowPowerBars = ns.CreateCheckBox("ShowPowerBars", LeftSide, L.ShowPowerBars, nil, HorizontalHealthBars, 0, -8, false)
+    ShowPowerBars:SetScript("OnClick", function(self)
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+        nRaidDB.powerBars = self:GetChecked()
+
+        if not self:GetChecked() then
+            ManaPowerBarsOnly:Disable()
+        else
+            ManaPowerBarsOnly:Enable()
         end
+    end)
+
+    local ManaPowerBarsOnly = ns.CreateCheckBox("ManaPowerBarsOnly", LeftSide, L.ManaPowerBarsOnly, nil, ShowPowerBars, 15, -8, false)
+    ManaPowerBarsOnly:SetScript("OnClick", function(self)
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+        nRaidDB.manaOnlyPowerBars = self:GetChecked()
+    end)
+
+    local HorizontalPowerBars = ns.CreateCheckBox("HorizontalPowerBars", LeftSide, L.HorizontalPowerBars, nil, ManaPowerBarsOnly, -15, -8, false)
+    HorizontalPowerBars:SetScript("OnClick", function(self)
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+        nRaidDB.horizontalPowerBars = self:GetChecked()
+    end)
+
+    -- Buff/Debuff Options
+
+    local AuraOptions = Options:CreateFontString("AuraOptions", "ARTWORK", "GameFontNormalLarge")
+    AuraOptions:SetPoint("TOPLEFT", HorizontalPowerBars, "BOTTOMLEFT", 0, -16)
+    AuraOptions:SetText(L.AuraOptions)
+
+    local indicatorSize = nRaidDB.indicatorSize or 7
+    local IndicatorSizeSlider = ns.CreateSlider("IndicatorSizeSlider", LeftSide, L.IndicatorSizeSlider, AuraOptions, 16, -24, nil, nRaidDB.indicatorSize, "%.0f", indicatorSize, 6, 20, 1, false)
+    IndicatorSizeSlider:SetScript("OnValueChanged", function(self, value)
+        value = floor(value)
+        IndicatorSizeSlider.text:SetFormattedText("%.0f", value)
+        nRaidDB.indicatorSize = value
+    end)
+
+    local debuffSize = nRaidDB.debuffSize or 22
+    local DebuffSizeSlider = ns.CreateSlider("DebuffSizeSlider", LeftSide, L.DebuffSizeSlider, IndicatorSizeSlider, 0, -42, nil, nRaidDB.debuffSize, "%.0f", debuffSize, 10, 30, 1, false)
+    DebuffSizeSlider:SetScript("OnValueChanged", function(self, value)
+        value = floor(value)
+        DebuffSizeSlider.text:SetFormattedText("%.0f", value)
+        nRaidDB.debuffSize = value
+    end)
+
+    -- Right Side
+
+    -- Layout Options
+
+    local LayoutOptions = Options:CreateFontString("LayoutOptions", "ARTWORK", "GameFontNormalLarge")
+    LayoutOptions:SetPoint("TOPLEFT", RightSide, 16, -16)
+    LayoutOptions:SetText(L.LayoutOptions)
+
+    local OrientationTable = {
+        { text = L.Vertical, value = "VERTICAL", },
+        { text = L.Horizontal, value = "HORIZONTAL", },
+    }
+
+    local OrientationDropdown = ns.CreateDropdown(OrientationTable, "OrientationDropdown", L.Orientation, nRaidDB.orientation, RightSide, LayoutOptions, 0, -32)
+
+    local InitialAnchorTable = {
+        { text = L.TopLeft, value = "TOPLEFT", },
+        { text = L.BottomLeft, value = "BOTTOMLEFT", },
+        { text = L.TopRight, value = "TOPRIGHT", },
+        { text = L.BottomRight, value = "BOTTOMRIGHT", },
+    }
+
+    local InitialAnchorDropdown = ns.CreateDropdown(InitialAnchorTable, "InitialAnchorDropdown", L.InitialAnchor, nRaidDB.initialAnchor, RightSide, _G["OrientationDropdown"], 0, -32)
+
+    local nameLength = nRaidDB.nameLength or 4
+    local NameLengthSlider = ns.CreateSlider("NameLengthSlider", RightSide, L.NameLengthSlider, _G["InitialAnchorDropdown"], 22, -42, nil, nRaidDB.nameLength, "%.0f", nameLength, 4, 20, 1, false)
+    NameLengthSlider:SetScript("OnValueChanged", function(self, value)
+        value = floor(value)
+        NameLengthSlider.text:SetFormattedText("%.0f", value)
+        nRaidDB.nameLength = value
+    end)
+
+    local frameWidth = nRaidDB.frameWidth or 48
+    local FrameWidthSlider = ns.CreateSlider("FrameWidthSlider", RightSide, L.FrameWidthSlider, NameLengthSlider, 0, -42, nil, nRaidDB.frameWidth, "%.0f", frameWidth, 20, 150, 1, false)
+    FrameWidthSlider:SetScript("OnValueChanged", function(self, value)
+        value = floor(value)
+        FrameWidthSlider.text:SetFormattedText("%.0f", value)
+        nRaidDB.frameWidth = value
+    end)
+
+    local frameHeight = nRaidDB.frameHeight or 46
+    local FrameHeightSlider = ns.CreateSlider("FrameHeightSlider", RightSide, L.FrameHeightSlider, FrameWidthSlider, 0, -42, nil, nRaidDB.frameHeight, "%.0f", frameHeight, 20, 100, 1, false)
+    FrameHeightSlider:SetScript("OnValueChanged", function(self, value)
+        value = floor(value)
+        FrameHeightSlider.text:SetFormattedText("%.0f", value)
+        nRaidDB.frameHeight = value
+    end)
+
+    local frameOffset = nRaidDB.frameOffset or 7
+    local FrameOffsetSlider = ns.CreateSlider("FrameOffsetSlider", RightSide, L.FrameOffsetSlider, FrameHeightSlider, 0, -42, nil, nRaidDB.frameOffset, "%.0f", frameOffset, 1, 15, 1, false)
+    FrameOffsetSlider:SetScript("OnValueChanged", function(self, value)
+        value = floor(value)
+        FrameOffsetSlider.text:SetFormattedText("%.0f", value)
+        nRaidDB.frameOffset = value
+    end)
+
+    local frameScale = nRaidDB.frameScale or 1.2
+    local FrameScaleSlider = ns.CreateSlider("FrameScaleSlider", RightSide, L.FrameScaleSlider, FrameOffsetSlider, 0, -42, nil, nRaidDB.frameScale, "%.2f", frameScale, 0.50, 2, 0.10, false)
+    FrameScaleSlider:SetScript("OnValueChanged", function(self, value)
+        FrameScaleSlider.text:SetFormattedText("%.2f", value)
+        nRaidDB.frameScale = value
+    end)
+
+    local ReloadButton = CreateFrame("BUTTON", "ReloadButton", RightSide, "UIPanelButtonTemplate")
+    ReloadButton:SetSize(100, 24)
+    ReloadButton:SetPoint("BOTTOMRIGHT", RightSide, -10, 10)
+    ReloadButton:SetText(RELOADUI)
+    ReloadButton:SetScript("OnClick", function(self)
+        ReloadUI()
+    end)
+
+    function Options:Refresh()
+        ShowSolo:SetChecked(nRaidDB.showSolo)
+        ShowParty:SetChecked(nRaidDB.showParty)
+        SortByRole:SetChecked(nRaidDB.sortByRole)
+        ShowRoleIcons:SetChecked(nRaidDB.showRoleIcons)
+        AnchorToControls:SetChecked(nRaidDB.anchorToControls)
+        AssistFrame:SetChecked(nRaidDB.assistFrame)
+        HorizontalHealthBars:SetChecked(nRaidDB.horizontalHealthBars)
+        ShowPowerBars:SetChecked(nRaidDB.powerBars)
+        ManaPowerBarsOnly:SetChecked(nRaidDB.manaOnlyPowerBars)
+        HorizontalPowerBars:SetChecked(nRaidDB.horizontalPowerBars)
+
+        IndicatorSizeSlider:SetValue(nRaidDB.indicatorSize)
+        DebuffSizeSlider:SetValue(nRaidDB.debuffSize)
+
+        NameLengthSlider:SetValue(nRaidDB.nameLength)
+        FrameWidthSlider:SetValue(nRaidDB.frameWidth)
+        FrameHeightSlider:SetValue(nRaidDB.frameHeight)
+        FrameOffsetSlider:SetValue(nRaidDB.frameOffset)
+        FrameScaleSlider:SetValue(nRaidDB.frameScale)
     end
-end
 
-function OrientationDropdown_OnLoad(self)
-    self.type = CONTROLTYPE_DROPDOWN
-    _G[self:GetName().."Title"]:SetText("Orientation")
-
-    UIDropDownMenu_SetWidth(self, 130)
-    UIDropDownMenu_Initialize(self, OrientationDropdown_Initialize, "DROPDOWN")
-end
-
-InitialAnchorTable = {
-    {
-        text = "Top Left",
-        func = function()
-            nRaidDB.initialAnchor = "TOPLEFT"
-            UIDropDownMenu_SetSelectedValue(InitialAnchorDropdown, InitialAnchorDropdown:GetID())
-        end,
-        checked = function()
-            if nRaidDB and nRaidDB.initialAnchor == "TOPLEFT" then
-                return true
-            else
-                return false
-            end
-        end,
-        isNotRadio = true,
-    },
-    {
-        text = "Bottom Left",
-        func = function()
-            nRaidDB.initialAnchor = "BOTTOMLEFT"
-            UIDropDownMenu_SetSelectedValue(InitialAnchorDropdown, InitialAnchorDropdown:GetID())
-        end,
-        checked = function()
-            if nRaidDB and nRaidDB.initialAnchor == "BOTTOMLEFT" then
-                return true
-            else
-                return false
-            end
-        end,
-        isNotRadio = true,
-    },
-    {
-        text = "Top Right",
-        func = function()
-            nRaidDB.initialAnchor = "TOPRIGHT"
-            UIDropDownMenu_SetSelectedValue(InitialAnchorDropdown, InitialAnchorDropdown:GetID())
-        end,
-        checked = function()
-            if nRaidDB and nRaidDB.initialAnchor == "TOPRIGHT" then
-                return true
-            else
-                return false
-            end
-        end,
-        isNotRadio = true,
-    },
-    {
-        text = "Bottom Right",
-        func = function()
-            nRaidDB.initialAnchor = "BOTTOMRIGHT"
-            UIDropDownMenu_SetSelectedValue(InitialAnchorDropdown, InitialAnchorDropdown:GetID())
-        end,
-        checked = function()
-            if nRaidDB and nRaidDB.initialAnchor == "BOTTOMRIGHT" then
-                return true
-            else
-                return false
-            end
-        end,
-        isNotRadio = true,
-    },
-}
-
-local function InitialAnchorDropdown_Initialize(self, level)
-    local sourceTable = InitialAnchorTable
-    for index = 1, #sourceTable do
-        local value = sourceTable[index]
-        if value.text then
-            value.index = index
-            UIDropDownMenu_AddButton(value, level)
-        end
-    end
-end
-
-function InitialAnchorDropdown_OnLoad(self)
-    self.type = CONTROLTYPE_DROPDOWN
-    _G[self:GetName().."Title"]:SetText("Initial Anchor")
-
-    UIDropDownMenu_SetWidth(self, 130)
-    UIDropDownMenu_Initialize(self, InitialAnchorDropdown_Initialize, "DROPDOWN")
-end
-
-function NameLengthSlider_OnLoad(self)
-    local name = self:GetName()
-
-    self.type = CONTROLTYPE_SLIDER
-    self.text = _G[name.."Text"]
-    self.textLow = _G[name.."Low"]
-    self.textHigh = _G[name.."High"]
-    self:SetMinMaxValues(4, 20)
-    self:SetValue(4)
-    self.minValue, self.maxValue = self:GetMinMaxValues()
-    self.text:SetText("|cffffd200"..NAME.." Length:|r "..self:GetValue())
-    self.textLow:SetText(self.minValue)
-    self.textHigh:SetText(self.maxValue)
-    self:SetObeyStepOnDrag(true)
-    self:SetValueStep(1)
-end
-
-function NameLengthSlider_OnValueChanged(self)
-    self.value = self:GetValue()
-    self.text:SetText("|cffffd200"..NAME.." Length:|r "..self.value)
-    if nRaidDB then nRaidDB.nameLength = tonumber(self.value) end
-end
-
-function FrameWidthSlider_OnLoad(self)
-    local name = self:GetName()
-
-    self.type = CONTROLTYPE_SLIDER
-    self.text = _G[name.."Text"]
-    self.textLow = _G[name.."Low"]
-    self.textHigh = _G[name.."High"]
-    self:SetMinMaxValues(20, 150)
-    self:SetValue(48)
-    self.minValue, self.maxValue = self:GetMinMaxValues()
-    self.text:SetText("|cffffd200"..COMPACT_UNIT_FRAME_PROFILE_FRAMEWIDTH..":|r "..self:GetValue())
-    self.textLow:SetText(self.minValue)
-    self.textHigh:SetText(self.maxValue)
-    self:SetObeyStepOnDrag(true)
-    self:SetValueStep(1)
-end
-
-function FrameWidthSlider_OnValueChanged(self)
-    self.value = self:GetValue()
-    self.text:SetText("|cffffd200"..COMPACT_UNIT_FRAME_PROFILE_FRAMEWIDTH..":|r "..self.value)
-    if nRaidDB then nRaidDB.frameWidth = tonumber(self.value) end
-end
-
-function FrameHeightSlider_OnLoad(self)
-    local name = self:GetName()
-
-    self.type = CONTROLTYPE_SLIDER
-    self.text = _G[name.."Text"]
-    self.textLow = _G[name.."Low"]
-    self.textHigh = _G[name.."High"]
-    self:SetMinMaxValues(20, 100)
-    self:SetValue(46)
-    self.minValue, self.maxValue = self:GetMinMaxValues()
-    self.text:SetText("|cffffd200"..COMPACT_UNIT_FRAME_PROFILE_FRAMEHEIGHT..":|r "..self:GetValue())
-    self.textLow:SetText(self.minValue)
-    self.textHigh:SetText(self.maxValue)
-    self:SetObeyStepOnDrag(true)
-    self:SetValueStep(1)
-end
-
-function FrameHeightSlider_OnValueChanged(self)
-    self.value = self:GetValue()
-    self.text:SetText("|cffffd200"..COMPACT_UNIT_FRAME_PROFILE_FRAMEHEIGHT..":|r "..self.value)
-    if nRaidDB then nRaidDB.frameHeight = tonumber(self.value) end
-end
-
-function FrameOffsetSlider_OnLoad(self)
-    local name = self:GetName()
-
-    self.type = CONTROLTYPE_SLIDER
-    self.text = _G[name.."Text"]
-    self.textLow = _G[name.."Low"]
-    self.textHigh = _G[name.."High"]
-    self:SetMinMaxValues(1, 15)
-    self:SetValue(7)
-    self.minValue, self.maxValue = self:GetMinMaxValues()
-    self.text:SetText("|cffffd200Frame Offset:|r "..self:GetValue())
-    self.textLow:SetText(self.minValue)
-    self.textHigh:SetText(self.maxValue)
-    self:SetObeyStepOnDrag(true)
-    self:SetValueStep(1)
-end
-
-function FrameOffsetSlider_OnValueChanged(self)
-    self.value = self:GetValue()
-    self.text:SetText("|cffffd200Frame Offset:|r "..self.value)
-    if nRaidDB then nRaidDB.frameOffset = tonumber(self.value) end
-end
-
-function FrameScaleSlider_OnLoad(self)
-    local name = self:GetName()
-
-    self.type = CONTROLTYPE_SLIDER
-    self.text = _G[name.."Text"]
-    self.textLow = _G[name.."Low"]
-    self.textHigh = _G[name.."High"]
-    self:SetMinMaxValues(0.50, 2)
-    self:SetValue(1.2)
-    self.minValue, self.maxValue = self:GetMinMaxValues()
-    self.text:SetText("|cffffd200"..UI_SCALE..":|r "..format("%.2f", self:GetValue()))
-    self.textLow:SetText(self.minValue)
-    self.textHigh:SetText(self.maxValue)
-    self:SetObeyStepOnDrag(true)
-    self:SetValueStep(0.10)
-end
-
-function FrameScaleSlider_OnValueChanged(self)
-    self.value = self:GetValue()
-    self.text:SetText("|cffffd200"..UI_SCALE..":|r "..format("%.2f",self.value))
-    if nRaidDB then nRaidDB.frameScale = tonumber(self.value) end
-end
-
-function IndicatorSizeSlider_OnLoad(self)
-    local name = self:GetName()
-
-    self.type = CONTROLTYPE_SLIDER
-    self.text = _G[name.."Text"]
-    self.textLow = _G[name.."Low"]
-    self.textHigh = _G[name.."High"]
-    self:SetMinMaxValues(6, 20)
-    self:SetValue(7)
-    self.minValue, self.maxValue = self:GetMinMaxValues()
-    self.text:SetText("|cffffd200Indicator Size:|r "..self:GetValue())
-    self.textLow:SetText(self.minValue)
-    self.textHigh:SetText(self.maxValue)
-    self:SetObeyStepOnDrag(true)
-    self:SetValueStep(1)
-end
-
-function IndicatorSizeSlider_OnValueChanged(self)
-    self.value = self:GetValue()
-    self.text:SetText("|cffffd200Indicator Size:|r "..self:GetValue())
-    if nRaidDB then nRaidDB.indicatorSize = tonumber(self.value) end
-end
-
-function DebuffSizeSlider_OnLoad(self)
-    local name = self:GetName()
-
-    self.type = CONTROLTYPE_SLIDER
-    self.text = _G[name.."Text"]
-    self.textLow = _G[name.."Low"]
-    self.textHigh = _G[name.."High"]
-    self:SetMinMaxValues(10, 30)
-    self:SetValue(22)
-    self.minValue, self.maxValue = self:GetMinMaxValues()
-    self.text:SetText("|cffffd200Debuff Size:|r "..self:GetValue())
-    self.textLow:SetText(self.minValue)
-    self.textHigh:SetText(self.maxValue)
-    self:SetObeyStepOnDrag(true)
-    self:SetValueStep(1)
-end
-
-function DebuffSizeSlider_OnValueChanged(self)
-    self.value = self:GetValue()
-    self.text:SetText("|cffffd200Debuff Size:|r "..self.value)
-    if nRaidDB then nRaidDB.debuffSize = tonumber(self.value) end
-end
+    Options:Refresh()
+    Options:SetScript("OnShow", nil)
+end)

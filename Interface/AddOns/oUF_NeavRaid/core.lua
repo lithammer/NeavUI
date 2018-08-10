@@ -15,36 +15,6 @@ local _, playerClass = UnitClass("player")
 
 function NeavRaid_OnLoad(self)
     self:RegisterEvent("ADDON_LOADED")
-
-    self.name = "oUF_|cffCC3333N|r|cffE53300e|r|cffFF4D00a|r|cffFF6633v|rRaid"
-    self.refresh = function(self)
-        ShowSolo:SetChecked(nRaidDB.showSolo)
-        ShowParty:SetChecked(nRaidDB.showParty)
-        SortByRole:SetChecked(nRaidDB.sortByRole)
-        ShowRoleIcons:SetChecked(nRaidDB.showRoleIcons)
-        AnchorToControls:SetChecked(nRaidDB.anchorToControls)
-        AssistFrame:SetChecked(nRaidDB.assistFrame)
-        HorizontalHealthBars:SetChecked(nRaidDB.horizontalHealthBars)
-        ShowPowerBars:SetChecked(nRaidDB.powerBars)
-        ManaPowerBarsOnly:SetChecked(nRaidDB.manaOnlyPowerBars)
-        HorizontalPowerBars:SetChecked(nRaidDB.horizontalPowerBars)
-
-        local OrientationText = NeavRaid_GetLabelText(nRaidDB.orientation or "VERTICAL")
-        UIDropDownMenu_SetText(OrientationDropdown, OrientationText)
-
-        local InitialAnchorText = NeavRaid_GetLabelText(nRaidDB.initialAnchor or "TOPLEFT")
-        UIDropDownMenu_SetText(InitialAnchorDropdown, InitialAnchorText)
-
-        NameLengthSlider:SetValue(nRaidDB.nameLength)
-        FrameWidthSlider:SetValue(nRaidDB.frameWidth)
-        FrameHeightSlider:SetValue(nRaidDB.frameHeight)
-        FrameOffsetSlider:SetValue(nRaidDB.frameOffset)
-        FrameScaleSlider:SetValue(nRaidDB.frameScale)
-
-        IndicatorSizeSlider:SetValue(nRaidDB.indicatorSize)
-        DebuffSizeSlider:SetValue(nRaidDB.debuffSize)
-    end
-    InterfaceOptions_AddCategory(self)
 end
 
 function NeavRaid_OnEvent(self, event, ...)
