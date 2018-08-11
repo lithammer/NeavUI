@@ -42,6 +42,10 @@ nMainbar.Config = {
         hideGryphons = false,
     },
 
+    vehicleBar = {
+        scale = 0.80,
+    },
+
     petBar = {
         mouseover = false,
         scale = 1,

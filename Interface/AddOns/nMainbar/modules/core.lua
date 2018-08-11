@@ -65,6 +65,9 @@ hooksecurefunc("MultiActionBar_Update", function(self)
         return
     end
 
+    -- Vehicle Scale
+    OverrideActionBar:SetScale(cfg.vehicleBar.scale)
+
     -- Right Bars Scale & Alpha
 
     MultiBarLeft:SetAlpha(cfg.multiBarRight.alpha)
