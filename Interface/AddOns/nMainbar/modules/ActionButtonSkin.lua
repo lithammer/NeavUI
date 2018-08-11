@@ -19,6 +19,7 @@ end
 
 local function SkinButton(button, icon)
     local buttonName = button:GetName()
+    local border = button.Border
     local cooldown = _G[buttonName.."Cooldown"]
     local floatingBG = _G[buttonName.."FloatingBG"]
     local normalTexture = _G[buttonName.."NormalTexture2"] or _G[buttonName.."NormalTexture"]
@@ -57,6 +58,13 @@ local function SkinButton(button, icon)
             button.Background:SetTexture(MEDIA_PATH.."textureBackground")
             button.Background:SetPoint("TOPRIGHT", button, 14, 12)
             button.Background:SetPoint("BOTTOMLEFT", button, -14, -16)
+        end
+
+        if border then
+            border:SetBlendMode("BLEND")
+            border:SetTexture(MEDIA_PATH.."UI-ActionButton-Glow")
+            border:ClearAllPoints()
+            border:SetAllPoints(normalTexture)
         end
 
         if floatingBG then

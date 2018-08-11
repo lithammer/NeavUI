@@ -77,6 +77,7 @@ end
 local function StyleButton(self)
     local name = self:GetName()
     local icon = self.icon
+    local border = self.Border
     local count = self.Count
     local macro = self.Name
     local cooldown = self.cooldown
@@ -122,6 +123,13 @@ local function StyleButton(self)
 
         self:SetHighlightTexture(MEDIA_PATH.."textureHighlight")
         self:GetHighlightTexture():SetAllPoints(normal)
+    end
+
+    if border then
+        border:SetBlendMode("BLEND")
+        border:SetTexture(MEDIA_PATH.."UI-ActionButton-Glow")
+        border:ClearAllPoints()
+        border:SetAllPoints(normal)
     end
 
     if cooldown and not nMainbar:IsTaintable() then
