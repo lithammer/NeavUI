@@ -20,6 +20,7 @@ local DefaultConfig = {
         mana = {Color.OutOfMana:GetRGB()},
         usable = {Color.Normal:GetRGB()},
         notUsable = {Color.NotUsable:GetRGB()},
+        equipped = {Color.IsEquipped:GetRGB()},
     },
     hideElements = {
         macro = not cfg.button.showMacroNames,
