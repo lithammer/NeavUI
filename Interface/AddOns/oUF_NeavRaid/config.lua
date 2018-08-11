@@ -43,49 +43,49 @@ Options:SetScript("OnShow", function()
     GeneralOptions:SetPoint("TOPLEFT", LeftSide, 16, -16)
     GeneralOptions:SetText(L.GeneralOptions)
 
-    local ShowSolo = ns.CreateCheckBox("ShowSolo", LeftSide, L.ShowSolo, nil, GeneralOptions, 8, -8, false)
+    local ShowSolo = ns.CreateCheckBox("ShowSolo", LeftSide, L.ShowSolo, nil, nil, GeneralOptions, 8, -8)
     ShowSolo:SetScript("OnClick", function(self)
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
         nRaidDB.showSolo = self:GetChecked()
     end)
 
-    local ShowParty = ns.CreateCheckBox("ShowParty", LeftSide, L.ShowParty, nil, ShowSolo, 0, -8, false)
+    local ShowParty = ns.CreateCheckBox("ShowParty", LeftSide, L.ShowParty, nil, nil, ShowSolo)
     ShowParty:SetScript("OnClick", function(self)
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
         nRaidDB.showParty = self:GetChecked()
     end)
 
-    local AssistFrame = ns.CreateCheckBox("AssistFrame", LeftSide, L.AssistFrame, nil, ShowParty, 0, -8, false)
+    local AssistFrame = ns.CreateCheckBox("AssistFrame", LeftSide, L.AssistFrame, nil, nil, ShowParty)
     AssistFrame:SetScript("OnClick", function(self)
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
         nRaidDB.assistFrame = self:GetChecked()
     end)
 
-    local SortByRole = ns.CreateCheckBox("SortByRole", LeftSide, L.SortByRole, L.SortByRoleTooltip, AssistFrame, 0, -8, false)
+    local SortByRole = ns.CreateCheckBox("SortByRole", LeftSide, L.SortByRole, L.SortByRoleTooltip, nil, AssistFrame)
     SortByRole:SetScript("OnClick", function(self)
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
         nRaidDB.sortByRole = self:GetChecked()
     end)
 
-    local ShowRoleIcons = ns.CreateCheckBox("ShowRoleIcons", LeftSide, L.ShowRoleIcons, nil, SortByRole, 0, -8, false)
+    local ShowRoleIcons = ns.CreateCheckBox("ShowRoleIcons", LeftSide, L.ShowRoleIcons, nil, nil, SortByRole)
     ShowRoleIcons:SetScript("OnClick", function(self)
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
         nRaidDB.showRoleIcons = self:GetChecked()
     end)
 
-    local AnchorToControls = ns.CreateCheckBox("AnchorToControls", LeftSide, L.AnchorToControls, nil, ShowRoleIcons, 0, -8, false)
+    local AnchorToControls = ns.CreateCheckBox("AnchorToControls", LeftSide, L.AnchorToControls, nil, nil, ShowRoleIcons)
     AnchorToControls:SetScript("OnClick", function(self)
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
         nRaidDB.anchorToControls = self:GetChecked()
     end)
 
-    local HorizontalHealthBars = ns.CreateCheckBox("HorizontalHealthBars", LeftSide, L.HorizontalHealthBars, nil, AnchorToControls, 0, -8, false)
+    local HorizontalHealthBars = ns.CreateCheckBox("HorizontalHealthBars", LeftSide, L.HorizontalHealthBars, nil, nil, AnchorToControls)
     HorizontalHealthBars:SetScript("OnClick", function(self)
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
         nRaidDB.horizontalHealthBars = self:GetChecked()
     end)
 
-    local ShowPowerBars = ns.CreateCheckBox("ShowPowerBars", LeftSide, L.ShowPowerBars, nil, HorizontalHealthBars, 0, -8, false)
+    local ShowPowerBars = ns.CreateCheckBox("ShowPowerBars", LeftSide, L.ShowPowerBars, nil, nil, HorizontalHealthBars)
     ShowPowerBars:SetScript("OnClick", function(self)
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
         nRaidDB.powerBars = self:GetChecked()
@@ -97,13 +97,13 @@ Options:SetScript("OnShow", function()
         end
     end)
 
-    local ManaPowerBarsOnly = ns.CreateCheckBox("ManaPowerBarsOnly", LeftSide, L.ManaPowerBarsOnly, nil, ShowPowerBars, 15, -8, false)
+    local ManaPowerBarsOnly = ns.CreateCheckBox("ManaPowerBarsOnly", LeftSide, L.ManaPowerBarsOnly, nil, nil, ShowPowerBars, 15, -8)
     ManaPowerBarsOnly:SetScript("OnClick", function(self)
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
         nRaidDB.manaOnlyPowerBars = self:GetChecked()
     end)
 
-    local HorizontalPowerBars = ns.CreateCheckBox("HorizontalPowerBars", LeftSide, L.HorizontalPowerBars, nil, ManaPowerBarsOnly, -15, -8, false)
+    local HorizontalPowerBars = ns.CreateCheckBox("HorizontalPowerBars", LeftSide, L.HorizontalPowerBars, nil, nil, ManaPowerBarsOnly, -15, -8)
     HorizontalPowerBars:SetScript("OnClick", function(self)
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
         nRaidDB.horizontalPowerBars = self:GetChecked()
@@ -116,7 +116,7 @@ Options:SetScript("OnShow", function()
     AuraOptions:SetText(L.AuraOptions)
 
     local indicatorSize = nRaidDB.indicatorSize or 7
-    local IndicatorSizeSlider = ns.CreateSlider("IndicatorSizeSlider", LeftSide, L.IndicatorSizeSlider, AuraOptions, 16, -24, nil, nRaidDB.indicatorSize, "%.0f", indicatorSize, 6, 20, 1, false)
+    local IndicatorSizeSlider = ns.CreateSlider("IndicatorSizeSlider", LeftSide, L.IndicatorSizeSlider, nil, nRaidDB.indicatorSize, "%.0f", indicatorSize, 6, 20, 1, nil, AuraOptions, 8, -24)
     IndicatorSizeSlider:SetScript("OnValueChanged", function(self, value)
         value = floor(value)
         IndicatorSizeSlider.text:SetFormattedText("%.0f", value)
@@ -124,7 +124,7 @@ Options:SetScript("OnShow", function()
     end)
 
     local debuffSize = nRaidDB.debuffSize or 22
-    local DebuffSizeSlider = ns.CreateSlider("DebuffSizeSlider", LeftSide, L.DebuffSizeSlider, IndicatorSizeSlider, 0, -42, nil, nRaidDB.debuffSize, "%.0f", debuffSize, 10, 30, 1, false)
+    local DebuffSizeSlider = ns.CreateSlider("DebuffSizeSlider", LeftSide, L.DebuffSizeSlider, nil, nRaidDB.debuffSize, "%.0f", debuffSize, 10, 30, 1, nil, IndicatorSizeSlider)
     DebuffSizeSlider:SetScript("OnValueChanged", function(self, value)
         value = floor(value)
         DebuffSizeSlider.text:SetFormattedText("%.0f", value)
@@ -144,7 +144,7 @@ Options:SetScript("OnShow", function()
         { text = L.Horizontal, value = "HORIZONTAL", },
     }
 
-    local OrientationDropdown = ns.CreateDropdown(OrientationTable, "OrientationDropdown", L.Orientation, "orientation", RightSide, LayoutOptions, 0, -32)
+    local OrientationDropdown = ns.CreateDropdown(OrientationTable, "OrientationDropdown", L.Orientation, "orientation", RightSide, LayoutOptions)
 
     local InitialAnchorTable = {
         { text = L.TopLeft, value = "TOPLEFT", },
@@ -153,10 +153,10 @@ Options:SetScript("OnShow", function()
         { text = L.BottomRight, value = "BOTTOMRIGHT", },
     }
 
-    local InitialAnchorDropdown = ns.CreateDropdown(InitialAnchorTable, "InitialAnchorDropdown", L.InitialAnchor, "initialAnchor", RightSide, _G["OrientationDropdown"], 0, -32)
+    local InitialAnchorDropdown = ns.CreateDropdown(InitialAnchorTable, "InitialAnchorDropdown", L.InitialAnchor, "initialAnchor", RightSide, _G["OrientationDropdown"])
 
     local nameLength = nRaidDB.nameLength or 4
-    local NameLengthSlider = ns.CreateSlider("NameLengthSlider", RightSide, L.NameLengthSlider, _G["InitialAnchorDropdown"], 22, -42, nil, nRaidDB.nameLength, "%.0f", nameLength, 4, 20, 1, false)
+    local NameLengthSlider = ns.CreateSlider("NameLengthSlider", RightSide, L.NameLengthSlider, nil, nRaidDB.nameLength, "%.0f", nameLength, 4, 20, 1, nil, _G["InitialAnchorDropdown"], 22, -42)
     NameLengthSlider:SetScript("OnValueChanged", function(self, value)
         value = floor(value)
         NameLengthSlider.text:SetFormattedText("%.0f", value)
@@ -164,7 +164,7 @@ Options:SetScript("OnShow", function()
     end)
 
     local frameWidth = nRaidDB.frameWidth or 48
-    local FrameWidthSlider = ns.CreateSlider("FrameWidthSlider", RightSide, L.FrameWidthSlider, NameLengthSlider, 0, -42, nil, nRaidDB.frameWidth, "%.0f", frameWidth, 20, 150, 1, false)
+    local FrameWidthSlider = ns.CreateSlider("FrameWidthSlider", RightSide, L.FrameWidthSlider, nil, nRaidDB.frameWidth, "%.0f", frameWidth, 20, 150, 1, nil, NameLengthSlider)
     FrameWidthSlider:SetScript("OnValueChanged", function(self, value)
         value = floor(value)
         FrameWidthSlider.text:SetFormattedText("%.0f", value)
@@ -172,7 +172,7 @@ Options:SetScript("OnShow", function()
     end)
 
     local frameHeight = nRaidDB.frameHeight or 46
-    local FrameHeightSlider = ns.CreateSlider("FrameHeightSlider", RightSide, L.FrameHeightSlider, FrameWidthSlider, 0, -42, nil, nRaidDB.frameHeight, "%.0f", frameHeight, 20, 100, 1, false)
+    local FrameHeightSlider = ns.CreateSlider("FrameHeightSlider", RightSide, L.FrameHeightSlider, nil, nRaidDB.frameHeight, "%.0f", frameHeight, 20, 100, 1, nil, FrameWidthSlider)
     FrameHeightSlider:SetScript("OnValueChanged", function(self, value)
         value = floor(value)
         FrameHeightSlider.text:SetFormattedText("%.0f", value)
@@ -180,7 +180,7 @@ Options:SetScript("OnShow", function()
     end)
 
     local frameOffset = nRaidDB.frameOffset or 7
-    local FrameOffsetSlider = ns.CreateSlider("FrameOffsetSlider", RightSide, L.FrameOffsetSlider, FrameHeightSlider, 0, -42, nil, nRaidDB.frameOffset, "%.0f", frameOffset, 1, 15, 1, false)
+    local FrameOffsetSlider = ns.CreateSlider("FrameOffsetSlider", RightSide, L.FrameOffsetSlider, nil, nRaidDB.frameOffset, "%.0f", frameOffset, 1, 15, 1, nil, FrameHeightSlider)
     FrameOffsetSlider:SetScript("OnValueChanged", function(self, value)
         value = floor(value)
         FrameOffsetSlider.text:SetFormattedText("%.0f", value)
@@ -188,7 +188,7 @@ Options:SetScript("OnShow", function()
     end)
 
     local frameScale = nRaidDB.frameScale or 1.2
-    local FrameScaleSlider = ns.CreateSlider("FrameScaleSlider", RightSide, L.FrameScaleSlider, FrameOffsetSlider, 0, -42, nil, nRaidDB.frameScale, "%.2f", frameScale, 0.50, 2, 0.10, false)
+    local FrameScaleSlider = ns.CreateSlider("FrameScaleSlider", RightSide, L.FrameScaleSlider, nil, nRaidDB.frameScale, "%.2f", frameScale, 0.50, 2, 0.10, nil, FrameOffsetSlider)
     FrameScaleSlider:SetScript("OnValueChanged", function(self, value)
         FrameScaleSlider.text:SetFormattedText("%.2f", value)
         nRaidDB.frameScale = value

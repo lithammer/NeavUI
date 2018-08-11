@@ -129,9 +129,14 @@ function ns.LockInCombat(frame)
     end)
 end
 
-function ns.CreateCheckBox(name, parent, label, tooltip, relativeTo, x, y, disableInCombat)
+function ns.CreateCheckBox(name, parent, label, tooltip, disableInCombat, relativeTo, offsetX, offsetY, initialPoint, relativePoint)
+    initialPoint = initialPoint or "TOPLEFT"
+    relativePoint = relativePoint or "BOTTOMLEFT"
+    offsetX = offsetX or 0
+    offsetY = offsetY or -8
+
     local checkBox = CreateFrame("CheckButton", name, parent, "InterfaceOptionsCheckButtonTemplate")
-    checkBox:SetPoint("TOPLEFT", relativeTo, "BOTTOMLEFT", x, y)
+    checkBox:SetPoint(initialPoint, relativeTo, relativePoint, offsetX, offsetY)
     checkBox.Text:SetText(label)
 
     if tooltip then
@@ -145,17 +150,22 @@ function ns.CreateCheckBox(name, parent, label, tooltip, relativeTo, x, y, disab
     return checkBox
 end
 
-function ns.CreateSlider(name, parent, label, relativeTo, x, y, isCvar, data, fromatString, defaultValue, minValue, maxValue, step, disableInCombat)
+function ns.CreateSlider(name, parent, label, isCvar, var, fromatString, defaultValue, minValue, maxValue, step, disableInCombat, relativeTo, offsetX, offsetY, initialPoint, relativePoint)
+    initialPoint = initialPoint or "TOPLEFT"
+    relativePoint = relativePoint or "BOTTOMLEFT"
+    offsetX = offsetX or 0
+    offsetY = offsetY or -32
+
     local value
     if isCvar then
-        value = BlizzardOptionsPanel_GetCVarSafe(data)
+        value = BlizzardOptionsPanel_GetCVarSafe(var)
     else
-        value = data
+        value = var
     end
 
     local slider = CreateFrame("Slider", name, parent, "OptionsSliderTemplate")
     slider:SetWidth(180)
-    slider:SetPoint("TOPLEFT", relativeTo, "BOTTOMLEFT", x, y)
+    slider:SetPoint(initialPoint, relativeTo, relativePoint, offsetX, offsetY)
     slider.textLow = _G[name.."Low"]
     slider.textHigh = _G[name.."High"]
     slider.text = _G[name.."Text"]
@@ -185,7 +195,12 @@ function ns.CreateSlider(name, parent, label, relativeTo, x, y, isCvar, data, fr
     return slider
 end
 
-function ns.CreateDropdown(optionsTable, name, desc, var, parent, relativeTo, x, y)
+function ns.CreateDropdown(optionsTable, name, desc, var, parent, relativeTo, offsetX, offsetY, initialPoint, relativePoint)
+    initialPoint = initialPoint or "TOPLEFT"
+    relativePoint = relativePoint or "BOTTOMLEFT"
+    offsetX = offsetX or 0
+    offsetY = offsetY or -32
+
     --[[
     Example optionsTable
 
@@ -198,15 +213,12 @@ function ns.CreateDropdown(optionsTable, name, desc, var, parent, relativeTo, x,
     ]]
 
     local dropdown = CreateFrame("Button", name, parent, "UIDropDownMenuTemplate")
-    dropdown:SetPoint("TOPLEFT", relativeTo, "BOTTOMLEFT", x, y)
+    dropdown:SetPoint(initialPoint, relativeTo, relativePoint, offsetX, offsetY)
     dropdown:EnableMouse(true)
 
     dropdown.title = dropdown:CreateFontString("$parentTitle", "BACKGROUND", "GameFontNormalSmall")
     dropdown.title:SetPoint("BOTTOMLEFT", dropdown, "TOPLEFT", 20, 5)
     dropdown.title:SetText(desc)
-
-    dropdown.dummyFrame = CreateFrame("Frame", "$parentDummyFrame", dropdown)
-    dropdown.dummyFrame:SetAllPoints(dropdown)
 
     local function Dropdown_OnClick(self)
         nRaidDB[var] = optionsTable[self.value].value
