@@ -35,7 +35,7 @@ local WORLD_RAID_MARKERS_TOOLTIP = {
 
 local button, leftButton, previousButton
 
-local manager = CreateFrame("Frame", addon.."Frame", UIParent, "SecureHandlerStateTemplate")
+local manager = CreateFrame("Frame", addon.."ControlsFrame", UIParent, "SecureHandlerStateTemplate")
 
 -----------------------------
 -- Functions
@@ -192,22 +192,22 @@ leftButton:SetScript("OnClick", Stopwatch_Toggle)
 leftButton:SetPoint("RIGHT", button, "LEFT", 0, 0)
 
 -- ToggleButton
-ns.toggleButton = CreateFrame("BUTTON", addon.."ToggleButton", manager, "SecureHandlerClickTemplate")
-ns.toggleButton:SetPoint("TOPRIGHT",-3,-3)
-ns.toggleButton:SetPoint("BOTTOMRIGHT",-3,3)
-ns.toggleButton:SetWidth(15)
+local toggleButton = CreateFrame("BUTTON", addon.."ToggleButton", manager, "SecureHandlerClickTemplate")
+toggleButton:SetPoint("TOPRIGHT",-3,-3)
+toggleButton:SetPoint("BOTTOMRIGHT",-3,3)
+toggleButton:SetWidth(15)
 
-local bg = ns.toggleButton:CreateTexture(nil, "BACKGROUND", nil, -8)
+local bg = toggleButton:CreateTexture(nil, "BACKGROUND", nil, -8)
 bg:SetAllPoints()
 bg:SetColorTexture(1,1,1)
 bg:SetAlpha(0.05)
-ns.toggleButton.bg = bg
-ns.toggleButton.tooltipText = "Toggle World Markers"
-ns.toggleButton:SetScript("OnEnter", ButtonOnEnter)
-ns.toggleButton:SetScript("OnLeave", ButtonOnLeave)
+toggleButton.bg = bg
+toggleButton.tooltipText = "Toggle World Markers"
+toggleButton:SetScript("OnEnter", ButtonOnEnter)
+toggleButton:SetScript("OnLeave", ButtonOnLeave)
 
 -- ToggleButton secure onclick.
-ns.toggleButton:SetAttribute("_onclick", [=[
+toggleButton:SetAttribute("_onclick", [=[
     local ref = self:GetFrameRef("manager")
     if not ref:GetAttribute("state") then
         ref:SetAttribute("state","closed")
@@ -225,4 +225,4 @@ ns.toggleButton:SetAttribute("_onclick", [=[
 ]=])
 
 -- ToggleButton frame reference.
-ns.toggleButton:SetFrameRef("manager", manager)
+toggleButton:SetFrameRef("manager", manager)

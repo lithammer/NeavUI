@@ -772,7 +772,7 @@ oUF:Factory(function(self)
 
             if i == 1 then
                 if not nRaidDB.anchorToControls then
-                    local toggleButton = ns.toggleButton
+                    local toggleButton = _G["oUF_NeavRaidControlsFrame"]
                     raid[i]:SetPoint("TOPLEFT", toggleButton, "TOPRIGHT", 5, 0)
                 else
                     raid[i]:SetPoint(initialAnchor, raidFrames)
@@ -816,7 +816,7 @@ oUF:Factory(function(self)
         ]]):format(nRaidDB.frameWidth, nRaidDB.frameHeight))
 
         if not nRaidDB.anchorToControls  then
-            local toggleButton = ns.toggleButton
+            local toggleButton = _G["oUF_NeavRaidControlsFrame"]
             raid:SetPoint("TOPLEFT", toggleButton, "TOPRIGHT", 5, 0)
         else
             raid:SetPoint(initialAnchor, raidFrames)
