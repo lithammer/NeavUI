@@ -60,13 +60,12 @@ end
 
 --  Update Action Bars
 
+OverrideActionBar:SetScale(cfg.vehicleBar.scale)
+
 hooksecurefunc("MultiActionBar_Update", function(self)
     if nMainbar:IsTaintable() then
         return
     end
-
-    -- Vehicle Scale
-    OverrideActionBar:SetScale(cfg.vehicleBar.scale)
 
     -- Right Bars Scale & Alpha
 
