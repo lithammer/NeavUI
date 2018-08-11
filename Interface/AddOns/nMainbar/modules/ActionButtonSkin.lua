@@ -69,15 +69,15 @@ local function SkinButton(button, icon)
 
         if floatingBG then
             floatingBG:ClearAllPoints()
-            floatingBG:SetPoint("TOPRIGHT", button, 4, 4)
-            floatingBG:SetPoint("BOTTOMLEFT", button, -4, -4)
+            floatingBG:SetPoint("TOPRIGHT", button, 5, 5)
+            floatingBG:SetPoint("BOTTOMLEFT", button, -5, -5)
             floatingBG:SetTexture(MEDIA_PATH.."textureShadow")
             floatingBG:SetVertexColor(0.0, 0.0, 0.0, 1.0)
         else
             button.Shadow = button:CreateTexture(nil, "BACKGROUND")
             button.Shadow:SetParent(button)
-            button.Shadow:SetPoint("TOPRIGHT", normalTexture, 4, 4)
-            button.Shadow:SetPoint("BOTTOMLEFT", normalTexture, -4, -4)
+            button.Shadow:SetPoint("TOPRIGHT", normalTexture, 5, 5)
+            button.Shadow:SetPoint("BOTTOMLEFT", normalTexture, -5, -5)
             button.Shadow:SetTexture(MEDIA_PATH.."textureShadow")
             button.Shadow:SetVertexColor(0.0, 0.0, 0.0, 1.0)
         end
