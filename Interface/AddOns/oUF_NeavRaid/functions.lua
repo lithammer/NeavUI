@@ -80,7 +80,7 @@ ns.CreateAnchor = function(name)
             widthMulti = 5
             heightMulti = 8
         end
-        location = {"TOPLEFT", ns.toggleButton, "TOPRIGHT", 5, 0}
+        location = {"TOPLEFT", _G["oUF_NeavRaidControlsFrame"], "TOPRIGHT", 5, 0}
     else
         widthMulti = 2
         heightMulti = 2

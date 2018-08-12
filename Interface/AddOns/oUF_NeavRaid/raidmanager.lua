@@ -23,14 +23,14 @@ local TEX_WORLD_RAID_MARKERS = {
 }
 
 local WORLD_RAID_MARKERS_TOOLTIP = {
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:14:14|t |cff0070ddBlue|r World Marker",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:14:14|t |cff1eff00Green|r World Marker",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:14:14|t |cffa335eePurple|r World Marker",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:14:14|t |cffff2020Red|r World Marker",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:14:14|t |cffffff00Yellow|r World Marker",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:14:14|t |cffff7f3fOrange|r World Marker",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:14:14|t |cffaaaaddSilver|r World Marker",
-    "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:14:14|t |cffffffffWhite|r World Marker",
+    WORLD_MARKER1,
+    WORLD_MARKER2,
+    WORLD_MARKER3,
+    WORLD_MARKER4,
+    WORLD_MARKER5,
+    WORLD_MARKER6,
+    WORLD_MARKER7,
+    WORLD_MARKER8,
 }
 
 local button, leftButton, previousButton
@@ -83,7 +83,7 @@ function manager:CreateWorldMarkerButtons()
             button:SetPoint("TOP", previousButton, "BOTTOM", 0, 0)
         end
 
-        local cancelButton = self:CreateButton(addon.."Button"..i.."Cancel", "|TInterface\\Buttons\\UI-GroupLoot-Pass-Up:14:14:0:0|t", "Clear "..tooltip)
+        local cancelButton = self:CreateButton(addon.."Button"..i.."Cancel", "|TInterface\\Buttons\\UI-GroupLoot-Pass-Up:14:14:0:0|t", REMOVE.." "..tooltip)
         cancelButton:SetAttribute("type", "macro")
         cancelButton:SetAttribute("macrotext", format("/cwm %d", i))
         cancelButton:SetPoint("RIGHT", button, "LEFT", 0, 0)
