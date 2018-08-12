@@ -179,7 +179,7 @@ local function CheckFakeStatus()
     local bar = _G["FakeMultiBarBottomRight1"]
 
     if bar then
-        if not cfg.useFakeBottomRightBar or MainMenuBar:GetWidth() > 600 then
+        if not cfg.useFakeBottomRightBar or SHOW_MULTI_ACTIONBAR_2 then
             bar:Hide()
         else
             bar:Show()
