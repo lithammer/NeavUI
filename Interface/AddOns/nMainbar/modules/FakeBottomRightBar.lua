@@ -171,18 +171,6 @@ local function ReassignBindings(bar)
     end
 end
 
-    -- Automaticly enable/disable the fake bottom right bar based on settings.
-
-local function ToggleButtons(self, state)
-    for _, button in pairs(self.buttons) do
-        if state then
-            button:Enable()
-        else
-            button:Disable()
-        end
-    end
-end
-
 local function CheckFakeStatus()
     if nMainbar:IsTaintable() then
         return
@@ -192,11 +180,9 @@ local function CheckFakeStatus()
 
     if bar then
         if not cfg.useFakeBottomRightBar or MainMenuBar:GetWidth() > 600 then
-            bar:SetAlpha(0)
-            ToggleButtons(bar, false)
+            bar:Hide()
         else
-            bar:SetAlpha(1)
-            ToggleButtons(bar, true)
+            bar:Show()
         end
     end
 end
@@ -226,7 +212,7 @@ local function CreateBar(id)
     bar:SetSize(510, 40)
 
     if not cfg.useFakeBottomRightBar or bottomRightShown then
-        bar:SetAlpha(0)
+        bar:Hide()
     end
 
     bar.id = id
@@ -240,10 +226,6 @@ local function CreateBar(id)
         bar.buttons[i] = LAB:CreateButton(i, name, bar, DefaultConfig)
         bar.buttons[i]:SetSize(36, 36)
         bar.buttons[i]:SetState(0, "action", i+48)
-
-        if not cfg.useFakeBottomRightBar or bottomRightShown then
-            bar.buttons[i]:Disable()
-        end
 
         if i == 1 then
             bar.buttons[i]:SetPoint("LEFT")
