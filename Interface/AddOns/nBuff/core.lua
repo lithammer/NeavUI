@@ -46,6 +46,13 @@ hooksecurefunc(BuffFrame, "Show", function(self)
     self:SetScript("OnUpdate", nil)
 end)
 
+BuffFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+BuffFrame:HookScript("OnEvent", function(self, event, ...)
+    if event == "PLAYER_ENTERING_WORLD" then
+        BuffFrame_Update()
+    end
+end)
+
 TempEnchant1:ClearAllPoints()
 TempEnchant1:SetPoint("TOPRIGHT", Minimap, "TOPLEFT", -15, 0)
 
