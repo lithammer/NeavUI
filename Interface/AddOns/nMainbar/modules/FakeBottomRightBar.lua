@@ -2,10 +2,6 @@ local _, nMainbar = ...
 local cfg = nMainbar.Config
 local Color = cfg.color
 
-if not cfg.useFakeBottomRightBar then
-    return
-end
-
 local MEDIA_PATH = "Interface\\AddOns\\nMainbar\\media\\"
 
 local LAB = LibStub("LibActionButton-1.0-nMainbar")
@@ -175,12 +171,63 @@ local function ReassignBindings(bar)
     end
 end
 
+    -- Automaticly enable/disable the fake bottom right bar based on settings.
+
+local function ToggleButtons(self, state)
+    for _, button in pairs(self.buttons) do
+        if state then
+            button:Enable()
+        else
+            button:Disable()
+        end
+    end
+end
+
+local function CheckFakeStatus()
+    if nMainbar:IsTaintable() then
+        return
+    end
+
+    local bar = _G["FakeMultiBarBottomRight1"]
+
+    if bar then
+        if not cfg.useFakeBottomRightBar or MainMenuBar:GetWidth() > 600 then
+            bar:SetAlpha(0)
+            ToggleButtons(bar, false)
+        else
+            bar:SetAlpha(1)
+            ToggleButtons(bar, true)
+        end
+    end
+end
+
+hooksecurefunc(MainMenuBar, "ChangeMenuBarSizeAndPosition", CheckFakeStatus)
+hooksecurefunc("MultiActionBar_Update", CheckFakeStatus)
+
+ -- Disable bottom right bar checkbox during combat.
+
+local eventWatcher = CreateFrame("Frame")
+eventWatcher:RegisterEvent("PLAYER_REGEN_ENABLED")
+eventWatcher:RegisterEvent("PLAYER_REGEN_DISABLED")
+eventWatcher:SetScript("OnEvent", function(self, event, ...)
+    if event == "PLAYER_REGEN_DISABLED" then
+        InterfaceOptionsActionBarsPanelBottomRight:Disable()
+    elseif event == "PLAYER_REGEN_ENABLED" then
+        InterfaceOptionsActionBarsPanelBottomRight:Enable()
+    end
+end)
+
 local function CreateBar(id)
+    local bottomRightShown = select(2, GetActionBarToggles())
     local bar = CreateFrame("Frame", "FakeMultiBarBottomRight"..id, MainMenuBar, "SecureHandlerStateTemplate")
     bar:SetFrameRef("MainMenuBarArtFrame", MainMenuBarArtFrame)
     bar:SetPoint("BOTTOMLEFT", MultiBarBottomLeftButton1, "TOPLEFT", 0, 6)
     bar:SetFrameStrata("MEDIUM")
     bar:SetSize(510, 40)
+
+    if not cfg.useFakeBottomRightBar or bottomRightShown then
+        bar:SetAlpha(0)
+    end
 
     bar.id = id
     bar.buttons = {}
@@ -193,6 +240,10 @@ local function CreateBar(id)
         bar.buttons[i] = LAB:CreateButton(i, name, bar, DefaultConfig)
         bar.buttons[i]:SetSize(36, 36)
         bar.buttons[i]:SetState(0, "action", i+48)
+
+        if not cfg.useFakeBottomRightBar or bottomRightShown then
+            bar.buttons[i]:Disable()
+        end
 
         if i == 1 then
             bar.buttons[i]:SetPoint("LEFT")
@@ -213,10 +264,3 @@ local function CreateBar(id)
 end
 
 CreateBar(1)
-
-    -- Move exit vehicle button.
-
-hooksecurefunc("MainMenuBarVehicleLeaveButton_Update", function()
-    MainMenuBarVehicleLeaveButton:ClearAllPoints()
-    MainMenuBarVehicleLeaveButton:SetPoint("CENTER", MainMenuBarArtFrame.RightEndCap, "TOP", 0, 15)
-end)

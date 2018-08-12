@@ -152,3 +152,10 @@ if not cfg.button.showKeybinds then
         PetActionButton_SetHotkeys(buttonName)
     end
 end
+
+    -- Move exit vehicle button.
+
+hooksecurefunc("MainMenuBarVehicleLeaveButton_Update", function()
+    MainMenuBarVehicleLeaveButton:ClearAllPoints()
+    MainMenuBarVehicleLeaveButton:SetPoint("CENTER", MainMenuBarArtFrame.RightEndCap, "TOP", 0, 15)
+end)
