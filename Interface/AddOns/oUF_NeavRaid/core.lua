@@ -6,8 +6,14 @@ local raidFrames, tankFrames
 local oUF = ns.oUF or oUF
 local unpack = unpack
 local tostring = tostring
+local pairs = pairs
 local format = format
 local tinsert = table.insert
+local statusbar, font, fontSize
+
+local LSM = LibStub("LibSharedMedia-3.0")
+LSM:Register("statusbar", "Neav "..DEFAULT, "Interface\\AddOns\\oUF_NeavRaid\\media\\statusbarTexture")
+LSM:Register("font", "Neav "..DEFAULT, "Interface\\AddOns\\oUF_NeavRaid\\media\\fontSmall.ttf")
 
 oUF.colors.power["MANA"] = {0, 0.55, 1}
 
@@ -31,18 +37,22 @@ function NeavRaid_OnEvent(self, event, ...)
             ns.RegisterDefaultSetting("powerBars", true)
             ns.RegisterDefaultSetting("manaOnlyPowerBars", true)
             ns.RegisterDefaultSetting("horizontalPowerBars", false)
-
+            ns.RegisterDefaultSetting("indicatorSize", 7)
+            ns.RegisterDefaultSetting("debuffSize", 22)
             ns.RegisterDefaultSetting("orientation", "VERTICAL")
             ns.RegisterDefaultSetting("initialAnchor", "TOPLEFT")
-
+            ns.RegisterDefaultSetting("texture", "Interface\\AddOns\\oUF_NeavRaid\\media\\statusbarTexture")
+            ns.RegisterDefaultSetting("font", "Interface\\AddOns\\oUF_NeavRaid\\media\\fontSmall.ttf")
+            ns.RegisterDefaultSetting("fontSize", 12)
             ns.RegisterDefaultSetting("nameLength", 4)
             ns.RegisterDefaultSetting("frameWidth", 48)
             ns.RegisterDefaultSetting("frameHeight", 46)
             ns.RegisterDefaultSetting("frameOffset", 7)
             ns.RegisterDefaultSetting("frameScale", 1.2)
 
-            ns.RegisterDefaultSetting("indicatorSize", 7)
-            ns.RegisterDefaultSetting("debuffSize", 22)
+            statusbar = nRaidDB.texture
+            font = nRaidDB.font
+            fontSize = nRaidDB.fontSize
 
             raidFrames = ns.CreateAnchor("Raid")
             tankFrames = ns.CreateAnchor("Assist")
@@ -81,6 +91,7 @@ do
         PRIEST = {
             {17, "BOTTOMRIGHT", {1, 1, 0}},             -- Power Word: Shield
             {194384, "TOPRIGHT", {1, 0, 0}},            -- Atonement
+            {271466, "RIGHT", {1, 1, 0}},               -- Luminous Barrier
             {41635, "TOPRIGHT", {1, 0, 0}},             -- Prayer of Mending
             {139, "RIGHT", {0, 1, 0}},                  -- Renew
         },
@@ -366,7 +377,7 @@ local function CreateRaidLayout(self, unit)
         -- Health Bar
 
     self.Health = CreateFrame("StatusBar", "$parentHealthBar", self)
-    self.Health:SetStatusBarTexture(config.media.statusbar)
+    self.Health:SetStatusBarTexture(statusbar)
     self.Health:SetAllPoints(self)
     self.Health:SetOrientation(nRaidDB.horizontalHealthBars and "HORIZONTAL" or "VERTICAL")
 
@@ -382,7 +393,7 @@ local function CreateRaidLayout(self, unit)
 
     self.Health.bg = self.Health:CreateTexture("$parentBackground", "BACKGROUND")
     self.Health.bg:SetAllPoints(self.Health)
-    self.Health.bg:SetTexture(config.media.statusbar)
+    self.Health.bg:SetTexture(statusbar)
 
     self.Health.bg.multiplier = 0.3
 
@@ -391,7 +402,7 @@ local function CreateRaidLayout(self, unit)
     self.Health.Value = self.Health:CreateFontString("$parentHealth")
     self.Health.Value:SetDrawLayer("OVERLAY", 6)
     self.Health.Value:SetPoint("TOP", self.Health, "CENTER", 0, 2)
-    self.Health.Value:SetFont(config.font.fontSmall, config.font.fontSmallSize)
+    self.Health.Value:SetFont(font, fontSize)
     self.Health.Value:SetShadowOffset(1, -1)
 
         -- Name
@@ -399,7 +410,7 @@ local function CreateRaidLayout(self, unit)
     self.Name = self.Health:CreateFontString("$parentName")
     self.Name:SetDrawLayer("OVERLAY", 6)
     self.Name:SetPoint("BOTTOM", self.Health, "CENTER", 0, 3)
-    self.Name:SetFont(config.font.fontBig,config.font.fontBigSize)
+    self.Name:SetFont(font, fontSize)
     self.Name:SetShadowOffset(1, -1)
     self.Name:SetTextColor(1, 1, 1)
     self:Tag(self.Name, "[name:raid]")
@@ -408,7 +419,7 @@ local function CreateRaidLayout(self, unit)
 
     if nRaidDB.powerBars then
         self.Power = CreateFrame("StatusBar", "$parentPower", self)
-        self.Power:SetStatusBarTexture(config.media.statusbar)
+        self.Power:SetStatusBarTexture(statusbar)
 
         if nRaidDB.horizontalPowerBars then
             self.Power:SetPoint("TOPLEFT", self.Health, "BOTTOMLEFT", 0, -1)
@@ -439,7 +450,7 @@ local function CreateRaidLayout(self, unit)
         -- Health Prediction
 
     local myBar = CreateFrame("StatusBar", "$parentMyHealthPredictionBar", self)
-    myBar:SetStatusBarTexture(config.media.statusbar, "OVERLAY")
+    myBar:SetStatusBarTexture(statusbar, "OVERLAY")
     myBar:SetStatusBarColor(0, 0.827, 0.765, 1)
     myBar.Smooth = true
 
@@ -456,7 +467,7 @@ local function CreateRaidLayout(self, unit)
     end
 
     local otherBar = CreateFrame("StatusBar", "$parentOtherHealthPredictionBar", self)
-    otherBar:SetStatusBarTexture(config.media.statusbar, "OVERLAY")
+    otherBar:SetStatusBarTexture(statusbar, "OVERLAY")
     otherBar:SetStatusBarColor(0.0, 0.631, 0.557, 1)
     otherBar.Smooth = true
 
@@ -549,7 +560,7 @@ local function CreateRaidLayout(self, unit)
 
     self.NotHere = self.Health:CreateFontString("$parentStatusText", "OVERLAY")
     self.NotHere:SetPoint("CENTER", self, "BOTTOM")
-    self.NotHere:SetFont(config.font.fontSmall, 11, "OUTLINE")
+    self.NotHere:SetFont(font, 11, "OUTLINE")
     self.NotHere:SetShadowOffset(0, 0)
     self.NotHere:SetTextColor(0, 1, 0)
     self.NotHere.frequentUpdates = 1
@@ -559,7 +570,7 @@ local function CreateRaidLayout(self, unit)
 
     self.Mouseover = self.Health:CreateTexture("$parentDarklight", "OVERLAY")
     self.Mouseover:SetAllPoints(self.Health)
-    self.Mouseover:SetTexture(config.media.statusbar)
+    self.Mouseover:SetTexture(statusbar)
     self.Mouseover:SetVertexColor(0, 0, 0)
     self.Mouseover:SetAlpha(0)
 
@@ -593,6 +604,12 @@ local function CreateRaidLayout(self, unit)
     self.RaidTargetIndicator = self.Health:CreateTexture("$parentRaidTargetIcon", "OVERLAY", nil, 7)
     self.RaidTargetIndicator:SetSize(16, 16)
     self.RaidTargetIndicator:SetPoint("CENTER", self, "TOP")
+
+        -- Phase Icon
+
+    self.PhaseIndicator = self.Health:CreateTexture("$parentPhaseIcon", "OVERLAY", nil, 7)
+    self.PhaseIndicator:SetSize(20, 20)
+    self.PhaseIndicator:SetPoint("CENTER")
 
         -- Readycheck icons
 

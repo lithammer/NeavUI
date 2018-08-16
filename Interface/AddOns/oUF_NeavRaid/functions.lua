@@ -1,7 +1,11 @@
+
 local addon, ns = ...
+
+local LSM = LibStub("LibSharedMedia-3.0")
 
 local GetTime = GetTime
 local floor, fmod = floor, math.fmod
+local sort = table.sort
 local day, hour, minute = 86400, 3600, 60
 
 ns.FormatTime = function(time)
@@ -70,6 +74,24 @@ ns.utf8sub = function(str)
   return str:sub(startIndex, currentIndex - 1)
 end
 
+    -- Sorts a table by key.
+
+ns.pairsByKeys = function(t, f)
+    local a = {}
+    for n in pairs(t) do table.insert(a, n) end
+    table.sort(a, f)
+    local i = 0
+    local iter = function ()
+    i = i + 1
+    if a[i] == nil then
+        return nil
+    else
+        return a[i], t[a[i]]
+    end
+    end
+    return iter
+end
+
 ns.CreateAnchor = function(name)
     local heightMulti, widthMulti, location
     if name == "Raid" then
@@ -129,54 +151,216 @@ function ns.LockInCombat(frame)
     end)
 end
 
-function ns.CreateCheckBox(name, parent, label, tooltip, disableInCombat, relativeTo, offsetX, offsetY, initialPoint, relativePoint)
-    initialPoint = initialPoint or "TOPLEFT"
-    relativePoint = relativePoint or "BOTTOMLEFT"
-    offsetX = offsetX or 0
-    offsetY = offsetY or -8
-
-    local checkBox = CreateFrame("CheckButton", name, parent, "InterfaceOptionsCheckButtonTemplate")
-    checkBox:SetPoint(initialPoint, relativeTo, relativePoint, offsetX, offsetY)
-    checkBox.Text:SetText(label)
-
-    if tooltip then
-        checkBox.tooltipText = tooltip
+function ns.RegisterControl(control, parentFrame)
+    if ( ( not parentFrame ) or ( not control ) ) then
+        return
     end
 
-    if disableInCombat then
+    parentFrame.controls = parentFrame.controls or {}
+
+    tinsert(parentFrame.controls, control)
+end
+
+function ns.GetDefaultValue(var)
+    if var == "showSolo" then
+        return false
+    elseif var == "showParty" then
+        return true
+    elseif var == "assistFrame" then
+        return false
+    elseif var == "sortByRole" then
+        return true
+    elseif var == "showRoleIcons" then
+        return true
+    elseif var == "anchorToControls" then
+        return false
+    elseif var == "horizontalHealthBars" then
+        return false
+    elseif var == "powerBars" then
+        return true
+    elseif var == "manaOnlyPowerBars" then
+        return true
+    elseif var == "horizontalPowerBars" then
+        return false
+    elseif var == "orientation" then
+        return "VERTICAL"
+    elseif var == "initialAnchor" then
+        return "TOPLEFT"
+    elseif var == "font" then
+        return 4
+    elseif var == "fontSize" then
+        return 4
+    elseif var == "texture" then
+        return 4
+    elseif var == "nameLength" then
+        return 4
+    elseif var == "frameWidth" then
+        return 48
+    elseif var == "frameHeight" then
+        return 46
+    elseif var == "frameOffset" then
+        return 7
+    elseif var == "frameScale" then
+        return 1.2
+    elseif var == "indicatorSize" then
+        return 7
+    elseif var == "debuffSize" then
+        return 22
+    end
+end
+
+local prevControl
+
+function ns.CreateLabel(cfg)
+    --[[
+        {
+            type = "Label",
+            name = "LabelName",
+            parent = Options,
+            label = L.LabelText,
+            fontObject = "GameFontNormalLarge",
+            relativeTo = LeftSide,
+            relativePoint = "TOPLEFT",
+            offsetX = 16,
+            offsetY = -16,
+        },
+    --]]
+    cfg.initialPoint = cfg.initialPoint or "TOPLEFT"
+    cfg.relativePoint = cfg.relativePoint or "BOTTOMLEFT"
+    cfg.offsetX = cfg.offsetX or 0
+    cfg.offsetY = cfg.offsetY or -16
+    cfg.relativeTo = cfg.relativeTo or prevControl
+    cfg.fontObject = cfg.fontObject or "GameFontNormalLarge"
+
+    local label = cfg.parent:CreateFontString(cfg.name, "ARTWORK", cfg.fontObject)
+    label:SetPoint(cfg.initialPoint, cfg.relativeTo, cfg.relativePoint, cfg.offsetX, cfg.offsetY)
+    label:SetText(cfg.label)
+
+    prevControl = label
+    return label
+end
+
+function ns.CreateCheckBox(cfg)
+    --[[
+        {
+            type = "CheckBox",
+            name = "Test",
+            parent = parent,
+            label = L.TestLabel,
+            tooltip = L.TestTooltip,
+            isCvar = nil or True,
+            var = "TestVar",
+            needsRestart = nil or True,
+            disableInCombat = nil or True,
+            func = function(self)
+                -- Do stuff here.
+            end,
+            initialPoint = "TOPLEFT",
+            relativeTo = frame,
+            relativePoint, "BOTTOMLEFT",
+            offsetX = 0,
+            offsetY = -6,
+        },
+    --]]
+    cfg.initialPoint = cfg.initialPoint or "TOPLEFT"
+    cfg.relativePoint = cfg.relativePoint or "BOTTOMLEFT"
+    cfg.offsetX = cfg.offsetX or 0
+    cfg.offsetY = cfg.offsetY or -4
+    cfg.relativeTo = cfg.relativeTo or prevControl
+
+    local checkBox = CreateFrame("CheckButton", cfg.name, cfg.parent, "InterfaceOptionsCheckButtonTemplate")
+    checkBox:SetPoint(cfg.initialPoint, cfg.relativeTo, cfg.relativePoint, cfg.offsetX, cfg.offsetY)
+    checkBox.Text:SetText(cfg.label)
+    checkBox.GetValue = function(self) return checkBox:GetChecked() end
+    checkBox.SetControl = function(self) checkBox:SetChecked(nRaidDB[cfg.var]) end
+    checkBox.var = cfg.var
+    checkBox.isCvar = cfg.isCvar
+
+    if cfg.needsRestart then
+        checkBox.restart = false
+    end
+
+    if cfg.tooltip then
+        checkBox.tooltipText = cfg.tooltip
+    end
+
+    if cfg.disableInCombat then
         ns.LockInCombat(checkBox)
     end
 
+    checkBox:SetScript("OnClick", function(self)
+        local checked = self:GetChecked()
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+        checkBox.value = checked
+        if cfg.needsRestart then
+            checkBox.restart = not checkBox.restart
+        end
+        if cfg.func then
+            cfg.func(self)
+        end
+    end)
+
+    ns.RegisterControl(checkBox, cfg.parent)
+    prevControl = checkBox
     return checkBox
 end
 
-function ns.CreateSlider(name, parent, label, isCvar, var, fromatString, defaultValue, minValue, maxValue, step, disableInCombat, relativeTo, offsetX, offsetY, initialPoint, relativePoint)
-    initialPoint = initialPoint or "TOPLEFT"
-    relativePoint = relativePoint or "BOTTOMLEFT"
-    offsetX = offsetX or 0
-    offsetY = offsetY or -32
+function ns.CreateSlider(cfg)
+    --[[
+        {
+            type = "Slider",
+            name = "Test",
+            parent = parent,
+            label = L.TestLabel,
+            isCvar = True,
+            var = "nRaidDBVariableGoesHere",
+            fromatString = "%.2f",
+            minValue = 0,
+            maxValue = 1,
+            step = .10,
+            needsRestart = True,
+            disableInCombat = True,
+            func = function(self)
+                -- Do stuff here.
+            end,
+            initialPoint = "TOPLEFT",
+            relativeTo = frame,
+            relativePoint, "BOTTOMLEFT",
+            offsetX = 0,
+            offsetY = -6,
+        },
+    --]]
+    cfg.initialPoint = cfg.initialPoint or "TOPLEFT"
+    cfg.relativePoint = cfg.relativePoint or "BOTTOMLEFT"
+    cfg.offsetX = cfg.offsetX or 0
+    cfg.offsetY = cfg.offsetY or -26
+    cfg.relativeTo = cfg.relativeTo or prevControl
 
     local value
-    if isCvar then
-        value = BlizzardOptionsPanel_GetCVarSafe(var)
+    if cfg.isCvar then
+        value = BlizzardOptionsPanel_GetCVarSafe(cfg.var)
     else
-        value = var
+        value = nRaidDB[cfg.var]
     end
 
-    local slider = CreateFrame("Slider", name, parent, "OptionsSliderTemplate")
+    local slider = CreateFrame("Slider", cfg.name, cfg.parent, "OptionsSliderTemplate")
     slider:SetWidth(180)
-    slider:SetPoint(initialPoint, relativeTo, relativePoint, offsetX, offsetY)
-    slider.textLow = _G[name.."Low"]
-    slider.textHigh = _G[name.."High"]
-    slider.text = _G[name.."Text"]
+    slider:SetPoint(cfg.initialPoint, cfg.relativeTo, cfg.relativePoint, cfg.offsetX, cfg.offsetY)
+    slider.GetValue = function(self) return slider.value end
+    slider.SetControl = function(self) slider:SetValue(nRaidDB[cfg.var]) end
+    slider.value = value
+    slider.var = cfg.var
+    slider.textLow = _G[cfg.name.."Low"]
+    slider.textHigh = _G[cfg.name.."High"]
+    slider.text = _G[cfg.name.."Text"]
 
-    slider:SetMinMaxValues(minValue, maxValue)
+    slider:SetMinMaxValues(cfg.minValue, cfg.maxValue)
     slider.minValue, slider.maxValue = slider:GetMinMaxValues()
     slider:SetValue(value)
-    slider:SetValueStep(step)
+    slider:SetValueStep(cfg.step)
     slider:SetObeyStepOnDrag(true)
 
-    slider.text:SetFormattedText(fromatString, defaultValue)
+    slider.text:SetFormattedText(cfg.fromatString, value)
     slider.text:ClearAllPoints()
     slider.text:SetPoint("BOTTOMRIGHT", slider, "TOPRIGHT")
 
@@ -185,58 +369,105 @@ function ns.CreateSlider(name, parent, label, isCvar, var, fromatString, default
     slider.textLow:ClearAllPoints()
     slider.textLow:SetPoint("BOTTOMLEFT", slider, "TOPLEFT")
     slider.textLow:SetPoint("BOTTOMRIGHT", slider.text, "BOTTOMLEFT", -4, 0)
-    slider.textLow:SetText(label)
+    slider.textLow:SetText(cfg.label)
     slider.textLow:SetJustifyH("LEFT")
 
-    if disableInCombat then
+    if cfg.disableInCombat then
         ns.LockInCombat(slider)
     end
 
+    slider:SetScript("OnValueChanged", function(self, value)
+        slider.text:SetFormattedText(cfg.fromatString, value)
+        slider.value = value
+
+        if cfg.func then
+            cfg.func(self)
+        end
+
+        if cfg.needsRestart then
+            if slider.value ~= slider.oldValue then
+                slider.restart = true
+            else
+                slider.restart = false
+            end
+        end
+    end)
+
+    ns.RegisterControl(slider, cfg.parent)
+    prevControl = slider
     return slider
 end
 
-function ns.CreateDropdown(optionsTable, name, desc, var, parent, relativeTo, offsetX, offsetY, initialPoint, relativePoint)
-    initialPoint = initialPoint or "TOPLEFT"
-    relativePoint = relativePoint or "BOTTOMLEFT"
-    offsetX = offsetX or 0
-    offsetY = offsetY or -32
+function ns.CreateDropdown(cfg)
+    cfg.initialPoint = cfg.initialPoint or "TOPLEFT"
+    cfg.relativePoint = cfg.relativePoint or "BOTTOMLEFT"
+    cfg.offsetX = cfg.offsetX or 0
+    cfg.offsetY = cfg.offsetY or -26
+    cfg.relativeTo = cfg.relativeTo or prevControl
 
     --[[
-    Example optionsTable
-
-    local optionsTable = {
-        { text = L.OptionOne, value = ValueOne, },
-        { text = L.OptionTwo, value = ValueTwo, },
-        { text = L.OptionThree, value = ValueThree, },
-        { text = L.OptionFour, value = ValueFour, },
-    }
+        {
+            type = "Dropdown",
+            name = "TestDropdown",
+            parent = Options,
+            label = L.LocalizedName,
+            var = "nRaidDBVariableGoesHere",
+            needsRestart = true,
+            func = function(self)
+                -- Do stuff here. Only ran on click.
+            end,
+            optionsTable = {
+                { text = L.TopLeft, value = 1, },
+                { text = L.BottomLeft, value = 2, },
+                { text = L.TopRight, value = 3, },
+                { text = L.BottomRight, value = 4, },
+            },
+        },
     ]]
 
-    local dropdown = CreateFrame("Button", name, parent, "UIDropDownMenuTemplate")
-    dropdown:SetPoint(initialPoint, relativeTo, relativePoint, offsetX, offsetY)
+    local dropdown = CreateFrame("Button", cfg.name, cfg.parent, "UIDropDownMenuTemplate")
+    dropdown:SetPoint(cfg.initialPoint, cfg.relativeTo, cfg.relativePoint, cfg.offsetX, cfg.offsetY)
     dropdown:EnableMouse(true)
+    dropdown.GetValue = function(self) return UIDropDownMenu_GetSelectedValue(self) end
+    dropdown.SetControl = function(self)
+        self.value = nRaidDB[cfg.var]
+        UIDropDownMenu_SetSelectedValue(dropdown, self.value)
+        UIDropDownMenu_SetText(dropdown, cfg.optionsTable[self.value])
+    end
+    dropdown.var = cfg.var
+    dropdown.value = nRaidDB[cfg.var]
 
     dropdown.title = dropdown:CreateFontString("$parentTitle", "BACKGROUND", "GameFontNormalSmall")
     dropdown.title:SetPoint("BOTTOMLEFT", dropdown, "TOPLEFT", 20, 5)
-    dropdown.title:SetText(desc)
+    dropdown.title:SetText(cfg.label)
 
     local function Dropdown_OnClick(self)
-        nRaidDB[var] = optionsTable[self.value].value
-        UIDropDownMenu_SetText(dropdown, optionsTable[self.value].text)
         UIDropDownMenu_SetSelectedValue(dropdown, self.value)
+
+        if cfg.func then
+            cfg.func(dropdown)
+        end
+
+        if cfg.needsRestart then
+            if self.value ~= dropdown.oldValue then
+                dropdown.restart = true
+            else
+                dropdown.restart = false
+            end
+        end
     end
 
     local function Initialize(self, level)
+        local selectedValue = UIDropDownMenu_GetSelectedValue(dropdown)
         local info = UIDropDownMenu_CreateInfo()
 
-        for i, filter in ipairs(optionsTable) do
-            info.text = filter.text
-            info.value = i
-            info.value2 = filter.value
+        for value, text in ns.pairsByKeys(cfg.optionsTable) do
+            info.text = text
+            info.value = value
             info.func = Dropdown_OnClick
-            if info.value2 == nRaidDB[var] then
+            if info.value == selectedValue then
                 info.checked = 1
-                UIDropDownMenu_SetText(self, filter.text)
+                UIDropDownMenu_SetText(dropdown, text)
             else
                 info.checked = nil
             end
@@ -245,5 +476,111 @@ function ns.CreateDropdown(optionsTable, name, desc, var, parent, relativeTo, of
     end
 
     UIDropDownMenu_SetWidth(dropdown, 180)
+    UIDropDownMenu_SetSelectedValue(dropdown, nRaidDB[cfg.var])
+    UIDropDownMenu_SetText(dropdown, cfg.optionsTable[nRaidDB[cfg.var]])
     UIDropDownMenu_Initialize(dropdown, Initialize)
+
+    ns.RegisterControl(dropdown, cfg.parent)
+    prevControl = dropdown
+    return dropdown
+end
+
+local function GetSharedMediaName(media, value)
+    for k, v in pairs(LSM:HashTable(media)) do
+        if v == value then
+            return k
+        end
+    end
+end
+
+function ns.CreateSharedMeidaDropdown(cfg)
+    --[[
+        {
+            type = "SharedMedia",
+            name = "SomethingDropdown"
+            parent = Options,
+            label = L.LocalizedName,
+            var = "nRaidDBVariableGoesHere",
+            func = function(self)
+                -- Do stuff here. Only ran on click.
+            end,
+            needsRestart = true,
+            mediaType = "font", SharedMedia types: background, border, font, statusbar, or sound.
+            initialPoint = "TOPLEFT",
+            relativeTo = frame,
+            relativePoint, "BOTTOMLEFT",
+            offsetX = 0,
+            offsetY = -26,
+        },
+    ]]
+
+    cfg.initialPoint = cfg.initialPoint or "TOPLEFT"
+    cfg.relativePoint = cfg.relativePoint or "BOTTOMLEFT"
+    cfg.offsetX = cfg.offsetX or 0
+    cfg.offsetY = cfg.offsetY or -26
+    cfg.relativeTo = cfg.relativeTo or prevControl
+
+    local dropdown = CreateFrame("Button", cfg.name, cfg.parent, "UIDropDownMenuTemplate")
+    dropdown:SetPoint(cfg.initialPoint, cfg.relativeTo, cfg.relativePoint, cfg.offsetX, cfg.offsetY)
+    dropdown:EnableMouse(true)
+    dropdown.GetValue = function(self) return UIDropDownMenu_GetSelectedValue(self) end
+    dropdown.SetControl = function(self)
+        self.value = nRaidDB[cfg.var]
+        UIDropDownMenu_SetSelectedValue(dropdown, self.value)
+        UIDropDownMenu_SetText(dropdown, GetSharedMediaName(cfg.mediaType, nRaidDB[cfg.var]))
+    end
+    dropdown.var = cfg.var
+
+    dropdown.title = dropdown:CreateFontString("$parentTitle", "BACKGROUND", "GameFontNormalSmall")
+    dropdown.title:SetPoint("BOTTOMLEFT", dropdown, "TOPLEFT", 20, 5)
+    dropdown.title:SetText(cfg.label)
+
+    local function Dropdown_OnClick(self)
+        UIDropDownMenu_SetSelectedValue(dropdown, self.value)
+
+        if cfg.func then
+            cfg.func(dropdown)
+        end
+
+        if cfg.needsRestart then
+            if self.value ~= dropdown.oldValue then
+                dropdown.restart = true
+            else
+                dropdown.restart = false
+            end
+        end
+    end
+
+    local function Initialize(self, level)
+        local selectedValue = UIDropDownMenu_GetSelectedValue(dropdown)
+        local info = UIDropDownMenu_CreateInfo()
+
+        for key, value in ns.pairsByKeys(LSM:HashTable(cfg.mediaType)) do
+            info.text = key
+            info.value = value
+            info.func = Dropdown_OnClick
+            if info.value == selectedValue then
+                info.checked = 1
+                UIDropDownMenu_SetText(dropdown, key)
+            else
+                info.checked = nil
+            end
+            if cfg.mediaType == "font" then
+                local fontObject = CreateFont("NeavDropdownFont"..key)
+                fontObject:SetFont(value, 13)
+                info.fontObject = fontObject
+            end
+            UIDropDownMenu_AddButton(info)
+        end
+    end
+
+    UIDropDownMenu_SetWidth(dropdown, 180)
+    UIDropDownMenu_SetSelectedValue(dropdown, nRaidDB[cfg.var])
+    UIDropDownMenu_SetText(dropdown, GetSharedMediaName(cfg.mediaType, nRaidDB[cfg.var]))
+
+    UIDropDownMenu_Initialize(dropdown, Initialize)
+
+    ns.RegisterControl(dropdown, cfg.parent)
+    prevControl = dropdown
+    return dropdown
 end
