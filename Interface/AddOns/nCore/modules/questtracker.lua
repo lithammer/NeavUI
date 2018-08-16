@@ -1,8 +1,6 @@
 local _, nCore = ...
 
 function nCore:QuestTracker()
-    if not nCoreDB.QuestTracker then return end
-
     local function UpdateQuestText()
         local _, numQuests = GetNumQuestLogEntries()
         WorldMapFrameTitleText:SetFormattedText("%s - %d/%s", MAP_AND_QUEST_LOG, numQuests, MAX_QUESTS)
@@ -19,6 +17,10 @@ function nCore:QuestTracker()
     watcher:RegisterEvent("QUEST_REMOVED")
 
     watcher:SetScript("OnEvent", function(self, event, ...)
-        UpdateQuestText()
+        if nCoreDB.QuestTracker then
+            UpdateQuestText()
+        else
+            WorldMapFrameTitleText:SetText(MAP_AND_QUEST_LOG)
+        end
     end)
 end

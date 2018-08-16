@@ -1,8 +1,6 @@
 local _, nCore = ...
 
 function nCore:AltBuy()
-    if not nCoreDB.AltBuy then return end
-
     local L = nCore.L
     local select = select
 
@@ -11,10 +9,8 @@ function nCore:AltBuy()
 
         -- Alt-click to buy a stack.
 
-    local origMerchantItemButton_OnModifiedClick = _G.MerchantItemButton_OnModifiedClick
-    local function MerchantItemButton_OnModifiedClickHook(self, ...)
-        origMerchantItemButton_OnModifiedClick(self, ...)
-
+    hooksecurefunc("MerchantItemButton_OnModifiedClick", function(self, ...)
+        if not nCoreDB.AltBuy then return end
         if IsAltKeyDown() then
             local maxStack = select(8, GetItemInfo(GetMerchantItemLink(self:GetID())))
 
@@ -27,8 +23,7 @@ function nCore:AltBuy()
                 BuyMerchantItem(self:GetID(), GetMerchantItemMaxStack(self:GetID()))
             end
         end
-    end
-    MerchantItemButton_OnModifiedClick = MerchantItemButton_OnModifiedClickHook
+    end)
 
         -- Add a hint to the tooltip.
 
@@ -37,6 +32,7 @@ function nCore:AltBuy()
     end
 
     GameTooltip:HookScript("OnTooltipSetItem", function(self)
+        if not nCoreDB.AltBuy then return end
         if MerchantFrame:IsShown() and IsMerchantButtonOver() then
             for i = 2, GameTooltip:NumLines() do
                 if _G["GameTooltipTextLeft"..i]:GetText():find("<[sS]hift") then

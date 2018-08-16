@@ -1,8 +1,6 @@
 local _, nCore = ...
 
 function nCore:MapCoords()
-    if not nCoreDB.MapCoords then return end
-
     local unpack = unpack
 
     -- Temp fix until Blizzard removed the ! icon from the global string.
@@ -36,7 +34,7 @@ function nCore:MapCoords()
     end)
 
     nCore_CoordsFrame:SetScript("OnUpdate", function(self, elapsed)
-        if IsInInstance() then
+        if IsInInstance() or not nCoreDB.MapCoords  then
             self.Mouse.Text:SetText("")
             self.Player.Text:SetText("")
             return

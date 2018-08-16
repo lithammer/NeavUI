@@ -1,4 +1,5 @@
 <Ui>
+    <Script file="functions.lua" />
     <Script file="localization.lua" />
     <Script file="options.lua" />
 

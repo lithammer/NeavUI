@@ -35,8 +35,13 @@ function nCore_OnEvent(self, event, ...)
             nCore:Skins()
             nCore:SpellID()
             nCore:VignetteAlert()
-
-			self:UnregisterEvent("ADDON_LOADED")
+        elseif name == "Blizzard_Communities" then
+            -- Fixed member detail frame height.
+            CommunitiesFrame.GuildMemberDetailFrame:HookScript("OnSizeChanged", function(self)
+                if CanViewOfficerNote() then
+                    self:SetHeight(280)
+                end
+            end)
         end
     end
 end

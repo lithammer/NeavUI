@@ -1,8 +1,6 @@
 local _, nCore = ...
 
 function nCore:AutoQuest()
-    if not nCoreDB.AutoQuest then return end
-
     -- Function to show quest dialog for popup quests in the objective tracker
     local function PopupQuestComplete()
         if GetNumAutoQuestPopUps() > 0 then
@@ -94,7 +92,7 @@ function nCore:AutoQuest()
         end
 
         -- Check for modifier.
-        if not IsShiftKeyDown() then return end
+        if not IsShiftKeyDown() or not nCoreDB.AutoQuest then return end
 
         ----------------------------------------------------------------------
         -- Accept quests automatically

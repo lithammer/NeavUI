@@ -1,8 +1,6 @@
 local _, nCore = ...
 
 function nCore:ArchaeologyHelper()
-    if not nCoreDB.ArchaeologyHelper then return end
-
     local SURVEY_SPELL_ID = 80451
     local FISHING_POLE = GetItemSubClassInfo(2, 20)
 
@@ -45,7 +43,7 @@ function nCore:ArchaeologyHelper()
     end)
 
     WorldFrame:HookScript("OnMouseDown", function(frame, button, down)
-        if button ~= "RightButton" or nCore:IsTaintable() then return end
+        if button ~= "RightButton" or nCore:IsTaintable() or not nCoreDB.ArchaeologyHelper then return end
 
         local mapID = C_Map.GetBestMapForUnit("player")
 

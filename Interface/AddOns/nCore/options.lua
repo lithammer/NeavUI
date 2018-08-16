@@ -1,68 +1,41 @@
 local addon, nCore = ...
 local L = nCore.L
 
-local floor = math.floor
-
-    -- Set Defaults
-
-function nCore:RegisterDefaultSetting(key, value)
-    if nCoreDB == nil then
-        nCoreDB = {}
-    end
-    if nCoreDB[key] == nil then
-        nCoreDB[key] = value
-    end
-end
-
-    -- Set Defaults
-
-function nCore:SetDefaultOptions()
-    -- Global
-    nCore:RegisterDefaultSetting("AltBuy", true)
-    nCore:RegisterDefaultSetting("ArchaeologyHelper", true)
-    nCore:RegisterDefaultSetting("AutoGreed", true)
-    nCore:RegisterDefaultSetting("AutoQuest", true)
-    nCore:RegisterDefaultSetting("Dressroom", true)
-    nCore:RegisterDefaultSetting("Durability", true)
-    nCore:RegisterDefaultSetting("ErrorFilter", true)
-    nCore:RegisterDefaultSetting("Fonts", true)
-    nCore:RegisterDefaultSetting("ObjectiveTracker", true)
-    nCore:RegisterDefaultSetting("MapCoords", true)
-    nCore:RegisterDefaultSetting("MoveTalkingHeads", true)
-    nCore:RegisterDefaultSetting("QuestTracker", true)
-    nCore:RegisterDefaultSetting("Skins", true)
-    nCore:RegisterDefaultSetting("SpellID", true)
-    nCore:RegisterDefaultSetting("VignetteAlert", true)
-end
-
-function nCore:LockInCombat(frame)
-    frame:SetScript("OnUpdate", function(self)
-        if not InCombatLockdown() then
-            self:Enable()
-        else
-            self:Disable()
-        end
-    end)
-end
-
-function nCore:CreateCheckBox(name, parent, label, tooltip, relativeTo, x, y, disableInCombat)
-    local checkBox = CreateFrame("CheckButton", name, parent, "InterfaceOptionsCheckButtonTemplate")
-    checkBox:SetPoint("TOPLEFT", relativeTo, "BOTTOMLEFT", x, y)
-    checkBox.Text:SetText(label)
-
-    if tooltip then
-        checkBox.tooltipText = tooltip
-    end
-
-    if disableInCombat then
-        nCore:LockInCombat(checkBox)
-    end
-
-    return checkBox
-end
+local pairs = pairs
 
 local Options = CreateFrame("Frame", "nCoreOptions", InterfaceOptionsFramePanelContainer)
+Options.controlTable = {}
 Options.name = GetAddOnMetadata(addon, "Title")
+Options.okay = function(self)
+    for _, control in pairs(self.controls) do
+        nCoreDB[control.var] = control:GetValue()
+    end
+
+    for _, control in pairs(self.controls) do
+        if control.restart then
+            ReloadUI()
+        end
+    end
+end
+Options.cancel = function(self)
+    for _, control in pairs(self.controls) do
+        if control.oldValue and control.oldValue ~= control:GetValue() then
+            control:SetValue()
+        end
+    end
+end
+Options.default = function(self)
+    for _, control in pairs(self.controls) do
+        nCoreDB[control.var] = true
+    end
+    ReloadUI()
+end
+Options.refresh = function(self)
+    for _, control in pairs(self.controls) do
+        control:SetValue()
+        control.oldValue = control:GetValue()
+    end
+end
 InterfaceOptions_AddCategory(Options)
 
 Options:Hide()
@@ -79,143 +52,160 @@ Options:SetScript("OnShow", function()
     RightSide:SetWidth(panelWidth)
     RightSide:SetPoint("TOPRIGHT", Options)
 
-    -- Left Side --
+    local UIControls = {
+        {
+            type = "Label",
+            name = "OptionsLabel",
+            parent = Options,
+            label = L.OptionsLabel,
+            relativeTo = LeftSide,
+            relativePoint = "TOPLEFT",
+            offsetX = 16,
+            offsetY = -16,
+        },
+        {
+            type = "CheckBox",
+            name = "AltBuy",
+            parent = Options,
+            label = L.AltBuy,
+            tooltip = L.AltBuyTooltip,
+            var = "AltBuy",
+            relativeTo = OptionsLabel,
+            offsetY = -12,
+        },
+        {
+            type = "CheckBox",
+            name = "ArchaeologyHelper",
+            parent = Options,
+            label = L.ArchaeologyHelper,
+            tooltip = L.ArchaeologyHelperTooltip,
+            var = "ArchaeologyHelper",
+        },
+        {
+            type = "CheckBox",
+            name = "AutoGreed",
+            parent = Options,
+            label = L.AutoGreed,
+            tooltip = L.AutoGreedTooltip,
+            var = "AutoGreed",
+        },
+        {
+            type = "CheckBox",
+            name = "AutoQuest",
+            parent = Options,
+            label = L.AutoQuest,
+            tooltip = L.AutoQuestTooltip,
+            var = "AutoQuest",
+        },
+        {
+            type = "CheckBox",
+            name = "Dressroom",
+            parent = Options,
+            label = L.Dressroom,
+            tooltip = L.DressroomTooltip,
+            var = "Dressroom",
+            needsRestart = true,
+        },
+        {
+            type = "CheckBox",
+            name = "Durability",
+            parent = Options,
+            label = L.Durability,
+            tooltip = L.DurabilityTooltip,
+            var = "Durability",
+            needsRestart = true,
+        },
+        {
+            type = "CheckBox",
+            name = "ErrorFilter",
+            parent = Options,
+            label = L.ErrorFilter,
+            tooltip = L.ErrorFilterTooltip,
+            var = "ErrorFilter",
+        },
+        {
+            type = "CheckBox",
+            name = "Fonts",
+            parent = Options,
+            label = L.Fonts,
+            tooltip = L.FontsTooltip,
+            var = "Fonts",
+            needsRestart = true,
+        },
+        {
+            type = "CheckBox",
+            name = "MapCoords",
+            parent = Options,
+            label = L.MapCoords,
+            tooltip = L.MapCoordsTooltip,
+            var = "MapCoords",
+        },
+        {
+            type = "CheckBox",
+            name = "ObjectiveTracker",
+            parent = Options,
+            label = L.ObjectiveTracker,
+            tooltip = L.ObjectiveTrackerTooltip,
+            var = "ObjectiveTracker",
+            needsRestart = true,
+        },
+        {
+            type = "CheckBox",
+            name = "MoveTalkingHeads",
+            parent = Options,
+            label = L.MoveTalkingHeads,
+            tooltip = L.MoveTalkingHeadsTooltip,
+            var = "MoveTalkingHeads",
+            needsRestart = true,
+        },
+        {
+            type = "CheckBox",
+            name = "QuestTracker",
+            parent = Options,
+            label = L.QuestTracker,
+            tooltip = L.QuestTrackerTooltip,
+            var = "QuestTracker",
+        },
+        {
+            type = "CheckBox",
+            name = "Skins",
+            parent = Options,
+            label = L.Skins,
+            tooltip = L.SkinsTooltip,
+            var = "Skins",
+            needsRestart = true,
+        },
+        {
+            type = "CheckBox",
+            name = "SpellID",
+            parent = Options,
+            label = L.SpellID,
+            tooltip = L.SpellIDTooltip,
+            var = "SpellID",
+        },
+        {
+            type = "CheckBox",
+            name = "VignetteAlert",
+            parent = Options,
+            label = L.VignetteAlert,
+            tooltip = L.VignetteAlertTooltip,
+            var = "VignetteAlert",
+        }
+    }
 
-    local OptionsLabel = Options:CreateFontString("OptionsLabel", "ARTWORK", "GameFontNormalLarge")
-    OptionsLabel:SetPoint("TOPLEFT", LeftSide, 16, -16)
-    OptionsLabel:SetText(L.OptionsLabel)
-
-    local AltBuy = nCore:CreateCheckBox("AltBuy", LeftSide, L.AltBuy, L.AltBuyTooltip, OptionsLabel, 0, -12, false)
-    AltBuy:SetScript("OnClick", function(self)
-        local checked = not not self:GetChecked()
-        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-        nCoreDB.AltBuy = checked
-    end)
-
-    local ArchaeologyHelper = nCore:CreateCheckBox("ArchaeologyHelper", LeftSide, L.ArchaeologyHelper, L.ArchaeologyHelperTooltip, AltBuy, 0, -6, false)
-    ArchaeologyHelper:SetScript("OnClick", function(self)
-        local checked = not not self:GetChecked()
-        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-        nCoreDB.ArchaeologyHelper = checked
-    end)
-
-    local AutoGreed = nCore:CreateCheckBox("AutoGreed", LeftSide, L.AutoGreed, L.AutoGreedTooltip, ArchaeologyHelper, 0, -6, false)
-    AutoGreed:SetScript("OnClick", function(self)
-        local checked = not not self:GetChecked()
-        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-        nCoreDB.AutoGreed = checked
-    end)
-
-    local AutoQuest = nCore:CreateCheckBox("AutoQuest", LeftSide, L.AutoQuest, L.AutoQuestTooltip, AutoGreed, 0, -6, false)
-    AutoQuest:SetScript("OnClick", function(self)
-        local checked = not not self:GetChecked()
-        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-        nCoreDB.AutoQuest = checked
-    end)
-
-    local Dressroom = nCore:CreateCheckBox("Dressroom", LeftSide, L.Dressroom, L.DressroomTooltip, AutoQuest, 0, -6, false)
-    Dressroom:SetScript("OnClick", function(self)
-        local checked = not not self:GetChecked()
-        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-        nCoreDB.Dressroom = checked
-    end)
-
-    local Durability = nCore:CreateCheckBox("Durability", LeftSide, L.Durability, L.DurabilityTooltip, Dressroom, 0, -6, false)
-    Durability:SetScript("OnClick", function(self)
-        local checked = not not self:GetChecked()
-        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-        nCoreDB.Durability = checked
-    end)
-
-    local ErrorFilter = nCore:CreateCheckBox("ErrorFilter", LeftSide, L.ErrorFilter, L.ErrorFilterTooltip, Durability, 0, -6, false)
-    ErrorFilter:SetScript("OnClick", function(self)
-        local checked = not not self:GetChecked()
-        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-        nCoreDB.ErrorFilter = checked
-    end)
-
-    local Fonts = nCore:CreateCheckBox("Fonts", LeftSide, L.Fonts, L.FontsTooltip, ErrorFilter, 0, -6, false)
-    Fonts:SetScript("OnClick", function(self)
-        local checked = not not self:GetChecked()
-        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-        nCoreDB.Fonts = checked
-    end)
-
-    local MapCoords = nCore:CreateCheckBox("MapCoords", LeftSide, L.MapCoords, L.MapCoordsTooltip, Fonts, 0, -6, false)
-    MapCoords:SetScript("OnClick", function(self)
-        local checked = not not self:GetChecked()
-        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-        nCoreDB.MapCoords = checked
-    end)
-
-    local ObjectiveTracker = nCore:CreateCheckBox("ObjectiveTracker", LeftSide, L.ObjectiveTracker, L.ObjectiveTrackerTooltip, MapCoords, 0, -6, false)
-    ObjectiveTracker:SetScript("OnClick", function(self)
-        local checked = not not self:GetChecked()
-        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-        nCoreDB.ObjectiveTracker = checked
-    end)
-
-    local MoveTalkingHeads = nCore:CreateCheckBox("MoveTalkingHeads", LeftSide, L.MoveTalkingHeads, L.MoveTalkingHeadsTooltip, ObjectiveTracker, 0, -6, false)
-    MoveTalkingHeads:SetScript("OnClick", function(self)
-        local checked = not not self:GetChecked()
-        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-        nCoreDB.MoveTalkingHeads = checked
-    end)
-
-    local QuestTracker = nCore:CreateCheckBox("QuestTracker", LeftSide, L.QuestTracker, L.QuestTrackerTooltip, MoveTalkingHeads, 0, -6, false)
-    QuestTracker:SetScript("OnClick", function(self)
-        local checked = not not self:GetChecked()
-        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-        nCoreDB.QuestTracker = checked
-    end)
-
-    local Skins = nCore:CreateCheckBox("Skins", LeftSide, L.Skins, L.SkinsTooltip, QuestTracker, 0, -6, false)
-    Skins:SetScript("OnClick", function(self)
-        local checked = not not self:GetChecked()
-        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-        nCoreDB.Skins = checked
-    end)
-
-    local SpellID = nCore:CreateCheckBox("SpellID", LeftSide, L.SpellID, L.SpellIDTooltip, Skins, 0, -6, false)
-    SpellID:SetScript("OnClick", function(self)
-        local checked = not not self:GetChecked()
-        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-        nCoreDB.SpellID = checked
-    end)
-
-    local VignetteAlert = nCore:CreateCheckBox("VignetteAlert", LeftSide, L.VignetteAlert, L.VignetteAlertTooltip, SpellID, 0, -6, false)
-    VignetteAlert:SetScript("OnClick", function(self)
-        local checked = not not self:GetChecked()
-        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-        nCoreDB.VignetteAlert = checked
-    end)
-
-    -- Right Side --
-
-    local ReloadButton = CreateFrame("BUTTON", "ReloadButton", RightSide, "UIPanelButtonTemplate")
-    ReloadButton:SetSize(100, 24)
-    ReloadButton:SetPoint("BOTTOMRIGHT", RightSide, -10, 10)
-    ReloadButton:SetText(RELOADUI)
-    ReloadButton:SetScript("OnClick", function(self)
-        ReloadUI()
-    end)
+    for i, control in pairs(UIControls) do
+        if control.type == "Label" then
+            nCore:CreateLabel(control)
+        elseif control.type == "CheckBox" then
+            nCore:CreateCheckBox(control)
+        end
+    end
 
     function Options:Refresh()
-        AltBuy:SetChecked(nCoreDB.AltBuy)
-        ArchaeologyHelper:SetChecked(nCoreDB.ArchaeologyHelper)
-        AutoGreed:SetChecked(nCoreDB.AutoGreed)
-        AutoQuest:SetChecked(nCoreDB.AutoQuest)
-        Dressroom:SetChecked(nCoreDB.Dressroom)
-        Durability:SetChecked(nCoreDB.Durability)
-        ErrorFilter:SetChecked(nCoreDB.ErrorFilter)
-        Fonts:SetChecked(nCoreDB.Fonts)
-        ObjectiveTracker:SetChecked(nCoreDB.ObjectiveTracker)
-        MapCoords:SetChecked(nCoreDB.MapCoords)
-        MoveTalkingHeads:SetChecked(nCoreDB.MoveTalkingHeads)
-        QuestTracker:SetChecked(nCoreDB.QuestTracker)
-        Skins:SetChecked(nCoreDB.Skins)
-        SpellID:SetChecked(nCoreDB.SpellID)
-        VignetteAlert:SetChecked(nCoreDB.VignetteAlert)
+        for _, control in pairs(self.controls) do
+            control:SetValue(control)
+            control.oldValue = control:GetValue()
+        end
     end
 
     Options:Refresh()
