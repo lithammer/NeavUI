@@ -41,8 +41,8 @@ local function SkinButton(button, icon)
 
         if normalTexture then
             normalTexture:ClearAllPoints()
-            normalTexture:SetPoint("TOPRIGHT", button, 1.5, 1.5)
-            normalTexture:SetPoint("BOTTOMLEFT", button, -1.5, -1.5)
+            normalTexture:SetPoint("TOPRIGHT", button, 1, 1)
+            normalTexture:SetPoint("BOTTOMLEFT", button, -1, -1)
             normalTexture:SetVertexColor(Color.Normal:GetRGBA())
 
             button:SetCheckedTexture(MEDIA_PATH.."textureChecked")
