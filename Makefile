@@ -18,7 +18,7 @@ clean:
 	$(RM) *.zip
 
 $(NMAINBAR_ZIP):
-	(cd Interface/AddOns; zip -r "$(CURDIR)/$@" nMainbar -x '*.git*' '.DS_Store')
+	(cd Interface/AddOns; zip -r "$(CURDIR)/$@" !Beautycase nMainbar -x '*.git*' '.DS_Store')
 	zip $@ LICENSE
 
 $(NEAVUI_ZIP):
