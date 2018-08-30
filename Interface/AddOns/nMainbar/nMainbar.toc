@@ -2,6 +2,7 @@
 ## Title: |cffCC3333 n|rMainbar
 ## Notes: nMainBar
 ## SavedVariables: BagsShown
+## RequiredDeps: !Beautycase
 
 nMainbar.xml
 bindings.xml
