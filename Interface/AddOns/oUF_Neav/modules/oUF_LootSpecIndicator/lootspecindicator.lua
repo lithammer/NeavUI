@@ -96,6 +96,7 @@ local function Enable(self)
         if self.unit == "player" then
             self:RegisterEvent("PLAYER_LOGIN", Path, true)
             self:RegisterEvent("PLAYER_LOOT_SPEC_UPDATED", Path, true)
+            self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED", Path, true)
         end
 
         return true
