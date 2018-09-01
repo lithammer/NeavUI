@@ -142,9 +142,9 @@ local function StyleButton(self)
     end
 
     if not floatingBG then
-        self.floatingBG = self:CreateTexture("BACKGROUND")
-        self.floatingBG:SetPoint("TOPRIGHT", self, 5, 5)
-        self.floatingBG:SetPoint("BOTTOMLEFT", self, -5, -5)
+        self.floatingBG = self:CreateTexture("$parentFloatingBG", "BACKGROUND")
+        self.floatingBG:SetPoint("TOPRIGHT", normal, 5, 5)
+        self.floatingBG:SetPoint("BOTTOMLEFT", normal, -5, -5)
         self.floatingBG:SetTexture(MEDIA_PATH.."textureShadow")
         self.floatingBG:SetVertexColor(0.0, 0.0, 0.0, 1.0)
     end

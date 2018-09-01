@@ -17,7 +17,7 @@ local function IsSpecificButton(self, name)
     end
 end
 
-local function SkinButton(button, icon)
+local function SkinButton(button, icon, borderOffset, shadowOffset)
     local buttonName = button:GetName()
     local border = button.Border
     local cooldown = _G[buttonName.."Cooldown"]
@@ -41,8 +41,8 @@ local function SkinButton(button, icon)
 
         if normalTexture then
             normalTexture:ClearAllPoints()
-            normalTexture:SetPoint("TOPRIGHT", button, 1, 1)
-            normalTexture:SetPoint("BOTTOMLEFT", button, -1, -1)
+            normalTexture:SetPoint("TOPRIGHT", button, borderOffset, borderOffset)
+            normalTexture:SetPoint("BOTTOMLEFT", button, -borderOffset, -borderOffset)
             normalTexture:SetVertexColor(Color.Normal:GetRGBA())
 
             button:SetCheckedTexture(MEDIA_PATH.."textureChecked")
@@ -53,11 +53,6 @@ local function SkinButton(button, icon)
 
             button:SetHighlightTexture(MEDIA_PATH.."textureHighlight")
             button:GetHighlightTexture():SetAllPoints(normalTexture)
-
-            button.Background = button:CreateTexture(nil, "BACKGROUND", nil, -8)
-            button.Background:SetTexture(MEDIA_PATH.."textureBackground")
-            button.Background:SetPoint("TOPRIGHT", button, 14, 12)
-            button.Background:SetPoint("BOTTOMLEFT", button, -14, -16)
         end
 
         if border then
@@ -67,17 +62,22 @@ local function SkinButton(button, icon)
             border:SetAllPoints(normalTexture)
         end
 
+        if not button.Background then
+            button.Background = button:CreateTexture(nil, "BACKGROUND", nil, -8)
+            button.Background:SetTexture(MEDIA_PATH.."textureBackground")
+            button.Background:SetPoint("TOPRIGHT", button, 14, 12)
+            button.Background:SetPoint("BOTTOMLEFT", button, -14, -16)
+        end
+
         if floatingBG then
             floatingBG:ClearAllPoints()
-            floatingBG:SetPoint("TOPRIGHT", button, 5, 5)
-            floatingBG:SetPoint("BOTTOMLEFT", button, -5, -5)
-            floatingBG:SetTexture(MEDIA_PATH.."textureShadow")
-            floatingBG:SetVertexColor(0.0, 0.0, 0.0, 1.0)
-        else
-            button.Shadow = button:CreateTexture(nil, "BACKGROUND")
-            button.Shadow:SetParent(button)
-            button.Shadow:SetPoint("TOPRIGHT", normalTexture, 5, 5)
-            button.Shadow:SetPoint("BOTTOMLEFT", normalTexture, -5, -5)
+            floatingBG:Hide()
+        end
+
+        if not button.Shadow then
+            button.Shadow = button:CreateTexture("$parentFloatingBG", "BACKGROUND")
+            button.Shadow:SetPoint("TOPRIGHT", normalTexture, shadowOffset, shadowOffset)
+            button.Shadow:SetPoint("BOTTOMLEFT", normalTexture, -shadowOffset, -shadowOffset)
             button.Shadow:SetTexture(MEDIA_PATH.."textureShadow")
             button.Shadow:SetVertexColor(0.0, 0.0, 0.0, 1.0)
         end
@@ -157,10 +157,6 @@ hooksecurefunc("ActionButton_Update", function(self)
     local border = self.Border
     local texture = GetActionTexture(action)
 
-    if texture then
-        icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-    end
-
     local actionName = self.Name
     if actionName then
         if not cfg.button.showMacroNames then
@@ -172,7 +168,7 @@ hooksecurefunc("ActionButton_Update", function(self)
     end
 
     if not IsSpecificButton(self, "ExtraActionButton") then
-        SkinButton(self)
+        SkinButton(self, texture and icon, 1, 5)
     end
 
     if border then
@@ -188,23 +184,10 @@ end)
 hooksecurefunc("ExtraActionBar_Update", function(self)
     local bar = ExtraActionBarFrame
     if HasExtraActionBar() and not bar.Skinned then
-        bar.button.style:Hide()
+        local button = bar.button
+        button.style:Hide()
 
-        local normalTexture = bar.button.NormalTexture
-        normalTexture:ClearAllPoints()
-        normalTexture:SetPoint("TOPRIGHT", bar.button, 4, 4)
-        normalTexture:SetPoint("BOTTOMLEFT", bar.button, -4, -4)
-
-        bar.button:SetNormalTexture(MEDIA_PATH.."textureNormal")
-
-        bar.button:SetCheckedTexture(MEDIA_PATH.."textureChecked")
-        bar.button:GetCheckedTexture():SetAllPoints(normalTexture)
-
-        bar.button:SetPushedTexture(MEDIA_PATH.."texturePushed")
-        bar.button:GetPushedTexture():SetAllPoints(normalTexture)
-
-        bar.button:SetHighlightTexture(MEDIA_PATH.."textureHighlight")
-        bar.button:GetHighlightTexture():SetAllPoints(normalTexture)
+        SkinButton(button, button.icon, 4, 5)
 
         bar.Skinned = true
     end
@@ -289,7 +272,7 @@ hooksecurefunc("PetActionBar_Update", function(self)
         button = _G[buttonName]
         icon = _G[buttonName.."Icon"]
 
-        SkinButton(button, icon)
+        SkinButton(button, icon, 1.5, 4)
 
         local hotkey = _G[buttonName.."HotKey"]
         if hotkey then
@@ -312,7 +295,7 @@ hooksecurefunc("StanceBar_UpdateState", function(self)
         button = StanceBarFrame.StanceButtons[i]
         icon = button.icon
 
-        SkinButton(button, icon)
+        SkinButton(button, icon, 2, 4)
     end
 end)
 
@@ -323,7 +306,7 @@ hooksecurefunc("PossessBar_UpdateState", function()
         button = _G["PossessButton"..i]
         icon = _G["PossessButton"..i.."Icon"]
 
-        SkinButton(button, icon)
+        SkinButton(button, icon, 1.5, 4)
     end
 end)
 
