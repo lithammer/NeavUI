@@ -24,8 +24,20 @@ end
     -- Note: Just must be in this instance, when you run the script above
 
 local L = {
-    -- BFA
+    -- BFA Raids
     ["Uldir"] = 1861,
+
+    -- BFA Dungeons
+    ["Atal'Dazar"] = 1763,
+    ["Freehold"] = 1754,
+    ["Kings Rest"] = 1762,
+    ["Shrine of the Storm"] = 1864,
+    ["Siege of Boralus"] = 1822,
+    ["Temple of Sethraliss"] = 1877,
+    ["The Motherlode"] = 1594,
+    ["The Underrot"] = 1841,
+    ["Tol Dagor"] = 1771,
+    ["Waycrest Manor"] = 1862,
 
     -- Legion Raids
     ["The Emerald Nightmare"] = 1520,
@@ -42,7 +54,7 @@ local L = {
     ["Eye of Azshara"] = 1456,
     ["Halls of Valor"] = 1477,
     ["Maw of Souls"] = 1492,
-    ["Neltharion\"s Lair"] = 1458,
+    ["Neltharion's Lair"] = 1458,
     ["Return to Karazhan"] = 1651,
     ["The Arcway"] = 1516,
     ["Vault of the Wardens"] = 1493,
@@ -58,7 +70,7 @@ local L = {
     ["Throne of Thunder"] = 1098,
     ["Terrace of Endless Spring"] = 996,
     ["Heart of Fear"] = 1009,
-    ["Mogu\"shan Vaults"] = 1008,
+    ["Mogu'shan Vaults"] = 1008,
 
     -- Cataclysm Raids
     ["Baradin Hold"] = 757,
@@ -151,6 +163,121 @@ ns.auras = {
             [GetSpellInfo(272513)] = 7, -- Virulent Corruption
             [GetSpellInfo(267427)] = 7, -- Torment
         },
+
+         [L["Atal'Dazar"]] = {
+            [GetSpellInfo(254959)] = 7, -- Soulburn
+            [GetSpellInfo(255814)] = 7, -- Rending Maul
+            [GetSpellInfo(255421)] = 7, -- Rezan (Devour)
+            [GetSpellInfo(255434)] = 7, -- Serrated Teeth
+            [GetSpellInfo(256577)] = 7, -- Yazma (Soulfeast)
+         },
+
+         [L["Kings Rest"]] = {
+            [GetSpellInfo(270003)] = 7, -- Suppression Slam
+            [GetSpellInfo(270084)] = 7, -- Guard Captain Atu (Axe Barrage)
+            [GetSpellInfo(267618)] = 7, -- Mchimba (Drain Fluids)
+            [GetSpellInfo(267626)] = 8, -- Mchimba (Dessication)
+            [GetSpellInfo(270487)] = 7, -- Severing Blade
+            [GetSpellInfo(266238)] = 7, -- Aka'ali the Conqueror (Shattered Defenses)
+            [GetSpellInfo(266231)] = 7, -- Kula the Butcher (Severing Axe)
+            [GetSpellInfo(266191)] = 8, -- Kula the Butcher (Whirling Axes)
+            [GetSpellInfo(272388)] = 7, -- Shadow of Zul (Shadow Barrage)
+            [GetSpellInfo(271640)] = 7, -- Shadow of Zul (Dark Revelation)
+            [GetSpellInfo(268796)] = 7, -- Dazar (Impaling Spear)
+            [GetSpellInfo(269369)] = 7, -- T'zala (Deathly Roar)
+         },
+
+         [L["The Motherlode"]] = {
+            [GetSpellInfo(280604)] = 7, -- Iced Spritzer
+            [GetSpellInfo(257371)] = 7, -- Tear Gas
+            [GetSpellInfo(257544)] = 7, -- Jagged Cut
+            [GetSpellInfo(268846)] = 7, -- Echo Blade
+            [GetSpellInfo(262794)] = 7, -- Energy Lash
+            [GetSpellInfo(262513)] = 7, -- Azerite Heartseeker
+            [GetSpellInfo(260829)] = 7, -- Mogul Razdunk (Homing Missle - Travelling)
+            [GetSpellInfo(260838)] = 7, -- Mogul Razdunk (Homing Missle - DoT)
+            [GetSpellInfo(263637)] = 7, -- Clothesline
+         },
+
+         [L["Temple of Sethraliss"]] = {
+            [GetSpellInfo(263371)] = 7, -- Conduction
+            [GetSpellInfo(272655)] = 7, -- Scouring Sand
+            [GetSpellInfo(263914)] = 7, -- Merektha (Blinding Sand)
+            [GetSpellInfo(263958)] = 8, -- Merektha (A Knot of Snakes)
+            [GetSpellInfo(266923)] = 7, -- Galvazzt (Galvanize)
+            [GetSpellInfo(268007)] = 7, -- Heart Attack
+         },
+
+        [L["The Underrot"]] = {
+            [GetSpellInfo(265533)] = 7, -- Blood Maw
+            [GetSpellInfo(265019)] = 7, -- Savage Cleave
+            [GetSpellInfo(265377)] = 7, -- Hooked Snare
+            [GetSpellInfo(265625)] = 7, -- Dark Omen
+            [GetSpellInfo(260685)] = 7, -- Taint of G'huun
+            [GetSpellInfo(266107)] = 7, -- Thirst for Blood
+            [GetSpellInfo(260455)] = 7, -- Serrated Fangs
+        },
+
+        [L["Freehold"]] = {
+            [GetSpellInfo(274389)] = 7, -- Rat Traps
+            [GetSpellInfo(274555)] = 7, -- Scabrous Bite
+            [GetSpellInfo(258875)] = 7, -- Blackout Barrel
+            [GetSpellInfo(256363)] = 7, -- Ripper Punch
+        },
+
+        [L["Shrine of the Storm"]] = {
+            [GetSpellInfo(276268)] = 7, -- Heaving Blow
+            [GetSpellInfo(264166)] = 7, -- Undertow
+            [GetSpellInfo(264526)] = 7, -- Grasp from the Depths
+            [GetSpellInfo(274633)] = 7, -- Sundering Blow
+            [GetSpellInfo(268214)] = 7, -- Carve Flesh
+            [GetSpellInfo(267818)] = 7, -- Slicing Blast
+            [GetSpellInfo(268309)] = 7, -- Unending Darkness
+            [GetSpellInfo(268317)] = 7, -- Rip Mind
+            [GetSpellInfo(268391)] = 7, -- Mental Assault
+            [GetSpellInfo(274720)] = 7, -- Abyssal Strike
+        },
+
+        [L["Siege of Boralus"]] = {
+            [GetSpellInfo(273930)] = 7, -- Hindering Cut
+            [GetSpellInfo(257292)] = 7, -- Heavy Slash
+            [GetSpellInfo(261428)] = 7, -- Hangman's Noose
+            [GetSpellInfo(256897)] = 7, -- Clamping Jaws
+            [GetSpellInfo(272874)] = 7, -- Trample
+            [GetSpellInfo(273470)] = 7, -- Gut Shot
+            [GetSpellInfo(272834)] = 7, -- Viscous Slobber
+            [GetSpellInfo(257169)] = 7, -- Terrifying Roar
+            [GetSpellInfo(272713)] = 7, -- Crushing Slam
+        },
+
+        [L["Tol Dagor"]] = {
+            [GetSpellInfo(258079)] = 7, -- Massive Chomp
+            [GetSpellInfo(258058)] = 7, -- Squeeze
+            [GetSpellInfo(260016)] = 7, -- Itchy Bite
+            [GetSpellInfo(257119)] = 7, -- Sand Trap
+            [GetSpellInfo(260067)] = 7, -- Vicious Mauling
+            [GetSpellInfo(258313)] = 7, -- Handcuff
+            [GetSpellInfo(259711)] = 7, -- Lockdown
+            [GetSpellInfo(256198)] = 7, -- Azerite Rounds
+            [GetSpellInfo(256044)] = 7, -- Deadeye
+            [GetSpellInfo(256474)] = 7, -- Heartstopper Venom
+        },
+
+        [L["Waycrest Manor"]] = {
+            [GetSpellInfo(266035)] = 7, -- Bone Splinter
+            [GetSpellInfo(266036)] = 7, -- Drain Essence
+            [GetSpellInfo(260907)] = 7, -- Soul Manipulation
+            [GetSpellInfo(260741)] = 7, -- Jagged Nettles
+            [GetSpellInfo(264556)] = 7, -- Tearing Strike
+            [GetSpellInfo(265760)] = 7, -- Thorned Barrage
+            [GetSpellInfo(260551)] = 7, -- Soul Thorns
+            [GetSpellInfo(263943)] = 7, -- Etch
+            [GetSpellInfo(265881)] = 7, -- Decaying Touch
+            [GetSpellInfo(261438)] = 7, -- Wasting Strike
+            [GetSpellInfo(268202)] = 7, -- Death Lens
+        },
+
+        -- Legion
 
         [L["Darkheart Thicket"]] = {
             -- Trash
@@ -940,7 +1067,7 @@ ns.auras = {
                 -- Grand Empress Shek'zeer
         },
 
-        [L["Mogu\"shan Vaults"]] = {
+        [L["Mogu'shan Vaults"]] = {
 
                 -- The Stone Guard
 
