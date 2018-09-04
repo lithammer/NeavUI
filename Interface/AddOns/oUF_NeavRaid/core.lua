@@ -609,7 +609,7 @@ local function CreateRaidLayout(self, unit)
 
     self.PhaseIndicator = self.Health:CreateTexture("$parentPhaseIcon", "OVERLAY", nil, 7)
     self.PhaseIndicator:SetSize(20, 20)
-    self.PhaseIndicator:SetPoint("CENTER")
+    self.PhaseIndicator:SetPoint("CENTER", 0, -2)
 
         -- Readycheck icons
 

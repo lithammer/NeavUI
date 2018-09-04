@@ -187,11 +187,11 @@ function ns.GetDefaultValue(var)
     elseif var == "initialAnchor" then
         return "TOPLEFT"
     elseif var == "font" then
-        return 4
+        return "Interface\\AddOns\\oUF_NeavRaid\\media\\fontSmall.ttf"
     elseif var == "fontSize" then
-        return 4
+        return 12
     elseif var == "texture" then
-        return 4
+        return "Interface\\AddOns\\oUF_NeavRaid\\media\\statusbarTexture"
     elseif var == "nameLength" then
         return 4
     elseif var == "frameWidth" then

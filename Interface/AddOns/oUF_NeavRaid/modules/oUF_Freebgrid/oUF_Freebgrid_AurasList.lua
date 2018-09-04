@@ -24,6 +24,9 @@ end
     -- Note: Just must be in this instance, when you run the script above
 
 local L = {
+    -- BFA
+    ["Uldir"] = 1861,
+
     -- Legion Raids
     ["The Emerald Nightmare"] = 1520,
     ["Trial of Valor"] = 1648,
@@ -118,6 +121,37 @@ ns.auras = {
         -- Raid Debuffs
 
     instances = {
+        [L["Uldir"]] = {
+            -- Taloc
+            [GetSpellInfo(271222)] = 7, -- Plasma Discharge
+
+            -- Mother
+            [GetSpellInfo(267787)] = 8, -- Sanitizing Strike
+            [GetSpellInfo(268198)] = 7, -- Clinging Corruption
+
+            -- Fetid Devourer
+            [GetSpellInfo(262313)] = 7, -- Malodorous Miasma
+            [GetSpellInfo(262314)] = 7, -- Putrid Paroxysm
+
+            -- Zek'voz
+            [GetSpellInfo(265264)] = 7, -- Void Lash
+            [GetSpellInfo(265248)] = 7, -- Shatter
+
+            -- Vectis
+            [GetSpellInfo(265129)] = 7, -- Omega Vector
+            [GetSpellInfo(265178)] = 7, -- Evolving Affliction
+            [GetSpellInfo(265212)] = 7, -- Gestate
+
+            -- Mythrax
+            [GetSpellInfo(272336)] = 7, -- Annihilation
+
+            -- G'huun
+            [GetSpellInfo(267813)] = 7, -- Blood Host
+            [GetSpellInfo(274262)] = 7, -- Explosive Corruption
+            [GetSpellInfo(272513)] = 7, -- Virulent Corruption
+            [GetSpellInfo(267427)] = 7, -- Torment
+        },
+
         [L["Darkheart Thicket"]] = {
             -- Trash
             [GetSpellInfo(200620)] = 7, -- Frantic Rip

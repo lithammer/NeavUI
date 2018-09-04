@@ -20,7 +20,7 @@ end
 Options.cancel = function(self)
     for _, control in pairs(self.controls) do
         if control.oldValue and control.oldValue ~= control:GetValue() then
-            control:SetValue()
+            control:SetControl()
         end
     end
 end
