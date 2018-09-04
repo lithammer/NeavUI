@@ -130,7 +130,7 @@ ns.auras = {
         [GetSpellInfo(33206)] = 15,     -- Pain Suppression
     },
 
-        -- Raid Debuffs
+        -- Debuffs
 
     instances = {
         [L["Uldir"]] = {
@@ -164,15 +164,15 @@ ns.auras = {
             [GetSpellInfo(267427)] = 7, -- Torment
         },
 
-         [L["Atal'Dazar"]] = {
+        [L["Atal'Dazar"]] = {
             [GetSpellInfo(254959)] = 7, -- Soulburn
             [GetSpellInfo(255814)] = 7, -- Rending Maul
             [GetSpellInfo(255421)] = 7, -- Rezan (Devour)
             [GetSpellInfo(255434)] = 7, -- Serrated Teeth
             [GetSpellInfo(256577)] = 7, -- Yazma (Soulfeast)
-         },
+        },
 
-         [L["Kings Rest"]] = {
+        [L["Kings Rest"]] = {
             [GetSpellInfo(270003)] = 7, -- Suppression Slam
             [GetSpellInfo(270084)] = 7, -- Guard Captain Atu (Axe Barrage)
             [GetSpellInfo(267618)] = 7, -- Mchimba (Drain Fluids)
@@ -185,9 +185,9 @@ ns.auras = {
             [GetSpellInfo(271640)] = 7, -- Shadow of Zul (Dark Revelation)
             [GetSpellInfo(268796)] = 7, -- Dazar (Impaling Spear)
             [GetSpellInfo(269369)] = 7, -- T'zala (Deathly Roar)
-         },
+        },
 
-         [L["The Motherlode"]] = {
+        [L["The Motherlode"]] = {
             [GetSpellInfo(280604)] = 7, -- Iced Spritzer
             [GetSpellInfo(257371)] = 7, -- Tear Gas
             [GetSpellInfo(257544)] = 7, -- Jagged Cut
@@ -197,16 +197,16 @@ ns.auras = {
             [GetSpellInfo(260829)] = 7, -- Mogul Razdunk (Homing Missle - Travelling)
             [GetSpellInfo(260838)] = 7, -- Mogul Razdunk (Homing Missle - DoT)
             [GetSpellInfo(263637)] = 7, -- Clothesline
-         },
+        },
 
-         [L["Temple of Sethraliss"]] = {
+        [L["Temple of Sethraliss"]] = {
             [GetSpellInfo(263371)] = 7, -- Conduction
             [GetSpellInfo(272655)] = 7, -- Scouring Sand
             [GetSpellInfo(263914)] = 7, -- Merektha (Blinding Sand)
             [GetSpellInfo(263958)] = 8, -- Merektha (A Knot of Snakes)
             [GetSpellInfo(266923)] = 7, -- Galvazzt (Galvanize)
             [GetSpellInfo(268007)] = 7, -- Heart Attack
-         },
+        },
 
         [L["The Underrot"]] = {
             [GetSpellInfo(265533)] = 7, -- Blood Maw
