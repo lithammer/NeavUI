@@ -258,9 +258,7 @@ ns.auras = {
             [GetSpellInfo(260067)] = 7, -- Vicious Mauling
             [GetSpellInfo(258313)] = 7, -- Handcuff
             [GetSpellInfo(259711)] = 7, -- Lockdown
-            [GetSpellInfo(256198)] = 7, -- Azerite Rounds
             [GetSpellInfo(256044)] = 7, -- Deadeye
-            [GetSpellInfo(256474)] = 7, -- Heartstopper Venom
         },
 
         [L["Waycrest Manor"]] = {
