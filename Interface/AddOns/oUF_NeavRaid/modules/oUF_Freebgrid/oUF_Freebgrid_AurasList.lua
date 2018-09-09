@@ -156,6 +156,7 @@ ns.auras = {
 
             -- Mythrax
             [GetSpellInfo(272336)] = 7, -- Annihilation
+            [GetSpellInfo(272407)] = 9, -- Oblivion Sphere (Can't be healed.)
 
             -- G'huun
             [GetSpellInfo(267813)] = 7, -- Blood Host
