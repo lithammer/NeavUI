@@ -144,27 +144,37 @@ end
 
     -- Update Alt Resource Display
 
-local function ToggleAltResources(visible)
+local function Toggle(frame, shouldShow)
+    if frame then
+        if not shouldShow then
+            HideUIPanel(frame)
+        else
+            ShowUIPanel(frame)
+        end
+    end
+end
+
+local function ToggleAltResources(shouldShow)
     local playerSpec = GetSpecialization()
 
     if playerClass == "SHAMAN" then
-        if visible then TotemFrame:Show() else TotemFrame:Hide() end
+        Toggle(TotemFrame)
     elseif playerClass == "DEATHKNIGHT" then
-        if visible then RuneFrame:Show() else RuneFrame:Hide() end
-    elseif playerClass == "MAGE" and playerSpec == SPEC_MAGE_ARCANE then
-        if visible then MageArcaneChargesFrame:Show() else MageArcaneChargesFrame:Hide() end
+        Toggle(RuneFrame)
+    elseif playerClass == "MAGE" then
+        Toggle(MageArcaneChargesFrame, shouldShow and playerSpec == SPEC_MAGE_ARCANE)
     elseif playerClass == "MONK" then
         if playerSpec == SPEC_MONK_BREWMASTER then
-            if visible then MonkStaggerBar:Show() else MonkStaggerBar:Hide() end
+            Toggle(MonkStaggerBar, shouldShow)
         elseif playerSpec == SPEC_MONK_WINDWALKER then
-            if visible then MonkHarmonyBarFrame:Show() else MonkHarmonyBarFrame:Hide() end
+            Toggle(MonkHarmonyBarFrame, shouldShow)
         end
-    elseif playerClass == "PALADIN" and playerSpec == SPEC_PALADIN_RETRIBUTION then
-        if visible then PaladinPowerBarFrame:Show() else PaladinPowerBarFrame:Hide() end
+    elseif playerClass == "PALADIN" then
+        Toggle(PaladinPowerBarFrame, shouldShow and playerSpec == SPEC_PALADIN_RETRIBUTION)
     elseif playerClass == "ROGUE" then
-        if visible then ComboPointPlayerFrame:Show() else ComboPointPlayerFrame:Hide() end
+        Toggle(ComboPointPlayerFrame, shouldShow)
     elseif playerClass == "WARLOCK" then
-        if visible then WarlockPowerFrame:Show() else WarlockPowerFrame:Hide() end
+        Toggle(WarlockPowerFrame, shouldShow)
     end
 end
 
@@ -262,7 +272,7 @@ end
 
     -- Check Vehicle Status
 
-local function CheckVehicleStatus(self, event)
+local function CheckVehicleStatus(self)
     if UnitHasVehiclePlayerFrameUI("player") then
         ToggleAltResources(false)
         if self.AdditionalPower then
@@ -963,12 +973,11 @@ local function CreateUnitLayout(self, unit)
 
             -- Holy Power Bar (Retribution Only)
 
-        if playerClass == "PALADIN" and GetSpecialization() == SPEC_PALADIN_RETRIBUTION then
+        if playerClass == "PALADIN" then
             PaladinPowerBarFrame:ClearAllPoints()
             PaladinPowerBarFrame:SetParent(oUF_Neav_Player)
             PaladinPowerBarFrame:SetScale(config.units.player.scale * 0.81)
             PaladinPowerBarFrame:SetPoint("TOP", oUF_Neav_Player, "BOTTOM", 25, 2)
-            PaladinPowerBarFrame:Show()
         end
 
             -- Monk Chi / Stagger Bar
