@@ -123,11 +123,43 @@ ns.auras = {
         -- Buffs
 
     buffs = {
-        [GetSpellInfo(871)] = 15,       -- Shield Wall
-        [GetSpellInfo(61336)] = 15,     -- Survival Instincts
-        [GetSpellInfo(31850)] = 15,     -- Ardent Defender
-        [GetSpellInfo(498)] = 15,       -- Divine Protection
-        [GetSpellInfo(33206)] = 15,     -- Pain Suppression
+        -- Death Knight
+        [GetSpellInfo(49028)] = 15,         -- Dancing Rune Weapon
+        [GetSpellInfo(48792)] = 15,         -- Icebound Fortitude
+        [GetSpellInfo(55233)] = 15,         -- Vampiric Blood
+        -- Druid
+        [GetSpellInfo(61336)] = 15,         -- Survival Instincts
+        [GetSpellInfo(102342)] = 15,        -- Ironbark
+        [GetSpellInfo(22812)] = 15,         -- Barkskin
+        -- Hunter
+        [GetSpellInfo(186265)] = 15,        -- Aspect of the Turtle
+        -- Mage
+        [GetSpellInfo(45438)] = 15,         -- Ice Block
+        -- Monk
+        [GetSpellInfo(115203)] = 15,        -- Fortifying Brew
+        [GetSpellInfo(115176)] = 15,        -- Zen Meditation
+        [GetSpellInfo(122278)] = 15,        -- Dempen Harm
+        [GetSpellInfo(122783)] = 15,        -- Diffuse Magic
+        [GetSpellInfo(122470)] = 15,        -- Touch of Karma
+        -- Paladin
+        [GetSpellInfo(31850)] = 15,         -- Ardent Defender
+        [GetSpellInfo(498)] = 15,           -- Divine Protection
+        [GetSpellInfo(1022)] = 15,          -- Blessing of Protection
+        [GetSpellInfo(204018)] = 15,        -- Blessing of Spellwarding
+        [GetSpellInfo(6940)] = 15,          -- Blessing of Sacrifice
+        -- Priest
+        [GetSpellInfo(33206)] = 15,         -- Pain Suppression
+        [GetSpellInfo(47788)] = 15,         -- Guardian Spirit
+        [GetSpellInfo(27827)] = 15,         -- Spirit of Redemption
+        [GetSpellInfo(47585)] = 15,         -- Dispersion
+        -- Rogue
+        -- Shaman
+        [GetSpellInfo(108271)] = 15,        -- Astral Shift
+        -- Warlock
+        [GetSpellInfo(104773)] = 15,        -- Unending Resolve
+        -- Warrior
+        [GetSpellInfo(871)] = 15,           -- Shield Wall
+        [GetSpellInfo(118038)] = 15,        -- Die by the Sword
     },
 
         -- Debuffs
@@ -268,7 +300,6 @@ ns.auras = {
             [GetSpellInfo(260907)] = 7, -- Soul Manipulation
             [GetSpellInfo(260741)] = 7, -- Jagged Nettles
             [GetSpellInfo(264556)] = 7, -- Tearing Strike
-            [GetSpellInfo(265760)] = 7, -- Thorned Barrage
             [GetSpellInfo(260551)] = 7, -- Soul Thorns
             [GetSpellInfo(263943)] = 7, -- Etch
             [GetSpellInfo(265881)] = 7, -- Decaying Touch

@@ -330,8 +330,14 @@ local function GetHealthText(unit, cur, max)
 end
 
 local function UpdateHealth(Health, unit, cur, max)
-    if not UnitIsPlayer(unit) and not UnitIsFriend("player",unit) then
+    if not UnitIsPlayer(unit) and not UnitIsFriend("player", unit) then
         local r, g, b = 0, 0.82, 1
+        Health:SetStatusBarColor(r, g, b)
+        Health.bg:SetVertexColor(r * 0.25, g * 0.25, b * 0.25)
+    end
+
+    if UnitIsPlayer(unit) and UnitCanAttack("player", unit) then
+        local r, g, b = 1, 0, 0
         Health:SetStatusBarColor(r, g, b)
         Health.bg:SetVertexColor(r * 0.25, g * 0.25, b * 0.25)
     end
@@ -609,7 +615,7 @@ local function CreateRaidLayout(self, unit)
 
     self.PhaseIndicator = self.Health:CreateTexture("$parentPhaseIcon", "OVERLAY", nil, 7)
     self.PhaseIndicator:SetSize(20, 20)
-    self.PhaseIndicator:SetPoint("CENTER", 0, -2)
+    self.PhaseIndicator:SetPoint("CENTER", 0, -3)
 
         -- Readycheck icons
 
