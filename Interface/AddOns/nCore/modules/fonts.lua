@@ -62,20 +62,18 @@ function nCore:Fonts()
     --]]
 
     for _, font in pairs({
-        GameFontHighlight,
-
         GameFontDisable,
+        GameFontDisableSmall,
 
-        GameFontHighlightExtraSmall,
+        GameFontHighlight,
         GameFontHighlightMedium,
+        GameFontHighlightSmall,
+        GameFontHighlightExtraSmall,
 
         GameFontNormal,
         GameFontNormalSmall,
 
         TextStatusBarText,
-
-        GameFontDisableSmall,
-        GameFontHighlightSmall,
     }) do
         font:SetFont(STANDARD_TEXT_FONT, 13)
         font:SetShadowOffset(1, -1)

@@ -30,19 +30,19 @@ function nCore:Durability()
     local charString = CharacterLevelText
     charString:SetFont(STANDARD_TEXT_FONT, 14)
 
-    local f = CreateFrame("Button", "PaperDollFrameDurabilityTab", PaperDollSidebarTab1, "CharacterFrameTabButtonTemplate")
-    f:SetPoint("TOP", PaperDollFrame, "BOTTOM", 170, 2)
-    f:Disable()
-    f:EnableMouse(false)
-    f:SetFrameStrata("BACKGROUND")
+    local tab = CreateFrame("Button", "PaperDollFrameDurabilityTab", PaperDollSidebarTab1, "CharacterFrameTabButtonTemplate")
+    tab:SetPoint("TOP", PaperDollFrame, "BOTTOM", 170, 2)
+    tab:Disable()
+    tab:EnableMouse(false)
+    tab:SetFrameStrata("BACKGROUND")
 
-    f:RegisterEvent("PLAYER_ENTERING_WORLD")
-    f:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
-    f:RegisterEvent("MERCHANT_SHOW")
+    tab:RegisterEvent("PLAYER_ENTERING_WORLD")
+    tab:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
+    tab:RegisterEvent("MERCHANT_SHOW")
 
-    _G[f:GetName().."LeftDisabled"]:SetTexture(nil)
-    _G[f:GetName().."RightDisabled"]:SetTexture(nil)
-    _G[f:GetName().."MiddleDisabled"]:SetTexture(nil)
+    _G[tab:GetName().."LeftDisabled"]:SetTexture(nil)
+    _G[tab:GetName().."RightDisabled"]:SetTexture(nil)
+    _G[tab:GetName().."MiddleDisabled"]:SetTexture(nil)
 
     local function ColorGradient(perc, ...)
         if perc >= 1 then
@@ -60,7 +60,7 @@ function nCore:Durability()
         return r1 + (r2-r1)*relperc, g1 + (g2-g1)*relperc, b1 + (b2-b1)*relperc
     end
 
-    f:SetScript("OnEvent", function(event)
+    tab:SetScript("OnEvent", function(event)
         local total = 1
         local overAll = 1
 
@@ -101,7 +101,11 @@ function nCore:Durability()
                 r, g, b = 0, 1, 0
             end
 
-            f:SetText(format("|cff%02x%02x%02x%d%%|r", r*255, g*255, b*255, (overAll/total)*100).." "..DURABILITY.." ")
+            tab:SetText(format("|cff%02x%02x%02x%d%%|r", r*255, g*255, b*255, (overAll/total)*100).." "..DURABILITY)
         end
+    end)
+
+    tab:SetScript("OnShow", function(self)
+        PanelTemplates_TabResize(self, 0)
     end)
 end

@@ -35,7 +35,7 @@ function nCore:Skins()
         if IsAddOnLoaded("Omen") then
             if not OmenBarList.beautyBorder then
                 OmenBarList:CreateBeautyBorder(11)
-                OmenBarList:SetBeautyBorderPadding(3)
+                OmenBarList:SetBeautyBorderPadding(1)
             end
         end
 

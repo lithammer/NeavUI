@@ -11,8 +11,8 @@
             <Font font="Fonts\FRIZQT__.TTF" height="13">
                 <Shadow>
                     <Offset>
-            <AbsDimension x="0.64" y="-0.64"/>
-          </Offset>
+                        <AbsDimension x="0.64" y="-0.64"/>
+                    </Offset>
                     <Color r="0" g="0" b="0"/>
                 </Shadow>
             </Font>
@@ -21,8 +21,8 @@
             <Font font="Fonts\2002.TTF" height="13">
                 <Shadow>
                     <Offset>
-            <AbsDimension x="0.64" y="-0.64"/>
-          </Offset>
+                        <AbsDimension x="0.64" y="-0.64"/>
+                    </Offset>
                     <Color r="0" g="0" b="0"/>
                 </Shadow>
             </Font>
@@ -31,8 +31,8 @@
             <Font font="Fonts\ARKai_T.ttf" height="13">
                 <Shadow>
                     <Offset>
-            <AbsDimension x="0.64" y="-0.64"/>
-          </Offset>
+                        <AbsDimension x="0.64" y="-0.64"/>
+                    </Offset>
                     <Color r="0" g="0" b="0"/>
                 </Shadow>
             </Font>
@@ -41,8 +41,8 @@
             <Font font="Fonts\blei00d.TTF" height="13">
                 <Shadow>
                     <Offset>
-            <AbsDimension x="0.64" y="-0.64"/>
-          </Offset>
+                        <AbsDimension x="0.64" y="-0.64"/>
+                    </Offset>
                     <Color r="0" g="0" b="0"/>
                 </Shadow>
             </Font>
@@ -51,8 +51,8 @@
             <Font font="Fonts\FRIZQT___CYR.TTF" height="13">
                 <Shadow>
                     <Offset>
-            <AbsDimension x="0.64" y="-0.64"/>
-          </Offset>
+                        <AbsDimension x="0.64" y="-0.64"/>
+                    </Offset>
                     <Color r="0" g="0" b="0"/>
                 </Shadow>
             </Font>

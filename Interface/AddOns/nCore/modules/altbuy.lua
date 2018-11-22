@@ -35,7 +35,8 @@ function nCore:AltBuy()
         if not nCoreDB.AltBuy then return end
         if MerchantFrame:IsShown() and IsMerchantButtonOver() then
             for i = 2, GameTooltip:NumLines() do
-                if _G["GameTooltipTextLeft"..i]:GetText():find("<[sS]hift") then
+                local line = _G["GameTooltipTextLeft"..i]:GetText() or ""
+                if line:find("<[sS]hift") then
                     GameTooltip:AddLine("|cff00ffcc"..L.AltBuyVendorToolip.."|r")
                 end
             end

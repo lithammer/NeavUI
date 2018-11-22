@@ -62,40 +62,6 @@ local function CreateTab(self, text)
     end
 end
 
-local function CreateFocusButton(self)
-    self.FTarget = CreateFrame("BUTTON", "$parentFocusTarget", self, "SecureActionButtonTemplate")
-    self.FTarget:EnableMouse(true)
-    self.FTarget:RegisterForClicks("AnyUp")
-    self.FTarget:SetAttribute("type", "macro")
-    self.FTarget:SetAttribute("macrotext", "/focus [button:1]\n/clearfocus [button:2]")
-    self.FTarget:SetSize(self.T[1]:GetWidth() + 30, self.T[1]:GetHeight() + 2)
-    self.FTarget:SetPoint("TOPLEFT", self, (self.T[1]:GetWidth()/5), 17)
-
-    self.FTarget:SetScript("OnMouseDown", function()
-        self.T[4]:SetPoint("BOTTOM", self.T[1], -1, 1)
-    end)
-
-    self.FTarget:SetScript("OnMouseUp", function()
-        self.T[4]:SetPoint("BOTTOM", self.T[1], 0, 2)
-    end)
-
-    self.FTarget:SetScript("OnLeave", function()
-        self.T:FadeOut(0)
-    end)
-
-    self.FTarget:SetScript("OnEnter", function()
-        self.T:FadeIn(0.5, 1)
-    end)
-
-    self:HookScript("OnLeave", function()
-        self.T:FadeOut(0)
-    end)
-
-    self:HookScript("OnEnter", function()
-        self.T:FadeIn(0.5, 0.65)
-    end)
-end
-
 local function UpdatePartyTab(self)
     if not IsInRaid() then
         self.T:FadeOut(0)
@@ -158,9 +124,9 @@ local function ToggleAltResources(shouldShow)
     local playerSpec = GetSpecialization()
 
     if playerClass == "SHAMAN" then
-        Toggle(TotemFrame)
+        Toggle(TotemFrame, shouldShow)
     elseif playerClass == "DEATHKNIGHT" then
-        Toggle(RuneFrame)
+        Toggle(RuneFrame, shouldShow)
     elseif playerClass == "MAGE" then
         Toggle(MageArcaneChargesFrame, shouldShow and playerSpec == SPEC_MAGE_ARCANE)
     elseif playerClass == "MONK" then
@@ -260,9 +226,10 @@ local function StatusFlash_OnUpdate(self, elapsed)
         self.RestingIndicator.Glow:Show()
         self.CombatIndicator:Hide()
         self.CombatIndicator.Glow:Hide()
+        self.Level:SetAlpha(0.01)
     elseif self.CombatIndicator:IsShown() then
         self.CombatIndicator.Glow:Show()
-        self.Level:SetAlpha(.01)
+        self.Level:SetAlpha(0.01)
     else
         self.RestingIndicator.Glow:Hide()
         self.CombatIndicator.Glow:Hide()
@@ -399,7 +366,7 @@ end
 
     -- Update Level Anchor
 
-local function UpdateLevelTextAnchor(self, event, ...)
+local function UpdateLevelTextAnchor(self)
     local x
     local targetEffectiveLevel = UnitEffectiveLevel(self.unit)
 
@@ -966,18 +933,18 @@ local function CreateUnitLayout(self, unit)
 
         if playerClass == "WARLOCK" then
             WarlockPowerFrame:ClearAllPoints()
-            WarlockPowerFrame:SetParent(oUF_Neav_Player)
+            WarlockPowerFrame:SetParent(self)
             WarlockPowerFrame:SetScale(config.units.player.scale * 0.8)
-            WarlockPowerFrame:SetPoint("TOP", oUF_Neav_Player, "BOTTOM", 30, -2)
+            WarlockPowerFrame:SetPoint("TOP", self, "BOTTOM", 30, -2)
         end
 
             -- Holy Power Bar (Retribution Only)
 
         if playerClass == "PALADIN" then
             PaladinPowerBarFrame:ClearAllPoints()
-            PaladinPowerBarFrame:SetParent(oUF_Neav_Player)
+            PaladinPowerBarFrame:SetParent(self)
             PaladinPowerBarFrame:SetScale(config.units.player.scale * 0.81)
-            PaladinPowerBarFrame:SetPoint("TOP", oUF_Neav_Player, "BOTTOM", 25, 2)
+            PaladinPowerBarFrame:SetPoint("TOP", self, "BOTTOM", 25, 2)
         end
 
             -- Monk Chi / Stagger Bar
@@ -985,22 +952,22 @@ local function CreateUnitLayout(self, unit)
         if playerClass == "MONK" then
             -- Windwalker Chi
             MonkHarmonyBarFrame:ClearAllPoints()
-            MonkHarmonyBarFrame:SetParent(oUF_Neav_Player)
+            MonkHarmonyBarFrame:SetParent(self)
             MonkHarmonyBarFrame:SetScale(config.units.player.scale * 0.81)
-            MonkHarmonyBarFrame:SetPoint("TOP", oUF_Neav_Player, "BOTTOM", 31, 18)
+            MonkHarmonyBarFrame:SetPoint("TOP", self, "BOTTOM", 31, 18)
 
             -- Brewmaster Stagger
             MonkStaggerBar:ClearAllPoints()
-            MonkStaggerBar:SetParent(oUF_Neav_Player)
+            MonkStaggerBar:SetParent(self)
             MonkStaggerBar:SetScale(config.units.player.scale * 0.81)
-            MonkStaggerBar:SetPoint("TOP", oUF_Neav_Player, "BOTTOM", 30, -2)
+            MonkStaggerBar:SetPoint("TOP", self, "BOTTOM", 30, -2)
         end
 
             -- Deathknight Runebar
 
         if playerClass == "DEATHKNIGHT" then
             RuneFrame:ClearAllPoints()
-            RuneFrame:SetParent(oUF_Neav_Player)
+            RuneFrame:SetParent(self)
             RuneFrame:SetPoint("TOP", self.Power, "BOTTOM", 2, -2)
         end
 
@@ -1008,16 +975,16 @@ local function CreateUnitLayout(self, unit)
 
         if playerClass == "MAGE" then
             MageArcaneChargesFrame:ClearAllPoints()
-            MageArcaneChargesFrame:SetParent(oUF_Neav_Player)
+            MageArcaneChargesFrame:SetParent(self)
             MageArcaneChargesFrame:SetScale(config.units.player.scale * 0.81)
-            MageArcaneChargesFrame:SetPoint("TOP", oUF_Neav_Player, "BOTTOM", 30, -2)
+            MageArcaneChargesFrame:SetPoint("TOP", self, "BOTTOM", 30, -2)
         end
 
             -- Combo Point Frame
 
         if playerClass == "DRUID" or playerClass == "ROGUE" then
             ComboPointPlayerFrame:ClearAllPoints()
-            ComboPointPlayerFrame:SetParent(oUF_Neav_Player)
+            ComboPointPlayerFrame:SetParent(self)
             ComboPointPlayerFrame:SetScale(config.units.player.scale * 0.81)
             ComboPointPlayerFrame:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", -3, 2)
         end
@@ -1040,10 +1007,9 @@ local function CreateUnitLayout(self, unit)
 
             -- Alt Mana Frame for Druids, Shaman, and Shadow Priest
 
-        if  playerClass == "DRUID"
-            or playerClass == "PRIEST"
-            or playerClass == "SHAMAN"
-        then
+        local hasAltManaBar = ALT_MANA_BAR_PAIR_DISPLAY_INFO[playerClass]
+
+        if hasAltManaBar then
             self.AdditionalPower = CreateFrame("StatusBar", "$parentAdditionalPower", self)
             self.AdditionalPower:SetPoint("TOP", self.Power, "BOTTOM", 0, -1)
             self.AdditionalPower:SetStatusBarTexture(config.media.statusbar, "BORDER")
