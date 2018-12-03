@@ -69,12 +69,28 @@ end
     -- Quick Join Button Options
 
 if cfg.enableQuickJoinButton then
+    ChatAlertFrame:ClearAllPoints()
+    ChatAlertFrame:SetPoint("BOTTOMLEFT", ChatFrame1Tab, "TOPLEFT", 0, 0)
     QuickJoinToastButton:ClearAllPoints()
-    QuickJoinToastButton:SetPoint("BOTTOMLEFT", ChatFrame1Tab, "TOPLEFT", 0, 0)
+    QuickJoinToastButton:SetPoint("BOTTOMLEFT", ChatAlertFrame, "TOPLEFT", 0, 0)
 else
     QuickJoinToastButton:SetAlpha(0)
     QuickJoinToastButton:EnableMouse(false)
     QuickJoinToastButton:UnregisterAllEvents()
+end
+
+    -- Voice Chat Buttons
+
+if not cfg.enableVoiceChatButtons then
+    for _, frame in pairs({
+        ChatFrameChannelButton,
+        ChatFrameToggleVoiceDeafenButton,
+        ChatFrameToggleVoiceMuteButton,
+    }) do
+        frame:SetAlpha(0)
+        frame:EnableMouse(false)
+        frame:UnregisterAllEvents()
+    end
 end
 
     -- Hide the menu.
