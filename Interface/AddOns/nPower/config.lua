@@ -19,20 +19,8 @@ nPower.Config = {
     valueFontOutline = true,
     valueFontAdjustmentX = 0,
 
-    showSoulshards = true,
-    showHolypower = true,
-    showComboPoints = true,
-    showChi = true,
-    showRunes = true,
-    showArcaneCharges = true,
-
-    -- Resource text shown above the bar.
-    extraFont = "Fonts\\ARIALN.ttf",
-    extraFontSize = 16,
-    extraFontOutline = true,
-
     hp = {
-        show = false,
+        show = true,
         hpFont = "Fonts\\ARIALN.ttf",
         hpFontOutline = true,
         hpFontSize = 25,
@@ -40,24 +28,39 @@ nPower.Config = {
         hpFontHeightAdjustment = 10,
     },
 
-    mana = {
-        show = true,
+    -- Resource text shown above the bar.
+    showSoulshards = true,
+    showHolypower = true,
+    showComboPoints = true,
+    showChi = true,
+    showRunes = true,
+    showArcaneCharges = true,
+
+    extraFont = "Fonts\\ARIALN.ttf",
+    extraFontSize = 16,
+    extraFontOutline = true,
+
+    -- Power Bar
+    showPowerType = {
+        ["MANA"] = true,
+        ["ENERGY"] = true,
+        ["RAGE"] = true,
+        ["FOCUS"] = true,
+        ["RUNIC_POWER"] = true,
+        ["FURY"] = true,
+        ["PAIN"] = true,
+        ["LUNAR_POWER"] = true,
+        ["INSANITY"] = true,
+        ["MAELSTROM"] = true,
     },
 
-    energy = {
-        show = true,
-    },
+    holyPower = {
+        -- Displays holy power as a rune (#) instead of a number.
+        showRunes = false,
 
-    focus = {
-        show = true,
-    },
-
-    rage = {
-        show = true,
-    },
-
-    lunarPower = {
-        show = true,
+        holyFont = "Fonts\\ARIALN.ttf",
+        holyFontSize = 15,
+        holyFontOutline = true,
     },
 
     rune = {
@@ -66,21 +69,5 @@ nPower.Config = {
         runeFont = "Fonts\\ARIALN.ttf",
         runeFontSize = 15,
         runeFontOutline = true,
-    },
-
-    insanity = {
-        show = true,
-    },
-
-    maelstrom = {
-        show = true,
-    },
-
-    fury = {
-        show = true,
-    },
-
-    pain = {
-        show = true,
     },
 }

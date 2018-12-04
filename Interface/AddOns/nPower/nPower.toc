@@ -1,6 +1,4 @@
 ## Interface: 80000
 ## Title: |cffCC3333 n|rPower
 
-utils.lua
-config.lua
-core.lua
+nPower.xml
