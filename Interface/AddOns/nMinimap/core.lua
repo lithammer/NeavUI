@@ -99,7 +99,7 @@ DurabilityFrame:UnregisterAllEvents()
 
     -- Smaller Vehicle/Mount Seat Indicator
 
-VehicleSeatIndicator:SetScale(.50)
+VehicleSeatIndicator:SetScale(.75)
 
     -- Bigger minimap
 

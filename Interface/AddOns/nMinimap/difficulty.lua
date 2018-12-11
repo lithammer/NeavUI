@@ -10,6 +10,9 @@ local function HideDifficultyFrame()
 
     MiniMapInstanceDifficulty:EnableMouse(false)
     MiniMapInstanceDifficulty:SetAlpha(0)
+
+    MiniMapChallengeMode:EnableMouse(false)
+    MiniMapChallengeMode:SetAlpha(0)
 end
 
 local function GetDifficultyText()
@@ -43,6 +46,8 @@ local function GetDifficultyText()
 
         if difficultyIndex == 24 then
             instanceText = timewalkerStyle
+        elseif difficultyIndex == 12 or difficultyIndex == 147 then
+            instanceText = ""
         end
     end
 

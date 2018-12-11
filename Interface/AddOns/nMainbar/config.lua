@@ -10,7 +10,7 @@ nMainbar.Config = {
         showMacroNames = false,
         buttonOutOfRange = false,
 
-        watchbarFontsize = 13,
+        watchbarFontsize = 12,
         watchbarFont = STANDARD_TEXT_FONT,
 
         countFontsize = 19,

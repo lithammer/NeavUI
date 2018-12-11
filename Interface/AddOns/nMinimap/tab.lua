@@ -331,6 +331,11 @@ function nMinimapTab_Guild_ShowTooltip(self)
         return
     end
 
+    if IsShiftKeyDown() then
+        nMinimap:UpdateGuildText(self)
+        nMinimapTab_Guild_UpdateScrollFrame()
+    end
+
     local totalMembers, onlineMembers, onlineAndMobileMembers = GetNumGuildMembers()
     local zonec, classc, levelc
 
@@ -419,50 +424,53 @@ function nMinimap_UpdateFriendButton(entry)
             entry:Show()
         end
     elseif entry.buttonType == FRIENDS_BUTTON_TYPE_WOW then
-        local name, level, class, zone, connected, status, note, isRaF, guid = GetFriendInfo(FriendListEntries[index].id)
+        local info = C_FriendList.GetFriendInfoByIndex(FriendListEntries[index].id)
 
-        if connected then
-            for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-                if class == v then
-                    classc = RAID_CLASS_COLORS[k]
-                    break
-                end
-            end
-
-            if not classc then
-                for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
-                    if class == v then
+        if info then
+            if info.connected then
+                for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
+                    if className == v then
                         classc = RAID_CLASS_COLORS[k]
                         break
                     end
                 end
+
+                if not classc then
+                    for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
+                        if className == v then
+                            classc = RAID_CLASS_COLORS[k]
+                            break
+                        end
+                    end
+                end
+
+                info.name = info.name or UNKNOWN
+
+                local chatFlag = ""
+                if info.dnd then
+                    chatFlag = DEFAULT_DND_MESSAGE
+                elseif info.afk then
+                    chatFlag = CHAT_FLAG_AFK
+                end
+
+                if GetRealZoneText() == info.area then
+                    zonec = activezone
+                else
+                    zonec = inactivezone
+                end
+
+                levelc = GetQuestDifficultyColor(info.level)
+
+                info.level = WrapTextInColorCode(info.level, CreateColor(levelc.r, levelc.g, levelc.b, 1):GenerateHexColor())
+                info.name = WrapTextInColorCode(info.name, classc:GenerateHexColor())
+                info.area = WrapTextInColorCode(info.area, zonec:GenerateHexColor())
+
+                entry.LeftText:SetFormattedText("%s %s %s", info.level, info.name, chatFlag)
+                entry.RightText:SetFormattedText(info.area)
+
+                minWidth = math.max(minWidth, entry.LeftText:GetWidth()+entry.RightText:GetWidth()+100)
+                entry:Show()
             end
-
-            name = name or UNKNOWN
-
-            if status == CHAT_FLAG_AFK then
-                status = CHAT_MSG_AFK
-            elseif status == CHAT_FLAG_DND then
-                status = DEFAULT_DND_MESSAGE
-            end
-
-            if GetRealZoneText() == zone then
-                zonec = activezone
-            else
-                zonec = inactivezone
-            end
-
-            levelc = GetQuestDifficultyColor(level)
-
-            level = WrapTextInColorCode(level, CreateColor(levelc.r, levelc.g, levelc.b, 1):GenerateHexColor())
-            name = WrapTextInColorCode(name, classc:GenerateHexColor())
-            zone = WrapTextInColorCode(zone, zonec:GenerateHexColor())
-
-            entry.LeftText:SetFormattedText("%s %s %s", level, name, status)
-            entry.RightText:SetFormattedText(zone)
-
-            minWidth = math.max(minWidth, entry.LeftText:GetWidth()+entry.RightText:GetWidth()+100)
-            entry:Show()
         end
     end
 
@@ -508,7 +516,7 @@ end
 
 function nMinimapTab_Friends_UpdateScrollFrame()
     local BNTotal, BNOnline = BNGetNumFriends()
-    local WoWTotal, WoWOnline = GetNumFriends()
+    local WoWTotal, WoWOnline = C_FriendList.GetNumFriends(), C_FriendList.GetNumOnlineFriends()
 
     local scrollFrame = FriendsScrollFrame
 
@@ -640,8 +648,7 @@ function nMinimap_UpdateMemoryButton(entry)
         entry.LeftText:SetText(name)
 
         if value > 1000 then
-            value = value / 1000
-            entry.RightText:SetFormattedText("%.2f MB", value)
+            entry.RightText:SetFormattedText("%.2f MB", value/1000)
         else
             entry.RightText:SetFormattedText("%.0f KB", value)
         end
@@ -687,7 +694,7 @@ function nMinimapTab_Memory_UpdateScrollFrame()
 
     local addButtonIndex = 0
     local totalButtonHeight = 0
-    local function AddButtonInfo(id, name)
+    local function AddButtonInfo(id)
         addButtonIndex = addButtonIndex + 1
         if not MemoryListEntries[addButtonIndex] then
             MemoryListEntries[addButtonIndex] = { }

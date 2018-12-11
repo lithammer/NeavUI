@@ -27,8 +27,8 @@ local function SkinButton(button, icon, borderOffset, shadowOffset)
     if not InCombatLockdown() then
         if cooldown then
             cooldown:ClearAllPoints()
-            cooldown:SetPoint("TOPRIGHT", button, -2, -2)
-            cooldown:SetPoint("BOTTOMLEFT", button, 1, 1)
+            PixelUtil.SetPoint(cooldown, "TOPRIGHT", button, "TOPRIGHT", -2, -2)
+            PixelUtil.SetPoint(cooldown, "BOTTOMLEFT", button, "BOTTOMLEFT", 1, 1)
         end
     end
 
@@ -37,12 +37,14 @@ local function SkinButton(button, icon, borderOffset, shadowOffset)
     if not button.Skinned then
         if icon then
             icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
+            PixelUtil.SetPoint(icon, "TOPRIGHT", button, "TOPRIGHT", -1, -1)
+            PixelUtil.SetPoint(icon, "BOTTOMLEFT", button, "BOTTOMLEFT", 1, 1)
         end
 
         if normalTexture then
             normalTexture:ClearAllPoints()
-            normalTexture:SetPoint("TOPRIGHT", button, borderOffset, borderOffset)
-            normalTexture:SetPoint("BOTTOMLEFT", button, -borderOffset, -borderOffset)
+            PixelUtil.SetPoint(normalTexture, "TOPRIGHT", button, "TOPRIGHT", borderOffset, borderOffset)
+            PixelUtil.SetPoint(normalTexture, "BOTTOMLEFT", button, "BOTTOMLEFT", -borderOffset, -borderOffset)
             normalTexture:SetVertexColor(Color.Normal:GetRGBA())
 
             button:SetCheckedTexture(MEDIA_PATH.."textureChecked")
@@ -65,8 +67,8 @@ local function SkinButton(button, icon, borderOffset, shadowOffset)
         if not button.Background then
             button.Background = button:CreateTexture(nil, "BACKGROUND", nil, -8)
             button.Background:SetTexture(MEDIA_PATH.."textureBackground")
-            button.Background:SetPoint("TOPRIGHT", button, 14, 12)
-            button.Background:SetPoint("BOTTOMLEFT", button, -14, -16)
+            PixelUtil.SetPoint(button.Background, "TOPRIGHT", button, "TOPRIGHT", 14, 12)
+            PixelUtil.SetPoint(button.Background, "BOTTOMLEFT", button, "BOTTOMLEFT", -14, -16)
         end
 
         if floatingBG then
@@ -76,10 +78,10 @@ local function SkinButton(button, icon, borderOffset, shadowOffset)
 
         if not button.Shadow then
             button.Shadow = button:CreateTexture("$parentFloatingBG", "BACKGROUND")
-            button.Shadow:SetPoint("TOPRIGHT", normalTexture, shadowOffset, shadowOffset)
-            button.Shadow:SetPoint("BOTTOMLEFT", normalTexture, -shadowOffset, -shadowOffset)
             button.Shadow:SetTexture(MEDIA_PATH.."textureShadow")
             button.Shadow:SetVertexColor(0.0, 0.0, 0.0, 1.0)
+            PixelUtil.SetPoint(button.Shadow, "TOPRIGHT", normalTexture, "TOPRIGHT", shadowOffset, shadowOffset)
+            PixelUtil.SetPoint(button.Shadow, "BOTTOMLEFT", normalTexture, "BOTTOMLEFT", -shadowOffset, -shadowOffset)
         end
 
         button.Skinned = true
@@ -168,7 +170,7 @@ hooksecurefunc("ActionButton_Update", function(self)
     end
 
     if not IsSpecificButton(self, "ExtraActionButton") then
-        SkinButton(self, texture and icon, 1, 5)
+        SkinButton(self, texture and icon, 1, 4)
     end
 
     if border then

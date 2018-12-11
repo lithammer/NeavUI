@@ -110,6 +110,10 @@ PossessBarFrame:SetAlpha(cfg.possessBar.alpha)
 
 -- Stance Bar
 
+StanceBarLeft:SetTexture(nil)
+StanceBarMiddle:SetTexture(nil)
+StanceBarRight:SetTexture(nil)
+
 StanceBarFrame:SetFrameStrata("MEDIUM")
 
 StanceBarFrame:SetScale(cfg.stanceBar.scale)

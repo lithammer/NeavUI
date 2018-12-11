@@ -21,9 +21,9 @@ local UnitFactionGroup = UnitFactionGroup
 local UnitCreatureType = UnitCreatureType
 local GetQuestDifficultyColor = GetQuestDifficultyColor
 
-local tankIcon = "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES.blp:13:13:0:0:64:64:0:19:22:41|t"
-local healIcon = "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES.blp:13:13:0:0:64:64:20:39:1:20|t"
-local damagerIcon = "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES.blp:13:13:0:0:64:64:20:39:22:41|t"
+local tankIcon = [[|TInterface\LFGFrame\UI-LFG-ICON-PORTRAITROLES.blp:13:13:0:0:64:64:0:19:22:41|t]]
+local healIcon = [[|TInterface\LFGFrame\UI-LFG-ICON-PORTRAITROLES.blp:13:13:0:0:64:64:20:39:1:20|t]]
+local damagerIcon = [[|TInterface\LFGFrame\UI-LFG-ICON-PORTRAITROLES.blp:13:13:0:0:64:64:20:39:22:41|t]]
 
     -- Some tooltip changes
 
@@ -43,38 +43,38 @@ else
 end
 
 GameTooltipStatusBar:SetHeight(7)
-GameTooltipStatusBar:SetBackdrop({bgFile = "Interface\\Buttons\\WHITE8x8"})
+GameTooltipStatusBar:SetBackdrop({bgFile = [[Interface\Buttons\WHITE8x8]]})
 GameTooltipStatusBar:SetBackdropColor(0, 1, 0, 0.3)
 
 local function ApplyTooltipStyle(self)
-    local bgsize, bsize
-    if self == ConsolidatedBuffsTooltip then
-        bgsize = 1
-        bsize = 8
-    elseif self == FriendsTooltip then
-        FriendsTooltip:SetScale(1.1)
+    if not self then
+        return
+    elseif self == WorldMapTooltipTooltip or self == WQT_TooltipTooltip then
+        return
+    end
 
-        bgsize = 4
-        bsize = 16
-    elseif self == FloatingBattlePetTooltip or self == BattlePetTooltip then
-        bgsize = 4
-        bsize = 16
-    else
-        bgsize = 3
-        bsize = 12
+    local bgOffset, borderSize = 3, 12
+
+    if self == FloatingBattlePetTooltip or self == BattlePetTooltip then
+        bgOffset = 4
+        borderSize = 16
     end
 
     if not self.Background then
-        self.Background = self:CreateTexture(nil, "BACKGROUND", nil, 1)
-        self.Background:SetTexture("Interface\\Buttons\\WHITE8x8")
-        self.Background:SetPoint("TOPLEFT", self, bgsize, -bgsize)
-        self.Background:SetPoint("BOTTOMRIGHT", self, -bgsize, bgsize)
-        self.Background:SetVertexColor(0.0, 0.0, 0.0, 0.60)
+        self.Background = self:CreateTexture("NeavBackground", "BORDER")
+        self.Background:SetColorTexture(0.0, 0.0, 0.0, 0.80)
+        self.Background:SetPoint("TOPLEFT", self, bgOffset, -bgOffset)
+        self.Background:SetPoint("BOTTOMRIGHT", self, -bgOffset, bgOffset)
     end
 
     if beautyBorderLoaded then
+        self:SetBackdrop({
+            bgFile = nil,
+            edgeFile = nil,
+        })
+
         if not self:HasBeautyBorder() then
-            self:CreateBeautyBorder(bsize)
+            self:CreateBeautyBorder(borderSize)
         end
     end
 end
@@ -86,14 +86,11 @@ for _, tooltip in pairs({
     ItemRefTooltip,
     ItemRefShoppingTooltip1,
     ItemRefShoppingTooltip2,
-    ItemRefShoppingTooltip3,
     ShoppingTooltip1,
     ShoppingTooltip2,
-    ShoppingTooltip3,
     WorldMapTooltip,
     WorldMapCompareTooltip1,
     WorldMapCompareTooltip2,
-    WorldMapCompareTooltip3,
     DropDownList1MenuBackdrop,
     DropDownList2MenuBackdrop,
     ConsolidatedBuffsTooltip,
@@ -110,9 +107,14 @@ for _, tooltip in pairs({
     LibDBIconTooltip,
     SmallTextTooltip,
     LibItemUpdateInfoTooltip,
+    QuestScrollFrame.StoryTooltip,
+    QuestScrollFrame.WarCampaignTooltip,
+    NamePlateTooltip,
 }) do
     ApplyTooltipStyle(tooltip)
 end
+
+hooksecurefunc("GameTooltip_SetBackdropStyle", ApplyTooltipStyle)
 
     -- Itemquaility border, we use our beautycase functions
 
@@ -250,13 +252,13 @@ local function GetUnitPVPIcon(unit)
 
     if UnitIsPVPFreeForAll(unit) then
         if cfg.showPVPIcons then
-            return CreateTextureMarkup("Interface\\AddOns\\nTooltip\\media\\UI-PVP-FFA", 32,32, 16,16, 0,1,0,1, -2,-1)
+            return CreateTextureMarkup([[Interface\AddOns\nTooltip\media\UI-PVP-FFA]], 32,32, 16,16, 0,1,0,1, -2,-1)
         else
             return "|cffFF0000# |r"
         end
     elseif factionGroup and UnitIsPVP(unit) then
         if cfg.showPVPIcons then
-            return CreateTextureMarkup("Interface\\AddOns\\nTooltip\\media\\UI-PVP-"..factionGroup, 32,32, 14,14, 0,1,0,1, -2,-1)
+            return CreateTextureMarkup([[Interface\AddOns\nTooltip\media\UI-PVP-]]..factionGroup, 32,32, 14,14, 0,1,0,1, -2,-1)
         else
             return "|cff00FF00# |r"
         end
@@ -454,7 +456,7 @@ local function CreateAnchor()
     anchorFrame:SetMovable(true)
     anchorFrame:SetClampedToScreen(true)
     anchorFrame:SetUserPlaced(true)
-    anchorFrame:SetBackdrop({bgFile="Interface\\MINIMAP\\TooltipBackdrop-Background",})
+    anchorFrame:SetBackdrop({bgFile=[[Interface\MINIMAP\TooltipBackdrop-Background]],})
     anchorFrame:EnableMouse(true)
     anchorFrame:RegisterForDrag("LeftButton")
     anchorFrame:Hide()
