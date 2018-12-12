@@ -6,8 +6,9 @@ local beautyBorderLoaded = IsAddOnLoaded("!Beautycase")
 
 local select = select
 local format = string.format
-local floor = floor
+local match = string.match
 local upper = string.upper
+local floor = floor
 local sub = sub
 local gsub = gsub
 local find = find
@@ -49,8 +50,13 @@ GameTooltipStatusBar:SetBackdropColor(0, 1, 0, 0.3)
 local function ApplyTooltipStyle(self)
     if not self then
         return
-    elseif self == WorldMapTooltipTooltip or self == WQT_TooltipTooltip then
-        return
+    end
+
+    local name = self:GetName()
+    if name then
+        if match(name, "TooltipTooltip") then
+            return
+        end
     end
 
     local bgOffset, borderSize = 3, 12
