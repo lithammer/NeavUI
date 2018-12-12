@@ -429,7 +429,7 @@ function nMinimap_UpdateFriendButton(entry)
         if info then
             if info.connected then
                 for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-                    if className == v then
+                    if info.className == v then
                         classc = RAID_CLASS_COLORS[k]
                         break
                     end
@@ -437,7 +437,7 @@ function nMinimap_UpdateFriendButton(entry)
 
                 if not classc then
                     for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
-                        if className == v then
+                        if info.className == v then
                             classc = RAID_CLASS_COLORS[k]
                             break
                         end
@@ -549,7 +549,7 @@ end
 
 function nMinimapTab_Friends_ShowTooltip(self)
     local BNTotal, BNOnline = BNGetNumFriends()
-    local WoWTotal, WoWOnline = GetNumFriends()
+    local WoWTotal, WoWOnline = C_FriendList.GetNumFriends(), C_FriendList.GetNumOnlineFriends()
     local totalFriendsOnline = BNOnline + WoWOnline
     local totalfriends = BNTotal + WoWTotal
     local invites = BNGetNumFriendInvites()
@@ -576,7 +576,7 @@ end
 
 function nMinimapTab_Friends_OnEvent(self, event, ...)
     local BNTotal, BNOnline = BNGetNumFriends()
-    local WoWTotal, WoWOnline = GetNumFriends()
+    local WoWTotal, WoWOnline = C_FriendList.GetNumFriends(), C_FriendList.GetNumOnlineFriends()
     local totalFriendsOnline = BNOnline + WoWOnline
 
     self.Text:SetFormattedText("%s%d", friendIcon, totalFriendsOnline)
