@@ -7,6 +7,8 @@ local oUF = ns.oUF or oUF
 
 local _, class = UnitClass("player")
 local buffcolor = { r = 0.0, g = 1.0, b = 1.0 }
+local GetTime = GetTime
+local UnitBuff, UnitDebuff = UnitBuff, UnitDebuff
 
 local backdrop = {
     bgFile = "Interface\\Buttons\\WHITE8x8",

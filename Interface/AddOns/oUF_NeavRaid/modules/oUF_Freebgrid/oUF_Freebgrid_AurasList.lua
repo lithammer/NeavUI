@@ -699,11 +699,10 @@ ns.auras = {
 
             [GetSpellInfo(161242)] = 7, -- Caustic Energy
             [GetSpellInfo(161358)] = 7, -- Suppression Field
-            [GetSpellInfo(162184)] = 7, -- Expel Magic: Shadow
-            [GetSpellInfo(162186)] = 7, -- Expel Magic: Arcane
-            [GetSpellInfo(161411)] = 7, -- Expel Magic: Frost
-            [GetSpellInfo(163472)] = 7, -- Dominating Power
-            [GetSpellInfo(162185)] = 7, -- Expel Magic: Fel
+            -- [GetSpellInfo(162184)] = 7, -- Expel Magic: Shadow
+            -- [GetSpellInfo(162186)] = 7, -- Expel Magic: Arcane
+            -- [GetSpellInfo(161411)] = 7, -- Expel Magic: Frost
+            -- [GetSpellInfo(162185)] = 7, -- Expel Magic: Fel
 
                 -- Imperator Mar'gok
 
