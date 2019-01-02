@@ -1,10 +1,6 @@
 local _, nMainbar = ...
 local cfg = nMainbar.Config
 
-if IsAddOnLoaded("AdiButtonAuras") then
-    AdiButtonAuras:RegisterLAB("LibActionButton-1.0-nMainbar")
-end
-
     -- Functions
 
 function nMainbar:IsTaintable()

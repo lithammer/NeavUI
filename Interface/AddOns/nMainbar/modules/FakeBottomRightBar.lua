@@ -6,6 +6,10 @@ local MEDIA_PATH = "Interface\\AddOns\\nMainbar\\media\\"
 
 local LAB = LibStub("LibActionButton-1.0-nMainbar")
 
+if IsAddOnLoaded("AdiButtonAuras") then
+    AdiButtonAuras:RegisterLAB("LibActionButton-1.0-nMainbar")
+end
+
 local DefaultConfig = {
     outOfRangeColoring = cfg.button.buttonOutOfRange and "button" or "hotkey",
     tooltip = "enabled",
