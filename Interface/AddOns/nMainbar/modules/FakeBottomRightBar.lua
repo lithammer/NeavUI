@@ -5,7 +5,6 @@ local Color = cfg.color
 local MEDIA_PATH = "Interface\\AddOns\\nMainbar\\media\\"
 
 local LAB = LibStub("LibActionButton-1.0-nMainbar")
-AdiButtonAuras:RegisterLAB("LibActionButton-1.0-nMainbar")
 
 local DefaultConfig = {
     outOfRangeColoring = cfg.button.buttonOutOfRange and "button" or "hotkey",
