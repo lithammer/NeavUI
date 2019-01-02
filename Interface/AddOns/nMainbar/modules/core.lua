@@ -21,9 +21,6 @@ function nMainbar:CreateAnchor(name, width, height, location)
     anchorFrame:RegisterForDrag("LeftButton")
     anchorFrame:Hide()
 
-    anchorFrame:CreateBeautyBorder(16)
-    anchorFrame:SetBeautyBorderPadding(4)
-
     anchorFrame.text = anchorFrame:CreateFontString(nil, "OVERLAY")
     anchorFrame.text:SetAllPoints(anchorFrame)
     anchorFrame.text:SetFont(STANDARD_TEXT_FONT, 13)
@@ -89,7 +86,7 @@ local ExtraActionBarFrameAnchor = nMainbar:CreateAnchor("EAB", ExtraActionButton
 
 SlashCmdList["nMainbar_MoveExtraActionBar"] = function()
     if InCombatLockdown() then
-        print("nMainbar: You cant do this in combat!")
+        print("|cffCC3333n|rMainbar: "..ERR_NOT_IN_COMBAT)
         return
     end
     if not ExtraActionBarFrameAnchor:IsShown() then

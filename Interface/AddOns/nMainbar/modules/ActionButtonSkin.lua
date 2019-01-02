@@ -212,10 +212,6 @@ hooksecurefunc("ActionButton_ShowGrid", function(self)
 end)
 
 local function UpdateUsable(self, checksRange, inRange)
-    if IsAddOnLoaded("tullaRange") then
-        return
-    end
-
     local icon = self.icon
     local normalTexture = self.NormalTexture
     if not normalTexture then

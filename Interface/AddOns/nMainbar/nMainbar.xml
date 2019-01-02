@@ -3,7 +3,7 @@
         Libraries
     -->
     <Script file="libs\LibStub\LibStub.lua" />
-    <Include file="libs\CallbackHandler-1.0\CallbackHandler-1.0.xml" />
+    <Script file="libs\CallbackHandler-1.0\CallbackHandler-1.0.lua" />
     <Include file="libs\LibActionButton-1.0-ElvUI\LibActionButton-1.0.xml" />
 
     <!--
