@@ -99,7 +99,7 @@ end
 local Enable = function(self)
     local element = self.CCIcon
     if element then
-        self:RegisterEvent("UNIT_AURA", Update, true)
+        self:RegisterEvent("UNIT_AURA", Update)
         self:RegisterEvent("PLAYER_ENTERING_WORLD", Update, true)
 
         if not element.cooldownFrame then

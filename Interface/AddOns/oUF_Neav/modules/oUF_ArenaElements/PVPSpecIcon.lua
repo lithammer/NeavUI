@@ -55,7 +55,8 @@ end
 local Enable = function(self)
     local specIcon = self.PVPSpecIcon
     if specIcon then
-        self:RegisterEvent("ARENA_OPPONENT_UPDATE", Update, true)
+        self:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS", Update, true)
+        self:RegisterEvent("ARENA_OPPONENT_UPDATE", Update)
         self:RegisterEvent("PLAYER_ENTERING_WORLD", Update, true)
 
         if not specIcon.Icon then

@@ -110,6 +110,7 @@ local function Disable(self)
 
         self:UnregisterEvent("PLAYER_LOGIN", Path)
         self:UnregisterEvent("PLAYER_LOOT_SPEC_UPDATED", Path)
+        self:UnregisterEvent("ACTIVE_TALENT_GROUP_CHANGED", Path)
     end
 end
 

@@ -169,7 +169,7 @@ local Enable = function(self)
     local element = self.PortraitTimer
 
     if element then
-        self:RegisterEvent("UNIT_AURA", Update, false)
+        self:RegisterEvent("UNIT_AURA", Update)
         self:RegisterEvent("PLAYER_ENTERING_WORLD", Update, true)
 
         if not element.Icon then
@@ -200,6 +200,7 @@ local Disable = function(self)
     local element = self.PortraitTimer
     if element then
         self:UnregisterEvent("UNIT_AURA", Update)
+        self:UnregisterEvent("PLAYER_ENTERING_WORLD", Update)
     end
 end
 

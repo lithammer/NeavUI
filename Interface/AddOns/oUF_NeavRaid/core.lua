@@ -345,6 +345,14 @@ local function UpdateHealth(Health, unit, cur, max)
     Health.Value:SetText(GetHealthText(unit, cur, max))
 end
 
+local function UpdateSelectionBorder(self)
+    if UnitIsUnit("target", self.unit) then
+        self.TargetBorder:Show()
+    else
+        self.TargetBorder:Hide()
+    end
+end
+
 local function CreateRaidLayout(self, unit)
 
     -- Block oUF_MovableFrames
@@ -670,13 +678,7 @@ local function CreateRaidLayout(self, unit)
     self.TargetBorder:SetVertexColor(1, 1, 1)
     self.TargetBorder:Hide()
 
-    self:RegisterEvent("PLAYER_TARGET_CHANGED", function()
-        if UnitIsUnit("target", self.unit) then
-            self.TargetBorder:Show()
-        else
-            self.TargetBorder:Hide()
-        end
-    end)
+    self:RegisterEvent("PLAYER_TARGET_CHANGED", UpdateSelectionBorder, true)
 
         -- Range Check
 
