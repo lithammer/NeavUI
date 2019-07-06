@@ -893,7 +893,7 @@ local function CreateUnitLayout(self, unit)
         -- LFD Role Icon
 
     if self.IsPartyFrame or unit == "player" or unit == "target" then
-        self.GroupRoleIndicator = self:CreateTexture("$parentGroupRoleIcon", "ARTWORK")
+        self.GroupRoleIndicator = self:CreateTexture("$parentGroupRoleIcon", "OVERLAY", nil, 7)
         self.GroupRoleIndicator:SetSize(20, 20)
 
         if unit == "player" then
