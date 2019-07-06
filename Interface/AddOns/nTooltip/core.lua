@@ -94,9 +94,6 @@ for _, tooltip in pairs({
     ItemRefShoppingTooltip2,
     ShoppingTooltip1,
     ShoppingTooltip2,
-    WorldMapTooltip,
-    WorldMapCompareTooltip1,
-    WorldMapCompareTooltip2,
     DropDownList1MenuBackdrop,
     DropDownList2MenuBackdrop,
     ConsolidatedBuffsTooltip,
@@ -489,9 +486,9 @@ hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
     if cfg.showOnMouseover then
         self:SetOwner(parent, "ANCHOR_CURSOR")
     else
-        self:SetOwner(parent, "ANCHOR_NONE")
         self:ClearAllPoints()
-        self:SetPoint(unpack(cfg.position))
+        self:SetOwner(nTooltipAnchor, "ANCHOR_NONE")
+        self:SetPoint("BOTTOMRIGHT", nTooltipAnchor)
     end
 end)
 
