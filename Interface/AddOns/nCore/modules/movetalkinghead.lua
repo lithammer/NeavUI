@@ -13,12 +13,15 @@ function nCore:MoveTalkingHeads()
     f:SetScript("OnEvent", function(self, event, arg1)
         if event == "PLAYER_LOGIN" then
             AlertFrame:ClearAllPoints()
+            AlertFrame:SetParent(AlertFrameAnchor)
             AlertFrame:SetPoint("BOTTOM", AlertFrameAnchor)
         end
     end)
 
     local function MoveTalkingHeads()
         hooksecurefunc(TalkingHeadFrame, "Show", function(self)
+            self:SetMovable(true)
+            self:SetUserPlaced(true)
             self:ClearAllPoints()
             self:SetPoint("BOTTOMLEFT", AlertFrameAnchor)
         end)
