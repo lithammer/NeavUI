@@ -1,3 +1,4 @@
+/GPUCache
 /Cache
 /Data
 /Errors
@@ -6,6 +7,29 @@
 /Screenshots
 /Utils
 /WTF
+
+# Ignore addons
+/Interface/Addons
+
+# But don't ignore NeavUI addons
+# This allows you to install any other addons you want to and they wont be tracked by git
+# Any addon you want to be a part of NeavUI and be tracked by git, add to this list
+!/Interface/Addons/!BeautyCase
+!/Interface/Addons/!Colorz
+!/Interface/Addons/evl_RaidStatus
+!/Interface/Addons/nBuff
+!/Interface/Addons/nCore
+!/Interface/Addons/nMainbar
+!/Interface/Addons/nMinimap
+!/Interface/Addons/nPlates
+!/Interface/Addons/nPower
+!/Interface/Addons/nTooltip
+!/Interface/Addons/oUF
+!/Interface/Addons/oUF_Neav
+!/Interface/Addons/oUF_NeavRaid
+
+.curseclient
+.flavor.info
 
 .build.info
 .patch.result
