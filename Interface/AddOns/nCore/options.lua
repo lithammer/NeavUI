@@ -140,15 +140,15 @@ Options:SetScript("OnShow", function()
             tooltip = L.MapCoordsTooltip,
             var = "MapCoords",
         },
-        {
-            type = "CheckBox",
-            name = "ObjectiveTracker",
-            parent = Options,
-            label = L.ObjectiveTracker,
-            tooltip = L.ObjectiveTrackerTooltip,
-            var = "ObjectiveTracker",
-            needsRestart = true,
-        },
+        -- {
+        --     type = "CheckBox",
+        --     name = "ObjectiveTracker",
+        --     parent = Options,
+        --     label = L.ObjectiveTracker,
+        --     tooltip = L.ObjectiveTrackerTooltip,
+        --     var = "ObjectiveTracker",
+        --     needsRestart = true,
+        -- },
         {
             type = "CheckBox",
             name = "MoveTalkingHeads",
@@ -183,14 +183,14 @@ Options:SetScript("OnShow", function()
             tooltip = L.SpellIDTooltip,
             var = "SpellID",
         },
-        {
-            type = "CheckBox",
-            name = "VignetteAlert",
-            parent = Options,
-            label = L.VignetteAlert,
-            tooltip = L.VignetteAlertTooltip,
-            var = "VignetteAlert",
-        }
+        -- {
+        --     type = "CheckBox",
+        --     name = "VignetteAlert",
+        --     parent = Options,
+        --     label = L.VignetteAlert,
+        --     tooltip = L.VignetteAlertTooltip,
+        --     var = "VignetteAlert",
+        -- }
     }
 
     for i, control in pairs(UIControls) do

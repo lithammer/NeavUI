@@ -3,8 +3,11 @@ local _, nCore = ...
 function nCore:QuestTracker()
     local function UpdateQuestText()
         local _, numQuests = GetNumQuestLogEntries()
-        WorldMapFrameTitleText:SetFormattedText("%s - %d/%s", MAP_AND_QUEST_LOG, numQuests, MAX_QUESTS)
-        WorldMapFrameTitleText:Show()
+        -- Classic TODO: 'WorldMapFrameTitleText' doesn't appear to exist, is there an alternative?
+        -- Have commented out the config option for now
+
+        -- WorldMapFrameTitleText:SetFormattedText("%s - %d/%s", MAP_AND_QUEST_LOG, numQuests, MAX_QUESTS)
+        -- WorldMapFrameTitleText:Show()
     end
 
     UpdateQuestText()
@@ -21,8 +24,8 @@ function nCore:QuestTracker()
         if nCoreDB.QuestTracker then
             UpdateQuestText()
         else
-            WorldMapFrameTitleText:SetText(MAP_AND_QUEST_LOG)
-            WorldMapFrameTitleText:Show()
+            -- WorldMapFrameTitleText:SetText(MAP_AND_QUEST_LOG)
+            -- WorldMapFrameTitleText:Show()
         end
     end)
 end

@@ -30,8 +30,16 @@ function nCore:Durability()
     local charString = CharacterLevelText
     charString:SetFont(STANDARD_TEXT_FONT, 14)
 
-    local tab = CreateFrame("Button", "PaperDollFrameDurabilityTab", PaperDollSidebarTab1, "CharacterFrameTabButtonTemplate")
-    tab:SetPoint("TOP", PaperDollFrame, "BOTTOM", 170, 2)
+    -- For retail use PaperDollSidebarTab1, Classic use PaperDollItemsFrame
+    local tab = nil
+    if PaperDollSidebarTab1 then
+        tab = CreateFrame('Button', 'PaperDollFrameDurabilityTab', PaperDollSidebarTab1, 'CharacterFrameTabButtonTemplate')
+        tab:SetPoint('TOP', PaperDollFrame, 'BOTTOM', 170, 2)
+    else
+        tab = CreateFrame('Button', 'PaperDollFrameDurabilityTab', PaperDollItemsFrame, 'CharacterFrameTabButtonTemplate')
+        tab:SetPoint('TOP', PaperDollFrame, 'BOTTOM', 103, 78)
+    end
+
     tab:Disable()
     tab:EnableMouse(false)
     tab:SetFrameStrata("BACKGROUND")
