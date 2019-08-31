@@ -42,6 +42,11 @@ hooksecurefunc("ReputationFrame_Update", function(showLFGPulse)
         local factionIndex = factionOffset + i
         local factionBar = _G["ReputationBar"..i.."ReputationBar"]
 
+        -- Classic: fallback
+        if factionBar == nil then
+            factionBar = _G["ReputationBar"..i]
+        end
+
         if factionIndex <= numFactions then
             local name, description, standingID = GetFactionInfo(factionIndex)
             local colorIndex = standingID
@@ -52,7 +57,7 @@ hooksecurefunc("ReputationFrame_Update", function(showLFGPulse)
     end
 end)
 
---  'ReputationBarMixin' is not available in Classic
+-- Classic: 'ReputationBarMixin' is not available
 -- hooksecurefunc(ReputationBarMixin, "Update", function(self)
 --     local name, reaction, minBar, maxBar, value, factionID = GetWatchedFactionInfo();
 --     local colorIndex = reaction;
