@@ -5,7 +5,12 @@ function nCore:Dressroom()
 
     DressUpFrameCancelButton:SetText("Naked")
     DressUpFrameCancelButton:SetScript("OnClick", function()
-        DressUpModel:Undress()
+        -- Classic: Use DressUpModelFrame instead
+        if DressUpModelFrame then
+            DressUpModelFrame:Undress()
+        else
+            DressUpModel:Undress()
+        end
     end)
     DressUpFrameResetButton:SetText("Clothed")
 end
