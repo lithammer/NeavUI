@@ -182,7 +182,8 @@ Options:SetScript("OnShow", function()
             label = L.SpellID,
             tooltip = L.SpellIDTooltip,
             var = "SpellID",
-        },
+        }
+        --,
         -- {
         --     type = "CheckBox",
         --     name = "VignetteAlert",
