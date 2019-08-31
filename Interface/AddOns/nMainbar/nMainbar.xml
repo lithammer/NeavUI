@@ -16,6 +16,7 @@
     -->
     <Script file="modules\actionbuttonskin.lua" />
     <Script file="modules\bags.lua" />
+    <Script file="modules\short.lua" />
     <Script file="modules\core.lua" />
     <Script file="modules\fakebottomrightbar.lua" />
     <Script file="modules\mouseover.lua" />

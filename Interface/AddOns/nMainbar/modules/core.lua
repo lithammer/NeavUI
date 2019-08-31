@@ -57,7 +57,10 @@ end
 
 --  Update Action Bars
 
-OverrideActionBar:SetScale(cfg.vehicleBar.scale)
+-- Classic: OverrideActionBar doesn't exist
+if OverrideActionBar then
+    OverrideActionBar:SetScale(cfg.vehicleBar.scale)
+end
 
 hooksecurefunc("MultiActionBar_Update", function(self)
     if nMainbar:IsTaintable() then
@@ -81,29 +84,35 @@ end)
 
 -- Extra Action Button
 
-local ExtraActionBarFrameLocation = {"CENTER", UIParent, "CENTER", -300, -150}
-local ExtraActionBarFrameAnchor = nMainbar:CreateAnchor("EAB", ExtraActionButton1:GetWidth(), ExtraActionButton1:GetHeight(), ExtraActionBarFrameLocation)
+-- Classic: ExtraActionButton1 doesn't exist
+if ExtraActionButton1 then
+    local ExtraActionBarFrameLocation = {"CENTER", UIParent, "CENTER", -300, -150}
+    local ExtraActionBarFrameAnchor = nMainbar:CreateAnchor("EAB", ExtraActionButton1:GetWidth(), ExtraActionButton1:GetHeight(), ExtraActionBarFrameLocation)
 
-SlashCmdList["nMainbar_MoveExtraActionBar"] = function()
-    if InCombatLockdown() then
-        print("|cffCC3333n|rMainbar: "..ERR_NOT_IN_COMBAT)
-        return
+    SlashCmdList["nMainbar_MoveExtraActionBar"] = function()
+        if InCombatLockdown() then
+            print("|cffCC3333n|rMainbar: "..ERR_NOT_IN_COMBAT)
+            return
+        end
+        if not ExtraActionBarFrameAnchor:IsShown() then
+            ExtraActionBarFrameAnchor:Show()
+        else
+            ExtraActionBarFrameAnchor:Hide()
+        end
     end
-    if not ExtraActionBarFrameAnchor:IsShown() then
-        ExtraActionBarFrameAnchor:Show()
-    else
-        ExtraActionBarFrameAnchor:Hide()
-    end
+    SLASH_nMainbar_MoveExtraActionBar1 = "/moveextraactionbar"
+
+    ExtraActionButton1:ClearAllPoints()
+    ExtraActionButton1:SetPoint("CENTER", ExtraActionBarFrameAnchor)
 end
-SLASH_nMainbar_MoveExtraActionBar1 = "/moveextraactionbar"
-
-ExtraActionButton1:ClearAllPoints()
-ExtraActionButton1:SetPoint("CENTER", ExtraActionBarFrameAnchor)
 
 -- Possess Bar
 
-PossessBarFrame:SetScale(cfg.possessBar.scale)
-PossessBarFrame:SetAlpha(cfg.possessBar.alpha)
+-- Classic: PossessBarFrame doesn't exist
+if PossessBarFrame then
+    PossessBarFrame:SetScale(cfg.possessBar.scale)
+    PossessBarFrame:SetAlpha(cfg.possessBar.alpha)
+end
 
 -- Stance Bar
 

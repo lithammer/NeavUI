@@ -27,8 +27,8 @@ local function SkinButton(button, icon, borderOffset, shadowOffset)
     if not InCombatLockdown() then
         if cooldown then
             cooldown:ClearAllPoints()
-            PixelUtil.SetPoint(cooldown, "TOPRIGHT", button, "TOPRIGHT", -2, -2)
-            PixelUtil.SetPoint(cooldown, "BOTTOMLEFT", button, "BOTTOMLEFT", 1, 1)
+            cooldown:SetPoint("TOPRIGHT", button, "TOPRIGHT", -2, -2)
+            cooldown:SetPoint("BOTTOMLEFT", button, "BOTTOMLEFT", 1, 1)
         end
     end
 
@@ -37,14 +37,14 @@ local function SkinButton(button, icon, borderOffset, shadowOffset)
     if not button.Skinned then
         if icon then
             icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-            PixelUtil.SetPoint(icon, "TOPRIGHT", button, "TOPRIGHT", -1, -1)
-            PixelUtil.SetPoint(icon, "BOTTOMLEFT", button, "BOTTOMLEFT", 1, 1)
+            icon:SetPoint("TOPRIGHT", button, "TOPRIGHT", -1, -1)
+            icon:SetPoint("BOTTOMLEFT", button, "BOTTOMLEFT", 1, 1)
         end
 
         if normalTexture then
             normalTexture:ClearAllPoints()
-            PixelUtil.SetPoint(normalTexture, "TOPRIGHT", button, "TOPRIGHT", borderOffset, borderOffset)
-            PixelUtil.SetPoint(normalTexture, "BOTTOMLEFT", button, "BOTTOMLEFT", -borderOffset, -borderOffset)
+            normalTexture:SetPoint("TOPRIGHT", button, "TOPRIGHT", borderOffset, borderOffset)
+            normalTexture:SetPoint("BOTTOMLEFT", button, "BOTTOMLEFT", -borderOffset, -borderOffset)
             normalTexture:SetVertexColor(Color.Normal:GetRGBA())
 
             button:SetCheckedTexture(MEDIA_PATH.."textureChecked")
@@ -67,8 +67,8 @@ local function SkinButton(button, icon, borderOffset, shadowOffset)
         if not button.Background then
             button.Background = button:CreateTexture(nil, "BACKGROUND", nil, -8)
             button.Background:SetTexture(MEDIA_PATH.."textureBackground")
-            PixelUtil.SetPoint(button.Background, "TOPRIGHT", button, "TOPRIGHT", 14, 12)
-            PixelUtil.SetPoint(button.Background, "BOTTOMLEFT", button, "BOTTOMLEFT", -14, -16)
+            button.Background:SetPoint("TOPRIGHT", button, "TOPRIGHT", 14, 12)
+            button.Background:SetPoint("BOTTOMLEFT", button, "BOTTOMLEFT", -14, -16)
         end
 
         if floatingBG then
@@ -80,8 +80,8 @@ local function SkinButton(button, icon, borderOffset, shadowOffset)
             button.Shadow = button:CreateTexture("$parentFloatingBG", "BACKGROUND")
             button.Shadow:SetTexture(MEDIA_PATH.."textureShadow")
             button.Shadow:SetVertexColor(0.0, 0.0, 0.0, 1.0)
-            PixelUtil.SetPoint(button.Shadow, "TOPRIGHT", normalTexture, "TOPRIGHT", shadowOffset, shadowOffset)
-            PixelUtil.SetPoint(button.Shadow, "BOTTOMLEFT", normalTexture, "BOTTOMLEFT", -shadowOffset, -shadowOffset)
+            button.Shadow:SetPoint("TOPRIGHT", normalTexture, "TOPRIGHT", shadowOffset, shadowOffset)
+            button.Shadow:SetPoint("BOTTOMLEFT", normalTexture, "BOTTOMLEFT", -shadowOffset, -shadowOffset)
         end
 
         button.Skinned = true
@@ -92,6 +92,9 @@ local function UpdateVehicleButton()
     for i = 1, NUM_OVERRIDE_BUTTONS do
         local button = _G["OverrideActionBarButton"..i]
         local hotkey = _G["OverrideActionBarButton"..i.."HotKey"]
+        
+        if not button and not hotkey then return end
+
         if cfg.button.showVehicleKeybinds then
             hotkey:SetFont(cfg.button.hotkeyFont, cfg.button.hotkeyFontsize + 3, "OUTLINE")
             hotkey:SetVertexColor(Color.HotKeyText:GetRGB())
@@ -183,17 +186,18 @@ hooksecurefunc("ActionButton_Update", function(self)
     end
 end)
 
-hooksecurefunc("ExtraActionBar_Update", function(self)
-    local bar = ExtraActionBarFrame
-    if HasExtraActionBar() and not bar.Skinned then
-        local button = bar.button
-        button.style:Hide()
+-- Classic: ExtraActionBar_Update doesn't exist
+-- hooksecurefunc("ExtraActionBar_Update", function(self)
+--     local bar = ExtraActionBarFrame
+--     if HasExtraActionBar() and not bar.Skinned then
+--         local button = bar.button
+--         button.style:Hide()
 
-        SkinButton(button, button.icon, 4, 5)
+--         SkinButton(button, button.icon, 4, 5)
 
-        bar.Skinned = true
-    end
-end)
+--         bar.Skinned = true
+--     end
+-- end)
 
 hooksecurefunc("ActionButton_UpdateCount", function(self)
     local text = self.Count
@@ -297,16 +301,17 @@ hooksecurefunc("StanceBar_UpdateState", function(self)
     end
 end)
 
-hooksecurefunc("PossessBar_UpdateState", function()
-    local button, icon
+-- -- Classic: PossessBar_UpdateState doesn't exist
+-- hooksecurefunc("PossessBar_UpdateState", function()
+--     local button, icon
 
-    for i=1, NUM_POSSESS_SLOTS do
-        button = _G["PossessButton"..i]
-        icon = _G["PossessButton"..i.."Icon"]
+--     for i=1, NUM_POSSESS_SLOTS do
+--         button = _G["PossessButton"..i]
+--         icon = _G["PossessButton"..i.."Icon"]
 
-        SkinButton(button, icon, 1.5, 4)
-    end
-end)
+--         SkinButton(button, icon, 1.5, 4)
+--     end
+-- end)
 
 -- Hide Possess Frame Background
 

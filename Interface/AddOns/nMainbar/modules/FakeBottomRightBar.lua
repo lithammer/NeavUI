@@ -105,14 +105,14 @@ local function StyleButton(self)
 
     if icon then
         icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-        PixelUtil.SetPoint(icon, "TOPRIGHT", self, "TOPRIGHT", -1, -1)
-        PixelUtil.SetPoint(icon, "BOTTOMLEFT", self, "BOTTOMLEFT", 1, 1)
+        icon:SetPoint("TOPRIGHT", self, "TOPRIGHT", -1, -1)
+        icon:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", 1, 1)
     end
 
     if normal then
         normal:ClearAllPoints()
-        PixelUtil.SetPoint(normal, "TOPRIGHT", self, "TOPRIGHT", 1, 1)
-        PixelUtil.SetPoint(normal, "BOTTOMLEFT", self, "BOTTOMLEFT", -1, -1)
+        normal:SetPoint("TOPRIGHT", self, "TOPRIGHT", 1, 1)
+        normal:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", -1, -1)
         normal:SetVertexColor(Color.Normal:GetRGBA())
 
         self:SetNormalTexture(MEDIA_PATH.."textureNormal")
@@ -136,21 +136,21 @@ local function StyleButton(self)
 
     if cooldown and not nMainbar:IsTaintable() then
         cooldown:ClearAllPoints()
-        PixelUtil.SetPoint(cooldown, "TOPRIGHT", self, "TOPRIGHT", -2, -2.5)
-        PixelUtil.SetPoint(cooldown, "BOTTOMLEFT", self, "BOTTOMLEFT", 2, 2)
+        cooldown:SetPoint("TOPRIGHT", self, "TOPRIGHT", -2, -2.5)
+        cooldown:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", 2, 2)
     end
 
     if not self.Background then
         self.Background = self:CreateTexture(nil, "BACKGROUND", nil, -8)
         self.Background:SetTexture(MEDIA_PATH.."textureBackground")
-        PixelUtil.SetPoint(self.Background, "TOPRIGHT", self, "TOPRIGHT", 14, 12)
-        PixelUtil.SetPoint(self.Background, "BOTTOMLEFT", self, "BOTTOMLEFT", -14, -16)
+        self.Background:SetPoint("TOPRIGHT", self, "TOPRIGHT", 14, 12)
+        self.Background:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", -14, -16)
     end
 
     if not floatingBG then
         self.floatingBG = self:CreateTexture("$parentFloatingBG", "BACKGROUND")
-        PixelUtil.SetPoint(self.floatingBG, "TOPRIGHT", normal, "TOPRIGHT", 4, 4)
-        PixelUtil.SetPoint(self.floatingBG, "BOTTOMLEFT", normal, "BOTTOMLEFT", -4, -4)
+        self.floatingBG:SetPoint("TOPRIGHT", normal, "TOPRIGHT", 4, 4)
+        self.floatingBG:SetPoint("BOTTOMLEFT", normal, "BOTTOMLEFT", -4, -4)
         self.floatingBG:SetTexture(MEDIA_PATH.."textureShadow")
         self.floatingBG:SetVertexColor(0.0, 0.0, 0.0, 1.0)
     end
@@ -193,7 +193,7 @@ local function CheckFakeStatus()
     end
 end
 
-hooksecurefunc(MainMenuBar, "ChangeMenuBarSizeAndPosition", CheckFakeStatus)
+-- hooksecurefunc(MainMenuBar, "ChangeMenuBarSizeAndPosition", CheckFakeStatus)
 hooksecurefunc("MultiActionBar_Update", CheckFakeStatus)
 
  -- Disable bottom right bar checkbox during combat.
@@ -214,8 +214,8 @@ local function CreateBar(id)
     local bar = CreateFrame("Frame", "FakeMultiBarBottomRight"..id, MainMenuBar, "SecureHandlerStateTemplate")
     bar:SetFrameRef("MainMenuBarArtFrame", MainMenuBarArtFrame)
     bar:SetFrameStrata("MEDIUM")
-    PixelUtil.SetPoint(bar, "BOTTOMLEFT", MultiBarBottomLeftButton1, "TOPLEFT", 0, 6)
-    PixelUtil.SetSize(bar, 510, 40)
+    bar:SetPoint("BOTTOMLEFT", MultiBarBottomLeftButton1, "TOPLEFT", 0, 6)
+    bar:SetSize(510, 40)
 
     if not cfg.useFakeBottomRightBar or bottomRightShown then
         bar:Hide()

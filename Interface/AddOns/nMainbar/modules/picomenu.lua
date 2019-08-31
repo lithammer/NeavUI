@@ -493,13 +493,22 @@ picoMenu:SetFrameStrata("MEDIUM")
 picoMenu:SetFrameLevel(3)
 picoMenu:SetToplevel(true)
 picoMenu:SetSize(30, 30)
-picoMenu:SetPoint("BOTTOM", MainMenuBarArtFrame.RightEndCap, 0, 8)
+
+if MainMenuBarRightEndCap then
+    picoMenu:SetPoint('BOTTOM', MainMenuBarRightEndCap, -13, 20)
+else
+    picoMenu:SetPoint("BOTTOM", MainMenuBarArtFrame.RightEndCap, 0, 8)
+end
+
 picoMenu:RegisterForClicks("Anyup")
 picoMenu:RegisterEvent("ADDON_LOADED")
 picoMenu:RegisterEvent("PLAYER_ENTERING_WORLD")
 picoMenu:RegisterEvent("PLAYER_LEVEL_UP")
-picoMenu:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
-picoMenu:RegisterEvent("PLAYER_TALENT_UPDATE")
+
+-- Classic: PLAYER_SPECIALIZATION_CHANGED and PLAYER_TALENT_UPDATE don't exist
+-- TODO: Not sure if there's a way to keep this so it still works with Retail?
+-- picoMenu:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+-- picoMenu:RegisterEvent("PLAYER_TALENT_UPDATE")
 
 picoMenu:SetNormalTexture("Interface\\AddOns\\nMainbar\\Media\\picomenu\\picomenuNormal")
 picoMenu:GetNormalTexture():SetSize(30, 30)
