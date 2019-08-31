@@ -110,8 +110,9 @@ for _, tooltip in pairs({
     LibDBIconTooltip,
     SmallTextTooltip,
     LibItemUpdateInfoTooltip,
-    QuestScrollFrame.StoryTooltip,
-    QuestScrollFrame.WarCampaignTooltip,
+    -- Classic: These don't exist
+    -- QuestScrollFrame.StoryTooltip,
+    -- QuestScrollFrame.WarCampaignTooltip,
     NamePlateTooltip,
 }) do
     ApplyTooltipStyle(tooltip)
@@ -356,7 +357,8 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self, ...)
 
             -- Role
 
-        if cfg.showUnitRole then
+        -- Classic: UnitGroupRolesAssigned doesn't exist so added check
+        if UnitGroupRolesAssigned ~= nil and cfg.showUnitRole then
             self:AddLine(GetUnitRoleString(unit), 1, 1, 1)
         end
 
@@ -515,28 +517,31 @@ GameTooltip:SetScript("OnEvent", function(self, event, GUID)
         return
     end
 
-    local _, _, _, icon = GetSpecializationInfoByID(GetInspectSpecialization(unit))
-    local now = GetTime()
+    -- Classic: GetInspectSpecialization doesn't exist to wrap this in a check
+    if GetInspectSpecialization ~= nil then
+        local _, _, _, icon = GetSpecializationInfoByID(GetInspectSpecialization(unit))
+        local now = GetTime()
 
-    local iconMarkup = CreateTextureMarkup(icon, 64,64, 12,12, 0.10,.90,0.10,0.90, 0,0)
+        local iconMarkup = CreateTextureMarkup(icon, 64,64, 12,12, 0.10,.90,0.10,0.90, 0,0)
 
-    local matchFound
-    for index, _ in pairs(self.inspectCache) do
-        local inspectCache = self.inspectCache[index]
-        if inspectCache.GUID == GUID then
-            inspectCache.specIcon = icon and " "..iconMarkup or ""
-            inspectCache.lastUpdate = floor(now)
-            matchFound = true
+        local matchFound
+        for index, _ in pairs(self.inspectCache) do
+            local inspectCache = self.inspectCache[index]
+            if inspectCache.GUID == GUID then
+                inspectCache.specIcon = icon and " "..iconMarkup or ""
+                inspectCache.lastUpdate = floor(now)
+                matchFound = true
+            end
         end
-    end
 
-    if not matchFound then
-        local GUIDInfo = {
-            ["GUID"] = GUID,
-            ["specIcon"] = icon and " "..iconMarkup or "",
-            ["lastUpdate"] = floor(now)
-        }
-        table.insert(self.inspectCache, GUIDInfo)
+        if not matchFound then
+            local GUIDInfo = {
+                ["GUID"] = GUID,
+                ["specIcon"] = icon and " "..iconMarkup or "",
+                ["lastUpdate"] = floor(now)
+            }
+            table.insert(self.inspectCache, GUIDInfo)
+        end
     end
 
     if #self.inspectCache > 30 then
