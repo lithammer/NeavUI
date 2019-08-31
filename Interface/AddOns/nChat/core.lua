@@ -68,15 +68,18 @@ end
 
     -- Quick Join Button Options
 
-if cfg.enableQuickJoinButton then
-    ChatAlertFrame:ClearAllPoints()
-    ChatAlertFrame:SetPoint("BOTTOMLEFT", ChatFrame1Tab, "TOPLEFT", 0, 0)
-    QuickJoinToastButton:ClearAllPoints()
-    QuickJoinToastButton:SetPoint("BOTTOMLEFT", ChatAlertFrame, "TOPLEFT", 0, 0)
-else
-    QuickJoinToastButton:SetAlpha(0)
-    QuickJoinToastButton:EnableMouse(false)
-    QuickJoinToastButton:UnregisterAllEvents()
+-- Classic: QuickJoinToastButton doesn't exist so add check
+if QuickJoinToastButton then
+    if cfg.enableQuickJoinButton then
+        ChatAlertFrame:ClearAllPoints()
+        ChatAlertFrame:SetPoint("BOTTOMLEFT", ChatFrame1Tab, "TOPLEFT", 0, 0)
+        QuickJoinToastButton:ClearAllPoints()
+        QuickJoinToastButton:SetPoint("BOTTOMLEFT", ChatAlertFrame, "TOPLEFT", 0, 0)
+    else
+        QuickJoinToastButton:SetAlpha(0)
+        QuickJoinToastButton:EnableMouse(false)
+        QuickJoinToastButton:UnregisterAllEvents()
+    end
 end
 
     -- Voice Chat Buttons
@@ -261,6 +264,34 @@ local function ModChat(self)
         chat.AddMessage = FCF_AddMessage
     end
 
+    -- Classic: Brought over hiding the chat scroll buttons from a previous version
+    local buttonUp = _G[self..'ButtonFrameUpButton']
+    if buttonUp ~= nil then
+        buttonUp:SetAlpha(0)
+        buttonUp:EnableMouse(false)
+    end
+
+    local buttonDown = _G[self..'ButtonFrameDownButton']
+    if buttonDown ~= nil then
+        buttonDown:SetAlpha(0)
+        buttonDown:EnableMouse(false)
+    end
+
+    local buttonBottom = _G[self..'ButtonFrameBottomButton']
+    if buttonBottom ~= nil then
+        if (cfg.enableBottomButton) then
+            buttonBottom:Hide()
+            buttonBottom:ClearAllPoints()
+            buttonBottom:SetPoint('BOTTOMLEFT', chat, -1, -3)
+            buttonBottom:HookScript('OnClick', function(self)
+                self:Hide()
+            end)
+        else
+            buttonBottom:SetAlpha(0)
+            buttonBottom:EnableMouse(false)
+        end
+    end
+
     for _, texture in pairs({
         "ButtonFrameBackground",
         "ButtonFrameTopLeftTexture",
@@ -272,12 +303,21 @@ local function ModChat(self)
         "ButtonFrameBottomTexture",
         "ButtonFrameTopTexture",
     }) do
-        _G[self..texture]:SetTexture(nil)
+        -- Classic: These textures don't exist
+        if _G[self..texture] then
+            _G[self..texture]:SetTexture(nil)
+        end
     end
 
         -- Modify the editbox
 
-    for k = 3, 8 do
+    --[[
+        Classic: Tried to find an elegent solution to SetTexture not being available on regions [3-8],
+        but I could only get this to work if the loop to work if only regions [3-5] were done.
+        
+        Could be due to my limited WoW and Lua knowledge :s
+    ]]--
+    for k = 3, 5 do
         select(k, _G[self.."EditBox"]:GetRegions()):SetTexture(nil)
     end
 
