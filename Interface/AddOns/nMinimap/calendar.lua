@@ -19,31 +19,33 @@ GameTimeFrame:SetHitRectInsets(0, 0, 0, 0)
 GameTimeFrame:ClearAllPoints()
 GameTimeFrame:SetPoint("TOPRIGHT", Minimap, -3.5, -3.5)
 
-GameTimeFrame:GetFontString():SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
-GameTimeFrame:GetFontString():SetShadowOffset(0, 0)
-GameTimeFrame:GetFontString():SetPoint("TOPRIGHT", GameTimeFrame)
+-- Classic TODO: GetFontString doesn't seem to be available, how can this be resolved to be usable by Retail? Couldn't figure out an alternative :(
 
-for _, texture in pairs({
-    GameTimeCalendarEventAlarmTexture,
-    GameTimeCalendarInvitesTexture,
-    GameTimeCalendarInvitesGlow,
-    TimeManagerAlarmFiredTexture,
-}) do
-    texture:SetTexture(nil)
+-- GameTimeFrame:GetFontString():SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+-- GameTimeFrame:GetFontString():SetShadowOffset(0, 0)
+-- GameTimeFrame:GetFontString():SetPoint("TOPRIGHT", GameTimeFrame)
 
-    local classColor = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
+-- for _, texture in pairs({
+--     GameTimeCalendarEventAlarmTexture,
+--     GameTimeCalendarInvitesTexture,
+--     GameTimeCalendarInvitesGlow,
+--     TimeManagerAlarmFiredTexture,
+-- }) do
+--     texture:SetTexture(nil)
 
-    if texture:IsShown() then
-        GameTimeFrame:GetFontString():SetTextColor(1, 0, 1)
-    else
-        GameTimeFrame:GetFontString():SetTextColor(classColor.r, classColor.g, classColor.b)
-    end
+--     local classColor = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
 
-    hooksecurefunc(texture, "Show", function()
-        GameTimeFrame:GetFontString():SetTextColor(1, 0, 1)
-    end)
+--     if texture:IsShown() then
+--         GameTimeFrame:GetFontString():SetTextColor(1, 0, 1)
+--     else
+--         GameTimeFrame:GetFontString():SetTextColor(classColor.r, classColor.g, classColor.b)
+--     end
 
-    hooksecurefunc(texture, "Hide", function()
-        GameTimeFrame:GetFontString():SetTextColor(classColor.r, classColor.g, classColor.b)
-    end)
-end
+--     hooksecurefunc(texture, "Show", function()
+--         GameTimeFrame:GetFontString():SetTextColor(1, 0, 1)
+--     end)
+
+--     hooksecurefunc(texture, "Hide", function()
+--         GameTimeFrame:GetFontString():SetTextColor(classColor.r, classColor.g, classColor.b)
+--     end)
+-- end

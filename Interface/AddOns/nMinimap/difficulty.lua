@@ -68,13 +68,15 @@ function nMinimapDifficulty_OnLoad(self)
     end
 end
 
-hooksecurefunc("MiniMapInstanceDifficulty_Update", function(self, event, ...)
-    if event == "GUILD_PARTY_STATE_UPDATED" then
-        local isGuild = ...
-        if isGuild ~= isGuildGroup then
-            isGuildGroup = isGuild
+if MiniMapInstanceDifficulty then
+    hooksecurefunc("MiniMapInstanceDifficulty_Update", function(self, event, ...)
+        if event == "GUILD_PARTY_STATE_UPDATED" then
+            local isGuild = ...
+            if isGuild ~= isGuildGroup then
+                isGuildGroup = isGuild
+            end
         end
-    end
-    HideDifficultyFrame()
-    nMinimapDifficulty.Overlay.Text:SetText(GetDifficultyText())
-end)
+        HideDifficultyFrame()
+        nMinimapDifficulty.Overlay.Text:SetText(GetDifficultyText())
+    end)
+end

@@ -647,11 +647,8 @@ function nMinimap_UpdateMemoryButton(entry)
     if value ~= 0 then
         entry.LeftText:SetText(name)
 
-        if value > 1000 then
-            entry.RightText:SetFormattedText("%.2f MB", value/1000)
-        else
-            entry.RightText:SetFormattedText("%.0f KB", value)
-        end
+        entry.RightText:SetText(FormatMemoryValue(value))
+        entry.RightText:SetTextColor(RGBGradient(value / 1024))
     end
 
     minWidth = math.max(minWidth, entry.LeftText:GetWidth()+entry.RightText:GetWidth()+75)
@@ -749,7 +746,7 @@ function nMinimapTab_Info_ShowTooltip(self)
 
     -- Memory
     GameTooltip:AddLine(" ")
-    GameTooltip:AddLine(format(TOTAL_MEM_MB_ABBR, totalMem/1000), 1.0, 1.0, 1.0)
+    GameTooltip:AddDoubleLine("AddOn Memory:", FormatMemoryValue(totalMem), nil, nil, nil, RGBGradient(totalMem /  (1024*10)))
 
     if NUM_ADDONS_TO_DISPLAY > 0 then
         nMinimapTab_Memory_UpdateScrollFrame()
@@ -757,6 +754,15 @@ function nMinimapTab_Info_ShowTooltip(self)
     end
 
     GameTooltip:Show()
+end
+
+function FormatMemoryValue(i)
+    print("TotalMem: "..i)
+    if (i > 1024) then
+        return format('%.2f |cffffffffMB|r', i/1024)
+    else
+        return format('%.2f |cffffffffkB|r', i)
+    end
 end
 
     --// Minimap Scripts
