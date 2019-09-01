@@ -58,13 +58,15 @@ hooksecurefunc("ReputationFrame_Update", function(showLFGPulse)
 end)
 
 -- Classic: 'ReputationBarMixin' is not available
--- hooksecurefunc(ReputationBarMixin, "Update", function(self)
---     local name, reaction, minBar, maxBar, value, factionID = GetWatchedFactionInfo();
---     local colorIndex = reaction;
+if ReputationBarMixin then
+    hooksecurefunc(ReputationBarMixin, "Update", function(self)
+        local name, reaction, minBar, maxBar, value, factionID = GetWatchedFactionInfo();
+        local colorIndex = reaction;
 
---     local color = CUSTOM_FACTION_BAR_COLORS[colorIndex];
---     self:SetBarColor(color.r, color.g, color.b, 1);
--- end)
+        local color = CUSTOM_FACTION_BAR_COLORS[colorIndex];
+        self:SetBarColor(color.r, color.g, color.b, 1);
+    end)
+end
 
     -- Override the default GameTooltip_UnitColor function.
 
