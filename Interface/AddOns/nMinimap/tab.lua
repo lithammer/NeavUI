@@ -757,6 +757,7 @@ function nMinimapTab_Info_ShowTooltip(self)
 end
 
 function FormatMemoryValue(i)
+    print("TotalMem: "..i)
     if (i > 1024) then
         return format('%.2f |cffffffffMB|r', i/1024)
     else
