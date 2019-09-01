@@ -62,10 +62,11 @@ TempEnchant2:SetPoint("TOPRIGHT", TempEnchant1, "TOPLEFT", -cfg.paddingX, 0)
 local function UpdateFirstButton(self)
     if self and self:IsShown() then
         self:ClearAllPoints()
-        if UnitHasVehicleUI("player") then
-            self:SetPoint("TOPRIGHT", TempEnchant1)
-            return
-        else
+        -- Classic TODO: Doesn't have vehilces, can this be updated to still work with Retail?
+        -- if UnitHasVehicleUI("player") then
+        --     self:SetPoint("TOPRIGHT", TempEnchant1)
+        --     return
+        -- else
             if BuffFrame.numEnchants > 0 then
                 self:SetPoint("TOPRIGHT", _G["TempEnchant"..BuffFrame.numEnchants], "TOPLEFT", -cfg.paddingX, 0)
                 return
@@ -73,7 +74,7 @@ local function UpdateFirstButton(self)
                 self:SetPoint("TOPRIGHT", TempEnchant1)
                 return
             end
-        end
+        -- end
     end
 end
 
