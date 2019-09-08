@@ -53,15 +53,6 @@ local menuList = {
         fontObject = Game13Font,
     },
     {
-        text = ACHIEVEMENT_BUTTON,
-        icon = "Interface\\AddOns\\nMainbar\\Media\\picomenu\\picomenuAchievement",
-        func = function()
-            ToggleAchievementFrame()
-        end,
-        notCheckable = true,
-        fontObject = Game13Font,
-    },
-    {
         text = QUESTLOG_BUTTON,
         icon = "Interface\\GossipFrame\\ActiveQuestIcon",
         func = function()
@@ -90,111 +81,10 @@ local menuList = {
         fontObject = Game13Font,
     },
     {
-        text = PLAYER_V_PLAYER,
-        icon = "Interface\\MINIMAP\\TRACKING\\BattleMaster",
-        func = function()
-            TogglePVPUI()
-        end,
-        notCheckable = true,
-        fontObject = Game13Font,
-    },
-    {
-        text = DUNGEONS_BUTTON,
-        icon = "Interface\\LFGFRAME\\BattleNetWorking0",
-        func = function()
-            ToggleLFDParentFrame()
-        end,
-        notCheckable = true,
-        fontObject = Game13Font,
-    },
-    {
-        text = CHALLENGES,
-        icon = "Interface\\BUTTONS\\UI-GroupLoot-DE-Up",
-        func = function()
-            PVEFrame_ToggleFrame("ChallengesFrame",nil)
-        end,
-        notCheckable = true,
-        fontObject = Game13Font,
-    },
-    {
         text = RAID,
         icon = "Interface\\TARGETINGFRAME\\UI-TargetingFrame-Skull",
         func = function()
             ToggleRaidFrame()
-        end,
-        notCheckable = true,
-        fontObject = Game13Font,
-    },
-    {
-        text = MOUNTS,
-        icon = "Interface\\MINIMAP\\TRACKING\\StableMaster",
-        func = function()
-            if not nMainbar:IsTaintable() then
-                ToggleCollectionsJournal(1)
-            else
-                UIErrorsFrame:AddMessage(BLOCKED_IN_COMBAT, 1, 0, 0)
-            end
-        end,
-        notCheckable = true,
-        fontObject = Game13Font,
-    },
-    {
-        text = PETS,
-        icon = "Interface\\MINIMAP\\TRACKING\\StableMaster",
-        func = function()
-            if not nMainbar:IsTaintable() then
-                ToggleCollectionsJournal(2)
-            else
-                UIErrorsFrame:AddMessage(BLOCKED_IN_COMBAT, 1, 0, 0)
-            end
-        end,
-        notCheckable = true,
-        fontObject = Game13Font,
-    },
-    {
-        text = TOY_BOX,
-        icon = "Interface\\MINIMAP\\TRACKING\\Reagents",
-        func = function()
-            if not nMainbar:IsTaintable() then
-                ToggleCollectionsJournal(3)
-            else
-                UIErrorsFrame:AddMessage(BLOCKED_IN_COMBAT, 1, 0, 0)
-            end
-        end,
-        notCheckable = true,
-        fontObject = Game13Font,
-    },
-    {
-        text = HEIRLOOMS,
-        icon = "Interface\\PaperDollInfoFrame\\UI-EquipmentManager-Toggle",
-        func = function()
-            if not nMainbar:IsTaintable() then
-                ToggleCollectionsJournal(4)
-            else
-                UIErrorsFrame:AddMessage(BLOCKED_IN_COMBAT, 1, 0, 0)
-            end
-        end,
-        notCheckable = true,
-        fontObject = Game13Font,
-    },
-    {
-        text = WARDROBE,
-        icon = "Interface\\PaperDollInfoFrame\\UI-EquipmentManager-Toggle",
-        func = function()
-            if not nMainbar:IsTaintable() then
-                ToggleCollectionsJournal(5)
-            else
-                UIErrorsFrame:AddMessage(BLOCKED_IN_COMBAT, 1, 0, 0)
-            end
-        end,
-        notCheckable = true,
-        fontObject = Game13Font,
-    },
-    {
-        text = ENCOUNTER_JOURNAL,
-        icon = "Interface\\MINIMAP\\TRACKING\\Profession",
-        func = function()
-            ToggleEncounterJournal()
         end,
         notCheckable = true,
         fontObject = Game13Font,
@@ -525,7 +415,7 @@ picoMenu:SetScript("OnEvent", function(self, event, ...)
     if event == "ADDON_LOADED" then
         UpdateAddOnTable(arg1)
     elseif event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_LEVEL_UP" or event == "PLAYER_SPECIALIZATION_CHANGED" or event == "PLAYER_TALENT_UPDATE" then
-        if UnitLevel("player") >= SHOW_TALENT_LEVEL and GetNumUnspentTalents() > 0 then
+        if UnitLevel("player") >= SHOW_TALENT_LEVEL and UnitCharacterPoints('player') > 0 then
             alertFrame:Show()
         else
             alertFrame:Hide()
