@@ -410,6 +410,18 @@ function nMinimap_UpdateFriendButton(entry)
                 level = tonumber(level)
                 levelc = GetQuestDifficultyColor(level)
 
+                --[[
+                    Classic:
+                        If 'class' and 'classc' are nil at this point we're looking at a class that Classic
+                        doesn't know about, e.g. Death Knight, Monk, Demon Hunter etc, so lets give it a
+                        default of FRIENDS_BNET_NAME_COLOR.
+                ]]--
+                if not classc then
+                    characterName = characterName..'-UnknownClass';
+                    classc = FRIENDS_BNET_NAME_COLOR;
+                end
+
+                print(class, characterName);
                 level = WrapTextInColorCode(level, CreateColor(levelc.r, levelc.g, levelc.b, 1):GenerateHexColor())
                 characterName = WrapTextInColorCode(characterName, classc:GenerateHexColor())
 
