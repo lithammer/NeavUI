@@ -421,7 +421,6 @@ function nMinimap_UpdateFriendButton(entry)
                     classc = FRIENDS_BNET_NAME_COLOR;
                 end
 
-                print(class, characterName);
                 level = WrapTextInColorCode(level, CreateColor(levelc.r, levelc.g, levelc.b, 1):GenerateHexColor())
                 characterName = WrapTextInColorCode(characterName, classc:GenerateHexColor())
 
