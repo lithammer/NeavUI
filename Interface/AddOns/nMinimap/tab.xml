@@ -118,7 +118,7 @@
                     </OnLoad>
                     <OnEvent function="nMinimapTab_Guild_OnEvent" />
                     <OnMouseDown>
-                        ToggleGuildFrame()
+                        ToggleFriendsFrame(3)
                     </OnMouseDown>
                     <OnEnter>
                         nMinimapTab_Guild_ShowTooltip(self)
