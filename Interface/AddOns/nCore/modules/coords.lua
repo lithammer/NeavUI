@@ -3,9 +3,6 @@ local _, nCore = ...
 function nCore:MapCoords()
     local unpack = unpack
 
-    -- Temp fix until Blizzard removed the ! icon from the global string.
-    local _, MOUSE_LABEL = strsplit("1", MOUSE_LABEL, 2)
-
     local cfg = {
         location = {"BOTTOMLEFT", WorldMapFrame, "BOTTOMLEFT", 10, 0},
     }
