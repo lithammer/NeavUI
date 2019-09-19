@@ -21,20 +21,13 @@ function nCore_OnEvent(self, event, ...)
         if name == "nCore" then
             nCore:SetDefaultOptions()
             nCore:AltBuy()
-            nCore:ArchaeologyHelper()
-            nCore:AutoGreed()
-            nCore:AutoQuest()
             nCore:Dressroom()
             nCore:Durability()
             nCore:ErrorFilter()
             nCore:Fonts()
             nCore:MapCoords()
-            nCore:MoveTalkingHeads()
-            nCore:QuestTracker()
-            nCore:ObjectiveTracker()
             nCore:Skins()
             nCore:SpellID()
-            nCore:VignetteAlert()
         end
     end
 end

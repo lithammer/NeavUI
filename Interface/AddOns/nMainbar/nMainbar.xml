@@ -22,5 +22,4 @@
     <Script file="modules\moveableextrabars.lua" />
     <Script file="modules\picomenu.lua" />
     <Script file="modules\slash.lua" />
-    <Script file="modules\watchbarcode.lua" />
 </Ui>

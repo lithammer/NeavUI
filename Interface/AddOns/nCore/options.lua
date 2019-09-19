@@ -75,30 +75,6 @@ Options:SetScript("OnShow", function()
         },
         {
             type = "CheckBox",
-            name = "ArchaeologyHelper",
-            parent = Options,
-            label = L.ArchaeologyHelper,
-            tooltip = L.ArchaeologyHelperTooltip,
-            var = "ArchaeologyHelper",
-        },
-        {
-            type = "CheckBox",
-            name = "AutoGreed",
-            parent = Options,
-            label = L.AutoGreed,
-            tooltip = L.AutoGreedTooltip,
-            var = "AutoGreed",
-        },
-        {
-            type = "CheckBox",
-            name = "AutoQuest",
-            parent = Options,
-            label = L.AutoQuest,
-            tooltip = L.AutoQuestTooltip,
-            var = "AutoQuest",
-        },
-        {
-            type = "CheckBox",
             name = "Dressroom",
             parent = Options,
             label = L.Dressroom,
@@ -142,32 +118,6 @@ Options:SetScript("OnShow", function()
         },
         {
             type = "CheckBox",
-            name = "ObjectiveTracker",
-            parent = Options,
-            label = L.ObjectiveTracker,
-            tooltip = L.ObjectiveTrackerTooltip,
-            var = "ObjectiveTracker",
-            needsRestart = true,
-        },
-        {
-            type = "CheckBox",
-            name = "MoveTalkingHeads",
-            parent = Options,
-            label = L.MoveTalkingHeads,
-            tooltip = L.MoveTalkingHeadsTooltip,
-            var = "MoveTalkingHeads",
-            needsRestart = true,
-        },
-        {
-            type = "CheckBox",
-            name = "QuestTracker",
-            parent = Options,
-            label = L.QuestTracker,
-            tooltip = L.QuestTrackerTooltip,
-            var = "QuestTracker",
-        },
-        {
-            type = "CheckBox",
             name = "Skins",
             parent = Options,
             label = L.Skins,
@@ -183,14 +133,6 @@ Options:SetScript("OnShow", function()
             tooltip = L.SpellIDTooltip,
             var = "SpellID",
         },
-        {
-            type = "CheckBox",
-            name = "VignetteAlert",
-            parent = Options,
-            label = L.VignetteAlert,
-            tooltip = L.VignetteAlertTooltip,
-            var = "VignetteAlert",
-        }
     }
 
     for i, control in pairs(UIControls) do

@@ -70,11 +70,6 @@
     <Script file="modules\offline.lua"/>
     <Script file="modules\portraittimers.lua"/>
     <Script file="modules\smartthreat.lua"/>
-    <Script file="modules\petBattleIcon.lua"/>
-    <Script file="modules\oUF_ArenaElements\PVPSpecIcon.lua"/>
-    <Script file="modules\oUF_ArenaElements\Trinkets.lua"/>
-    <Script file="modules\oUF_ArenaElements\CCIcon.lua"/>
-    <Script file="modules\oUF_LootSpecIndicator\lootspecindicator.lua"/>
     <Script file="modules\oUF_MovableFrames\movable.lua"/>
 
     <!--

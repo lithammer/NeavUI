@@ -11,20 +11,13 @@ end
 
 function nCore:SetDefaultOptions()
     nCore:RegisterDefaultSetting("AltBuy", true)
-    nCore:RegisterDefaultSetting("ArchaeologyHelper", true)
-    nCore:RegisterDefaultSetting("AutoGreed", true)
-    nCore:RegisterDefaultSetting("AutoQuest", true)
     nCore:RegisterDefaultSetting("Dressroom", true)
     nCore:RegisterDefaultSetting("Durability", true)
     nCore:RegisterDefaultSetting("ErrorFilter", true)
     nCore:RegisterDefaultSetting("Fonts", true)
-    nCore:RegisterDefaultSetting("ObjectiveTracker", true)
     nCore:RegisterDefaultSetting("MapCoords", true)
-    nCore:RegisterDefaultSetting("MoveTalkingHeads", true)
-    nCore:RegisterDefaultSetting("QuestTracker", true)
     nCore:RegisterDefaultSetting("Skins", true)
     nCore:RegisterDefaultSetting("SpellID", true)
-    nCore:RegisterDefaultSetting("VignetteAlert", true)
 end
 
 function nCore:LockInCombat(frame)
