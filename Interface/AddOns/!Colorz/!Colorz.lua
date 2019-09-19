@@ -34,44 +34,6 @@ CUSTOM_FACTION_BAR_COLORS = {
     [8] = {r = 0, g = 0.75, b = 0.44},
 }
 
-hooksecurefunc("ReputationFrame_Update", function(showLFGPulse)
-    local numFactions = GetNumFactions()
-    local factionOffset = FauxScrollFrame_GetOffset(ReputationListScrollFrame)
-
-    for i=1, NUM_FACTIONS_DISPLAYED, 1 do
-        local factionIndex = factionOffset + i
-        local factionBar = _G["ReputationBar"..i.."ReputationBar"]
-
-        if factionIndex <= numFactions then
-            local name, description, standingID = GetFactionInfo(factionIndex)
-
-            local colorIndex = standingID
-
-            local friendID = GetFriendshipReputation(factionID)
-
-            if friendID ~= nil then
-                colorIndex = 5                              -- always color friendships green
-            end
-
-            local color = CUSTOM_FACTION_BAR_COLORS[colorIndex]
-            factionBar:SetStatusBarColor(color.r, color.g, color.b)
-        end
-    end
-end)
-
-hooksecurefunc(ReputationBarMixin, "Update", function(self)
-    local name, reaction, minBar, maxBar, value, factionID = GetWatchedFactionInfo();
-    local colorIndex = reaction;
-    local friendshipID = GetFriendshipReputation(factionID);
-
-    if friendshipID then
-        colorIndex = 5;     -- always color friendships green
-    end
-
-    local color = CUSTOM_FACTION_BAR_COLORS[colorIndex];
-    self:SetBarColor(color.r, color.g, color.b, 1);
-end)
-
     -- Override the default GameTooltip_UnitColor function.
 
 function GameTooltip_UnitColor(unit)
