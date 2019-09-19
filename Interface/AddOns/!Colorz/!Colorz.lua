@@ -109,3 +109,9 @@ hooksecurefunc("TargetFrame_CheckFaction", function(self)
         self.nameBackground:SetVertexColor(GameTooltip_UnitColor(self.unit))
     end
 end)
+
+    -- Restore the blue shaman color.
+
+local blueColor = CreateColor(0, 0.44, 0.87, 1)
+RAID_CLASS_COLORS["SHAMAN"] = blueColor
+RAID_CLASS_COLORS["SHAMAN"].colorStr = blueColor:GenerateHexColor()
