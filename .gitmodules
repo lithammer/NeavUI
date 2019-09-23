@@ -1,9 +1,12 @@
-[submodule "Interface/AddOns/oUF"]
-	path = Interface/AddOns/oUF
-	url = git@github.com:oUF-wow/oUF.git
 [submodule "Interface/AddOns/nPlates"]
 	path = Interface/AddOns/nPlates
 	url = git@github.com:Grimsbain/nPlates.git
 [submodule "Interface/AddOns/LibClassicMobHealth-1.0"]
 	path = Interface/AddOns/LibClassicMobHealth-1.0
 	url = https://repos.curseforge.com/wow/libclassicmobhealth-1-0
+[submodule "Interface/AddOns/oUF/libs/LibClassicCasterino"]
+	path = Interface/AddOns/oUF/libs/LibClassicCasterino
+	url = https://github.com/rgd87/LibClassicCasterino.git
+[submodule "Interface/AddOns/oUF/libs/LibClassicDurations"]
+	path = Interface/AddOns/oUF/libs/LibClassicDurations
+	url = https://github.com/rgd87/LibClassicDurations.git

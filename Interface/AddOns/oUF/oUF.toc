@@ -1,0 +1,15 @@
+## Interface: 11302
+## Title: oUF
+## Author: Haste, lightspark, p3lim, Rainrider
+## WoW-Classic-Compatibility-Update: Tukz
+## Version: @project-version@
+## Notes: Unit frame framework. Does nothing by itself.
+## RequiredDeps: LibClassicMobHealth-1.0
+## OptionalDeps: Clique
+## SavedVariables: LibClassicMobHealth10DB, LibClassicMobHealth10Opt
+## X-oUF: oUF
+
+## X-Curse-Project-ID: 21187
+## X-WoWI-ID: 9994
+
+oUF.xml
