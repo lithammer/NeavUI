@@ -41,14 +41,8 @@ local function DeficitValue(value)
 end
 
 ns.cUnit = function(unit)
-    if unit:match("vehicle") then
-        return "player"
-    elseif unit:match("party%d") then
+    if unit:match("party%d") then
         return "party"
-    elseif unit:match("arena%d") then
-        return "arena"
-    elseif unit:match("boss%d") then
-        return "boss"
     elseif unit:match("partypet%d") then
         return "pet"
     else
@@ -141,7 +135,7 @@ ns.GetPowerText = function(unit, cur, max)
         powerString = ""
     elseif max == 0 then
         powerString = ""
-    elseif not UnitHasMana(unit) or powerType ~= 0 or UnitHasVehicleUI(unit) and uconf and uconf.powerTagNoMana then
+    elseif not UnitHasMana(unit) or powerType ~= 0 and uconf and uconf.powerTagNoMana then
         powerString = GetFormattedText(uconf.powerTagNoMana, cur, max, alt)
     elseif (cur == max) and uconf and uconf.powerTagFull then
         powerString = GetFormattedText(uconf.powerTagFull, cur, max, alt)

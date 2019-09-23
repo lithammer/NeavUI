@@ -170,7 +170,6 @@ local dispelClass = {
 
 local checkTalents = CreateFrame("Frame")
 checkTalents:RegisterEvent("PLAYER_ENTERING_WORLD")
-checkTalents:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 checkTalents:SetScript("OnEvent", function()
     if (ns.MultiCheck(class, "SHAMAN", "PALADIN", "DRUID", "PRIEST", "MONK")) then
         local spec = GetSpecialization()

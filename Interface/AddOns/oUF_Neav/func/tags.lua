@@ -41,12 +41,9 @@ events["neav:pvptimer"] = "PLAYER_ENTERING_WORLD PLAYER_FLAGS_CHANGED"
 
 tags["neav:level"] = function(unit)
     local r, g, b
-    local targetEffectiveLevel = UnitEffectiveLevel(unit)
+    local targetEffectiveLevel = UnitLevel(unit)
 
-    if UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit) then
-        targetEffectiveLevel = UnitBattlePetLevel(unit)
-        r, g, b = 1.0, 0.82, 0.0
-    elseif targetEffectiveLevel > 0 then
+    if targetEffectiveLevel > 0 then
         if UnitCanAttack("player", unit) then
             local color = GetCreatureDifficultyColor(targetEffectiveLevel)
             r, g, b = color.r, color.g, color.b
@@ -74,7 +71,7 @@ tags["neav:name"] = function(unit)
         else
             r, g, b = 0, 1, 0
         end
-    elseif unit == "targettarget" or unit == "focustarget" or unit:match("arena(%d)target") then
+    elseif unit == "targettarget" then
         r, g, b = GameTooltip_UnitColor(unit)
     else
         r, g, b = 1, 1, 1

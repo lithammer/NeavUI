@@ -57,8 +57,6 @@ end
 
 --  Update Action Bars
 
-OverrideActionBar:SetScale(cfg.vehicleBar.scale)
-
 hooksecurefunc("MultiActionBar_Update", function(self)
     if nMainbar:IsTaintable() then
         return
@@ -78,32 +76,6 @@ hooksecurefunc("MultiActionBar_Update", function(self)
         VerticalMultiBarsContainer:SetPoint("TOPRIGHT", UIParent, "RIGHT", -2, (VerticalMultiBarsContainer:GetHeight() / 2))
     end
 end)
-
--- Extra Action Button
-
-local ExtraActionBarFrameLocation = {"CENTER", UIParent, "CENTER", -300, -150}
-local ExtraActionBarFrameAnchor = nMainbar:CreateAnchor("EAB", ExtraActionButton1:GetWidth(), ExtraActionButton1:GetHeight(), ExtraActionBarFrameLocation)
-
-SlashCmdList["nMainbar_MoveExtraActionBar"] = function()
-    if InCombatLockdown() then
-        print("|cffCC3333n|rMainbar: "..ERR_NOT_IN_COMBAT)
-        return
-    end
-    if not ExtraActionBarFrameAnchor:IsShown() then
-        ExtraActionBarFrameAnchor:Show()
-    else
-        ExtraActionBarFrameAnchor:Hide()
-    end
-end
-SLASH_nMainbar_MoveExtraActionBar1 = "/moveextraactionbar"
-
-ExtraActionButton1:ClearAllPoints()
-ExtraActionButton1:SetPoint("CENTER", ExtraActionBarFrameAnchor)
-
--- Possess Bar
-
-PossessBarFrame:SetScale(cfg.possessBar.scale)
-PossessBarFrame:SetAlpha(cfg.possessBar.alpha)
 
 -- Stance Bar
 
@@ -153,10 +125,3 @@ if not cfg.button.showKeybinds then
         PetActionButton_SetHotkeys(buttonName)
     end
 end
-
-    -- Move exit vehicle button.
-
-hooksecurefunc("MainMenuBarVehicleLeaveButton_Update", function()
-    MainMenuBarVehicleLeaveButton:ClearAllPoints()
-    MainMenuBarVehicleLeaveButton:SetPoint("CENTER", MainMenuBarArtFrame.RightEndCap, "TOP", 0, 15)
-end)

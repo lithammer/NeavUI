@@ -11,7 +11,7 @@ local function ExactTime(time)
 end
 
 local function IsMine(unit)
-    if unit == "player" or unit == "vehicle" or unit == "pet" then
+    if unit == "player" or unit == "pet" then
         return true
     else
         return false

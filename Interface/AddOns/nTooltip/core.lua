@@ -22,10 +22,6 @@ local UnitFactionGroup = UnitFactionGroup
 local UnitCreatureType = UnitCreatureType
 local GetQuestDifficultyColor = GetQuestDifficultyColor
 
-local tankIcon = [[|TInterface\LFGFrame\UI-LFG-ICON-PORTRAITROLES.blp:13:13:0:0:64:64:0:19:22:41|t]]
-local healIcon = [[|TInterface\LFGFrame\UI-LFG-ICON-PORTRAITROLES.blp:13:13:0:0:64:64:20:39:1:20|t]]
-local damagerIcon = [[|TInterface\LFGFrame\UI-LFG-ICON-PORTRAITROLES.blp:13:13:0:0:64:64:20:39:22:41|t]]
-
     -- Some tooltip changes
 
 if cfg.fontOutline then
@@ -103,15 +99,10 @@ for _, tooltip in pairs({
     LanguageMenu,
     VoiceMacroMenu,
     FriendsTooltip,
-    FloatingGarrisonFollowerTooltip,
-    FloatingBattlePetTooltip,
-    FloatingPetBattleAbilityTooltip,
     ReputationParagonTooltip,
     LibDBIconTooltip,
     SmallTextTooltip,
     LibItemUpdateInfoTooltip,
-    QuestScrollFrame.StoryTooltip,
-    QuestScrollFrame.WarCampaignTooltip,
     NamePlateTooltip,
 }) do
     ApplyTooltipStyle(tooltip)
@@ -204,21 +195,6 @@ local function GetFormattedUnitString(unit, specIcon)
     end
 end
 
-local function GetUnitRoleString(unit)
-    local role = UnitGroupRolesAssigned(unit)
-    local roleList = nil
-
-    if role == "TANK" then
-        roleList = "   "..tankIcon.." "..TANK
-    elseif role == "HEALER" then
-        roleList = "   "..healIcon.." "..HEALER
-    elseif role == "DAMAGER" then
-        roleList = "   "..damagerIcon.." "..DAMAGER
-    end
-
-    return roleList
-end
-
     -- Healthbar coloring funtion
 
 local function SetHealthBarColor(unit)
@@ -292,8 +268,6 @@ local function AddMouseoverTarget(self, unit)
     end
 end
 
-GameTooltip.inspectCache = {}
-
 GameTooltip:HookScript("OnTooltipSetUnit", function(self, ...)
     local _, unit = self:GetUnit()
 
@@ -303,29 +277,6 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self, ...)
     end
 
     if UnitExists(unit) and UnitName(unit) ~= UNKNOWN then
-        local specIcon = ""
-        local lastUpdate = 30
-        for index, _ in pairs(self.inspectCache) do
-            local inspectCache = self.inspectCache[index]
-            if inspectCache.GUID == UnitGUID(unit) then
-                specIcon = inspectCache.specIcon or ""
-                lastUpdate = inspectCache.lastUpdate and math.abs(inspectCache.lastUpdate - floor(GetTime())) or 30
-            end
-        end
-
-            -- Fetch Inspect Information
-
-        if unit and CanInspect(unit) then
-            if not self.inspectRefresh and lastUpdate >= 30 and not self.blockInspectRequests then
-                if not self.blockInspectRequests then
-                    self.inspectRequestSent = true
-                    NotifyInspect(unit)
-                end
-            end
-        end
-
-        self.inspectRefresh = false
-
         local name, realm = UnitName(unit)
 
             -- Player Titles
@@ -340,9 +291,14 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self, ...)
 
             -- Color guildnames
 
-        if GetGuildInfo(unit) then
-            if GetGuildInfo(unit) == GetGuildInfo("player") and IsInGuild("player") then
-               GameTooltipTextLeft2:SetText("|cffFF66CC"..GameTooltipTextLeft2:GetText().."|r")
+        local guildName = GetGuildInfo(unit)
+        if guildName then
+            -- Move level information down a row.
+            self:AddLine(GameTooltipTextLeft2:GetText(), 1, 1, 1)
+
+            GameTooltipTextLeft2:SetText(guildName)
+            if guildName == GetGuildInfo("player") and IsInGuild("player") then
+                GameTooltipTextLeft2:SetText("|cffFF66CC"..GameTooltipTextLeft2:GetText().."|r")
             end
         end
 
@@ -352,12 +308,6 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self, ...)
             if _G["GameTooltipTextLeft"..i]:GetText():find("^"..TOOLTIP_UNIT_LEVEL:gsub("%%s", ".+")) then
                 _G["GameTooltipTextLeft"..i]:SetText(GetFormattedUnitString(unit, specIcon))
             end
-        end
-
-            -- Role
-
-        if cfg.showUnitRole then
-            self:AddLine(GetUnitRoleString(unit), 1, 1, 1)
         end
 
             -- Mouseover Target
@@ -489,82 +439,6 @@ hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
         self:ClearAllPoints()
         self:SetOwner(nTooltipAnchor, "ANCHOR_NONE")
         self:SetPoint("BOTTOMRIGHT", nTooltipAnchor)
-    end
-end)
-
-GameTooltip:RegisterEvent("INSPECT_READY")
-GameTooltip:SetScript("OnEvent", function(self, event, GUID)
-    if not self:IsShown() then
-        return
-    end
-
-    local _, unit = self:GetUnit()
-
-    if not unit then
-        return
-    end
-
-    if self.blockInspectRequests then
-        self.inspectRequestSent = false
-    end
-
-    if UnitGUID(unit) ~= GUID or not self.inspectRequestSent then
-        if not self.blockInspectRequests then
-            ClearInspectPlayer()
-        end
-        return
-    end
-
-    local _, _, _, icon = GetSpecializationInfoByID(GetInspectSpecialization(unit))
-    local now = GetTime()
-
-    local iconMarkup = CreateTextureMarkup(icon, 64,64, 12,12, 0.10,.90,0.10,0.90, 0,0)
-
-    local matchFound
-    for index, _ in pairs(self.inspectCache) do
-        local inspectCache = self.inspectCache[index]
-        if inspectCache.GUID == GUID then
-            inspectCache.specIcon = icon and " "..iconMarkup or ""
-            inspectCache.lastUpdate = floor(now)
-            matchFound = true
-        end
-    end
-
-    if not matchFound then
-        local GUIDInfo = {
-            ["GUID"] = GUID,
-            ["specIcon"] = icon and " "..iconMarkup or "",
-            ["lastUpdate"] = floor(now)
-        }
-        table.insert(self.inspectCache, GUIDInfo)
-    end
-
-    if #self.inspectCache > 30 then
-        table.remove(self.inspectCache, 1)
-    end
-
-    self.inspectRefresh = true
-    GameTooltip:SetUnit("mouseover")
-
-    if not self.blockInspectRequests then
-        ClearInspectPlayer()
-    end
-    self.inspectRequestSent = false
-end)
-
-local f = CreateFrame("Frame")
-f:RegisterEvent("ADDON_LOADED")
-f:SetScript("OnEvent", function(self, event)
-    if IsAddOnLoaded("Blizzard_InspectUI") then
-        hooksecurefunc("InspectFrame_Show", function(unit)
-            GameTooltip.blockInspectRequests = true
-        end)
-
-        InspectFrame:HookScript("OnHide", function()
-            GameTooltip.blockInspectRequests = false
-        end)
-
-        self:UnregisterEvent("ADDON_LOADED")
     end
 end)
 

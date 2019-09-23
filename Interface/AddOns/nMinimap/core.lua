@@ -8,6 +8,12 @@ local find = string.find
 
 Minimap:SetBlipTexture("Interface\\Minimap\\ObjectIconsAtlas")
 
+    -- Hide the Minimap toggle button
+
+MinimapToggleButton:Hide()
+MinimapToggleButton:EnableMouse(false)
+MinimapToggleButton:UnregisterAllEvents()
+
     -- A "new" mail notification
 
 MiniMapMailFrame:SetSize(14, 14)
@@ -32,40 +38,6 @@ MiniMapMailFrame:HookScript("OnEvent", function(self, event, ...)
     end
 end)
 
-   -- Modify the lfg frame
-
-QueueStatusMinimapButton:ClearAllPoints()
-QueueStatusMinimapButton:SetPoint("TOPLEFT", Minimap, 4, -4)
-QueueStatusMinimapButton:SetSize(14, 14)
-QueueStatusMinimapButton:SetHighlightTexture(nil)
-
-QueueStatusMinimapButtonBorder:SetTexture()
-QueueStatusMinimapButton.Eye:Hide()
-
-hooksecurefunc("EyeTemplate_StartAnimating", function(self)
-    self:SetScript("OnUpdate", nil)
-end)
-
-QueueStatusMinimapButton.Text = QueueStatusMinimapButton:CreateFontString(nil, "OVERLAY")
-QueueStatusMinimapButton.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
-QueueStatusMinimapButton.Text:SetPoint("TOP", QueueStatusMinimapButton)
-QueueStatusMinimapButton.Text:SetTextColor(1, 0.4, 0)
-QueueStatusMinimapButton.Text:SetText("Q")
-
-    -- Garrison button
-
-GarrisonLandingPageMinimapButton:SetSize(36, 36)
-GarrisonLandingPageMinimapButton:ClearAllPoints()
-GarrisonLandingPageMinimapButton:SetPoint("BOTTOMLEFT", Minimap, 0, 0)
-
-hooksecurefunc("GarrisonLandingPageMinimapButton_UpdateIcon", function(self)
-    if C_Garrison.GetLandingPageGarrisonType() == LE_GARRISON_TYPE_8_0 then
-        GarrisonLandingPageMinimapButton:SetScale(.70)
-    else
-        GarrisonLandingPageMinimapButton:SetScale(1)
-    end
-end)
-
     -- Hide all unwanted things
 
 MinimapZoomIn:Hide()
@@ -87,19 +59,10 @@ MinimapZoneText:Hide()
 MinimapZoneTextButton:Hide()
 MinimapZoneTextButton:UnregisterAllEvents()
 
-    -- Hide the tracking button
-
-MiniMapTracking:UnregisterAllEvents()
-MiniMapTracking:Hide()
-
     -- Hide the durability frame (the armored man)
 
 DurabilityFrame:Hide()
 DurabilityFrame:UnregisterAllEvents()
-
-    -- Smaller Vehicle/Mount Seat Indicator
-
-VehicleSeatIndicator:SetScale(.75)
 
     -- Bigger minimap
 

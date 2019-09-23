@@ -15,6 +15,8 @@ local LSM = LibStub("LibSharedMedia-3.0")
 LSM:Register("statusbar", "Neav "..DEFAULT, "Interface\\AddOns\\oUF_NeavRaid\\media\\statusbarTexture")
 LSM:Register("font", "Neav "..DEFAULT, "Interface\\AddOns\\oUF_NeavRaid\\media\\fontSmall.ttf")
 
+local LibThreatClassic = LibStub:GetLibrary("ThreatClassic-1.0")
+
 oUF.colors.power["MANA"] = {0, 0.55, 1}
 
 local _, playerClass = UnitClass("player")
@@ -105,7 +107,6 @@ do
         ALL = {
             {23333, "TOPLEFT", {1, 0, 0}, true},        -- Warsong flag, Horde
             {23335, "TOPLEFT", {0, 0, 1}, true},        -- Warsong flag, Alliance
-            {34976, "TOPLEFT", {1, 0, 1}, true},        -- Netherstorm Flag
         },
     }
 end
@@ -242,7 +243,7 @@ local function UpdateThreat(self, _, unit)
         return
     end
 
-    local threatStatus = UnitThreatSituation(unit) or 0
+    local threatStatus = LibThreatClassic:UnitThreatSituation(unit) or 0
 
     if threatStatus and threatStatus >= 2 then
         local r, g, b = GetThreatStatusColor(threatStatus)
@@ -461,115 +462,6 @@ local function CreateRaidLayout(self, unit)
         UpdatePower(self, _, unit)
     end
 
-        -- Health Prediction
-
-    local myBar = CreateFrame("StatusBar", "$parentMyHealthPredictionBar", self)
-    myBar:SetStatusBarTexture(statusbar, "OVERLAY")
-    myBar:SetStatusBarColor(0, 0.827, 0.765, 1)
-    myBar.Smooth = true
-
-    if nRaidDB.horizontalHealthBars then
-        myBar:SetOrientation("HORIZONTAL")
-        myBar:SetPoint("TOPLEFT", self.Health:GetStatusBarTexture(), "TOPRIGHT")
-        myBar:SetPoint("BOTTOMLEFT", self.Health:GetStatusBarTexture(), "BOTTOMRIGHT")
-        myBar:SetWidth(self:GetWidth())
-    else
-        myBar:SetOrientation("VERTICAL")
-        myBar:SetPoint("BOTTOMLEFT", self.Health:GetStatusBarTexture(), "TOPLEFT")
-        myBar:SetPoint("BOTTOMRIGHT", self.Health:GetStatusBarTexture(), "TOPRIGHT")
-        myBar:SetHeight(self:GetHeight())
-    end
-
-    local otherBar = CreateFrame("StatusBar", "$parentOtherHealthPredictionBar", self)
-    otherBar:SetStatusBarTexture(statusbar, "OVERLAY")
-    otherBar:SetStatusBarColor(0.0, 0.631, 0.557, 1)
-    otherBar.Smooth = true
-
-    if nRaidDB.horizontalHealthBars then
-        otherBar:SetOrientation("HORIZONTAL")
-        otherBar:SetPoint("TOPLEFT", myBar:GetStatusBarTexture(), "TOPRIGHT")
-        otherBar:SetPoint("BOTTOMLEFT", myBar:GetStatusBarTexture(), "BOTTOMRIGHT")
-        otherBar:SetWidth(self:GetWidth())
-    else
-        otherBar:SetOrientation("VERTICAL")
-        otherBar:SetPoint("BOTTOMLEFT", myBar:GetStatusBarTexture(), "TOPLEFT")
-        otherBar:SetPoint("BOTTOMRIGHT", myBar:GetStatusBarTexture(), "TOPRIGHT")
-        otherBar:SetHeight(self:GetHeight())
-    end
-
-    local absorbBar = CreateFrame("StatusBar", "$parentTotalAbsorbBar", self)
-    absorbBar:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
-    absorbBar:SetStatusBarColor(0.85, 0.85, 0.9, 1)
-    absorbBar.Smooth = true
-
-    if nRaidDB.horizontalHealthBars then
-        absorbBar:SetOrientation("HORIZONTAL")
-        absorbBar:SetPoint("TOPLEFT", otherBar:GetStatusBarTexture(), "TOPRIGHT")
-        absorbBar:SetPoint("BOTTOMLEFT", otherBar:GetStatusBarTexture(), "BOTTOMRIGHT")
-        absorbBar:SetWidth(self:GetWidth())
-    else
-        absorbBar:SetOrientation("VERTICAL")
-        absorbBar:SetPoint("BOTTOMLEFT", otherBar:GetStatusBarTexture(), "TOPLEFT")
-        absorbBar:SetPoint("BOTTOMRIGHT", otherBar:GetStatusBarTexture(), "TOPRIGHT")
-        absorbBar:SetHeight(self:GetHeight())
-    end
-
-    absorbBar.Overlay = absorbBar:CreateTexture("$parentOverlay", "OVERLAY", "TotalAbsorbBarOverlayTemplate", -1)
-    absorbBar.Overlay:SetAllPoints(absorbBar:GetStatusBarTexture())
-
-    local healAbsorbBar = CreateFrame("StatusBar", "$parentHealAbsorbBar", self)
-    healAbsorbBar:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
-    healAbsorbBar:SetStatusBarColor(0.9, 0.1, 0.3, 1)
-    healAbsorbBar:SetReverseFill(true)
-    healAbsorbBar.Smooth = true
-
-    if nRaidDB.horizontalHealthBars then
-        healAbsorbBar:SetOrientation("HORIZONTAL")
-        healAbsorbBar:SetPoint("TOPLEFT", self.Health:GetStatusBarTexture(), "TOPRIGHT")
-        healAbsorbBar:SetPoint("BOTTOMLEFT", self.Health:GetStatusBarTexture(), "BOTTOMRIGHT")
-        healAbsorbBar:SetWidth(self.Health:GetWidth())
-    else
-        healAbsorbBar:SetOrientation("VERTICAL")
-        healAbsorbBar:SetPoint("BOTTOMLEFT", self.Health:GetStatusBarTexture(), "TOPLEFT")
-        healAbsorbBar:SetPoint("BOTTOMRIGHT", self.Health:GetStatusBarTexture(), "TOPRIGHT")
-        healAbsorbBar:SetHeight(self.Health:GetHeight())
-    end
-
-    local overAbsorb = self.Health:CreateTexture("$parentOverAbsorb", "OVERLAY")
-
-    if nRaidDB.horizontalHealthBars then
-        overAbsorb:SetPoint("TOPLEFT", self.Health, "TOPRIGHT")
-        overAbsorb:SetPoint("BOTTOMLEFT", self.Health, "BOTTOMRIGHT")
-        overAbsorb:SetWidth(3)
-    else
-        overAbsorb:SetPoint("BOTTOMLEFT", self.Health, "TOPLEFT")
-        overAbsorb:SetPoint("BOTTOMRIGHT", self.Health, "TOPRIGHT")
-        overAbsorb:SetHeight(3)
-    end
-
-    local overHealAbsorb = self.Health:CreateTexture("$parentOverHealAbsorb", "OVERLAY")
-
-    if nRaidDB.horizontalHealthBars then
-        overHealAbsorb:SetPoint("TOPLEFT", self.Health, "TOPRIGHT")
-        overHealAbsorb:SetPoint("BOTTOMLEFT", self.Health, "BOTTOMRIGHT")
-        overHealAbsorb:SetWidth(3)
-    else
-        overHealAbsorb:SetPoint("BOTTOMLEFT", self.Health, "TOPLEFT")
-        overHealAbsorb:SetPoint("BOTTOMRIGHT", self.Health, "TOPRIGHT")
-        overHealAbsorb:SetHeight(3)
-    end
-
-    self.HealthPrediction = {
-        myBar = myBar,
-        otherBar = otherBar,
-        healAbsorbBar = healAbsorbBar,
-        absorbBar = absorbBar,
-        overAbsorb = overAbsorb,
-        overHealAbsorb = overHealAbsorb,
-        maxOverflow = 1.05,
-        frequentUpdates = true
-    }
-
         -- Afk /offline timer, using frequentUpdates function from oUF tags
 
     self.NotHere = self.Health:CreateFontString("$parentStatusText", "OVERLAY")
@@ -598,8 +490,8 @@ local function CreateRaidLayout(self, unit)
     self.ThreatIndicator:SetFrameLevel(self:GetFrameLevel() - 1)
 
     tinsert(self.__elements, UpdateThreat)
-    self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", UpdateThreat)
-    self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
+    -- self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", UpdateThreat)
+    -- self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
 
         -- Leader Icon
 
@@ -618,12 +510,6 @@ local function CreateRaidLayout(self, unit)
     self.RaidTargetIndicator = self.Health:CreateTexture("$parentRaidTargetIcon", "OVERLAY", nil, 7)
     self.RaidTargetIndicator:SetSize(16, 16)
     self.RaidTargetIndicator:SetPoint("CENTER", self, "TOP")
-
-        -- Phase Icon
-
-    self.PhaseIndicator = self.Health:CreateTexture("$parentPhaseIcon", "OVERLAY", nil, 7)
-    self.PhaseIndicator:SetSize(20, 20)
-    self.PhaseIndicator:SetPoint("CENTER", 0, -3)
 
         -- Readycheck icons
 

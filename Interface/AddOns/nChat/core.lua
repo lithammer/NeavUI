@@ -66,19 +66,6 @@ local function FCF_AddMessage(self, text, ...)
     return AddMessage(self, text, ...)
 end
 
-    -- Quick Join Button Options
-
-if cfg.enableQuickJoinButton then
-    ChatAlertFrame:ClearAllPoints()
-    ChatAlertFrame:SetPoint("BOTTOMLEFT", ChatFrame1Tab, "TOPLEFT", 0, 0)
-    QuickJoinToastButton:ClearAllPoints()
-    QuickJoinToastButton:SetPoint("BOTTOMLEFT", ChatAlertFrame, "TOPLEFT", 0, 0)
-else
-    QuickJoinToastButton:SetAlpha(0)
-    QuickJoinToastButton:EnableMouse(false)
-    QuickJoinToastButton:UnregisterAllEvents()
-end
-
     -- Voice Chat Buttons
 
 if not cfg.enableVoiceChatButtons then
@@ -144,7 +131,7 @@ hooksecurefunc("FloatingChatFrame_OnMouseScroll", function(self, direction)
     end
 end)
 
-    -- Reposit toast frame.
+    -- Reposition toast frame.
 
 BNToastFrame:HookScript("OnShow", function(self)
     BNToastFrame:ClearAllPoints()
@@ -261,23 +248,30 @@ local function ModChat(self)
         chat.AddMessage = FCF_AddMessage
     end
 
-    for _, texture in pairs({
-        "ButtonFrameBackground",
-        "ButtonFrameTopLeftTexture",
-        "ButtonFrameBottomLeftTexture",
-        "ButtonFrameTopRightTexture",
-        "ButtonFrameBottomRightTexture",
-        "ButtonFrameLeftTexture",
-        "ButtonFrameRightTexture",
-        "ButtonFrameBottomTexture",
-        "ButtonFrameTopTexture",
-    }) do
-        _G[self..texture]:SetTexture(nil)
+    local buttonUp = _G[self..'ButtonFrameUpButton']
+    buttonUp:SetAlpha(0)
+    buttonUp:EnableMouse(false)
+
+    local buttonDown = _G[self..'ButtonFrameDownButton']
+    buttonDown:SetAlpha(0)
+    buttonDown:EnableMouse(false)
+
+    local buttonBottom = _G[self..'ButtonFrameBottomButton']
+    if (cfg.enableBottomButton) then
+        buttonBottom:Hide()
+        buttonBottom:ClearAllPoints()
+        buttonBottom:SetPoint('BOTTOMLEFT', chat, -1, -3)
+        buttonBottom:HookScript('OnClick', function(self)
+            self:Hide()
+        end)
+    else
+        buttonBottom:SetAlpha(0)
+        buttonBottom:EnableMouse(false)
     end
 
         -- Modify the editbox
 
-    for k = 3, 8 do
+    for k = 3, 5 do
         select(k, _G[self.."EditBox"]:GetRegions()):SetTexture(nil)
     end
 

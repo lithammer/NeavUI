@@ -46,7 +46,7 @@ local petCastbarHolder = CreateAnchor("pet","Pet")
 function ns.CreateCastbars(self, unit)
     local config = ns.Config.units[ns.cUnit(unit)].castbar
 
-    if ns.MultiCheck(unit, "player", "target", "focus", "pet") and config and config.show then
+    if ns.MultiCheck(unit, "player", "target", "pet") and config and config.show then
         self.Castbar = CreateFrame("StatusBar", self:GetName().."Castbar", self)
         self.Castbar:SetStatusBarTexture(ns.Config.media.statusbar)
         self.Castbar:SetSize(config.width, config.height)
@@ -58,9 +58,7 @@ function ns.CreateCastbars(self, unit)
         self.Castbar.unit = unit
         self.Castbar.timeToHold = 1
 
-        if unit == "focus" then
-            self.Castbar:SetPoint("BOTTOM", self, "TOP", 0, 25)
-        elseif unit == "player" then
+        if unit == "player" then
             self.Castbar:SetPoint("BOTTOMRIGHT", playerCastbarHolder)
         elseif unit == "target" then
             self.Castbar:SetPoint("BOTTOMRIGHT", targetCastbarHolder)

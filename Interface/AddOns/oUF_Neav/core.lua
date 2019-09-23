@@ -5,6 +5,8 @@ local config = ns.Config
 local oUF = ns.oUF or oUF
 oUF.colors.power["MANA"] = {0, 0.55, 1}
 
+local LibThreatClassic = LibStub:GetLibrary("ThreatClassic-1.0")
+
 local _, playerClass = UnitClass("player")
 local charTexPath = "Interface\\CharacterFrame\\"
 local tarTexPath = "Interface\\TargetingFrame\\"
@@ -13,7 +15,6 @@ local texTable = {
     ["elite"] = texPath.."-Elite",
     ["rareelite"] = texPath.."-Rare-Elite",
     ["rare"] = texPath.."-Rare",
-    ["worldboss"] = texPath.."-Elite",
     ["normal"] = texPath,
 }
 
@@ -88,7 +89,7 @@ local function UpdateThreat(self)
         return
     end
 
-    local isTanking, status, scaledPercent, rawPercentage = UnitDetailedThreatSituation("player", "target")
+    local isTanking, status, scaledPercent, rawPercentage = LibThreatClassic:UnitDetailedThreatSituation("player", "target")
     local display = scaledPercent
 
     if isTanking then
@@ -98,7 +99,7 @@ local function UpdateThreat(self)
     if not (UnitClassification(self.unit) == "minus") then
         if display and display ~= 0 then
             self.NumericalThreat.value:SetText(format("%1.0f", display).."%")
-            self.NumericalThreat.bg:SetVertexColor(GetThreatStatusColor(status))
+            self.NumericalThreat.bg:SetVertexColor(LibThreatClassic:GetThreatStatusColor(status))
             self.NumericalThreat:Show()
         else
             self.NumericalThreat:Hide()
@@ -141,29 +142,6 @@ local function ToggleAltResources(shouldShow)
         Toggle(ComboPointPlayerFrame, shouldShow)
     elseif playerClass == "WARLOCK" then
         Toggle(WarlockPowerFrame, shouldShow)
-    end
-end
-
-    -- Update TotemFrame Location
-
-local function UpdateTotemFrameAnchor(self)
-    local hasPet = UnitExists("pet")
-    if playerClass == "WARLOCK" then
-        if hasPet then
-            TotemFrame:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -75) -- oUF_Neav_Player
-        else
-            TotemFrame:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 25, -25)
-        end
-    end
-    if playerClass == "SHAMAN" then
-        if hasPet then
-            TotemFrame:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -75)
-        else
-            TotemFrame:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 25, -25)
-        end
-    end
-    if playerClass == "PALADIN" or playerClass == "DEATHKNIGHT" or playerClass == "DRUID" or playerClass == "MAGE" or playerClass == "MONK" then
-        TotemFrame:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 25, 0)
     end
 end
 
@@ -234,22 +212,6 @@ local function StatusFlash_OnUpdate(self, elapsed)
         self.RestingIndicator.Glow:Hide()
         self.CombatIndicator.Glow:Hide()
         self.Level:SetAlpha(1)
-    end
-end
-
-    -- Check Vehicle Status
-
-local function CheckVehicleStatus(self)
-    if UnitHasVehiclePlayerFrameUI("player") then
-        ToggleAltResources(false)
-        if self.AdditionalPower then
-            self.AdditionalPower:SetAlpha(0)
-        end
-    else
-        ToggleAltResources(true)
-        if self.AdditionalPower then
-            self.AdditionalPower:SetAlpha(1)
-        end
     end
 end
 
@@ -329,7 +291,7 @@ local function UpdateHealth(Health, unit, cur, max)
     local self = Health:GetParent()
     UpdatePortraitColor(self, unit, cur, max)
 
-    if unit == "target" or unit == "focus" then
+    if unit == "target" then
         if self.Name.Bg then
             self.Name.Bg:SetVertexColor(GameTooltip_UnitColor(unit))
         end
@@ -367,27 +329,7 @@ end
     -- Update Level Anchor
 
 local function UpdateLevelTextAnchor(self)
-    local x
-    local targetEffectiveLevel = UnitEffectiveLevel(self.unit)
-
-    if UnitIsWildBattlePet(self.unit) or UnitIsBattlePetCompanion(self.unit) then
-        targetEffectiveLevel = UnitBattlePetLevel(self.unit)
-    end
-
-    if targetEffectiveLevel >= 100 then
-        if self.unit == "player" or self.unit == "vehicle" then
-            x = -62
-        else
-            x = 61
-        end
-    else
-        if self.unit == "player" or self.unit == "vehicle" then
-            x = -61
-        else
-            x = 62
-        end
-    end
-
+    local x = (self.unit == "player" and -62) or 63
     self.Level:SetPoint("CENTER", self.Texture, x, -16)
 end
 
@@ -395,8 +337,6 @@ end
 
 local function UpdatePlayerFrame(self, event, ...)
     if event == "PLAYER_ENTERING_WORLD" then
-        CheckVehicleStatus(self)
-        UpdateTotemFrameAnchor(self)
         UpdateFlashStatus(self)
         UpdateLevelTextAnchor(self)
     elseif event == "UNIT_LEVEL" then
@@ -407,26 +347,10 @@ local function UpdatePlayerFrame(self, event, ...)
         UpdateFlashStatus(self)
     elseif event == "PLAYER_UPDATE_RESTING" then
         UpdateFlashStatus(self)
-    elseif event == "PLAYER_TALENT_UPDATE" then
-        UpdateTotemFrameAnchor(self)
-    elseif event == "PLAYER_TOTEM_UPDATE" then
-        UpdateTotemFrameAnchor(self)
-    elseif event == "PLAYER_SPECIALIZATION_CHANGED" then
-        CheckVehicleStatus(self)
     elseif event == "CINEMATIC_STOP" then
         UpdateFlashStatus(self)
     elseif event == "GROUP_ROSTER_UPDATE" then
         UpdatePartyTab(self)
-    elseif event == "UNIT_ENTERED_VEHICLE" then
-        CheckVehicleStatus(self)
-    elseif event == "UNIT_ENTERING_VEHICLE" then
-        CheckVehicleStatus(self)
-    elseif event == "UNIT_EXITING_VEHICLE" then
-        CheckVehicleStatus(self)
-    elseif event == "UNIT_EXITED_VEHICLE" then
-        CheckVehicleStatus(self)
-    elseif event == "UPDATE_SHAPESHIFT_FORM" then
-        UpdateTotemFrameAnchor(self)
     end
 end
 
@@ -464,22 +388,9 @@ local function UpdateTargetFrame(self, event, ...)
     end
 end
 
-    -- Focus Frame Update
-
-local function UpdateFocusFrame(self, event, ...)
-    if event == "UNIT_LEVEL" then
-        UpdateLevelTextAnchor(self)
-    elseif event == "PLAYER_FOCUS_CHANGED" then
-        UpdateLevelTextAnchor(self)
-        CloseDropDownMenus()
-    elseif event == "UNIT_CLASSIFICATION_CHANGED" then
-        UpdateLevelTextAnchor(self)
-    end
-end
-
 local function CreateUnitLayout(self, unit)
-    self.IsMainFrame = ns.MultiCheck(unit, "player", "target", "focus")
-    self.IsTargetFrame = ns.MultiCheck(unit, "targettarget", "focustarget")
+    self.IsMainFrame = ns.MultiCheck(unit, "player", "target")
+    self.IsTargetFrame = ns.MultiCheck(unit, "targettarget")
     self.IsPartyFrame = unit:match("party")
 
     if self.IsTargetFrame then
@@ -497,15 +408,6 @@ local function CreateUnitLayout(self, unit)
     self:SetScript("OnEnter", UnitFrame_OnEnter)
     self:SetScript("OnLeave", UnitFrame_OnLeave)
 
-    if config.units.focus.enableFocusToggleKeybind then
-        if unit == "focus" then
-            self:SetAttribute(config.units.focus.focusToggleKey, "macro")
-            self:SetAttribute("macrotext", "/clearfocus")
-        else
-            self:SetAttribute(config.units.focus.focusToggleKey, "focus")
-        end
-    end
-
         -- Create the castbars.
 
     if config.show.castbars then
@@ -514,7 +416,7 @@ local function CreateUnitLayout(self, unit)
 
         -- Texture
 
-    self.Texture = self:CreateTexture("$parentFrameTexture", "BORDER")
+    self.Texture = self:CreateTexture("$parentFrameTexture", "ARTWORK")
 
     if unit == "player" then
         if config.units.player.style == "NORMAL" then
@@ -534,7 +436,7 @@ local function CreateUnitLayout(self, unit)
         self.Texture:SetPoint("TOPLEFT", self, 0, -2)
         self.Texture:SetTexture(tarTexPath.."UI-SmallTargetingFrame")
         self.Texture.SetTexture = function() end
-    elseif unit == "target" or unit == "focus" then
+    elseif unit == "target" then
         self.Texture:SetSize(230, 100)
         self.Texture:SetPoint("CENTER", self, 20, -7)
         self.Texture:SetTexture(tarTexPath.."UI-TargetingFrame")
@@ -568,7 +470,7 @@ local function CreateUnitLayout(self, unit)
     elseif unit == "pet" then
         self.Health:SetSize(70, 9)
         self.Health:SetPoint("TOPLEFT", self.Texture, 45, -20)
-    elseif unit == "target" or unit == "focus" then
+    elseif unit == "target" then
         self.Health:SetSize(119, 12)
         self.Health:SetPoint("TOPRIGHT", self.Texture, -105, -41) -- -105
     elseif self.IsTargetFrame then
@@ -578,77 +480,6 @@ local function CreateUnitLayout(self, unit)
         self.Health:SetPoint("TOPLEFT", self.Texture, 47, -12)
         self.Health:SetSize(70, 7)
     end
-
-        -- Health Prediction
-
-    local myBar = CreateFrame("StatusBar", "$parentMyHealthPredictionBar", self)
-    myBar:SetFrameLevel(self:GetFrameLevel() - 1)
-    myBar:SetStatusBarTexture(config.media.statusbar, "OVERLAY")
-    myBar:SetStatusBarColor(0, 0.827, 0.765, 1)
-    myBar:SetOrientation("HORIZONTAL")
-    myBar:SetPoint("TOPLEFT", self.Health:GetStatusBarTexture(), "TOPRIGHT")
-    myBar:SetPoint("BOTTOMLEFT", self.Health:GetStatusBarTexture(), "BOTTOMRIGHT")
-    myBar:SetWidth(self.Health:GetWidth())
-    myBar.Smooth = true
-
-    local otherBar = CreateFrame("StatusBar", "$parentOtherHealthPredictionBar", self)
-    otherBar:SetFrameLevel(self:GetFrameLevel() - 1)
-    otherBar:SetStatusBarTexture(config.media.statusbar, "OVERLAY")
-    otherBar:SetStatusBarColor(0.0, 0.631, 0.557, 1)
-    otherBar:SetOrientation("HORIZONTAL")
-    otherBar:SetPoint("TOPLEFT", myBar:GetStatusBarTexture(), "TOPRIGHT")
-    otherBar:SetPoint("BOTTOMLEFT", myBar:GetStatusBarTexture(), "BOTTOMRIGHT")
-    otherBar:SetWidth(self.Health:GetWidth())
-    otherBar.Smooth = true
-
-    local absorbBar = CreateFrame("StatusBar", "$parentTotalAbsorbBar", self)
-    absorbBar:SetFrameLevel(self:GetFrameLevel() - 1)
-    absorbBar:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
-    absorbBar:SetStatusBarColor(0.85, 0.85, 0.9, 1)
-    absorbBar:SetOrientation("HORIZONTAL")
-    absorbBar:SetPoint("TOPLEFT", otherBar:GetStatusBarTexture(), "TOPRIGHT")
-    absorbBar:SetPoint("BOTTOMLEFT", otherBar:GetStatusBarTexture(), "BOTTOMRIGHT")
-    absorbBar:SetWidth(self.Health:GetWidth())
-    absorbBar.Smooth = true
-
-    absorbBar.Overlay = absorbBar:CreateTexture("$parentOverlay", "ARTWORK", "TotalAbsorbBarOverlayTemplate", 1)
-    absorbBar.Overlay:SetAllPoints(absorbBar:GetStatusBarTexture())
-
-    local healAbsorbBar = CreateFrame("StatusBar", "$parentHealAbsorbBar", self)
-    healAbsorbBar:SetReverseFill(true)
-    healAbsorbBar:SetFrameLevel(self:GetFrameLevel() - 1)
-    healAbsorbBar:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
-    healAbsorbBar:SetStatusBarColor(0.9, 0.1, 0.3, 1)
-    healAbsorbBar:SetOrientation("HORIZONTAL")
-    healAbsorbBar:SetPoint("TOP", self.Health:GetStatusBarTexture())
-    healAbsorbBar:SetPoint("BOTTOM", self.Health:GetStatusBarTexture())
-    healAbsorbBar:SetPoint("RIGHT", self.Health:GetStatusBarTexture())
-    healAbsorbBar:SetWidth(self.Health:GetWidth())
-    healAbsorbBar:SetHeight(self.Health:GetHeight())
-    healAbsorbBar.Smooth = true
-
-    local overAbsorb = self.Health:CreateTexture("$parentOverAbsorb", "OVERLAY")
-    overAbsorb:SetWidth(16)
-    overAbsorb:SetPoint("TOPLEFT", self.Health, "TOPRIGHT", -10, 0)
-    overAbsorb:SetPoint("BOTTOMLEFT", self.Health, "BOTTOMRIGHT", -10, 0)
-
-    local overHealAbsorb = self.Health:CreateTexture("$parentOverHealAbsorb", "OVERLAY")
-    overHealAbsorb:SetPoint("TOP")
-    overHealAbsorb:SetPoint("BOTTOM")
-    overHealAbsorb:SetPoint("RIGHT", self.Health, "LEFT")
-    overHealAbsorb:SetWidth(10)
-    overHealAbsorb:SetHeight(self.Health:GetHeight())
-
-    self.HealthPrediction = {
-        myBar = myBar,
-        otherBar = otherBar,
-        healAbsorbBar = healAbsorbBar,
-        absorbBar = absorbBar,
-        overAbsorb = overAbsorb,
-        overHealAbsorb = overHealAbsorb,
-        maxOverflow = 1.00,
-        frequentUpdates = true
-    }
 
         -- Health Text
 
@@ -667,7 +498,7 @@ local function CreateUnitLayout(self, unit)
 
     self.Power = CreateFrame("StatusBar", "$parentPower", self)
     self.Power:SetStatusBarTexture(config.media.statusbar)
-    self.Power:SetFrameLevel(self:GetFrameLevel() - 2)
+    self.Power:SetFrameLevel(self:GetFrameLevel() - 1)
     self.Power:SetBackdrop({bgFile = "Interface\\Buttons\\WHITE8x8"})
     self.Power:SetBackdropColor(0, 0, 0, 0.70)
 
@@ -697,11 +528,11 @@ local function CreateUnitLayout(self, unit)
     if unit == "player" then
         self.MainPowerPrediction = CreateFrame("StatusBar", "$parentPowerPrediction", self.Power)
         self.MainPowerPrediction:SetStatusBarTexture(config.media.statusbar)
-        self.MainPowerPrediction:SetStatusBarColor(0.8,0.8,0.8,.50)
+        self.MainPowerPrediction:SetStatusBarColor(0.8, 0.8, 0.8, .50)
         self.MainPowerPrediction:SetReverseFill(true)
         self.MainPowerPrediction:SetPoint("TOP")
         self.MainPowerPrediction:SetPoint("BOTTOM")
-        self.MainPowerPrediction:SetPoint("RIGHT", self.Power:GetStatusBarTexture())
+        self.MainPowerPrediction:SetPoint("RIGHT", self.Power:GetStatusBarTexture(), "RIGHT")
         self.MainPowerPrediction:SetWidth(119)
 
         self.PowerPrediction = { mainBar = self.MainPowerPrediction }
@@ -723,7 +554,7 @@ local function CreateUnitLayout(self, unit)
         self.Name:SetWidth(90)
         self.Name:SetJustifyH("LEFT")
         self.Name:SetPoint("BOTTOMLEFT", self.Health, "TOPLEFT", 1, 4)
-    elseif unit == "target" or unit == "focus" then
+    elseif unit == "target" then
         self.Name:SetWidth(110)
         self.Name:SetPoint("CENTER", self.Texture, -50, 19)
     elseif self.IsTargetFrame then
@@ -756,7 +587,7 @@ local function CreateUnitLayout(self, unit)
     elseif unit == "pet" then
         self.Portrait:SetSize(37, 37)
         self.Portrait:SetPoint("TOPLEFT", self.Texture, 7, -6)
-    elseif unit == "target" or unit == "focus" then
+    elseif unit == "target" then
         self.Portrait:SetSize(64, 64)
         self.Portrait:SetPoint("TOPRIGHT", self.Texture, -42, -12)
     elseif self.IsTargetFrame then
@@ -788,7 +619,7 @@ local function CreateUnitLayout(self, unit)
     elseif unit == "pet" then
         self.PvPIndicator:SetSize(35, 35)
         self.PvPIndicator:SetPoint("CENTER", self.Portrait, "LEFT", -7, -7)
-    elseif unit == "target" or unit == "focus" then
+    elseif unit == "target" then
         self.PvPIndicator:SetSize(40, 42)
         self.PvPIndicator:SetPoint("TOPRIGHT", self.Texture, -16, -23)
     elseif self.IsPartyFrame then
@@ -803,7 +634,7 @@ local function CreateUnitLayout(self, unit)
 
     if unit == "player" then
         self.LeaderIndicator:SetPoint("TOPLEFT", self.Portrait, 3, 2)
-    elseif unit == "target" or unit == "focus" then
+    elseif unit == "target" then
         self.LeaderIndicator:SetPoint("TOPRIGHT", self.Portrait, -3, 2)
     elseif self.IsTargetFrame then
         self.LeaderIndicator:SetPoint("TOPLEFT", self.Portrait, -3, 4)
@@ -819,7 +650,7 @@ local function CreateUnitLayout(self, unit)
 
     if unit == "player" then
         self.AssistantIndicator:SetPoint("TOPRIGHT", self.Portrait, -3, 3)
-    elseif unit == "target" or unit == "focus" then
+    elseif unit == "target" then
         self.AssistantIndicator:SetPoint("TOPRIGHT", self.Portrait, -3, 2)
     elseif self.IsTargetFrame then
         self.AssistantIndicator:SetPoint("TOPLEFT", self.Portrait, -3, 4)
@@ -834,19 +665,6 @@ local function CreateUnitLayout(self, unit)
     self.RaidTargetIndicator:SetPoint("CENTER", self.Portrait, "TOP", 0, -1)
     local s1 = self.Portrait:GetSize() / 3
     self.RaidTargetIndicator:SetSize(s1, s1)
-
-        -- Phase Icon
-
-    if not self.IsTargetFrame then
-        self.PhaseIndicator = self:CreateTexture("$parentPhaseIcon", "OVERLAY")
-        self.PhaseIndicator:SetPoint("CENTER", self.Portrait, "BOTTOM")
-
-        if self.IsMainFrame then
-            self.PhaseIndicator:SetSize(26, 26)
-        else
-            self.PhaseIndicator:SetSize(18, 18)
-        end
-    end
 
         -- Offline Icons
 
@@ -878,7 +696,7 @@ local function CreateUnitLayout(self, unit)
         self.ThreatGlow:SetPoint("TOPLEFT", self.Texture, -5, 13)
         self.ThreatGlow:SetTexture(tarTexPath.."UI-PartyFrame-Flash")
         self.ThreatGlow:SetTexCoord(0, 1, 1, 0)
-    elseif unit == "target" or unit == "focus" then
+    elseif unit == "target" then
         self.ThreatGlow:SetSize(239, 92)
         self.ThreatGlow:SetPoint("TOPLEFT", self.Texture, -23, 0)
         self.ThreatGlow:SetTexture(tarTexPath.."UI-TargetingFrame-Flash")
@@ -888,21 +706,6 @@ local function CreateUnitLayout(self, unit)
         self.ThreatGlow:SetSize(128, 63)
         self.ThreatGlow:SetPoint("TOPLEFT", self.Texture, -3, 4)
         self.ThreatGlow:SetTexture(tarTexPath.."UI-PartyFrame-Flash")
-    end
-
-        -- LFD Role Icon
-
-    if self.IsPartyFrame or unit == "player" or unit == "target" then
-        self.GroupRoleIndicator = self:CreateTexture("$parentGroupRoleIcon", "OVERLAY", nil, 7)
-        self.GroupRoleIndicator:SetSize(20, 20)
-
-        if unit == "player" then
-            self.GroupRoleIndicator:SetPoint("BOTTOMRIGHT", self.Portrait, -2, -3)
-        elseif unit == "target" then
-            self.GroupRoleIndicator:SetPoint("TOPLEFT", self.Portrait, -10, -2)
-        else
-            self.GroupRoleIndicator:SetPoint("BOTTOMLEFT", self.Portrait, -5, -5)
-        end
     end
 
         -- Player Frame
@@ -929,119 +732,6 @@ local function CreateUnitLayout(self, unit)
             self:Tag(self.NotHere, "[neav:afk]")
         end
 
-            -- Warlock Soul Shards
-
-        if playerClass == "WARLOCK" then
-            WarlockPowerFrame:ClearAllPoints()
-            WarlockPowerFrame:SetParent(self)
-            WarlockPowerFrame:SetScale(config.units.player.scale * 0.8)
-            WarlockPowerFrame:SetPoint("TOP", self, "BOTTOM", 30, -2)
-        end
-
-            -- Holy Power Bar (Retribution Only)
-
-        if playerClass == "PALADIN" then
-            PaladinPowerBarFrame:ClearAllPoints()
-            PaladinPowerBarFrame:SetParent(self)
-            PaladinPowerBarFrame:SetScale(config.units.player.scale * 0.81)
-            PaladinPowerBarFrame:SetPoint("TOP", self, "BOTTOM", 25, 2)
-        end
-
-            -- Monk Chi / Stagger Bar
-
-        if playerClass == "MONK" then
-            -- Windwalker Chi
-            MonkHarmonyBarFrame:ClearAllPoints()
-            MonkHarmonyBarFrame:SetParent(self)
-            MonkHarmonyBarFrame:SetScale(config.units.player.scale * 0.81)
-            MonkHarmonyBarFrame:SetPoint("TOP", self, "BOTTOM", 31, 18)
-
-            -- Brewmaster Stagger
-            MonkStaggerBar:ClearAllPoints()
-            MonkStaggerBar:SetParent(self)
-            MonkStaggerBar:SetScale(config.units.player.scale * 0.81)
-            MonkStaggerBar:SetPoint("TOP", self, "BOTTOM", 30, -2)
-        end
-
-            -- Deathknight Runebar
-
-        if playerClass == "DEATHKNIGHT" then
-            RuneFrame:ClearAllPoints()
-            RuneFrame:SetParent(self)
-            RuneFrame:SetPoint("TOP", self.Power, "BOTTOM", 2, -2)
-        end
-
-            -- Arcane Mage
-
-        if playerClass == "MAGE" then
-            MageArcaneChargesFrame:ClearAllPoints()
-            MageArcaneChargesFrame:SetParent(self)
-            MageArcaneChargesFrame:SetScale(config.units.player.scale * 0.81)
-            MageArcaneChargesFrame:SetPoint("TOP", self, "BOTTOM", 30, -2)
-        end
-
-            -- Combo Point Frame
-
-        if playerClass == "DRUID" or playerClass == "ROGUE" then
-            ComboPointPlayerFrame:ClearAllPoints()
-            ComboPointPlayerFrame:SetParent(self)
-            ComboPointPlayerFrame:SetScale(config.units.player.scale * 0.81)
-            ComboPointPlayerFrame:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", -3, 2)
-        end
-
-            -- Totem Frame
-
-        if  playerClass == "DEATHKNIGHT"
-            or playerClass == "DRUID"
-            or playerClass == "MAGE"
-            or playerClass == "MONK"
-            or playerClass == "PALADIN"
-            or playerClass == "SHAMAN"
-            or playerClass == "WARLOCK"
-        then
-            TotemFrame:SetScale(config.units.player.scale * 0.65)
-            TotemFrame:SetFrameStrata("LOW")
-            TotemFrame:SetParent(self)
-            UpdateTotemFrameAnchor(self)
-        end
-
-            -- Alt Mana Frame for Druids, Shaman, and Shadow Priest
-
-        local hasAltManaBar = ALT_MANA_BAR_PAIR_DISPLAY_INFO[playerClass]
-
-        if hasAltManaBar then
-            self.AdditionalPower = CreateFrame("StatusBar", "$parentAdditionalPower", self)
-            self.AdditionalPower:SetPoint("TOP", self.Power, "BOTTOM", 0, -1)
-            self.AdditionalPower:SetStatusBarTexture(config.media.statusbar, "BORDER")
-            self.AdditionalPower:SetSize(99, 9)
-            self.AdditionalPower:SetBackdrop({bgFile = "Interface\\Buttons\\WHITE8x8"})
-            self.AdditionalPower:SetBackdropColor(0, 0, 0, 0.70)
-            self.AdditionalPower.colorPower = true
-
-            self.AdditionalPower.Value = self.AdditionalPower:CreateFontString("$parentAdditionalPowerText", "OVERLAY")
-            self.AdditionalPower.Value:SetFont(config.font.normal, config.font.normalSize)
-            self.AdditionalPower.Value:SetShadowOffset(1, -1)
-            self.AdditionalPower.Value:SetPoint("CENTER", self.AdditionalPower, 0, 0.5)
-
-            self:Tag(self.AdditionalPower.Value, "[neav:AdditionalPower]")
-
-            self.AdditionalPower.Texture = self.AdditionalPower:CreateTexture("$parentAdditionalPowerTexture", "ARTWORK")
-            self.AdditionalPower.Texture:SetTexture("Interface\\AddOns\\oUF_Neav\\media\\AdditionalPowerTexture")
-            self.AdditionalPower.Texture:SetSize(104, 28)
-            self.AdditionalPower.Texture:SetPoint("TOP", self.Power, "BOTTOM", 0, 6)
-
-            self.PowerPredictionAlt = CreateFrame("StatusBar", "$parentAltPowerPrediction", self.AdditionalPower)
-            self.PowerPredictionAlt:SetStatusBarTexture(config.media.statusbar)
-            self.PowerPredictionAlt:SetStatusBarColor(0.8,0.8,0.8,.50)
-            self.PowerPredictionAlt:SetReverseFill(true)
-            self.PowerPredictionAlt:SetPoint("TOP")
-            self.PowerPredictionAlt:SetPoint("BOTTOM")
-            self.PowerPredictionAlt:SetPoint("RIGHT", self.AdditionalPower:GetStatusBarTexture(),"RIGHT")
-            self.PowerPredictionAlt:SetWidth(99)
-
-            self.PowerPrediction = { mainBar = self.MainPowerPrediction, altBar = self.PowerPredictionAlt }
-        end
-
             -- Raid Group Indicator
 
         CreateTab(self, GROUP)
@@ -1057,22 +747,6 @@ local function CreateUnitLayout(self, unit)
             self.PvPTimer.frequentUpdates = 0.5
             self:Tag(self.PvPTimer, "[neav:pvptimer]")
         end
-
-            -- Loot Spec Icon
-
-        local LootSpecIndicator = self:CreateTexture("$parentSpecIcon")
-        LootSpecIndicator:SetDrawLayer("OVERLAY", 2)
-        LootSpecIndicator:SetSize(16, 16)
-        LootSpecIndicator:SetPoint("TOPRIGHT", self.Portrait, 5, 0)
-        LootSpecIndicator.alwaysShow = true
-
-        LootSpecIndicator.Border = self:CreateTexture("$parentSpecIconRing")
-        LootSpecIndicator.Border:SetDrawLayer("OVERLAY", 3)
-        LootSpecIndicator.Border:SetSize(42,42)
-        LootSpecIndicator.Border:SetTexture("Interface/Minimap/MiniMap-TrackingBorder")
-        LootSpecIndicator.Border:SetPoint("TOPLEFT", LootSpecIndicator, -5, 5)
-
-        self.LootSpecIndicator = LootSpecIndicator
 
             -- Resting Icon
 
@@ -1129,15 +803,9 @@ local function CreateUnitLayout(self, unit)
         self:RegisterEvent("PLAYER_REGEN_ENABLED", UpdatePlayerFrame, true)
         self:RegisterEvent("PLAYER_REGEN_DISABLED", UpdatePlayerFrame, true)
         self:RegisterEvent("PLAYER_UPDATE_RESTING", UpdatePlayerFrame, true)
-        self:RegisterEvent("PLAYER_TALENT_UPDATE", UpdatePlayerFrame, true)
         self:RegisterEvent("PLAYER_TOTEM_UPDATE", UpdatePlayerFrame, true)
-        self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", UpdatePlayerFrame)
         self:RegisterEvent("CINEMATIC_STOP", UpdatePlayerFrame, true)
         self:RegisterEvent("GROUP_ROSTER_UPDATE", UpdatePlayerFrame, true)
-        self:RegisterEvent("UNIT_ENTERED_VEHICLE", UpdatePlayerFrame)
-        self:RegisterEvent("UNIT_ENTERING_VEHICLE", UpdatePlayerFrame)
-        self:RegisterEvent("UNIT_EXITING_VEHICLE", UpdatePlayerFrame)
-        self:RegisterEvent("UNIT_EXITED_VEHICLE", UpdatePlayerFrame)
         self:RegisterEvent("UNIT_LEVEL", UpdatePlayerFrame)
         self:RegisterEvent("UPDATE_SHAPESHIFT_FORM", UpdatePlayerFrame, true)
     end
@@ -1161,9 +829,9 @@ local function CreateUnitLayout(self, unit)
         end
     end
 
-        -- Target + Focus Frame
+        -- Target Frame
 
-    if unit == "target" or unit == "focus" then
+    if unit == "target" then
         self:SetSize(175, 42)
 
             -- Class Colored Name Background
@@ -1174,12 +842,6 @@ local function CreateUnitLayout(self, unit)
         self.Name.Bg:SetPoint("BOTTOMRIGHT", self.Health, "TOPRIGHT")
         self.Name.Bg:SetPoint("BOTTOMLEFT", self.Health, "TOPLEFT")
         self.Name.Bg:SetTexture("Interface\\AddOns\\oUF_Neav\\media\\nameBackground")
-
-            -- Questmob Icon
-
-        self.QuestIndicator = self:CreateTexture("$parentQuestIcon", "OVERLAY")
-        self.QuestIndicator:SetSize(32, 32)
-        self.QuestIndicator:SetPoint("CENTER", self.Health, "TOPRIGHT", 1, 10)
 
         table.insert(self.__elements, function(self, _, unit)
             self.Texture:SetTexture(texTable[UnitClassification(unit)] or texTable["normal"])
@@ -1263,12 +925,6 @@ local function CreateUnitLayout(self, unit)
             self.NumericalThreat.texture:SetSize(49, 18)
         end
 
-            -- Battle Pet Icon
-
-        self.petBattleIcon = self:CreateTexture("$parentPetBattleIcon", "ARTWORK")
-        self.petBattleIcon:SetSize(32, 32)
-        self.petBattleIcon:SetPoint("CENTER", self.Portrait, "RIGHT")
-
             -- Target Events
 
         self:RegisterEvent("PLAYER_ENTERING_WORLD", UpdateTargetFrame)
@@ -1277,67 +933,9 @@ local function CreateUnitLayout(self, unit)
         self:RegisterEvent("PLAYER_TARGET_CHANGED", UpdateTargetFrame)
         self:RegisterEvent("UNIT_TARGETABLE_CHANGED", UpdateTargetFrame)
         self:RegisterEvent("UNIT_FACTION", UpdateTargetFrame)
-        self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", UpdateTargetFrame)
-        self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateTargetFrame)
+        -- self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", UpdateTargetFrame)
+        -- self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateTargetFrame)
         self:RegisterEvent("UNIT_LEVEL", UpdateTargetFrame)
-    end
-
-    if unit == "focus" then
-        CreateTab(self, FOCUS)
-
-        self.T[4]:SetPoint("BOTTOM", self.T[1], -4, 2)
-
-        self.FClose = CreateFrame("Button", "$parentFClose", self, "SecureActionButtonTemplate")
-        self.FClose:EnableMouse(true)
-        self.FClose:RegisterForClicks("AnyUp")
-        self.FClose:SetAttribute("type", "macro")
-        self.FClose:SetAttribute("macrotext", "/clearfocus")
-        self.FClose:SetSize(20, 20)
-        self.FClose:SetAlpha(0.65)
-        self.FClose:SetPoint("TOPLEFT", self, (56 + (self.T[1]:GetWidth()/2)), 17)
-        self.FClose:SetNormalTexture("Interface\\Buttons\\UI-Panel-MinimizeButton-Up")
-        self.FClose:SetPushedTexture("Interface\\Buttons\\UI-Panel-MinimizeButton-Down")
-        self.FClose:SetHighlightTexture("Interface\\Buttons\\UI-Panel-MinimizeButton-Highlight")
-        self.FClose:GetHighlightTexture():SetBlendMode("ADD")
-
-        self.FClose:SetScript("OnLeave", function()
-            securecall("UIFrameFadeOut", self.T[4], 0.15, self.T[4]:GetAlpha(), 0.5)
-        end)
-
-        self.FClose:SetScript("OnEnter", function()
-            securecall("UIFrameFadeIn", self.T[4], 0.15, self.T[4]:GetAlpha(), 1)
-        end)
-
-        if not config.units[ns.cUnit(unit)].disableAura then
-            self.Auras = CreateFrame("Frame", "$parentAuras", self)
-            self.Auras.gap = true
-            self.Auras.size = 20
-            self.Auras:SetHeight(self.Auras.size * 3)
-            self.Auras:SetWidth(self.Auras.size * 5)
-            self.Auras:SetPoint("TOPLEFT", self, "BOTTOMLEFT", -2, -5)
-            self.Auras.initialAnchor = "TOPLEFT"
-            self.Auras["growth-x"] = "RIGHT"
-            self.Auras["growth-y"] = "DOWN"
-            self.Auras.numBuffs = (config.units[ns.cUnit(unit)].debuffsOnly and 0 ) or config.units.target.numBuffs
-            self.Auras.numDebuffs = config.units.target.numDebuffs
-            self.Auras.spacing = 4.5
-            self.Auras.showStealableBuffs = true
-            self.Auras.onlyShowPlayer = config.units.focus.onlyShowPlayer
-
-            self.Auras.PostUpdateGapIcon = function(self, unit, icon, visibleBuffs)
-                icon:Hide()
-            end
-        end
-
-            -- Focus Events
-
-        self:RegisterEvent("PLAYER_FOCUS_CHANGED", UpdateFocusFrame)
-        self:RegisterEvent("UNIT_LEVEL", UpdateFocusFrame)
-        self:RegisterEvent("UNIT_CLASSIFICATION_CHANGED", UpdateFocusFrame)
-
-        self:SetScript("OnHide", function(self)
-            CloseDropDownMenus()
-        end)
     end
 
     if self.IsTargetFrame then
@@ -1450,18 +1048,6 @@ oUF:Factory(function(self)
     local targettarget = self:Spawn("targettarget", "oUF_Neav_TargetTarget")
     targettarget:SetPoint("TOPRIGHT", target, "BOTTOMRIGHT", 15, 0)
     targettarget:SetFrameStrata("LOW")
-
-        -- Focus frame spawn
-
-    local focus = self:Spawn("focus", "oUF_Neav_Focus")
-    focus:SetPoint(unpack(config.units.focus.position))
-    focus:SetFrameStrata("LOW")
-
-        -- Focustarget frame spawn
-
-    local focustarget = self:Spawn("focustarget", "oUF_Neav_FocusTarget")
-    focustarget:SetPoint("TOPRIGHT", focus, "BOTTOMRIGHT", 15, 0)
-    focustarget:SetFrameStrata("LOW")
 
         -- Party frame spawn
 

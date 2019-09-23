@@ -2,13 +2,11 @@ local _, nMainbar = ...
 
 nMainbar.Config = {
     showPicomenu = true,
-    useFakeBottomRightBar = true,
 
     button = {
-        showVehicleKeybinds = true,
-        showKeybinds = true,
+        showKeybinds = false,
         showMacroNames = false,
-        buttonOutOfRange = false,
+        buttonOutOfRange = true,
 
         watchbarFontsize = 12,
         watchbarFont = STANDARD_TEXT_FONT,
@@ -40,10 +38,7 @@ nMainbar.Config = {
     MainMenuBar = {
         moveableExtraBars = true,
         hideGryphons = false,
-    },
-
-    vehicleBar = {
-        scale = 0.80,
+        shortBar = true,
     },
 
     petBar = {
@@ -56,11 +51,6 @@ nMainbar.Config = {
 
     stanceBar = {
         hide = false,
-        scale = 1,
-        alpha = 1,
-    },
-
-    possessBar = {
         scale = 1,
         alpha = 1,
     },
@@ -78,7 +68,6 @@ nMainbar.Config = {
         alpha = 1,
     },
 
-    -- Only works with "useFakeBottomRightBar" option.
     multiBarBottomRight = {
         mouseover = false,
         hiddenAlpha = 0,

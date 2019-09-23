@@ -80,7 +80,7 @@ C_Timer.After(0.001, function()
     end
 
     if cfg.multiBarBottomRight.mouseover then
-        EnableMouseOver("FakeMultiBarBottomRight1Button", FakeMultiBarBottomRight1, 1, 12, cfg.multiBarBottomRight.alpha, cfg.multiBarBottomRight.hiddenAlpha)
+        EnableMouseOver("MultiBarBottomRightButton", MultiBarBottomRight, 1, 12, cfg.multiBarBottomRight.alpha, cfg.multiBarBottomRight.hiddenAlpha)
     end
 
     if cfg.petBar.mouseover then

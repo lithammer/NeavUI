@@ -374,7 +374,6 @@ function nMinimap_UpdateFriendButton(entry)
 
     if entry.buttonType == FRIENDS_BUTTON_TYPE_BNET then
         local _, accountName, battleTag, _, characterName, bnetIDGameAccount, client, isOnline, _, isAFK, isDND = BNGetFriendInfo(FriendListEntries[index].id)
-
         if isOnline then
             local _, _, _, realmName, realmID, faction, race, class, _, zoneName, level, gameText = BNGetGameAccountInfo(bnetIDGameAccount)
 
@@ -410,8 +409,12 @@ function nMinimap_UpdateFriendButton(entry)
                 level = tonumber(level)
                 levelc = GetQuestDifficultyColor(level)
 
+                if classc == nil then
+                    characterName = characterName .. "-UnknownClass"
+                    classc = FRIENDS_BNET_NAME_COLOR
+                end
+
                 level = WrapTextInColorCode(level, CreateColor(levelc.r, levelc.g, levelc.b, 1):GenerateHexColor())
-                characterName = WrapTextInColorCode(characterName, classc:GenerateHexColor())
 
                 entry.LeftText:SetFormattedText("%s (%s %s) %s", accountName, level, characterName, statusText[status])
                 entry.RightText:SetText(clientIcon)

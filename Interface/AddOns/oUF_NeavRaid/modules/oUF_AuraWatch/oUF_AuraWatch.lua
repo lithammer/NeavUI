@@ -110,7 +110,6 @@ local GUIDs = {}
 
 local PLAYER_UNITS = {
     player = true,
-    vehicle = true,
     pet = true,
 }
 

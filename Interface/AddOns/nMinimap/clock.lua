@@ -67,26 +67,6 @@ TimeManagerClockButton:SetScript("OnEnter" ,function(self)
 
     end
 
-    -- World Boss Lockout Info
-    local savedWorldBosses = GetNumSavedWorldBosses()
-    if savedWorldBosses > 0 then
-        for index=1, savedWorldBosses do
-            local instanceName, _, _ = GetSavedWorldBossInfo(index)
-            worldbossLockouts[index] = { name = instanceName }
-        end
-
-        if next(worldbossLockouts) ~= nil then
-            sort(worldbossLockouts, sort_func)
-
-            GameTooltip:AddLine(" ")
-            GameTooltip:AddLine(RAID_INFO_WORLD_BOSS)
-
-            for i, boss in ipairs(worldbossLockouts) do
-                GameTooltip:AddLine(boss.name, 1.0, 1.0, 1.0)
-            end
-        end
-    end
-
     GameTooltip:Show()
 end)
 

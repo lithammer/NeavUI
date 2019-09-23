@@ -198,56 +198,6 @@ ns.Config = {
             healthTagFull = "",
        },
 
-        ["focus"] = {
-            scale = 1.193,
-
-            numDebuffs = 6,
-            disableAura = false,                                                            -- Disable Auras on this unitframe.
-            debuffsOnly = true,                                                             -- Only show debuffs.
-            onlyShowPlayer = true,
-
-            mouseoverText = false,
-            healthTag = "$cur - $perc",
-            healthTagFull = "$cur",
-            powerTag = "$cur/$max",
-            powerTagFull = "$cur",
-            powerTagNoMana = "$cur",
-
-            showPowerPercent = false,
-
-            enableFocusToggleKeybind = true,
-            focusToggleKey = "type4",                                                       -- type1, type2 (mousebutton 1 or 2, 3, 4, 5 etc. works too)
-
-            position = {"TOPLEFT", 250, -240},
-
-            castbar = {
-                show = true,
-
-                width = 176,
-                height = 19,
-                scale = 0.93,
-
-                castColor = START_CAST_COLOR,
-                channeledColor = START_CHANNEL_COLOR,
-                nonInterruptibleColor = NONINTERRUPTIBLE_COLOR,
-                failedCastColor = FAILED_CAST_COLOR,
-
-                icon = {
-                    show = true,
-                    position = "LEFT",
-                    positionOutside = false,
-                },
-            },
-        },
-
-        ["focustarget"] = {
-            scale = 1.193,
-
-            mouseoverText = false,
-            healthTag = "$perc",
-            healthTagFull = "",
-        },
-
         ["party"] = {
             scale = 1.193,
             show = true,
@@ -261,72 +211,6 @@ ns.Config = {
             powerTagNoMana = "$cur",
 
             position = {"TOPLEFT", UIParent, 25, -200},
-        },
-
-        ["boss"] = {
-            show = true,
-            scale = 1,
-
-            mouseoverText = true,
-            healthTag = "$cur - $perc",
-            healthTagFull = "$cur",
-            powerTag = "$cur",
-            powerTagFull = "$cur",
-            powerTagNoMana = "$cur",
-
-            position = {"RIGHT", UIParent, "RIGHT", -101, -43},
-
-            castbar = {
-                show = true,
-
-                width = 150,
-                height = 18,
-                scale = 0.93,
-
-                castColor = START_CAST_COLOR,
-                channeledColor = START_CHANNEL_COLOR,
-                nonInterruptibleColor = NONINTERRUPTIBLE_COLOR,
-                failedCastColor = FAILED_CAST_COLOR,
-            },
-        },
-
-        ["arena"] = {
-            show = true,
-            scale = 1,
-
-            auraSize = 32,
-            numBuffs = 8,
-            numDebuffs = 8,
-
-            debuffsOnly = true,
-            onlyShowPlayer = false,
-
-            mouseoverText = true,
-            healthTag = "$cur/$max",
-            healthTagFull = "$cur",
-            powerTag = "$cur/$max",
-            powerTagFull = "$cur",
-            powerTagNoMana = "$cur",
-
-            position = {"TOPRIGHT", UIParent, "TOPRIGHT", -95, -300},
-
-            castbar = {
-                show = true,
-
-                width = 160,
-                height = 22,
-                scale = 0.93,
-
-                castColor = START_CAST_COLOR,
-                channeledColor = START_CHANNEL_COLOR,
-                nonInterruptibleColor = NONINTERRUPTIBLE_COLOR,
-                failedCastColor = FAILED_CAST_COLOR,
-            },
-
-            filterBuffs = false,
-            buffList = { -- A whitelist for buffs to display on arena frames
-                ["Power Word: Shield"] = true,
-            },
         },
     },
 }
