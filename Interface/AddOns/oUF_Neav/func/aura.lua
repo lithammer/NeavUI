@@ -2,6 +2,10 @@
 local _, ns = ...
 local config = ns.Config
 
+local LibClassicDurations = LibStub("LibClassicDurations", true)
+LibClassicDurations:Register("oUF_Neav")
+local UnitAura = LibClassicDurations.UnitAuraWrapper
+
 local GetTime = GetTime
 local floor, fmod = floor, math.fmod
 local day, hour, minute = 86400, 3600, 60
