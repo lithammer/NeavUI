@@ -31,8 +31,11 @@ CharacterBag1Slot:SetPoint("RIGHT", CharacterBag0Slot, "LEFT", 0, 0)
 CharacterBag2Slot:SetPoint("RIGHT", CharacterBag1Slot, "LEFT", 0, 0)
 CharacterBag3Slot:SetPoint("RIGHT", CharacterBag2Slot, "LEFT", 0, 0)
 
-MicroButtonAndBagsBar.MicroBagBar:ClearAllPoints()
-MicroButtonAndBagsBar.MicroBagBar:Hide()
+-- Classic: MicroButtonAndBagsBar doesn't exist
+if MicroButtonAndBagsBar then
+    MicroButtonAndBagsBar.MicroBagBar:ClearAllPoints()
+    MicroButtonAndBagsBar.MicroBagBar:Hide()
+end
 
 CharacterMicroButton:ClearAllPoints()
 CharacterMicroButton:SetPoint("BOTTOMLEFT", UIParent, 9000, 9000)

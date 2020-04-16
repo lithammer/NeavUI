@@ -2,6 +2,9 @@ local _, nCore = ...
 local L = nCore.L
 
 function nCore:ObjectiveTracker()
+    -- Classic: 'ObjectiveTrackerFrame' isn't available? Have commented out the config option for now
+    if ( not ObjectiveTrackerFrame ) then return end
+
     if ( not nCoreDB.ObjectiveTracker ) then return end
 
     local objectiveTrackerFrame = _G["ObjectiveTrackerFrame"]

@@ -38,6 +38,7 @@ nMainbar.Config = {
     },
 
     MainMenuBar = {
+        useShortBar = true,
         moveableExtraBars = true,
         hideGryphons = false,
     },

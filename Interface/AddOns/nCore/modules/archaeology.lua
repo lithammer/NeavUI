@@ -49,6 +49,9 @@ function nCore:ArchaeologyHelper()
         
         if not mapID then return end
 
+        -- Classic: Doesn't support Archaeology
+        if ArchaeologyMapUpdateAll == nil then return end
+
         if ArchaeologyMapUpdateAll(mapID) > 0  and CanScanResearchSite() and GetSpellCooldown(SURVEY_SPELL_ID) == 0 and not IsEquippedItemType(FISHING_POLE) then
             if GetNumLootItems() == 0 and previousClickTime then
                 local doubleClickTime = GetTime() - previousClickTime

@@ -3,7 +3,12 @@
     <Script file="localization.lua" />
     <Script file="options.lua" />
 
-    <Include file="modules\orderhall.xml" />
+    <!--
+        Classic doesn't have Garrisons
+        <Include file="modules\orderhall.xml" />
+        
+    -->
+
     <Include file="modules\coords.xml" />
 
     <Script file="core.lua" />

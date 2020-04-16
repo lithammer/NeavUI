@@ -4,7 +4,11 @@ function nCore:MapCoords()
     local unpack = unpack
 
     -- Temp fix until Blizzard removed the ! icon from the global string.
-    local _, MOUSE_LABEL = strsplit("1", MOUSE_LABEL, 2)
+    -- Extended this to support Classic as 'strsplit' won't work on MOUSE_LABEL as it doesn't have the ! icon
+    local _, mouseLabel = strsplit("1", MOUSE_LABEL, 2)
+    if ( mouseLabel == nil ) then
+        mouseLabel = MOUSE_LABEL
+    end
 
     local cfg = {
         location = {"BOTTOMLEFT", WorldMapFrame, "BOTTOMLEFT", 10, 0},
@@ -56,7 +60,7 @@ function nCore:MapCoords()
 
             if cx then
                 if cx >= 0 and cy >= 0 and cx <= 1 and cy <= 1 then
-                    self.Mouse.Text:SetFormattedText("%s: %.1f x %.1f", MOUSE_LABEL, cx * 100, cy * 100)
+                    self.Mouse.Text:SetFormattedText("%s: %.1f x %.1f", mouseLabel, cx * 100, cy * 100)
                 else
                     self.Mouse.Text:SetText("")
                 end

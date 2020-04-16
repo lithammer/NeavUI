@@ -8,6 +8,14 @@ local find = string.find
 
 Minimap:SetBlipTexture("Interface\\Minimap\\ObjectIconsAtlas")
 
+    -- Hide the Minimap toggle button
+
+if MinimapToggleButton then
+    MinimapToggleButton:Hide()
+    MinimapToggleButton:EnableMouse(false)
+    MinimapToggleButton:UnregisterAllEvents()
+end
+
     -- A "new" mail notification
 
 MiniMapMailFrame:SetSize(14, 14)
@@ -34,37 +42,41 @@ end)
 
    -- Modify the lfg frame
 
-QueueStatusMinimapButton:ClearAllPoints()
-QueueStatusMinimapButton:SetPoint("TOPLEFT", Minimap, 4, -4)
-QueueStatusMinimapButton:SetSize(14, 14)
-QueueStatusMinimapButton:SetHighlightTexture(nil)
+if QueueStatusMinimapButton then
+    QueueStatusMinimapButton:ClearAllPoints()
+    QueueStatusMinimapButton:SetPoint("TOPLEFT", Minimap, 4, -4)
+    QueueStatusMinimapButton:SetSize(14, 14)
+    QueueStatusMinimapButton:SetHighlightTexture(nil)
 
-QueueStatusMinimapButtonBorder:SetTexture()
-QueueStatusMinimapButton.Eye:Hide()
+    QueueStatusMinimapButtonBorder:SetTexture()
+    QueueStatusMinimapButton.Eye:Hide()
 
-hooksecurefunc("EyeTemplate_StartAnimating", function(self)
-    self:SetScript("OnUpdate", nil)
-end)
+    hooksecurefunc("EyeTemplate_StartAnimating", function(self)
+        self:SetScript("OnUpdate", nil)
+    end)
 
-QueueStatusMinimapButton.Text = QueueStatusMinimapButton:CreateFontString(nil, "OVERLAY")
-QueueStatusMinimapButton.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
-QueueStatusMinimapButton.Text:SetPoint("TOP", QueueStatusMinimapButton)
-QueueStatusMinimapButton.Text:SetTextColor(1, 0.4, 0)
-QueueStatusMinimapButton.Text:SetText("Q")
+    QueueStatusMinimapButton.Text = QueueStatusMinimapButton:CreateFontString(nil, "OVERLAY")
+    QueueStatusMinimapButton.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+    QueueStatusMinimapButton.Text:SetPoint("TOP", QueueStatusMinimapButton)
+    QueueStatusMinimapButton.Text:SetTextColor(1, 0.4, 0)
+    QueueStatusMinimapButton.Text:SetText("Q")
+end
 
     -- Garrison button
 
-GarrisonLandingPageMinimapButton:SetSize(36, 36)
-GarrisonLandingPageMinimapButton:ClearAllPoints()
-GarrisonLandingPageMinimapButton:SetPoint("BOTTOMLEFT", Minimap, 0, 0)
+if GarrisonLandingPageMinimapButton then
+    GarrisonLandingPageMinimapButton:SetSize(36, 36)
+    GarrisonLandingPageMinimapButton:ClearAllPoints()
+    GarrisonLandingPageMinimapButton:SetPoint("BOTTOMLEFT", Minimap, 0, 0)
 
-hooksecurefunc("GarrisonLandingPageMinimapButton_UpdateIcon", function(self)
-    if C_Garrison.GetLandingPageGarrisonType() == LE_GARRISON_TYPE_8_0 then
-        GarrisonLandingPageMinimapButton:SetScale(.70)
-    else
-        GarrisonLandingPageMinimapButton:SetScale(1)
-    end
-end)
+    hooksecurefunc("GarrisonLandingPageMinimapButton_UpdateIcon", function(self)
+        if C_Garrison.GetLandingPageGarrisonType() == LE_GARRISON_TYPE_8_0 then
+            GarrisonLandingPageMinimapButton:SetScale(.70)
+        else
+            GarrisonLandingPageMinimapButton:SetScale(1)
+        end
+    end)
+end
 
     -- Hide all unwanted things
 
@@ -89,8 +101,10 @@ MinimapZoneTextButton:UnregisterAllEvents()
 
     -- Hide the tracking button
 
-MiniMapTracking:UnregisterAllEvents()
-MiniMapTracking:Hide()
+if MiniMapTracking then 
+    MiniMapTracking:UnregisterAllEvents()
+    MiniMapTracking:Hide()
+end
 
     -- Hide the durability frame (the armored man)
 
@@ -99,7 +113,9 @@ DurabilityFrame:UnregisterAllEvents()
 
     -- Smaller Vehicle/Mount Seat Indicator
 
-VehicleSeatIndicator:SetScale(.75)
+if VehicleSeatIndicator then
+    VehicleSeatIndicator:SetScale(.75)
+end
 
     -- Bigger minimap
 

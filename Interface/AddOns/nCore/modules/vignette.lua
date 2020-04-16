@@ -3,6 +3,8 @@ local _, nCore = ...
 -- Forked from rVignette by zork - 2014
 
 function nCore:VignetteAlert()
+    -- Classic: 'C_VignetteInfo' isn't available, have commented out the config option for now
+    if (not C_VignetteInfo) then return end
 
     local addon = CreateFrame("Frame")
 

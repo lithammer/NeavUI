@@ -73,14 +73,14 @@ Options:SetScript("OnShow", function()
             relativeTo = OptionsLabel,
             offsetY = -12,
         },
-        {
-            type = "CheckBox",
-            name = "ArchaeologyHelper",
-            parent = Options,
-            label = L.ArchaeologyHelper,
-            tooltip = L.ArchaeologyHelperTooltip,
-            var = "ArchaeologyHelper",
-        },
+        -- {
+        --     type = "CheckBox",
+        --     name = "ArchaeologyHelper",
+        --     parent = Options,
+        --     label = L.ArchaeologyHelper,
+        --     tooltip = L.ArchaeologyHelperTooltip,
+        --     var = "ArchaeologyHelper",
+        -- },
         {
             type = "CheckBox",
             name = "AutoGreed",
@@ -140,15 +140,15 @@ Options:SetScript("OnShow", function()
             tooltip = L.MapCoordsTooltip,
             var = "MapCoords",
         },
-        {
-            type = "CheckBox",
-            name = "ObjectiveTracker",
-            parent = Options,
-            label = L.ObjectiveTracker,
-            tooltip = L.ObjectiveTrackerTooltip,
-            var = "ObjectiveTracker",
-            needsRestart = true,
-        },
+        -- {
+        --     type = "CheckBox",
+        --     name = "ObjectiveTracker",
+        --     parent = Options,
+        --     label = L.ObjectiveTracker,
+        --     tooltip = L.ObjectiveTrackerTooltip,
+        --     var = "ObjectiveTracker",
+        --     needsRestart = true,
+        -- },
         {
             type = "CheckBox",
             name = "MoveTalkingHeads",
@@ -158,14 +158,14 @@ Options:SetScript("OnShow", function()
             var = "MoveTalkingHeads",
             needsRestart = true,
         },
-        {
-            type = "CheckBox",
-            name = "QuestTracker",
-            parent = Options,
-            label = L.QuestTracker,
-            tooltip = L.QuestTrackerTooltip,
-            var = "QuestTracker",
-        },
+        -- {
+        --     type = "CheckBox",
+        --     name = "QuestTracker",
+        --     parent = Options,
+        --     label = L.QuestTracker,
+        --     tooltip = L.QuestTrackerTooltip,
+        --     var = "QuestTracker",
+        -- },
         {
             type = "CheckBox",
             name = "Skins",
@@ -182,15 +182,16 @@ Options:SetScript("OnShow", function()
             label = L.SpellID,
             tooltip = L.SpellIDTooltip,
             var = "SpellID",
-        },
-        {
-            type = "CheckBox",
-            name = "VignetteAlert",
-            parent = Options,
-            label = L.VignetteAlert,
-            tooltip = L.VignetteAlertTooltip,
-            var = "VignetteAlert",
         }
+        --,
+        -- {
+        --     type = "CheckBox",
+        --     name = "VignetteAlert",
+        --     parent = Options,
+        --     label = L.VignetteAlert,
+        --     tooltip = L.VignetteAlertTooltip,
+        --     var = "VignetteAlert",
+        -- }
     }
 
     for i, control in pairs(UIControls) do
