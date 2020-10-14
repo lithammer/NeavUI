@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 90000
 ## Title: !Colorz
 ## Notes: Custom colors
 

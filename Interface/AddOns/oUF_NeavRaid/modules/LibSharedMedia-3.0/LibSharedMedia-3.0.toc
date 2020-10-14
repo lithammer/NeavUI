@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 90000
 ## LoadOnDemand: 1
 
 ## Title: Lib: SharedMedia-3.0
