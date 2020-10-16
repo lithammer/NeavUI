@@ -43,6 +43,7 @@ else
     GameTooltipTextSmall:SetFont(STANDARD_TEXT_FONT, (cfg.fontSize))
 end
 
+Mixin(GameTooltipStatusBar, BackdropTemplateMixin)
 GameTooltipStatusBar:SetHeight(7)
 GameTooltipStatusBar:SetBackdrop({bgFile = [[Interface\Buttons\WHITE8x8]]})
 GameTooltipStatusBar:SetBackdropColor(0, 1, 0, 0.3)
@@ -74,11 +75,6 @@ local function ApplyTooltipStyle(self)
     end
 
     if beautyBorderLoaded then
-        self:SetBackdrop({
-            bgFile = nil,
-            edgeFile = nil,
-        })
-
         if not self:HasBeautyBorder() then
             self:CreateBeautyBorder(borderSize)
         end
@@ -117,7 +113,7 @@ for _, tooltip in pairs({
     ApplyTooltipStyle(tooltip)
 end
 
-hooksecurefunc("GameTooltip_SetBackdropStyle", ApplyTooltipStyle)
+hooksecurefunc("SharedTooltip_SetBackdropStyle", ApplyTooltipStyle)
 
     -- Itemquaility border, we use our beautycase functions
 
@@ -451,7 +447,7 @@ if cfg.healthbar.reactionColoring or cfg.healthbar.customColor.apply then
 end
 
 local function CreateAnchor()
-    local anchorFrame = CreateFrame("Frame", "nTooltip_Anchor", UIParent)
+    local anchorFrame = CreateFrame("Frame", "nTooltip_Anchor", UIParent, "BackdropTemplate")
     anchorFrame:SetSize(50, 50)
     anchorFrame:SetScale(1.2)
     anchorFrame:SetPoint(unpack(cfg.position))

@@ -6,7 +6,7 @@ local function CreateAnchor(unit, text)
     local width = (config.width + config.height) * config.scale
     local height = config.height * config.scale
 
-    local anchorFrame = CreateFrame("Frame", "oUF_Neav "..unit.."_Castbar_Anchor", UIParent)
+    local anchorFrame = CreateFrame("Frame", "oUF_Neav "..unit.."_Castbar_Anchor", UIParent, "BackdropTemplate")
     anchorFrame:SetSize(width, height)
     anchorFrame:SetScale(1.193)
     anchorFrame:SetPoint(unpack(config.position))
@@ -153,34 +153,12 @@ function ns.CreateCastbars(self, unit)
             end
         end
 
-        self.Castbar.PostChannelStart = function(self, unit)
-            ns.UpdateCastbarColor(self)
-
-            if unit == "player" then
-                if self.Latency then
-                    local down, up, lagHome, lagWorld = GetNetStats()
-                    local avgLag = (lagHome + lagWorld) / 2
-
-                    self.Latency:ClearAllPoints()
-                    self.Latency:SetPoint("LEFT", self, "BOTTOMLEFT", 1, -2)
-                    self.Latency:SetText(string.format("%.0f", avgLag).."ms")
-                end
-            end
-
-            if ns.Config.units.pet.castbar.ignoreSpells then
-                if unit == "pet" and self:GetAlpha() == 0 then
-                    self:SetAlpha(1)
-                end
-            end
-        end
-
-        self.Castbar.PostCastInterrupted = function(self, unit)
+        self.Castbar.PostCastFailed = function(self, unit)
             self:SetStatusBarColor(unpack(self.failedCastColor))
             self.Background:SetVertexColor(self.failedCastColor[1]*0.3, self.failedCastColor[2]*0.3, self.failedCastColor[3]*0.3)
         end
 
         self.Castbar.PostCastInterruptible = ns.UpdateCastbarColor
-        self.Castbar.PostCastNotInterruptible = ns.UpdateCastbarColor
 
         self.Castbar.CustomDelayText = ns.CustomDelayText
         self.Castbar.CustomTimeText = ns.CustomTimeText

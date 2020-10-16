@@ -54,7 +54,7 @@ end
 
 local CreateAuraIcon = function(auras)
     if (not auras.button) then
-        local button = CreateFrame("Frame", nil, auras)
+        local button = CreateFrame("Frame", nil, auras, "BackdropTemplate")
         button:EnableMouse(false)
         button:SetBackdrop(BBackdrop)
         button:SetBackdropColor(0, 0, 0, 1)
@@ -65,7 +65,7 @@ local CreateAuraIcon = function(auras)
         icon:SetAllPoints(button)
         icon:SetTexCoord(.1, .9, .1, .9)
 
-        local overlay = CreateFrame("Frame", nil, button)
+        local overlay = CreateFrame("Frame", nil, button, "BackdropTemplate")
         overlay:SetAllPoints(button)
         overlay:SetBackdrop(backdrop)
         overlay:SetBackdropColor(0, 0, 0, 0)

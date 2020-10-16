@@ -5,7 +5,7 @@ local cfg = nChat.Config
 local concat = table.concat
 
 local chatWidth, chatHeight = ChatFrame1:GetSize()
-local container = CreateFrame("Frame", nil, UIParent)
+local container = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
 container:SetSize(chatWidth, chatHeight)
 container:SetFrameStrata("DIALOG")
 container:CreateBeautyBorder(12)

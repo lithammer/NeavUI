@@ -103,7 +103,7 @@ local function UpdateVehicleButton()
     end
 end
 
-hooksecurefunc("ActionButton_UpdateHotkeys", function(self, actionButtonType)
+hooksecurefunc(ActionBarActionButtonMixin, "UpdateHotkeys", function(self, actionButtonType)
     local hotkey = self.HotKey
     local text = hotkey:GetText()
 
@@ -153,7 +153,7 @@ hooksecurefunc("ActionButton_UpdateHotkeys", function(self, actionButtonType)
     end
 end)
 
-hooksecurefunc("ActionButton_Update", function(self)
+hooksecurefunc(ActionBarActionButtonMixin, "Update", function(self)
     local action = self.action
     local icon = self.icon
     local border = self.Border
@@ -195,7 +195,7 @@ hooksecurefunc("ExtraActionBar_Update", function(self)
     end
 end)
 
-hooksecurefunc("ActionButton_UpdateCount", function(self)
+hooksecurefunc(ActionBarActionButtonMixin, "UpdateCount", function(self)
     local text = self.Count
 
     if text then
@@ -205,7 +205,7 @@ hooksecurefunc("ActionButton_UpdateCount", function(self)
     end
 end)
 
-hooksecurefunc("ActionButton_ShowGrid", function(self)
+hooksecurefunc(ActionBarActionButtonMixin, "ShowGrid", function(self)
     if self.NormalTexture then
         self.NormalTexture:SetVertexColor(Color.Normal:GetRGBA())
     end
@@ -234,7 +234,7 @@ local function UpdateUsable(self, checksRange, inRange)
         icon:SetVertexColor(Color.OutOfRange:GetRGB())
     end
 end
-hooksecurefunc("ActionButton_UpdateUsable", UpdateUsable)
+hooksecurefunc(ActionBarActionButtonMixin, "UpdateUsable", UpdateUsable)
 
 hooksecurefunc("ActionButton_UpdateRangeIndicator", function(self, checksRange, inRange)
     local icon = self.icon

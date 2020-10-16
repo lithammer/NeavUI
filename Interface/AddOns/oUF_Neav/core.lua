@@ -552,7 +552,7 @@ local function CreateUnitLayout(self, unit)
 
         -- Healthbar
 
-    self.Health = CreateFrame("StatusBar", "$parentHealth", self)
+    self.Health = CreateFrame("StatusBar", "$parentHealth", self, "BackdropTemplate")
     self.Health:SetStatusBarTexture(config.media.statusbar)
     self.Health:SetFrameLevel(self:GetFrameLevel() - 1)
     self.Health:SetBackdrop({bgFile = "Interface\\Buttons\\WHITE8x8"})
@@ -665,7 +665,7 @@ local function CreateUnitLayout(self, unit)
 
         -- Powerbar
 
-    self.Power = CreateFrame("StatusBar", "$parentPower", self)
+    self.Power = CreateFrame("StatusBar", "$parentPower", self, "BackdropTemplate")
     self.Power:SetStatusBarTexture(config.media.statusbar)
     self.Power:SetFrameLevel(self:GetFrameLevel() - 2)
     self.Power:SetBackdrop({bgFile = "Interface\\Buttons\\WHITE8x8"})
@@ -1010,7 +1010,7 @@ local function CreateUnitLayout(self, unit)
         local hasAltManaBar = ALT_MANA_BAR_PAIR_DISPLAY_INFO[playerClass]
 
         if hasAltManaBar then
-            self.AdditionalPower = CreateFrame("StatusBar", "$parentAdditionalPower", self)
+            self.AdditionalPower = CreateFrame("StatusBar", "$parentAdditionalPower", self, "BackdropTemplate")
             self.AdditionalPower:SetPoint("TOP", self.Power, "BOTTOM", 0, -1)
             self.AdditionalPower:SetStatusBarTexture(config.media.statusbar, "BORDER")
             self.AdditionalPower:SetSize(99, 9)

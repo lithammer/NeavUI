@@ -50,7 +50,7 @@ local function CreateArenaLayout(self, unit)
 
         -- Health Bar
 
-    self.Health = CreateFrame("StatusBar", "$parentHealthBar", self)
+    self.Health = CreateFrame("StatusBar", "$parentHealthBar", self, "BackdropTemplate")
 
         -- Frame Texture
 
@@ -78,7 +78,7 @@ local function CreateArenaLayout(self, unit)
         -- Power Bar
 
     if self.arenaUnit then
-        self.Power = CreateFrame("StatusBar", "$parentPowerBar", self)
+        self.Power = CreateFrame("StatusBar", "$parentPowerBar", self, "BackdropTemplate")
         self.Power:SetStatusBarTexture(config.media.statusbar, "BORDER")
         self.Power:SetPoint("TOPLEFT", self, "TOPLEFT", 71, -95)
         self.Power:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -1, 4)
@@ -292,11 +292,9 @@ local function CreateArenaLayout(self, unit)
             self.Castbar.CustomTimeText = ns.CustomTimeText
 
             self.Castbar.PostCastStart = ns.UpdateCastbarColor
-            self.Castbar.PostChannelStart = ns.UpdateCastbarColor
             self.Castbar.PostCastInterruptible = ns.UpdateCastbarColor
-            self.Castbar.PostCastNotInterruptible = ns.UpdateCastbarColor
 
-            self.Castbar.PostCastInterrupted = function(self, unit)
+            self.Castbar.PostCastFailed = function(self, unit)
                 self:SetStatusBarColor(unpack(self.failedCastColor))
                 self.Background:SetVertexColor(self.failedCastColor[1]*0.3, self.failedCastColor[2]*0.3, self.failedCastColor[3]*0.3)
             end

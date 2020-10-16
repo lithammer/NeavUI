@@ -320,7 +320,7 @@ end
 
 function nMinimapTab_Guild_OnEvent(self, event, ...)
     if event == "PLAYER_GUILD_UPDATE" or event == "GUILD_ROSTER_UPDATE" then
-        GuildRoster()
+        C_GuildInfo.GuildRoster()
     end
     nMinimap:UpdateGuildText(self)
     nMinimapTab_Guild_UpdateScrollFrame()
@@ -373,17 +373,20 @@ function nMinimap_UpdateFriendButton(entry)
     local zonec, classc, levelc
 
     if entry.buttonType == FRIENDS_BUTTON_TYPE_BNET then
-        local _, accountName, battleTag, _, characterName, bnetIDGameAccount, client, isOnline, _, isAFK, isDND = BNGetFriendInfo(FriendListEntries[index].id)
+        local accountInfo = C_BattleNet.GetFriendAccountInfo(FriendListEntries[index].id)
+        local gameAccountInfo = accountInfo.gameAccountInfo
 
-        if isOnline then
-            local _, _, _, realmName, realmID, faction, race, class, _, zoneName, level, gameText = BNGetGameAccountInfo(bnetIDGameAccount)
+        if gameAccountInfo.isOnline then
+            local level = gameAccountInfo.characterLevel
+            local characterName = gameAccountInfo.characterName
+            local accountName = accountInfo.accountName
 
-            characterName = BNet_GetValidatedCharacterName(characterName, battleTag, client)
+            characterName = BNet_GetValidatedCharacterName(characterName, accountInfo.battleTag, gameAccountInfo.clientProgram)
             accountName = WrapTextInColorCode(accountName, FRIENDS_BNET_NAME_COLOR:GenerateHexColor())
-            local clientIcon = BNet_GetClientEmbeddedTexture(client, 14)
+            local clientIcon = BNet_GetClientEmbeddedTexture(gameAccountInfo.clientProgram, 14)
 
             for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-                if class == v then
+                if gameAccountInfo.className == v then
                     classc = RAID_CLASS_COLORS[k]
                     break
                 end
@@ -391,23 +394,22 @@ function nMinimap_UpdateFriendButton(entry)
 
             if not classc then
                 for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
-                    if class == v then
+                    if gameAccountInfo.className == v then
                         classc = RAID_CLASS_COLORS[k]
                         break
                     end
                 end
             end
 
-            if client == BNET_CLIENT_WOW then
-                if isAFK == true then
+            if gameAccountInfo.clientProgram == BNET_CLIENT_WOW then
+                if gameAccountInfo.isGameAFK == true then
                     status = 1
-                elseif isDND == true then
+                elseif accountInfo.isDND == true then
                     status = 2
                 else
                     status = 0
                 end
 
-                level = tonumber(level)
                 levelc = GetQuestDifficultyColor(level)
 
                 level = WrapTextInColorCode(level, CreateColor(levelc.r, levelc.g, levelc.b, 1):GenerateHexColor())

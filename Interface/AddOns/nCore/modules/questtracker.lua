@@ -2,7 +2,7 @@ local _, nCore = ...
 
 function nCore:QuestTracker()
     local function UpdateQuestText()
-        local _, numQuests = GetNumQuestLogEntries()
+        local _, numQuests = C_QuestLog.GetNumQuestLogEntries()
         WorldMapFrameTitleText:SetFormattedText("%s - %d/%s", MAP_AND_QUEST_LOG, numQuests, MAX_QUESTS)
         WorldMapFrameTitleText:Show()
     end

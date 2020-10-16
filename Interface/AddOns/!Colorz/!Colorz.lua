@@ -43,7 +43,7 @@ hooksecurefunc("ReputationFrame_Update", function(showLFGPulse)
         local factionBar = _G["ReputationBar"..i.."ReputationBar"]
 
         if factionIndex <= numFactions then
-            local name, description, standingID = GetFactionInfo(factionIndex)
+            local _, _, standingID, _, _, _, _, _, _, _, _, _, _, factionID = GetFactionInfo(factionIndex)
 
             local colorIndex = standingID
 

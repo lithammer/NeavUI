@@ -112,7 +112,7 @@ ns.CreateAnchor = function(name)
     local totalWidth = (nRaidDB.frameWidth*widthMulti+7*(widthMulti-1))*nRaidDB.frameScale
     local totalHeight = (nRaidDB.frameHeight*heightMulti+7*(heightMulti-1))*nRaidDB.frameScale
 
-    local anchorFrame = CreateFrame("Frame", addon.."_"..name.."_Anchor", UIParent)
+    local anchorFrame = CreateFrame("Frame", addon.."_"..name.."_Anchor", UIParent, "BackdropTemplate")
     anchorFrame:SetSize(totalWidth, totalHeight)
     anchorFrame:SetPoint(unpack(location))
     anchorFrame:SetFrameStrata("BACKGROUND")

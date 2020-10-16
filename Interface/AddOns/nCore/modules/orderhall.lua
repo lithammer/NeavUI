@@ -5,7 +5,7 @@ local _, nCore = ...
     -- Toggle Display Bar
 
 local function ToggleBar(self)
-    if C_Garrison.IsPlayerInGarrison(LE_GARRISON_TYPE_7_0) and not self:IsVisible() then
+    if C_Garrison.IsPlayerInGarrison(Enum.GarrisonType.Type_7_0) and not self:IsVisible() then
         self:Show()
     else
         if self:IsVisible() then
@@ -17,8 +17,8 @@ end
     -- Change Order Resources Text
 
 local function SetCurrency()
-    local name, amount = GetCurrencyInfo(1220)
-    nOrderHall_Resources:SetText(name..": |cffFFFFFF"..amount)
+    local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(1220)
+    nOrderHall_Resources:SetText(currencyInfo.name..": |cffFFFFFF"..currencyInfo.quantity)
 end
 
     -- Count and display number of troops.

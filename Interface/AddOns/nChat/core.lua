@@ -289,6 +289,8 @@ local function ModChat(self)
         _G[self.."EditBox"]:SetPoint("BOTTOMLEFT", chat, "TOPLEFT", 0, tabHeight + 5)
         _G[self.."EditBox"]:SetPoint("BOTTOMRIGHT", chat, "TOPRIGHT", 0, tabHeight + 5)
     end
+
+    Mixin(_G[self.."EditBox"], BackdropTemplateMixin)
     _G[self.."EditBox"]:SetBackdrop({
         bgFile = "Interface\\Buttons\\WHITE8x8",
         insets = {

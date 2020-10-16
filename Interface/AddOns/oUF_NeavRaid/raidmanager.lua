@@ -36,6 +36,7 @@ local WORLD_RAID_MARKERS_TOOLTIP = {
 local button, leftButton, previousButton
 
 local manager = CreateFrame("Frame", addon.."ControlsFrame", UIParent, "SecureHandlerStateTemplate")
+Mixin(manager, BackdropTemplateMixin)
 
 -----------------------------
 -- Functions

@@ -376,6 +376,7 @@ local function CreateRaidLayout(self, unit)
         end
     end)
 
+    Mixin(self, BackdropTemplateMixin)
     self:SetBackdrop({
           bgFile = "Interface\\Buttons\\WHITE8x8",
           insets = {
@@ -590,7 +591,7 @@ local function CreateRaidLayout(self, unit)
 
         -- Threat Glow
 
-    self.ThreatIndicator = CreateFrame("Frame", "$parentThreatGlow", self)
+    self.ThreatIndicator = CreateFrame("Frame", "$parentThreatGlow", self, "BackdropTemplate")
     self.ThreatIndicator:SetPoint("TOPLEFT", self, "TOPLEFT", -4, 4)
     self.ThreatIndicator:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 4, -4)
     self.ThreatIndicator:SetBackdrop({edgeFile = "Interface\\AddOns\\oUF_NeavRaid\\media\\textureGlow", edgeSize = 3})

@@ -3,7 +3,7 @@ local _, nCore = ...
 local unpack = unpack
 
 function nCore:CreateAnchor(name, width, height, location)
-    local anchorFrame = CreateFrame("Frame", name.."_Anchor", UIParent)
+    local anchorFrame = CreateFrame("Frame", name.."_Anchor", UIParent, "BackdropTemplate")
     anchorFrame:SetSize(width, height)
     anchorFrame:SetScale(1)
     anchorFrame:SetPoint(unpack(location))

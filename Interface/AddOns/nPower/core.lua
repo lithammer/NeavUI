@@ -207,7 +207,6 @@ function nPower_OnLoad(self)
     if (config.hp.show) then
         self:RegisterUnitEvent("UNIT_HEALTH", "player")
         self:RegisterUnitEvent("UNIT_MAXHEALTH", "player")
-        self:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", "player")
         nPower:SetupHealth(self)
     end
 
@@ -342,7 +341,7 @@ function nPower:SetupPower(self)
     self.Power.Background:SetTexture([[Interface\AddOns\nPower\media\statusbarTexture]])
     self.Power.Background:SetVertexColor(0.25, 0.25, 0.25, 1)
 
-    self.Power.BackgroundShadow = CreateFrame("Frame", nil, self.Power)
+    self.Power.BackgroundShadow = CreateFrame("Frame", nil, self.Power, "BackdropTemplate")
     self.Power.BackgroundShadow:SetFrameStrata("BACKGROUND")
     self.Power.BackgroundShadow:SetPoint("TOPLEFT", -4, 4)
     self.Power.BackgroundShadow:SetPoint("BOTTOMRIGHT", 4, -4)

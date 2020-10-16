@@ -56,7 +56,7 @@ local onEnter = function()
         matches = {}
 
         for i = 1, GetNumGroupMembers() do
-            unit = "raid" .. i
+            local unit = "raid" .. i
 
             if UnitExists(unit) and callback(unit) then
                 _, classId = UnitClass(unit)

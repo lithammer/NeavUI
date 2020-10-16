@@ -507,22 +507,23 @@ picoMenu:GetNormalTexture():SetSize(30, 30)
 picoMenu:SetHighlightTexture("Interface\\AddOns\\nMainbar\\Media\\picomenu\\picomenuHighlight")
 picoMenu:GetHighlightTexture():SetAllPoints(picoMenu:GetNormalTexture())
 
-local alertFrame = CreateFrame("Frame", "nMainbarAlertFrame", picoMenu, "MicroButtonAlertTemplate" )
-alertFrame:SetSize(220,100)
-alertFrame.Text:SetText(TALENT_MICRO_BUTTON_UNSPENT_TALENTS)
-alertFrame:SetPoint("BOTTOM", picoMenu, "TOP", 0, 10)
+-- TODO: MicroButtonAlertTemplate is gone.
+-- local alertFrame = CreateFrame("Frame", "nMainbarAlertFrame", picoMenu, "MicroButtonAlertTemplate")
+-- alertFrame:SetSize(220,100)
+-- alertFrame.Text:SetText(TALENT_MICRO_BUTTON_UNSPENT_TALENTS)
+-- alertFrame:SetPoint("BOTTOM", picoMenu, "TOP", 0, 10)
 
-picoMenu:SetScript("OnEvent", function(self, event, ...)
-    if event == "ADDON_LOADED" then
-        UpdateAddOnTable(arg1)
-    elseif event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_LEVEL_UP" or event == "PLAYER_SPECIALIZATION_CHANGED" or event == "PLAYER_TALENT_UPDATE" then
-        if UnitLevel("player") >= SHOW_TALENT_LEVEL and GetNumUnspentTalents() > 0 then
-            alertFrame:Show()
-        else
-            alertFrame:Hide()
-        end
-    end
-end)
+-- picoMenu:SetScript("OnEvent", function(self, event, ...)
+--     if event == "ADDON_LOADED" then
+--         UpdateAddOnTable(arg1)
+--     elseif event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_LEVEL_UP" or event == "PLAYER_SPECIALIZATION_CHANGED" or event == "PLAYER_TALENT_UPDATE" then
+--         if C_SpecializationInfo.CanPlayerUseTalentUI() and GetNumUnspentTalents() > 0 then
+--             alertFrame:Show()
+--         else
+--             alertFrame:Hide()
+--         end
+--     end
+-- end)
 
 picoMenu:SetScript("OnMouseDown", function(self)
     self:GetNormalTexture():ClearAllPoints()
