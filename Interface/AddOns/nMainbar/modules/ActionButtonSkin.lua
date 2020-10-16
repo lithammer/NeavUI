@@ -4,7 +4,6 @@ local Color = cfg.color
 
 local pairs = pairs
 local gsub = string.gsub
-local match = string.match
 
 local MEDIA_PATH = "Interface\\AddOns\\nMainbar\\Media\\"
 
@@ -103,7 +102,7 @@ local function UpdateVehicleButton()
     end
 end
 
-hooksecurefunc(ActionBarActionButtonMixin, "UpdateHotkeys", function(self, actionButtonType)
+local ActionBarActionButtonMixinHook_UpdateHotkeys = function(self, actionButtonType)
     local hotkey = self.HotKey
     local text = hotkey:GetText()
 
@@ -151,9 +150,9 @@ hooksecurefunc(ActionBarActionButtonMixin, "UpdateHotkeys", function(self, actio
     else
         UpdateVehicleButton()
     end
-end)
+end
 
-hooksecurefunc(ActionBarActionButtonMixin, "Update", function(self)
+local ActionBarActionButtonMixinHook_Update = function(self)
     local action = self.action
     local icon = self.icon
     local border = self.Border
@@ -181,7 +180,7 @@ hooksecurefunc(ActionBarActionButtonMixin, "Update", function(self)
             border:SetAlpha(0)
         end
     end
-end)
+end
 
 hooksecurefunc("ExtraActionBar_Update", function(self)
     local bar = ExtraActionBarFrame
@@ -195,7 +194,7 @@ hooksecurefunc("ExtraActionBar_Update", function(self)
     end
 end)
 
-hooksecurefunc(ActionBarActionButtonMixin, "UpdateCount", function(self)
+local ActionBarActionButtonMixinHook_UpdateCount = function(self)
     local text = self.Count
 
     if text then
@@ -203,15 +202,15 @@ hooksecurefunc(ActionBarActionButtonMixin, "UpdateCount", function(self)
         text:SetFont(cfg.button.countFont, cfg.button.countFontsize, "OUTLINE")
         text:SetVertexColor(Color.CountText:GetRGB())
     end
-end)
+end
 
-hooksecurefunc(ActionBarActionButtonMixin, "ShowGrid", function(self)
+local ActionBarActionButtonMixinHook_ShowGrid = function(self)
     if self.NormalTexture then
         self.NormalTexture:SetVertexColor(Color.Normal:GetRGBA())
     end
-end)
+end
 
-local function UpdateUsable(self, checksRange, inRange)
+local function ActionBarActionButtonMixinHook_UpdateUsable(self, checksRange, inRange)
     local icon = self.icon
     local normalTexture = self.NormalTexture
     if not normalTexture then
@@ -234,13 +233,10 @@ local function UpdateUsable(self, checksRange, inRange)
         icon:SetVertexColor(Color.OutOfRange:GetRGB())
     end
 end
-hooksecurefunc(ActionBarActionButtonMixin, "UpdateUsable", UpdateUsable)
 
 hooksecurefunc("ActionButton_UpdateRangeIndicator", function(self, checksRange, inRange)
-    local icon = self.icon
-
     if self.action and cfg.button.buttonOutOfRange then
-        UpdateUsable(self, checksRange, inRange)
+        ActionBarActionButtonMixinHook_UpdateUsable(self, checksRange, inRange)
     end
 
     if self.HotKey:GetText() == RANGE_INDICATOR then
@@ -285,10 +281,9 @@ hooksecurefunc("PetActionBar_Update", function(self)
         end
     end
 end)
-securecall("PetActionBar_Update")
 
 hooksecurefunc("StanceBar_UpdateState", function(self)
-    local button, icon, buttonName
+    local button, icon
     for i=1, NUM_STANCE_SLOTS do
         button = StanceBarFrame.StanceButtons[i]
         icon = button.icon
@@ -308,10 +303,20 @@ hooksecurefunc("PossessBar_UpdateState", function()
     end
 end)
 
+local ActionBarActionButtonMixinHook_OnLoad = function(self)
+    hooksecurefunc(self, "ShowGrid", ActionBarActionButtonMixinHook_ShowGrid)
+    hooksecurefunc(self, "Update", ActionBarActionButtonMixinHook_Update)
+    hooksecurefunc(self, "UpdateCount", ActionBarActionButtonMixinHook_UpdateCount)
+    hooksecurefunc(self, "UpdateHotkeys", ActionBarActionButtonMixinHook_UpdateHotkeys)
+    hooksecurefunc(self, "UpdateUsable", ActionBarActionButtonMixinHook_UpdateUsable)
+end
+
+ActionBarActionButtonMixinHook_OnLoad(ActionBarActionButtonMixin)
+
 -- Hide Possess Frame Background
 
 do
-    for i = 2, 3 do
+    for _ = 2, 3 do
         for _, object in pairs({
                 _G["PossessBackground1"],
                 _G["PossessBackground2"],
@@ -334,13 +339,24 @@ end
 
 -- Force Hotkey Update
 
-local frame = CreateFrame("Frame", nil)
-frame:RegisterEvent("PLAYER_LOGIN")
+local f = CreateFrame("Frame", nil)
+f:RegisterEvent("PLAYER_LOGIN")
 
-frame:SetScript("OnEvent", function(self, event, ...)
+f:SetScript("OnEvent", function(self, event, ...)
     if event == "PLAYER_LOGIN" then
         local bagBinding = GetBindingKey("NBAGS_TOGGLE") or "ALT-CTRL-B"
-        local binding = SetBinding(bagBinding,"NBAGS_TOGGLE")
-        frame:UnregisterEvent("PLAYER_LOGIN")
+        SetBinding(bagBinding, "NBAGS_TOGGLE")
+        f:UnregisterEvent("PLAYER_LOGIN")
+
+        -- Hook existing frames.
+        local ActionBarActionButtonMixin_OnLoad = ActionBarActionButtonMixin.OnLoad
+        local frame = EnumerateFrames()
+        while frame do
+            if frame.OnLoad == ActionBarActionButtonMixin_OnLoad then
+                ActionBarActionButtonMixinHook_OnLoad(frame)
+            end
+
+            frame = EnumerateFrames(frame)
+        end
     end
 end)
