@@ -2,18 +2,6 @@
 local _, nPower = ...
 local config = nPower.Config
 
-local function GetRealMpFive()
-    local _, activeRegen = GetPowerRegen()
-    local realRegen = activeRegen * 5
-    local _, powerType = UnitPowerType("player")
-
-    if (powerType == "MANA" or UnitHasVehicleUI("player")) then
-        return math.floor(realRegen)
-    else
-        return ""
-    end
-end
-
 local function GetHPPercentage()
     local currentHP = UnitHealth("player")
     local maxHP = UnitHealthMax("player")
@@ -200,10 +188,6 @@ function nPower_OnLoad(self)
     self:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
     self:RegisterUnitEvent("UNIT_POWER_FREQUENT", "player")
 
-    if (config.showCombatRegen) then
-        self:RegisterUnitEvent("UNIT_AURA", "player")
-    end
-
     if (config.hp.show) then
         self:RegisterUnitEvent("UNIT_HEALTH", "player")
         self:RegisterUnitEvent("UNIT_MAXHEALTH", "player")
@@ -254,10 +238,6 @@ function nPower_OnEvent(self, event, ...)
 
             nPower:UpdateHealthTextLocation(self, nump)
         end
-    end
-
-    if (self.mpreg and (event == "UNIT_AURA" or event == "PLAYER_ENTERING_WORLD")) then
-        self.mpreg:SetText(GetRealMpFive())
     end
 
     if (self.HPText) then
@@ -363,15 +343,6 @@ function nPower:SetupPower(self)
     self.Power.Above:SetWidth(14)
     self.Power.Above:SetTexture([[Interface\AddOns\nPower\media\textureArrowAbove]])
     self.Power.Above:SetPoint("BOTTOM", self.Power.Below, "TOP", 0, self.Power:GetHeight())
-
-    if (config.showCombatRegen) then
-        self.mpreg = self.Power:CreateFontString(nil, "ARTWORK")
-        self.mpreg:SetFont(config.valueFont, 12, "THINOUTLINE")
-        self.mpreg:SetShadowOffset(0, 0)
-        self.mpreg:SetPoint("TOP", self.Power.Below, "BOTTOM", 0, 4)
-        self.mpreg:SetParent(self.Power)
-        self.mpreg:Show()
-    end
 end
 
 function nPower:SetupExtraPoints(self)

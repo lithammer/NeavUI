@@ -6,8 +6,6 @@ nPower.Config = {
     sizeWidth = 200,
     scale = 1.0,
 
-    showCombatRegen = true,
-
     activeAlpha = 1,
     inactiveAlpha = 0.3,
     emptyAlpha = 0,
