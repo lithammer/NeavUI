@@ -3,9 +3,7 @@ local addon, ns = ...
 
 local LSM = LibStub("LibSharedMedia-3.0")
 
-local GetTime = GetTime
 local floor, fmod = floor, math.fmod
-local sort = table.sort
 local day, hour, minute = 86400, 3600, 60
 
 ns.FormatTime = function(time)
@@ -119,7 +117,7 @@ ns.CreateAnchor = function(name)
     anchorFrame:SetMovable(true)
     anchorFrame:SetClampedToScreen(true)
     anchorFrame:SetUserPlaced(true)
-    anchorFrame:SetBackdrop({bgFile="Interface\\MINIMAP\\TooltipBackdrop-Background",})
+    anchorFrame:SetBackdrop({bgFile="Interface\\MINIMAP\\TooltipBackdrop-Background"})
     anchorFrame:CreateBeautyBorder(12)
     anchorFrame:EnableMouse(true)
     anchorFrame:RegisterForDrag("LeftButton")
@@ -376,9 +374,9 @@ function ns.CreateSlider(cfg)
         ns.LockInCombat(slider)
     end
 
-    slider:SetScript("OnValueChanged", function(self, value)
-        slider.text:SetFormattedText(cfg.fromatString, value)
-        slider.value = value
+    slider:SetScript("OnValueChanged", function(self, newValue)
+        slider.text:SetFormattedText(cfg.fromatString, newValue)
+        slider.value = newValue
 
         if cfg.func then
             cfg.func(self)

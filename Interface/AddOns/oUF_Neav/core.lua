@@ -88,7 +88,7 @@ local function UpdateThreat(self)
         return
     end
 
-    local isTanking, status, scaledPercent, rawPercentage = UnitDetailedThreatSituation("player", "target")
+    local isTanking, status, scaledPercent = UnitDetailedThreatSituation("player", "target")
     local display = scaledPercent
 
     if isTanking then
@@ -197,9 +197,8 @@ end
 
 local function StatusFlash_OnUpdate(self, elapsed)
     if self.StatusFlash:IsShown() then
-        local alpha = 255
         local counter = self.statusCounter + elapsed
-        local sign    = self.statusSign
+        local sign = self.statusSign
 
         if counter > 0.5 then
             sign = -sign
@@ -208,6 +207,7 @@ local function StatusFlash_OnUpdate(self, elapsed)
         counter = mod(counter, 0.5)
         self.statusCounter = counter
 
+        local alpha
         if sign == 1 then
             alpha = (55  + (counter * 400)) / 255
         else

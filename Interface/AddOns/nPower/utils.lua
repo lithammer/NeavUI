@@ -2,7 +2,6 @@
 local _, nPower = ...
 local config = nPower.Config
 
-local format = string.format
 local floor = math.floor
 
 function nPower:FormatValue(self)

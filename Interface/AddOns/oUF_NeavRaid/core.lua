@@ -192,7 +192,7 @@ local function CreateIndicators(self, unit)
     end
 
     if buffs then
-        for key, spell in pairs(buffs) do
+        for _, spell in pairs(buffs) do
 
             local icon = CreateFrame("Frame", "$parentSpell"..spell[1], self.AuraWatch)
             icon:SetWidth(nRaidDB.indicatorSize)

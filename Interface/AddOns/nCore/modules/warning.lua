@@ -1,5 +1,3 @@
-local _, nCore = ...
-
 RaidWarningFrame:ClearAllPoints()
 RaidWarningFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 260)
 RaidWarningFrame:SetScale(1.1)

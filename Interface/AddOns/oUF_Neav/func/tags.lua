@@ -4,7 +4,6 @@ local _, ns = ...
 local len = string.len
 local gsub = string.gsub
 local format = string.format
-local match = string.match
 local floor = math.floor
 
 local tags = oUF.Tags.Methods

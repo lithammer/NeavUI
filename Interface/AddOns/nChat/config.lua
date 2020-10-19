@@ -1,4 +1,3 @@
-
 local _, nChat = ...
 
 nChat.Config = {

@@ -1,4 +1,4 @@
-local parent, ns = ...
+local _, ns = ...
 local oUF = ns.oUF or oUF
 
 local Update = function(self, event, unit)
@@ -7,7 +7,7 @@ local Update = function(self, event, unit)
     end
 
     local threat = self.ThreatGlow
-    local unit = unit or self.unit
+    unit = unit or self.unit
 
     local status
 

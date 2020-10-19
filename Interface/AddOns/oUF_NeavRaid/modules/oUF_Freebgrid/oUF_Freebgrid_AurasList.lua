@@ -3,7 +3,6 @@
     -- http://www.wowinterface.com/downloads/info12264-oUF_Freebgrid.html
 
 local _, ns = ...
-local oUF = ns.oUF or oUF
 
 local spellcache = setmetatable({}, {__index=function(t,v)
     local a = {GetSpellInfo(v)}

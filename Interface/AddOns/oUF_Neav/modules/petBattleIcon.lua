@@ -17,8 +17,6 @@ local _, ns = ...
 local oUF = ns.oUF or oUF
 
 local function Update(self, event)
-    local element = self.petBattleIcon
-
     if UnitIsWildBattlePet(self.unit) or UnitIsBattlePetCompanion(self.unit) then
         local petType = UnitBattlePetType(self.unit)
         self.petBattleIcon:SetTexture("Interface\\TargetingFrame\\PetBadge-"..PET_TYPE_SUFFIX[petType])

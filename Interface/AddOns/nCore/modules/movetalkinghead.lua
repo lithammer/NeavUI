@@ -2,7 +2,7 @@ local _, nCore = ...
 
 function nCore:MoveTalkingHeads()
     if not nCoreDB.MoveTalkingHeads then return end
-    
+
     local L = nCore.L
 
     local location = {"LEFT", UIParent, "LEFT", 0, 0}

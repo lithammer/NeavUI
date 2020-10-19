@@ -12,8 +12,6 @@ function nCore:AltBuy()
     hooksecurefunc("MerchantItemButton_OnModifiedClick", function(self, ...)
         if not nCoreDB.AltBuy then return end
         if IsAltKeyDown() then
-            local maxStack = select(8, GetItemInfo(GetMerchantItemLink(self:GetID())))
-
             local numAvailable = select(5, GetMerchantItemInfo(self:GetID()))
 
             -- -1 means an item has unlimited supply.

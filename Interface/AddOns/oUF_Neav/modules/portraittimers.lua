@@ -14,7 +14,6 @@ ns.PortraitTimerDB = {
     [46924] = true,    -- Bladestorm
     [104773] = true,   -- Unending Resolve
     [18499] = true,    -- Berserker Rage
-    [47585] = true,    -- Dispersion
     [196555] = true,   -- Netherwalk (Talent)
 
         -- Stuns

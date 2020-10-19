@@ -193,7 +193,7 @@ Options:SetScript("OnShow", function()
         }
     }
 
-    for i, control in pairs(UIControls) do
+    for _, control in pairs(UIControls) do
         if control.type == "Label" then
             nCore:CreateLabel(control)
         elseif control.type == "CheckBox" then

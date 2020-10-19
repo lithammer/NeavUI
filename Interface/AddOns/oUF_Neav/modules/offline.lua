@@ -1,5 +1,4 @@
-
-local parent, ns = ...
+local _, ns = ...
 local oUF = ns.oUF or _G.oUF
 
 local Update = function(self, event, unit)
@@ -7,7 +6,7 @@ local Update = function(self, event, unit)
         return
     end
 
-    local unit = unit or self.unit
+    unit = unit or self.unit
 
     if UnitIsConnected(unit) then
         self.OfflineIcon:Hide()

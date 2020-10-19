@@ -1,5 +1,3 @@
-local _, nCore = ...
-
 -- nOrderHall: Hides default Blizzard order hall ui bar and replaces it with a custom version.
 
     -- Toggle Display Bar
@@ -28,7 +26,7 @@ local function SetTroops()
 
     local followerTotal = 0
 
-    for i, follower in ipairs(followerInfo) do
+    for _, follower in ipairs(followerInfo) do
       if follower.isCollected then
         if follower.isTroop then
             followerTotal = followerTotal + 1
@@ -87,7 +85,7 @@ function nOrderHall_OnEnter(self)
     local sort_func = function( a,b ) return a.name < b.name end
     table.sort( followerInfo, sort_func )
 
-    for i, follower in ipairs(followerInfo) do
+    for _, follower in ipairs(followerInfo) do
         if follower.isCollected then
             if follower.isTroop then
                 GameTooltip:AddDoubleLine(follower.name, follower.durability .. "/" .. follower.maxDurability, 1,1,1, 1,1,1)

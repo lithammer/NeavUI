@@ -2,21 +2,14 @@
 local _, ns = ...
 local config = ns.Config
 
-local floor = floor
 local select = select
-local tonumber = tonumber
 
-local modf = math.modf
 local fmod = math.fmod
 local floor = math.floor
 local gsub = string.gsub
 local format = string.format
 
-local GetTime = GetTime
 local day, hour, minute = 86400, 3600, 60
-
-local charTexPath = "Interface\\CharacterFrame\\"
-local tarTexPath = "Interface\\TargetingFrame\\"
 
 local function FormatValue(value)
     if value < 1e3 then

@@ -1,8 +1,6 @@
 
-local addon, ns = ...
+local _, ns = ...
 local L = ns.L
-
-local floor = math.floor
 
 local Options = CreateFrame("Frame", "nRaidOptions", InterfaceOptionsFramePanelContainer)
 Options.name = "oUF_|cffCC3333N|r|cffE53300e|r|cffFF4D00a|r|cffFF6633v|rRaid"
@@ -314,7 +312,7 @@ Options:SetScript("OnShow", function()
         },
     }
 
-    for i, control in pairs(UIControls) do
+    for _, control in pairs(UIControls) do
         if control.type == "Label" then
             ns.CreateLabel(control)
         elseif control.type == "CheckBox" then

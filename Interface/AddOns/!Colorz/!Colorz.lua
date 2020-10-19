@@ -60,22 +60,21 @@ hooksecurefunc("ReputationFrame_Update", function(showLFGPulse)
 end)
 
 hooksecurefunc(ReputationBarMixin, "Update", function(self)
-    local name, reaction, minBar, maxBar, value, factionID = GetWatchedFactionInfo();
-    local colorIndex = reaction;
-    local friendshipID = GetFriendshipReputation(factionID);
+    local _, reaction, _, _, _, factionID = GetWatchedFactionInfo()
+    local colorIndex = reaction
+    local friendshipID = GetFriendshipReputation(factionID)
 
     if friendshipID then
-        colorIndex = 5;     -- always color friendships green
+        colorIndex = 5     -- always color friendships green
     end
 
-    local color = CUSTOM_FACTION_BAR_COLORS[colorIndex];
-    self:SetBarColor(color.r, color.g, color.b, 1);
+    local color = CUSTOM_FACTION_BAR_COLORS[colorIndex]
+    self:SetBarColor(color.r, color.g, color.b, 1)
 end)
 
     -- Override the default GameTooltip_UnitColor function.
 
 function GameTooltip_UnitColor(unit)
-
     local r, g, b
 
     if UnitIsDead(unit) or UnitIsGhost(unit) or UnitIsTapDenied(unit) then

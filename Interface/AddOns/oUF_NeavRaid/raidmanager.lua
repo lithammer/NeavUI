@@ -1,6 +1,6 @@
 -- Forked from rRaidManager by Zork
 
-local addon, ns = ...
+local addon, _ = ...
 
 local backdrop = {
     bgFile = "Interface\\Buttons\\WHITE8x8",

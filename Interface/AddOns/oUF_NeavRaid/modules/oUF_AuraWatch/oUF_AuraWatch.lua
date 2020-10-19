@@ -202,17 +202,17 @@ do
         if frame.unit ~= unit then return end
         local watch = frame.AuraWatch
         local index, icons = 1, watch.watched
-        local _, name, texture, count, duration, expire, caster, key, icon, spellid
         local filter = "HELPFUL"
         local guid = UnitGUID(unit)
         if not GUIDs[guid] then SetupGUID(guid) end
 
-        for key, icon in pairs(icons) do
+        for _, icon in pairs(icons) do
             icon:Hide()
         end
 
+        local _, name, _, count, duration, expire, caster, icon, spellid
         while true do
-            name, texture, count, _, duration, expire, caster, _, _, spellid = UnitAura(unit, index, filter)
+            name, _, count, _, duration, expire, caster, _, _, spellid = UnitAura(unit, index, filter)
             if not name then
                 if filter == "HELPFUL" then
                     filter = "HARMFUL"
@@ -221,12 +221,11 @@ do
                     break
                 end
             else
-                key = spellid
-                icon = icons[key]
+                icon = icons[spellid]
                 if icon and not icon.ignore and (icon.anyUnit or (caster and icon.fromUnits[caster])) then
                     ResetIcon(watch, icon, count, duration, expire)
-                    GUIDs[guid][key] = true
-                    found[key] = true
+                    GUIDs[guid][spellid] = true
+                    found[spellid] = true
                 end
                 index = index + 1
             end

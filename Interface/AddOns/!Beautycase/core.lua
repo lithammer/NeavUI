@@ -97,7 +97,7 @@ local function SetBeautyBorderPadding(self, uL1, ...)
 end
 
 local function SetBeautyBorderColor(self, r, ...)
-    local r, g, b, a = r, ...
+    local g, b, a = ...
 
     if (type(r) == "table") then
         r, g, b, a = unpack(r)
@@ -115,7 +115,7 @@ local function SetBeautyBorderColor(self, r, ...)
 end
 
 local function SetBeautyShadowColor(self, r, ...)
-    local r, g, b, a = r, ...
+    local g, b, a = ...
 
     if (type(r) == "table") then
         r, g, b, a = unpack(r)

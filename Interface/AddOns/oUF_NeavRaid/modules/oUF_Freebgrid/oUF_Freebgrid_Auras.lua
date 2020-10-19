@@ -5,10 +5,13 @@
 local _, ns = ...
 local oUF = ns.oUF or oUF
 
-local _, class = UnitClass("player")
-local buffcolor = { r = 0.0, g = 1.0, b = 1.0 }
+local floor = floor
+local fmod = math.fmod
 local GetTime = GetTime
 local UnitBuff, UnitDebuff = UnitBuff, UnitDebuff
+
+local _, class = UnitClass("player")
+local buffcolor = { r = 0.0, g = 1.0, b = 1.0 }
 
 local backdrop = {
     bgFile = "Interface\\Buttons\\WHITE8x8",
@@ -36,8 +39,6 @@ local BBackdrop = {
     },
 }
 
-local GetTime = GetTime
-local floor, fmod = floor, math.fmod
 local day, hour, minute = 86400, 3600, 60
 
 local FormatTime = function(s)
@@ -72,7 +73,7 @@ local CreateAuraIcon = function(auras)
         overlay:SetBackdropBorderColor(1, 1, 1, 1)
         overlay:SetFrameLevel(6)
 
-        local font, fontsize = GameFontNormalSmall:GetFont()
+        local font, _ = GameFontNormalSmall:GetFont()
         local count = overlay:CreateFontString(nil, "OVERLAY")
         count:SetFont(font, 10, "THINOUTLINE")
         count:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 1, 1)
@@ -87,7 +88,7 @@ local CreateAuraIcon = function(auras)
         button.parent = auras
         button.icon = icon
         button.count = count
-        button.cd = cd
+        -- button.cd = cd
         button:Hide()
 
         return button

@@ -56,10 +56,10 @@ function nCore:ErrorFilter()
         [193] = true, -- aka LE_GAME_ERR_NO_ATTACK_TARGET, variable version doesn"t work.
     }
 
-    local event = CreateFrame("Frame")
-    event:RegisterEvent("UI_ERROR_MESSAGE")
+    local f = CreateFrame("Frame")
+    f:RegisterEvent("UI_ERROR_MESSAGE")
 
-    event:SetScript("OnEvent", function(self, event, messageType, message)
+    f:SetScript("OnEvent", function(self, event, messageType, message)
         if nCoreDB.ErrorFilter and not ignoreList[messageType] then
             UIErrorsFrame:AddMessage(message, 1, .1, .1)
         elseif not nCoreDB.ErrorFilter then

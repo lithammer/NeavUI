@@ -2,8 +2,6 @@
 local _, nMinimap = ...
 local cfg = nMinimap.Config
 
-local select = select
-local ceil = math.ceil
 local modf = math.modf
 local format = string.format
 local sort = table.sort

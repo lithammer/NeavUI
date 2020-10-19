@@ -9,9 +9,6 @@ local format = string.format
 local match = string.match
 local upper = string.upper
 local floor = floor
-local sub = sub
-local gsub = gsub
-local find = find
 
 local UnitName = UnitName
 local UnitLevel = UnitLevel
@@ -128,7 +125,7 @@ if cfg.itemqualityBorderColor then
     }) do
         if tooltip.beautyBorder then
             tooltip:HookScript("OnTooltipSetItem", function(self)
-                local name, item = self:GetItem()
+                local _, item = self:GetItem()
                 if item then
                     local quality = select(3, GetItemInfo(item))
                     if quality then
@@ -455,7 +452,7 @@ local function CreateAnchor()
     anchorFrame:SetMovable(true)
     anchorFrame:SetClampedToScreen(true)
     anchorFrame:SetUserPlaced(true)
-    anchorFrame:SetBackdrop({bgFile=[[Interface\MINIMAP\TooltipBackdrop-Background]],})
+    anchorFrame:SetBackdrop({bgFile=[[Interface\MINIMAP\TooltipBackdrop-Background]]})
     anchorFrame:EnableMouse(true)
     anchorFrame:RegisterForDrag("LeftButton")
     anchorFrame:Hide()

@@ -1,4 +1,3 @@
-
 local _, nBuff = ...
 
 nBuff.Config = {

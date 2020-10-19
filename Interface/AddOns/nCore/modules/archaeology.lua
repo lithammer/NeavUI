@@ -46,7 +46,7 @@ function nCore:ArchaeologyHelper()
         if button ~= "RightButton" or nCore:IsTaintable() or not nCoreDB.ArchaeologyHelper then return end
 
         local mapID = C_Map.GetBestMapForUnit("player")
-        
+
         if not mapID then return end
 
         if ArchaeologyMapUpdateAll(mapID) > 0  and CanScanResearchSite() and GetSpellCooldown(SURVEY_SPELL_ID) == 0 and not IsEquippedItemType(FISHING_POLE) then

@@ -3,8 +3,7 @@ local _, ns = ...
 local config = ns.Config
 
 local GetTime = GetTime
-local floor, fmod = floor, math.fmod
-local day, hour, minute = 86400, 3600, 60
+local floor = floor
 
 local function ExactTime(time)
     return format("%.1f", time), (time * 100 - floor(time * 100))/100

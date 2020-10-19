@@ -1,4 +1,4 @@
-local addonName, addon = ...
+local _, addon = ...
 local frame = CreateFrame("Button", nil, UIParent)
 local watches = {}
 
@@ -48,7 +48,7 @@ local onUpdate = function(self, elapsed)
     end
 end
 
-local matches, match, class, classId
+local matches, classId
 local onEnter = function()
     GameTooltip:SetOwner(frame, "ANCHOR_BOTTOMLEFT")
 

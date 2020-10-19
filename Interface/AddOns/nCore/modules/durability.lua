@@ -65,7 +65,6 @@ function nCore:Durability()
         local overAll = 1
 
         for i = 1, #slotInfo do
-            local id = GetInventorySlotInfo(slotInfo[i][2] .. "Slot")
             local curr, max = GetInventoryItemDurability(slotInfo[i][1])
             local itemSlot = _G["Character"..slotInfo[i][2].."Slot"]
 

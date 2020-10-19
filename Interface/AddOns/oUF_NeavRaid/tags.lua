@@ -1,6 +1,4 @@
-
 local _, ns = ...
-local config = ns.Config
 
 local tags = oUF.Tags.Methods
 local events = oUF.Tags.Events

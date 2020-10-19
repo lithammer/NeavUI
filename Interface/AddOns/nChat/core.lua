@@ -176,7 +176,7 @@ local function SkinTab(self)
         tabText:SetShadowOffset(1, -1)
     end
 
-    local a1, a2, a3, a4, a5 = tabText:GetPoint()
+    local a1, a2, a3, a4 = tabText:GetPoint()
     tabText:SetPoint(a1, a2, a3, a4, 1)
 
     local s1, s2, s3 = unpack(cfg.tab.specialColor)

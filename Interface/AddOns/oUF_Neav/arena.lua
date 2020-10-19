@@ -23,8 +23,7 @@ local function UpdatePower(Power, unit, cur, min, max)
 end
 
 local function FilterArenaBuffs(...)
-
-    local icons, unit, icon, name, rank, texture, count, dtype, duration, timeLeft, caster = ...
+    local _, _, _, name = ...
     local buffList = config.units.arena.buffList
 
     if buffList[name] then

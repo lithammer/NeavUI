@@ -129,7 +129,7 @@ function ns.CreateCastbars(self, unit)
 
             if unit == "player" then
                 if self.Latency then
-                    local down, up, lagHome, lagWorld = GetNetStats()
+                    local _, _, lagHome, lagWorld = GetNetStats()
                     local avgLag = (lagHome + lagWorld) / 2
 
                     self.Latency:ClearAllPoints()
