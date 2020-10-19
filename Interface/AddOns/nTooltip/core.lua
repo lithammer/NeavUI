@@ -72,7 +72,7 @@ local function ApplyTooltipStyle(self)
     end
 
     if beautyBorderLoaded then
-        if self.backdropColor then
+        if self.HasBackdropInfo then
             self:SetBackdrop({
                 bgFile = nil,
                 edgeFile = nil,
