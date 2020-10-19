@@ -304,14 +304,17 @@ hooksecurefunc("PossessBar_UpdateState", function()
 end)
 
 local ActionBarActionButtonMixinHook_OnLoad = function(self)
+    ActionBarActionButtonMixinHook_ShowGrid(self)
+    ActionBarActionButtonMixinHook_UpdateCount(self)
+    ActionBarActionButtonMixinHook_UpdateHotkeys(self)
+    ActionBarActionButtonMixinHook_UpdateUsable(self)
+
     hooksecurefunc(self, "ShowGrid", ActionBarActionButtonMixinHook_ShowGrid)
     hooksecurefunc(self, "Update", ActionBarActionButtonMixinHook_Update)
     hooksecurefunc(self, "UpdateCount", ActionBarActionButtonMixinHook_UpdateCount)
     hooksecurefunc(self, "UpdateHotkeys", ActionBarActionButtonMixinHook_UpdateHotkeys)
     hooksecurefunc(self, "UpdateUsable", ActionBarActionButtonMixinHook_UpdateUsable)
 end
-
-ActionBarActionButtonMixinHook_OnLoad(ActionBarActionButtonMixin)
 
 -- Hide Possess Frame Background
 
