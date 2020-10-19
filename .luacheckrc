@@ -106,6 +106,11 @@ stds.wow = {
         C_SpecializationInfo = {
             fields = {}
         },
+        C_Texture = {
+            fields = {
+                "GetAtlasInfo",
+            }
+        },
         C_Timer = {
             fields = {}
         },
@@ -113,7 +118,9 @@ stds.wow = {
             fields = {}
         },
         C_VignetteInfo = {
-            fields = {}
+            fields = {
+                "GetVignetteInfo",
+            }
         },
 
         "ACTION_HIGHLIGHT_MARKS",
