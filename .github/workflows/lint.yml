@@ -1,0 +1,26 @@
+name: Lint
+
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  luacheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: install luarocks
+        run: sudo apt install --no-install-recommends luarocks
+
+      - name: install luacheck
+        run: sudo luarocks install luacheck
+
+      - name: register problem matcher
+        run: echo "::add-matcher::.github/workflows/problem_matchers/luacheck.json"
+
+      - name: run luacheck
+        run: luacheck --formatter=plain Interface/AddOns
