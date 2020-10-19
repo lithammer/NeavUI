@@ -3,27 +3,24 @@ local _, nCore = ...
 function nCore:MapCoords()
     local unpack = unpack
 
-    -- Temp fix until Blizzard removed the ! icon from the global string.
-    local _, MOUSE_LABEL = strsplit("1", MOUSE_LABEL, 2)
-
     local cfg = {
         location = {"BOTTOMLEFT", WorldMapFrame, "BOTTOMLEFT", 10, 0},
     }
 
     local MapRects = {};
-    local TempVec2D = CreateVector2D(0,0);
+    local TempVec2D = CreateVector2D(0,0)
     local function GetPlayerMapPos(mapID)
-        local R,P,_ = MapRects[mapID],TempVec2D;
+        local R,P,_ = MapRects[mapID],TempVec2D
         if not R then
-            R = {};
-            _, R[1] = C_Map.GetWorldPosFromMapPos(mapID,CreateVector2D(0,0));
-            _, R[2] = C_Map.GetWorldPosFromMapPos(mapID,CreateVector2D(1,1));
-            R[2]:Subtract(R[1]);
-            MapRects[mapID] = R;
+            R = {}
+            _, R[1] = C_Map.GetWorldPosFromMapPos(mapID, CreateVector2D(0, 0))
+            _, R[2] = C_Map.GetWorldPosFromMapPos(mapID, CreateVector2D(1, 1))
+            R[2]:Subtract(R[1])
+            MapRects[mapID] = R
         end
-        P.x, P.y = UnitPosition("Player");
-        P:Subtract(R[1]);
-        return (1/R[2].y)*P.y, (1/R[2].x)*P.x;
+        P.x, P.y = UnitPosition("Player")
+        P:Subtract(R[1])
+        return (1 / R[2].y) * P.y, (1 / R[2].x) * P.x
     end
 
     local nCore_CoordsFrame = CreateFrame("Frame", "nCore_Coords", WorldMapFrame, "nCore_Coords")
