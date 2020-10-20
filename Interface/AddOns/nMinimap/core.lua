@@ -59,7 +59,7 @@ GarrisonLandingPageMinimapButton:ClearAllPoints()
 GarrisonLandingPageMinimapButton:SetPoint("BOTTOMLEFT", Minimap, 0, 0)
 
 hooksecurefunc("GarrisonLandingPageMinimapButton_UpdateIcon", function(self)
-    if C_Garrison.GetLandingPageGarrisonType() == LE_GARRISON_TYPE_8_0 then
+    if C_Garrison.GetLandingPageGarrisonType() == Enum.GarrisonType.Type_8_0 then
         GarrisonLandingPageMinimapButton:SetScale(.70)
     else
         GarrisonLandingPageMinimapButton:SetScale(1)
