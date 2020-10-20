@@ -5,7 +5,7 @@ function nCore:Dressroom()
 
     DressUpFrameCancelButton:SetText("Naked")
     DressUpFrameCancelButton:SetScript("OnClick", function()
-        DressUpModel:Undress()
+        DressUpFrame.ModelScene:GetPlayerActor():Undress()
     end)
     DressUpFrameResetButton:SetText("Clothed")
 end
