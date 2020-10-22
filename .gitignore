@@ -7,8 +7,9 @@
 /Utils
 /WTF
 
-.build.info
-.patch.result
+/.build.info
+/.flavor.info
+/.patch.result
 
 *.app
 *.exe
