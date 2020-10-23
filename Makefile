@@ -18,12 +18,12 @@ clean:
 	$(RM) *.zip
 
 $(NMAINBAR_ZIP):
-	(cd Interface/AddOns; zip -r "$(CURDIR)/$@" !Beautycase nMainbar -x '*.git*' '.DS_Store')
+	cd Interface/AddOns; zip -r "$(CURDIR)/$@" !Beautycase nMainbar -x '.*' '*/.*'
 	zip $@ LICENSE
 
 $(NEAVUI_ZIP):
-	zip -r $@ Fonts Interface LICENSE -x '*.git*' '.DS_Store'
+	zip -r $@ Fonts Interface LICENSE -x '.*' '*/.*'
 
 $(OUF_NEAV_ZIP):
-	(cd Interface/AddOns; zip -r "$(CURDIR)/$@" !Beautycase oUF oUF_Neav oUF_NeavRaid -x '*.git*' '.DS_Store')
+	cd Interface/AddOns; zip -r "$(CURDIR)/$@" !Beautycase oUF oUF_Neav oUF_NeavRaid -x '.*' '*/.*'
 	zip $@ LICENSE
