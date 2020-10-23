@@ -7,20 +7,25 @@ function nCore:MapCoords()
         location = {"BOTTOMLEFT", WorldMapFrame, "BOTTOMLEFT", 10, 0},
     }
 
-    local MapRects = {};
-    local TempVec2D = CreateVector2D(0,0)
+    local mapRects = {}
+    local tempVec2D = CreateVector2D(0, 0)
     local function GetPlayerMapPos(mapID)
-        local R,P,_ = MapRects[mapID],TempVec2D
-        if not R then
-            R = {}
-            _, R[1] = C_Map.GetWorldPosFromMapPos(mapID, CreateVector2D(0, 0))
-            _, R[2] = C_Map.GetWorldPosFromMapPos(mapID, CreateVector2D(1, 1))
-            R[2]:Subtract(R[1])
-            MapRects[mapID] = R
+        tempVec2D.x, tempVec2D.y = UnitPosition("player")
+        if not tempVec2D.x then return end
+
+        local mapRect = mapRects[mapID]
+        if not mapRect then
+            local pos1 = select(2, C_Map.GetWorldPosFromMapPos(mapID, CreateVector2D(0, 0)))
+            local pos2 = select(2, C_Map.GetWorldPosFromMapPos(mapID, CreateVector2D(1, 1)))
+            if not pos1 or not pos2 then return end
+            mapRect = {pos1, pos2}
+            mapRect[2]:Subtract(mapRect[1])
+
+            mapRects[mapID] = mapRect
         end
-        P.x, P.y = UnitPosition("Player")
-        P:Subtract(R[1])
-        return (1 / R[2].y) * P.y, (1 / R[2].x) * P.x
+        tempVec2D:Subtract(mapRect[1])
+
+        return tempVec2D.y/mapRect[2].y, tempVec2D.x/mapRect[2].x
     end
 
     local nCore_CoordsFrame = CreateFrame("Frame", "nCore_Coords", WorldMapFrame, "nCore_Coords")
@@ -31,7 +36,7 @@ function nCore:MapCoords()
     end)
 
     nCore_CoordsFrame:SetScript("OnUpdate", function(self, elapsed)
-        if IsInInstance() or not nCoreDB.MapCoords  then
+        if IsInInstance() or not nCoreDB.MapCoords then
             self.Mouse.Text:SetText("")
             self.Player.Text:SetText("")
             return
