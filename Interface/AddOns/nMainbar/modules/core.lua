@@ -46,13 +46,14 @@ end
 
 -- Fill Status Bar Gap
 
-if not MainMenuBarArtFrame.BottomArt then
-    MainMenuBarArtFrame.BottomArt = MainMenuBarArtFrame:CreateTexture("MainMenuBarBottomArt", "OVERLAY")
-    MainMenuBarArtFrame.BottomArt:SetPoint("LEFT", MainMenuBarArtFrame.LeftEndCap, "RIGHT", -30, 0)
-    MainMenuBarArtFrame.BottomArt:SetPoint("RIGHT", MainMenuBarArtFrame.RightEndCap, "LEFT", 30, 0)
-    MainMenuBarArtFrame.BottomArt:SetPoint("BOTTOM", UIParent)
-    MainMenuBarArtFrame.BottomArt:SetColorTexture(0.40 ,0.40 ,0.40, 1.0)
-    MainMenuBarArtFrame.BottomArt:SetHeight(1)
+local MainMenuBarArtFrame_BottomArt = nil
+if not MainMenuBarArtFrame_BottomArt then
+    MainMenuBarArtFrame_BottomArt = MainMenuBarArtFrame:CreateTexture("MainMenuBarBottomArt", "OVERLAY")
+    MainMenuBarArtFrame_BottomArt:SetPoint("LEFT", MainMenuBarArtFrame.LeftEndCap, "RIGHT", -30, 0)
+    MainMenuBarArtFrame_BottomArt:SetPoint("RIGHT", MainMenuBarArtFrame.RightEndCap, "LEFT", 30, 0)
+    MainMenuBarArtFrame_BottomArt:SetPoint("BOTTOM", UIParent)
+    MainMenuBarArtFrame_BottomArt:SetColorTexture(0.40 ,0.40 ,0.40, 1.0)
+    MainMenuBarArtFrame_BottomArt:SetHeight(1)
 end
 
 --  Update Action Bars

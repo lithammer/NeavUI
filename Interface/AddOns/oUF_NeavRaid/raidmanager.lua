@@ -33,7 +33,7 @@ local WORLD_RAID_MARKERS_TOOLTIP = {
     WORLD_MARKER8,
 }
 
-local button, leftButton, previousButton
+local leftButton, previousButton
 
 local manager = CreateFrame("Frame", addon.."ControlsFrame", UIParent, "SecureHandlerStateTemplate")
 Mixin(manager, BackdropTemplateMixin)
@@ -130,6 +130,8 @@ manager:SetScript("OnEvent", DisableBlizzard)
 RegisterStateDriver(manager, "visibility", "[group] show; hide")
 
 manager:CreateWorldMarkerButtons()
+
+local button
 
 -- Clear all world markers button.
 button = manager:CreateButton(addon.."ButtonWMCancel", "|TInterface\\Buttons\\UI-GroupLoot-Pass-Up:14:14:0:0|t", REMOVE_WORLD_MARKERS)

@@ -292,7 +292,11 @@ local function AddMouseoverTarget(self, unit)
     end
 end
 
-GameTooltip.inspectCache = {}
+-- Inspect request sync variables.
+local inspectCache = {}
+local inspectRefresh = true
+local inspectRequestSent = false
+local blockInspectRequests = false
 
 GameTooltip:HookScript("OnTooltipSetUnit", function(self, ...)
     local _, unit = self:GetUnit()
@@ -305,26 +309,26 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self, ...)
     if UnitExists(unit) and UnitName(unit) ~= UNKNOWN then
         local specIcon = ""
         local lastUpdate = 30
-        for index, _ in pairs(self.inspectCache) do
-            local inspectCache = self.inspectCache[index]
-            if inspectCache.GUID == UnitGUID(unit) then
-                specIcon = inspectCache.specIcon or ""
-                lastUpdate = inspectCache.lastUpdate and math.abs(inspectCache.lastUpdate - floor(GetTime())) or 30
+        for index, _ in pairs(inspectCache) do
+            local inspectUnit = inspectCache[index]
+            if inspectUnit.GUID == UnitGUID(unit) then
+                specIcon = inspectUnit.specIcon or ""
+                lastUpdate = inspectUnit.lastUpdate and math.abs(inspectUnit.lastUpdate - floor(GetTime())) or 30
             end
         end
 
             -- Fetch Inspect Information
 
         if unit and CanInspect(unit) then
-            if not self.inspectRefresh and lastUpdate >= 30 and not self.blockInspectRequests then
-                if not self.blockInspectRequests then
-                    self.inspectRequestSent = true
+            if not inspectRefresh and lastUpdate >= 30 and not blockInspectRequests then
+                if not blockInspectRequests then
+                    inspectRequestSent = true
                     NotifyInspect(unit)
                 end
             end
         end
 
-        self.inspectRefresh = false
+        inspectRefresh = false
 
         local name, realm = UnitName(unit)
 
@@ -504,12 +508,12 @@ GameTooltip:SetScript("OnEvent", function(self, event, GUID)
         return
     end
 
-    if self.blockInspectRequests then
-        self.inspectRequestSent = false
+    if blockInspectRequests then
+        inspectRequestSent = false
     end
 
-    if UnitGUID(unit) ~= GUID or not self.inspectRequestSent then
-        if not self.blockInspectRequests then
+    if UnitGUID(unit) ~= GUID or not inspectRequestSent then
+        if not blockInspectRequests then
             ClearInspectPlayer()
         end
         return
@@ -521,11 +525,11 @@ GameTooltip:SetScript("OnEvent", function(self, event, GUID)
     local iconMarkup = CreateTextureMarkup(icon, 64,64, 12,12, 0.10,.90,0.10,0.90, 0,0)
 
     local matchFound
-    for index, _ in pairs(self.inspectCache) do
-        local inspectCache = self.inspectCache[index]
-        if inspectCache.GUID == GUID then
-            inspectCache.specIcon = icon and " "..iconMarkup or ""
-            inspectCache.lastUpdate = floor(now)
+    for index, _ in pairs(inspectCache) do
+        local inspectUnit = inspectCache[index]
+        if inspectUnit.GUID == GUID then
+            inspectUnit.specIcon = icon and " "..iconMarkup or ""
+            inspectUnit.lastUpdate = floor(now)
             matchFound = true
         end
     end
@@ -536,20 +540,20 @@ GameTooltip:SetScript("OnEvent", function(self, event, GUID)
             ["specIcon"] = icon and " "..iconMarkup or "",
             ["lastUpdate"] = floor(now)
         }
-        table.insert(self.inspectCache, GUIDInfo)
+        table.insert(inspectCache, GUIDInfo)
     end
 
-    if #self.inspectCache > 30 then
-        table.remove(self.inspectCache, 1)
+    if #inspectCache > 30 then
+        table.remove(inspectCache, 1)
     end
 
-    self.inspectRefresh = true
+    inspectRefresh = true
     GameTooltip:SetUnit("mouseover")
 
-    if not self.blockInspectRequests then
+    if not blockInspectRequests then
         ClearInspectPlayer()
     end
-    self.inspectRequestSent = false
+    inspectRequestSent = false
 end)
 
 local f = CreateFrame("Frame")
@@ -557,11 +561,11 @@ f:RegisterEvent("ADDON_LOADED")
 f:SetScript("OnEvent", function(self, event)
     if IsAddOnLoaded("Blizzard_InspectUI") then
         hooksecurefunc("InspectFrame_Show", function(unit)
-            GameTooltip.blockInspectRequests = true
+            blockInspectRequests = true
         end)
 
         InspectFrame:HookScript("OnHide", function()
-            GameTooltip.blockInspectRequests = false
+            blockInspectRequests = false
         end)
 
         self:UnregisterEvent("ADDON_LOADED")

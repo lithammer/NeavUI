@@ -1,6 +1,3 @@
-
-local _, nMinimap = ...
-local cfg = nMinimap.Config
 local select = select
 
 if not IsAddOnLoaded("Blizzard_TimeManager") then

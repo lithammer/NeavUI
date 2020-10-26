@@ -1,6 +1,3 @@
-
-local _, nChat = ...
-
 local find = string.find
 local gsub = string.gsub
 
@@ -8,7 +5,7 @@ local found = false
 
 local function ColorURL(text, url)
     found = true
-    return " |H".."url"..":"..tostring(url).."|h".."|cff0099FF"..tostring(url).."|h|r "
+    return " |H".."url"..":"..tostring(url).."|h".."|cff0099FF["..tostring(url).."]|h|r "
 end
 
 local function ScanURL(frame, text, ...)
@@ -18,27 +15,27 @@ local function ScanURL(frame, text, ...)
         found = true
     end
 
-        -- 192.168.2.1:1234
+    -- 192.168.2.1:1234
     if not found then
         text = gsub(text, "(%s?)(%d%d?%d?%.%d%d?%d?%.%d%d?%d?%.%d%d?%d?:%d%d?%d?%d?%d?)(%s?)", ColorURL)
     end
-        -- 192.168.2.1
+    -- 192.168.2.1
     if not found then
         text = gsub(text, "(%s?)(%d%d?%d?%.%d%d?%d?%.%d%d?%d?%.%d%d?%d?)(%s?)", ColorURL)
     end
-        -- www.url.com:3333
+    -- www.url.com:3333
     if not found then
         text = gsub(text, "(%s?)([%w_-]+%.?[%w_-]+%.[%w_-]+:%d%d%d?%d?%d?)(%s?)", ColorURL)
     end
-        -- http://www.google.com
+    -- http://www.google.com
     if not found then
         text = gsub(text, "(%s?)(%a+://[%w_/%.%?%%=~&-\"%-]+)(%s?)", ColorURL)
     end
-        -- www.google.com
+    -- www.google.com
     if not found then
         text = gsub(text, "(%s?)(www%.[%w_/%.%?%%=~&-\"%-]+)(%s?)", ColorURL)
     end
-        -- url@domain.com
+    -- url@domain.com
     if not found then
         text = gsub(text, "(%s?)([_%w-%.~-]+@[_%w-]+%.[_%w-%.]+)(%s?)", ColorURL)
     end
@@ -58,11 +55,11 @@ local function EnableURLCopy()
 end
 hooksecurefunc("FCF_OpenTemporaryWindow", EnableURLCopy)
 
-local orig = ChatFrame_OnHyperlinkShow
-function ChatFrame_OnHyperlinkShow(frame, link, text, button)
+local _ChatFrame_OnHyperlinkShow = ChatFrame_OnHyperlinkShow
+function ChatFrame_OnHyperlinkShow(self, link, text, button) -- luacheck: ignore
     local type, value = link:match("(%a+):(.+)")
     if type == "url" then
-        local editBox = _G[frame:GetName().."EditBox"]
+        local editBox = _G[self:GetName().."EditBox"]
         if editBox then
             editBox:Show()
             editBox:SetText(value)
@@ -70,7 +67,7 @@ function ChatFrame_OnHyperlinkShow(frame, link, text, button)
             editBox:HighlightText()
         end
     else
-        orig(self, link, text, button)
+        _ChatFrame_OnHyperlinkShow(self, link, text, button)
     end
 end
 

@@ -191,21 +191,21 @@ function nPower_OnLoad(self)
     if (config.hp.show) then
         self:RegisterUnitEvent("UNIT_HEALTH", "player")
         self:RegisterUnitEvent("UNIT_MAXHEALTH", "player")
-        nPower:SetupHealth(self)
+        nPower.SetupHealth(self)
     end
 
-    nPower:SetupPower(self)
+    nPower.SetupPower(self)
 
     if nPower:HasExtraPoints(self.class) then
-        nPower:SetupExtraPoints(self)
+        nPower.SetupExtraPoints(self)
     end
 
     if (self.class == "DEATHKNIGHT" and config.showRunes) then
-        nPower:SetupRunes(self)
+        nPower.SetupRunes(self)
     end
 
     if (self.class == "PALADIN" and config.holyPower.showRunes) then
-        nPower:SetupHolyPower(self)
+        nPower.SetupHolyPower(self)
     end
 end
 
@@ -236,7 +236,7 @@ function nPower_OnEvent(self, event, ...)
                 self.extraPoints:Show()
             end
 
-            nPower:UpdateHealthTextLocation(self, nump)
+            nPower.UpdateHealthTextLocation(self, nump)
         end
     end
 
@@ -274,15 +274,15 @@ function nPower_OnEvent(self, event, ...)
         local level = ...
         if level >= PALADINPOWERBAR_SHOW_LEVEL then
             self:UnregisterEvent("PLAYER_LEVEL_UP")
-            nPower:SetupHolyPower(self)
+            nPower.SetupHolyPower(self)
         end
     elseif (event == "PLAYER_TALENT_UPDATE") then
         self.spec = GetSpecialization()
-        nPower:UpdateHealthTextLocation(self)
+        nPower.UpdateHealthTextLocation(self)
     end
 end
 
-function nPower:SetupHealth(self)
+function nPower.SetupHealth(self)
     self.HPText = self:CreateFontString(nil, "ARTWORK")
     if (config.hp.hpFontOutline) then
         self.HPText:SetFont(config.hp.hpFont, config.hp.hpFontSize, "THINOUTLINE")
@@ -292,10 +292,10 @@ function nPower:SetupHealth(self)
         self.HPText:SetShadowOffset(1, -1)
     end
     self.HPText:SetParent(self)
-    nPower:UpdateHealthTextLocation(self)
+    nPower.UpdateHealthTextLocation(self)
 end
 
-function nPower:SetupPower(self)
+function nPower.SetupPower(self)
     self.Power = CreateFrame("StatusBar", nil, UIParent)
     self.Power:SetScale(self:GetScale())
     self.Power:SetSize(config.sizeWidth, 3)
@@ -345,7 +345,7 @@ function nPower:SetupPower(self)
     self.Power.Above:SetPoint("BOTTOM", self.Power.Below, "TOP", 0, self.Power:GetHeight())
 end
 
-function nPower:SetupExtraPoints(self)
+function nPower.SetupExtraPoints(self)
     self.extraPoints = self:CreateFontString(nil, "ARTWORK")
 
     if (config.extraFontOutline) then
@@ -360,7 +360,7 @@ function nPower:SetupExtraPoints(self)
     self.extraPoints:SetPoint("CENTER", 0, 0)
 end
 
-function nPower:SetupRunes(self)
+function nPower.SetupRunes(self)
     self.Rune = {}
 
     for i = 1, 6 do
@@ -393,11 +393,11 @@ function nPower:SetupRunes(self)
     self:SetScript("OnUpdate", RuneUpdate)
 
     if (self.HPText) then
-        nPower:UpdateHealthTextLocation(self)
+        nPower.UpdateHealthTextLocation(self)
     end
 end
 
-function nPower:SetupHolyPower(self)
+function nPower.SetupHolyPower(self)
     if UnitLevel("player") < PALADINPOWERBAR_SHOW_LEVEL then
         self:RegisterEvent("PLAYER_LEVEL_UP")
         return
@@ -434,6 +434,6 @@ function nPower:SetupHolyPower(self)
     self:SetScript("OnUpdate", HolyPowerUpdate)
 
     if (self.HPText) then
-        nPower:UpdateHealthTextLocation(self)
+        nPower.UpdateHealthTextLocation(self)
     end
 end

@@ -8,7 +8,7 @@ end
     -- Pico Menu Dropdown
 
 local x, x2, n = nil, false
-local v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11
+local v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14
 local BLOCKED_IN_COMBAT = "UI Action Blocked"
 
 local menuFrame = CreateFrame("Frame", "picomenuDropDownMenu", MainMenuBar, "UIDropDownMenuTemplate")
@@ -513,17 +513,17 @@ picoMenu:GetHighlightTexture():SetAllPoints(picoMenu:GetNormalTexture())
 -- alertFrame.Text:SetText(TALENT_MICRO_BUTTON_UNSPENT_TALENTS)
 -- alertFrame:SetPoint("BOTTOM", picoMenu, "TOP", 0, 10)
 
--- picoMenu:SetScript("OnEvent", function(self, event, ...)
---     if event == "ADDON_LOADED" then
---         UpdateAddOnTable(arg1)
---     elseif event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_LEVEL_UP" or event == "PLAYER_SPECIALIZATION_CHANGED" or event == "PLAYER_TALENT_UPDATE" then
---         if C_SpecializationInfo.CanPlayerUseTalentUI() and GetNumUnspentTalents() > 0 then
---             alertFrame:Show()
---         else
---             alertFrame:Hide()
---         end
---     end
--- end)
+picoMenu:SetScript("OnEvent", function(self, event, ...)
+    if event == "ADDON_LOADED" then
+        UpdateAddOnTable()
+    elseif event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_LEVEL_UP" or event == "PLAYER_SPECIALIZATION_CHANGED" or event == "PLAYER_TALENT_UPDATE" then
+        -- if C_SpecializationInfo.CanPlayerUseTalentUI() and GetNumUnspentTalents() > 0 then
+        --     alertFrame:Show()
+        -- else
+        --     alertFrame:Hide()
+        -- end
+    end
+end)
 
 picoMenu:SetScript("OnMouseDown", function(self)
     self:GetNormalTexture():ClearAllPoints()

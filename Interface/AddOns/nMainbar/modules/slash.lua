@@ -1,5 +1,3 @@
-local _, nMainbar = ...
-
 SlashCmdList["GM"] = function()
     ToggleHelpFrame()
 end

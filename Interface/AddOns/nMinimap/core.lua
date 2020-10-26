@@ -2,8 +2,6 @@
 local _, nMinimap = ...
 local cfg = nMinimap.Config
 
-local find = string.find
-
     -- Texture Fix
 
 Minimap:SetBlipTexture("Interface\\Minimap\\ObjectIconsAtlas")
@@ -17,10 +15,10 @@ MiniMapMailFrame:SetPoint("BOTTOMRIGHT", Minimap, -4, 5)
 MiniMapMailBorder:SetTexture(nil)
 MiniMapMailIcon:SetTexture(nil)
 
-MiniMapMailFrame.Text = MiniMapMailFrame:CreateFontString(nil, "OVERLAY")
-MiniMapMailFrame.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
-MiniMapMailFrame.Text:SetPoint("BOTTOMRIGHT", MiniMapMailFrame)
-MiniMapMailFrame.Text:SetTextColor(1, 0, 1)
+local MiniMapMailFrame_Text = MiniMapMailFrame:CreateFontString(nil, "OVERLAY")
+MiniMapMailFrame_Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+MiniMapMailFrame_Text:SetPoint("BOTTOMRIGHT", MiniMapMailFrame)
+MiniMapMailFrame_Text:SetTextColor(1, 0, 1)
 
 MiniMapMailBorder:SetTexture(nil)
 MiniMapMailIcon:SetTexture(nil)
@@ -28,7 +26,7 @@ MiniMapMailIcon:SetTexture(nil)
 MiniMapMailFrame:HookScript("OnEvent", function(self, event, ...)
     if event == "UPDATE_PENDING_MAIL" or event == "MAIL_CLOSED" then
         local text = HasNewMail() and "N" or ""
-        MiniMapMailFrame.Text:SetText(text)
+        MiniMapMailFrame_Text:SetText(text)
     end
 end)
 
@@ -46,11 +44,11 @@ hooksecurefunc("EyeTemplate_StartAnimating", function(self)
     self:SetScript("OnUpdate", nil)
 end)
 
-QueueStatusMinimapButton.Text = QueueStatusMinimapButton:CreateFontString(nil, "OVERLAY")
-QueueStatusMinimapButton.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
-QueueStatusMinimapButton.Text:SetPoint("TOP", QueueStatusMinimapButton)
-QueueStatusMinimapButton.Text:SetTextColor(1, 0.4, 0)
-QueueStatusMinimapButton.Text:SetText("Q")
+local QueueStatusMinimapButton_Text = QueueStatusMinimapButton:CreateFontString(nil, "OVERLAY")
+QueueStatusMinimapButton_Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+QueueStatusMinimapButton_Text:SetPoint("TOP", QueueStatusMinimapButton)
+QueueStatusMinimapButton_Text:SetTextColor(1, 0.4, 0)
+QueueStatusMinimapButton_Text:SetText("Q")
 
     -- Garrison button
 
@@ -135,6 +133,7 @@ end)
     -- Modify the minimap tracking
 
 Minimap:SetScript("OnMouseUp", function(self, button)
+    local level, value = 1, nil
     if button == "RightButton" then
         ToggleDropDownMenu(level, value, MiniMapTrackingDropDown, self, - (Minimap:GetWidth() * 0.7), -3)
     else

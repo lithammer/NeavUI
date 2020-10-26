@@ -6,7 +6,7 @@ nMainbar.Config = {
 
     button = {
         showVehicleKeybinds = true,
-        showKeybinds = true,
+        showKeybinds = false,
         showMacroNames = false,
         buttonOutOfRange = false,
 

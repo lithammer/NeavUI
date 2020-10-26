@@ -100,7 +100,7 @@ local function SetupChildFrames(self, template, numEntries, initialOffsetX, init
 
     self.entryHeight = round(entryHeight) - offsetY
 
-    local numEntries = numEntries or math.ceil(self:GetHeight() / self.entryHeight) + 1
+    numEntries = numEntries or math.ceil(self:GetHeight() / self.entryHeight) + 1
 
     for i = #entries + 1, numEntries do
         entry = CreateFrame("FRAME", entryName and (entryName .. i) or nil, scrollChild, template)
@@ -194,9 +194,9 @@ end
 
     --// Guild Frame
 
-function nMinimap:UpdateGuildText(self)
+function nMinimap.UpdateGuildText(self)
     if IsInGuild() then
-        local totalMembers, onlineMembers, onlineAndMobileMembers = GetNumGuildMembers()
+        local _, onlineMembers = GetNumGuildMembers()
         self.Text:SetFormattedText("%s%d", guildIcon, onlineMembers)
     else
         self.Text:SetText(guildIcon.." -")
@@ -215,7 +215,7 @@ function nMinimap_UpdateGuildButton(entry)
     local minWidth = scrollFrame:GetWidth()
     local zonec, classc, levelc
 
-    local name, rank, _, level, _, zone, note, officernote, connected, status, class, _ = GetGuildRosterInfo(entry.id)
+    local name, _, _, level, _, zone, _, _, connected, status, class, _ = GetGuildRosterInfo(entry.id)
 
     if connected then
         zone = zone or UNKNOWN
@@ -304,7 +304,7 @@ function nMinimapTab_Guild_UpdateScrollFrame()
     end
 
     for i = 1, GetNumGuildMembers() do
-        local name, rank, _, level, _, zone, note, officernote, connected, status, class, _ = GetGuildRosterInfo(i)
+        local name, _, _, _, _, _, _, _, connected = GetGuildRosterInfo(i)
         if connected and name ~= playerName.."-"..playerRealm then
             AddButtonInfo(i, name)
         end
@@ -320,7 +320,7 @@ function nMinimapTab_Guild_OnEvent(self, event, ...)
     if event == "PLAYER_GUILD_UPDATE" or event == "GUILD_ROSTER_UPDATE" then
         C_GuildInfo.GuildRoster()
     end
-    nMinimap:UpdateGuildText(self)
+    nMinimap.UpdateGuildText(self)
     nMinimapTab_Guild_UpdateScrollFrame()
 end
 
@@ -330,12 +330,11 @@ function nMinimapTab_Guild_ShowTooltip(self)
     end
 
     if IsShiftKeyDown() then
-        nMinimap:UpdateGuildText(self)
+        nMinimap.UpdateGuildText(self)
         nMinimapTab_Guild_UpdateScrollFrame()
     end
 
-    local totalMembers, onlineMembers, onlineAndMobileMembers = GetNumGuildMembers()
-    local zonec, classc, levelc
+    local totalMembers, onlineMembers, _ = GetNumGuildMembers()
 
     GameTooltip:ClearLines()
     GameTooltip:ClearAllPoints()
@@ -400,12 +399,11 @@ function nMinimap_UpdateFriendButton(entry)
             end
 
             if gameAccountInfo.clientProgram == BNET_CLIENT_WOW then
+                local status = 0
                 if gameAccountInfo.isGameAFK == true then
                     status = 1
                 elseif accountInfo.isDND == true then
                     status = 2
-                else
-                    status = 0
                 end
 
                 levelc = GetQuestDifficultyColor(level)
@@ -515,8 +513,8 @@ function nMinimap_UpdateFriends()
 end
 
 function nMinimapTab_Friends_UpdateScrollFrame()
-    local BNTotal, BNOnline = BNGetNumFriends()
-    local WoWTotal, WoWOnline = C_FriendList.GetNumFriends(), C_FriendList.GetNumOnlineFriends()
+    local _, BNOnline = BNGetNumFriends()
+    local _, WoWOnline = C_FriendList.GetNumFriends(), C_FriendList.GetNumOnlineFriends()
 
     local scrollFrame = FriendsScrollFrame
 
@@ -553,7 +551,6 @@ function nMinimapTab_Friends_ShowTooltip(self)
     local totalFriendsOnline = BNOnline + WoWOnline
     local totalfriends = BNTotal + WoWTotal
     local invites = BNGetNumFriendInvites()
-    local zonec, classc, levelc, realmc
 
     if totalFriendsOnline == 0 then return end
 
@@ -575,8 +572,8 @@ function nMinimapTab_Friends_ShowTooltip(self)
 end
 
 function nMinimapTab_Friends_OnEvent(self, event, ...)
-    local BNTotal, BNOnline = BNGetNumFriends()
-    local WoWTotal, WoWOnline = C_FriendList.GetNumFriends(), C_FriendList.GetNumOnlineFriends()
+    local _, BNOnline = BNGetNumFriends()
+    local _, WoWOnline = C_FriendList.GetNumFriends(), C_FriendList.GetNumOnlineFriends()
     local totalFriendsOnline = BNOnline + WoWOnline
 
     self.Text:SetFormattedText("%s%d", friendIcon, totalFriendsOnline)

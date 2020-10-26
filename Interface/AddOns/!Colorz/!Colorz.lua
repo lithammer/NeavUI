@@ -12,7 +12,7 @@ hooksecurefunc("UnitFrameManaBar_UpdateType", CustomManaColor)
 
     -- Set faction colors for Repuation Frame and tracking bar.
 
-TOOLTIP_FACTION_COLORS = {
+local TOOLTIP_FACTION_COLORS = {
     [1] = {r = 1, g = 0, b = 0},
     [2] = {r = 1, g = 0, b = 0},
     [3] = {r = 1, g = 1, b = 0},
@@ -23,7 +23,7 @@ TOOLTIP_FACTION_COLORS = {
     [8] = {r = 0, g = 1, b = 0},
 }
 
-CUSTOM_FACTION_BAR_COLORS = {
+local CUSTOM_FACTION_BAR_COLORS = {
     [1] = {r = 0.63, g = 0, b = 0},
     [2] = {r = 0.63, g = 0, b = 0},
     [3] = {r = 0.63, g = 0, b = 0},
@@ -74,7 +74,7 @@ end)
 
     -- Override the default GameTooltip_UnitColor function.
 
-function GameTooltip_UnitColor(unit)
+function GameTooltip_UnitColor(unit) -- luacheck: ignore
     local r, g, b
 
     if UnitIsDead(unit) or UnitIsGhost(unit) or UnitIsTapDenied(unit) then

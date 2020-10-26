@@ -76,7 +76,7 @@ local getPoint = function(obj, anchor)
 			point, "UIParent", x,  y, OS
 		)
 	else
-		local point, parent, _, x, y = anchor:GetPoint()
+		local point, _, _, x, y = anchor:GetPoint()
 
 		return string.format(
 			"%s\031%s\031%d\031%d\031%.3f",
@@ -252,36 +252,36 @@ do
 		mat = "mainassisttarget",
 	}
 
-	local validName = function(smartName)
+	local validName = function(name)
 		-- Not really a valid name, but we"ll accept it for simplicities sake.
-		if(tonumber(smartName)) then
-			return smartName
+		if(tonumber(name)) then
+			return name
 		end
 
-		if(type(smartName) == "string") then
+		if(type(name) == "string") then
 			-- strip away trailing s from pets, but don"t touch boss/focus.
-			smartName = smartName:gsub("([^us])s$", "%1")
+			name = name:gsub("([^us])s$", "%1")
 
-			if(rewrite[smartName]) then
-				return rewrite[smartName]
+			if(rewrite[name]) then
+				return rewrite[name]
 			end
 
 			for _, v in next, validNames do
-				if(v == smartName) then
-					return smartName
+				if(v == name) then
+					return name
 				end
 			end
 
 			if(
-				smartName:match"^party%d?$" or
-				smartName:match"^arena%d?$" or
-				smartName:match"^boss%d?$" or
-				smartName:match"^partypet%d?$" or
-				smartName:match"^raid%d?%d?$" or
-				smartName:match"%w+target$" or
-				smartName:match"%w+pet$"
+				name:match"^party%d?$" or
+				name:match"^arena%d?$" or
+				name:match"^boss%d?$" or
+				name:match"^partypet%d?$" or
+				name:match"^raid%d?%d?$" or
+				name:match"%w+target$" or
+				name:match"%w+pet$"
 				) then
-				return smartName
+				return name
 			end
 		end
 	end
@@ -361,9 +361,9 @@ do
 				if(not _DB[layout])  then
 					_DB.__INITIAL[layout] = nil
 				else
-					for frame in next, frames do
-						if(not _DB[layout][frame]) then
-							_DB.__INITIAL[layout][frame] = nil
+					for f in next, frames do
+						if(not _DB[layout][f]) then
+							_DB.__INITIAL[layout][f] = nil
 						end
 					end
 				end
@@ -378,7 +378,7 @@ do
 	function frame:PLAYER_REGEN_DISABLED()
 		if(_LOCK) then
 			print("Anchors hidden due to combat.")
-			for k, bdrop in next, backdropPool do
+			for _, bdrop in next, backdropPool do
 				bdrop:Hide()
 			end
 			_LOCK = nil
@@ -649,7 +649,6 @@ do
 			end
 
 			local OnEnterPressed = function(self)
-				local text = self:GetText()
 				self:ClearFocus()
 
 				saveRestorePosition(self:GetParent())
@@ -755,9 +754,8 @@ do
 						box:SetPoint"LEFT"
 						box:SetPoint("RIGHT", -30, 0)
 
-						local title = box:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-						title:SetPoint("BOTTOMLEFT", box, "TOPLEFT", 8, 0)
-						box.title = title
+						box.title = box:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+						box.title:SetPoint("BOTTOMLEFT", box, "TOPLEFT", 8, 0)
 
 						if(numStyles == 1) then
 							local scaleTitle = box:CreateFontString(nil, nil, "GameFontHighlight")
@@ -1006,9 +1004,9 @@ SlashCmdList[slashGlobal] = function(inp)
 		InterfaceOptionsFrame_OpenToCategory(_TITLE)
 	else
 		if(not _LOCK) then
-			for k, obj in next, oUF.objects do
+			for _, obj in next, oUF.objects do
 				if(not obj.disableMovement) then
-					local style, identifier, isHeader = getObjectInformation(obj)
+					local _, _, isHeader = getObjectInformation(obj)
 					local backdrop = getBackdrop(obj, isHeader)
 					if(backdrop) then backdrop:Show() end
 				end
@@ -1016,7 +1014,7 @@ SlashCmdList[slashGlobal] = function(inp)
 
 			_LOCK = true
 		else
-			for k, bdrop in next, backdropPool do
+			for _, bdrop in next, backdropPool do
 				bdrop:Hide()
 			end
 

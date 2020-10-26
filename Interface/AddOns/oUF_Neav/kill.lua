@@ -9,9 +9,9 @@ for _, button in pairs({
     _G["InterfaceOptions"..button]:EnableMouse(false)
 end
 
-function PetFrame_Update() end
+function PetFrame_Update() end -- luacheck: ignore
 
-function PlayerFrame_AnimateOut() end
-function PlayerFrame_AnimFinished() end
-function PlayerFrame_ToPlayerArt() end
-function PlayerFrame_ToVehicleArt() end
+function PlayerFrame_AnimateOut() end -- luacheck: ignore
+function PlayerFrame_AnimFinished() end -- luacheck: ignore
+function PlayerFrame_ToPlayerArt() end -- luacheck: ignore
+function PlayerFrame_ToVehicleArt() end -- luacheck: ignore

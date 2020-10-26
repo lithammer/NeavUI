@@ -16,6 +16,8 @@ local function IsSpecificButton(self, name)
     end
 end
 
+local IsSkinned = {}
+
 local function SkinButton(button, icon, borderOffset, shadowOffset)
     local buttonName = button:GetName()
     local border = button.Border
@@ -33,7 +35,7 @@ local function SkinButton(button, icon, borderOffset, shadowOffset)
 
     button:SetNormalTexture(MEDIA_PATH.."textureNormal")
 
-    if not button.Skinned then
+    if not IsSkinned[button] then
         if icon then
             icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
             PixelUtil.SetPoint(icon, "TOPRIGHT", button, "TOPRIGHT", -1, -1)
@@ -83,7 +85,7 @@ local function SkinButton(button, icon, borderOffset, shadowOffset)
             PixelUtil.SetPoint(button.Shadow, "BOTTOMLEFT", normalTexture, "BOTTOMLEFT", -shadowOffset, -shadowOffset)
         end
 
-        button.Skinned = true
+        IsSkinned[button] = true
     end
 end
 
@@ -183,14 +185,13 @@ local ActionBarActionButtonMixinHook_Update = function(self)
 end
 
 hooksecurefunc("ExtraActionBar_Update", function(self)
-    local bar = ExtraActionBarFrame
-    if HasExtraActionBar() and not bar.Skinned then
-        local button = bar.button
+    if HasExtraActionBar() and not IsSkinned[ExtraActionBarFrame] then
+        local button = ExtraActionBarFrame.button
         button.style:Hide()
 
         SkinButton(button, button.icon, 4, 5)
 
-        bar.Skinned = true
+        IsSkinned[ExtraActionBarFrame] = true
     end
 end)
 

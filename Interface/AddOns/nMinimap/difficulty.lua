@@ -16,9 +16,9 @@ local function HideDifficultyFrame()
 end
 
 local function GetDifficultyText()
-    local inInstance, instancetype = IsInInstance()
+    local inInstance = IsInInstance()
     local _, _, difficultyIndex, _, _, _, _, _, instanceGroupSize = GetInstanceInfo()
-    local _, _, isHeroic, isChallengeMode, displayHeroic, displayMythic, _, isLFR = GetDifficultyInfo(difficultyIndex)
+    local _, _, isHeroic, _, displayHeroic, displayMythic, _, isLFR = GetDifficultyInfo(difficultyIndex)
 
     local instanceText = ""
     local guildStyle

@@ -4,11 +4,11 @@ local config = nPower.Config
 
 local floor = math.floor
 
-function nPower:FormatValue(self)
-    if (self >= 10000) then
-        return ("%.1fk"):format(self / 1e3)
+function nPower:FormatValue(v)
+    if (v >= 10000) then
+        return ("%.1fk"):format(v / 1e3)
     else
-        return self
+        return v
     end
 end
 
@@ -39,7 +39,7 @@ function nPower:HasExtraPoints(class)
     end
 end
 
-function nPower:UpdateHealthTextLocation(self, nump)
+function nPower.UpdateHealthTextLocation(self, nump)
     if not self.HPText then
         return
     end

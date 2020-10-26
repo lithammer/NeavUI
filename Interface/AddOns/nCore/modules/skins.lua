@@ -45,7 +45,7 @@ function nCore:Skins()
                     local frame = bar.frame
                     local tbar = _G[frame:GetName().."Bar"]
                     local spark = _G[frame:GetName().."BarSpark"]
-                    local texture = _G[frame:GetName().."BarTexture"]
+                    -- local texture = _G[frame:GetName().."BarTexture"]
                     local icon1 = _G[frame:GetName().."BarIcon1"]
                     local icon2 = _G[frame:GetName().."BarIcon2"]
                     local name = _G[frame:GetName().."BarName"]

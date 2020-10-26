@@ -1,11 +1,7 @@
 local _, nMainbar = ...
 local cfg = nMainbar.Config
 
-BINDING_HEADER_NBAGS = "nMainbar"
-BINDING_NAME_NBAGS_TOGGLE = "Bag Bar Toggle"
-
 if not cfg.showPicomenu then
-    function ToggleBags() end
     return
 end
 
@@ -66,7 +62,7 @@ end
 
     -- Used to toggle bag with keybind or slash command /neavbag.
 
-function ToggleBags()
+local function ToggleBags()
     if not BagsShown then
         BagShow()
         BagsShown = true

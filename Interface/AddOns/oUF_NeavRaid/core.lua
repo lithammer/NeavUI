@@ -1,6 +1,5 @@
 
 local _, ns = ...
-local config = ns.Config
 local raidFrames, tankFrames
 
 local oUF = ns.oUF or oUF
@@ -123,6 +122,7 @@ local offsets
 do
     local space = 2
 
+    -- luacheck: push ignore icon
     offsets = {
         TOPLEFT = {
             icon = {space, -space},
@@ -164,6 +164,7 @@ do
             count = {"CENTER", icon, 0, 0},
         },
     }
+    -- luacheck: pop
 end
 
 local function CreateIndicators(self, unit)
@@ -180,13 +181,13 @@ local function CreateIndicators(self, unit)
     local buffs = {}
 
     if indicatorList["ALL"] then
-        for key, value in pairs(indicatorList["ALL"]) do
+        for _, value in pairs(indicatorList["ALL"]) do
             tinsert(buffs, value)
         end
     end
 
     if indicatorList[playerClass] then
-        for key, value in pairs(indicatorList[playerClass]) do
+        for _, value in pairs(indicatorList[playerClass]) do
             tinsert(buffs, value)
         end
     end

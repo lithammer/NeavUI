@@ -1,7 +1,3 @@
-
-local _, nMinimap = ...
-local cfg = nMinimap.Config
-
 local unpack = unpack
 local sort = table.sort
 local sort_func = function( a,b ) return a.name < b.name end
@@ -46,7 +42,7 @@ TimeManagerClockButton:SetScript("OnEnter" ,function(self)
     local savedInstances = GetNumSavedInstances()
     if savedInstances > 0 then
         for index=1, savedInstances do
-            local instanceName, _, _, _, locked, _, _, isRaid, _, difficultyName, maxBosses, defeatedBosses = GetSavedInstanceInfo(index)
+            local instanceName, _, _, _, locked, _, _, _, _, difficultyName, maxBosses, defeatedBosses = GetSavedInstanceInfo(index)
 
             if locked then
                 instanceLockouts[index] = { name = instanceName, difficulty = difficultyName, defeated = defeatedBosses, total = maxBosses }
@@ -59,7 +55,7 @@ TimeManagerClockButton:SetScript("OnEnter" ,function(self)
             GameTooltip:AddLine(" ")
             GameTooltip:AddLine(CALENDAR_FILTER_RAID_LOCKOUTS)
 
-            for i, saved in ipairs(instanceLockouts) do
+            for _, saved in ipairs(instanceLockouts) do
                 local bossColor = saved.defeated == saved.total and { 0.0, 1.0, 0.0 } or { 1.0, 0.0, 0.0 }
                 GameTooltip:AddDoubleLine(saved.name .. " |cffffffff" .. saved.difficulty .. "|r", saved.defeated .. "/" .. saved.total, 1.0, 0.82, 0.0, unpack(bossColor))
             end
@@ -81,7 +77,7 @@ TimeManagerClockButton:SetScript("OnEnter" ,function(self)
             GameTooltip:AddLine(" ")
             GameTooltip:AddLine(RAID_INFO_WORLD_BOSS)
 
-            for i, boss in ipairs(worldbossLockouts) do
+            for _, boss in ipairs(worldbossLockouts) do
                 GameTooltip:AddLine(boss.name, 1.0, 1.0, 1.0)
             end
         end

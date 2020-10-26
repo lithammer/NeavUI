@@ -50,9 +50,9 @@ function nOrderHall_OnEvent(self, event, ...)
         if OrderHallCommandBar then
             OrderHallCommandBar:Hide()
             OrderHallCommandBar:UnregisterAllEvents()
-            OrderHallCommandBar.Show = function() end
+            OrderHallCommandBar.Show = function() end -- luacheck: ignore
         end
-        OrderHall_CheckCommandBar = function () end
+        OrderHall_CheckCommandBar = function () end -- luacheck: ignore
 
         ToggleBar(self)
     elseif event == "GARRISON_UPDATE" then

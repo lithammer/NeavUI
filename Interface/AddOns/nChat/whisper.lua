@@ -1,6 +1,3 @@
-
-local _, nChat = ...
-
 local gsub = string.gsub
 
 for i = 1, NUM_CHAT_WINDOWS do

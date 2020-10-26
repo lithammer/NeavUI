@@ -5,7 +5,7 @@ function nCore:AltBuy()
     local select = select
 
     local NEW_ITEM_VENDOR_STACK_BUY = ITEM_VENDOR_STACK_BUY
-    ITEM_VENDOR_STACK_BUY = "|cffa9ff00"..NEW_ITEM_VENDOR_STACK_BUY.."|r"
+    ITEM_VENDOR_STACK_BUY = "|cffa9ff00"..NEW_ITEM_VENDOR_STACK_BUY.."|r" -- luacheck: ignore
 
         -- Alt-click to buy a stack.
 

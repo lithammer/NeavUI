@@ -1,45 +1,16 @@
-
 local _, nBuff = ...
 local cfg = nBuff.Config
 
 local unpack = unpack
 local ceil = math.ceil
-local match = string.match
-local day, hour, minute = 86400, 3600, 60
 
---[[
-_G.DAY_ONELETTER_ABBR = "|cffffffff%dd|r"
-_G.HOUR_ONELETTER_ABBR = "|cffffffff%dh|r"
-_G.MINUTE_ONELETTER_ABBR = "|cffffffff%dm|r"
-_G.SECOND_ONELETTER_ABBR = "|cffffffff%d|r"
+DAY_ONELETTER_ABBR = "|cffffffff%dd|r"
+HOUR_ONELETTER_ABBR = "|cffffffff%dh|r"
+MINUTE_ONELETTER_ABBR = "|cffffffff%dm|r"
+SECOND_ONELETTER_ABBR = "|cffffffff%d|r"
 
-_G.DEBUFF_MAX_DISPLAY = 32 -- show more debuffs
-_G.BUFF_MIN_ALPHA = 1
---]]
-
-local origSecondsToTimeAbbrev = _G.SecondsToTimeAbbrev
-local function SecondsToTimeAbbrevHook(seconds)
-    origSecondsToTimeAbbrev(seconds)
-
-    local tempTime
-    if seconds >= day then
-        tempTime = floor(seconds / day + 0.5)
-        return "|cffffffff%dd|r", tempTime
-    end
-
-    if seconds >= hour then
-        tempTime = floor(seconds/hour + 0.5)
-        return "|cffffffff%dh|r", tempTime
-    end
-
-    if seconds >= minute then
-        tempTime = floor(seconds / minute + 0.5)
-        return "|cffffffff%dm|r", tempTime
-    end
-
-    return "|cffffffff%d|r", seconds
-end
-SecondsToTimeAbbrev = SecondsToTimeAbbrevHook
+-- _G.DEBUFF_MAX_DISPLAY = 32 -- show more debuffs
+-- _G.BUFF_MIN_ALPHA = 1
 
 BuffFrame:SetScript("OnUpdate", nil)
 hooksecurefunc(BuffFrame, "Show", function(self)

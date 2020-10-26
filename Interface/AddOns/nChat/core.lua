@@ -6,7 +6,6 @@ local type = type
 local select = select
 local unpack = unpack
 local gsub = string.gsub
-local format = string.format
 
 _G.CHAT_FRAME_TAB_SELECTED_MOUSEOVER_ALPHA = 1
 _G.CHAT_FRAME_TAB_SELECTED_NOMOUSE_ALPHA = 0
@@ -306,12 +305,12 @@ local function ModChat(self)
         _G[self.."EditBox"]:SetBeautyBorderTexture("white")
 
         hooksecurefunc("ChatEdit_UpdateHeader", function(editBox)
-            local type = editBox:GetAttribute("chatType")
-            if not type then
+            local chatType = editBox:GetAttribute("chatType")
+            if not chatType then
                 return
             end
 
-            local info = ChatTypeInfo[type]
+            local info = ChatTypeInfo[chatType]
             _G[self.."EditBox"]:SetBeautyBorderColor(info.r, info.g, info.b)
         end)
     end
