@@ -337,6 +337,7 @@ function nPower.SetupPower(self)
     self.Power.Below:SetHeight(14)
     self.Power.Below:SetWidth(14)
     self.Power.Below:SetTexture([[Interface\AddOns\nPower\media\textureArrowBelow]])
+    self.Power.Below:SetPoint("TOP", self.Power, "BOTTOMLEFT", 0, 0)
 
     self.Power.Above = self.Power:CreateTexture(nil, "BACKGROUND")
     self.Power.Above:SetHeight(14)
