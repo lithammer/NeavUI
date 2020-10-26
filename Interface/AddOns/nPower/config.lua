@@ -18,7 +18,7 @@ nPower.Config = {
     valueFontAdjustmentX = 0,
 
     hp = {
-        show = true,
+        show = false,
         hpFont = "Fonts\\ARIALN.ttf",
         hpFontOutline = true,
         hpFontSize = 25,
