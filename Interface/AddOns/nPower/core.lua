@@ -10,12 +10,18 @@ end
 
 local function CalcRuneCooldown(num)
     local start, duration, runeReady = GetRuneCooldown(num)
+
+    -- Sometimes GetRuneCooldown returns nil for some reason.
+    if not start then
+        return
+    end
+
     local time = floor(GetTime() - start)
     local cooldown = ceil(duration - time)
 
-    if (runeReady or UnitIsDeadOrGhost("player")) then
+    if runeReady or UnitIsDeadOrGhost("player") then
         return "#"
-    elseif (not UnitIsDeadOrGhost("player") and cooldown) then
+    elseif not UnitIsDeadOrGhost("player") and cooldown then
         return cooldown
     end
 end
