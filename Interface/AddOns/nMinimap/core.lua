@@ -52,11 +52,11 @@ QueueStatusMinimapButton_Text:SetText("Q")
 
     -- Garrison button
 
-GarrisonLandingPageMinimapButton:SetSize(36, 36)
-GarrisonLandingPageMinimapButton:ClearAllPoints()
-GarrisonLandingPageMinimapButton:SetPoint("BOTTOMLEFT", Minimap, 0, 0)
-
 hooksecurefunc("GarrisonLandingPageMinimapButton_UpdateIcon", function(self)
+    GarrisonLandingPageMinimapButton:SetSize(36, 36)
+    GarrisonLandingPageMinimapButton:ClearAllPoints()
+    GarrisonLandingPageMinimapButton:SetPoint("BOTTOMLEFT", Minimap, 0, 0)
+
     if C_Garrison.GetLandingPageGarrisonType() == Enum.GarrisonType.Type_8_0 then
         GarrisonLandingPageMinimapButton:SetScale(.70)
     else
