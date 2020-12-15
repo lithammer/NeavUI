@@ -3,8 +3,8 @@
 ## Title: oUF_|cffCC3333N|r|cffE53300e|r|cffFF4D00a|r|cffFF6633v|r
 ## RequiredDeps: oUF, !Beautycase
 ## OptionalDeps: oUF_AuraWatch
-## SavedVariablesPerCharacter: oUF_NeavDB
-## X-SavedVariablesPerCharacter: oUF_NeavDB
+## SavedVariables: oUF_NeavDB
+## X-SavedVariables: oUF_NeavDB
 ## X-SlashCmdList: /neav
 ## X-oUF: oUF_Neav
 
