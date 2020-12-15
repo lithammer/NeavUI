@@ -53,6 +53,7 @@ function nCore:Skins()
 
                     spark:SetTexture(nil)
 
+                    Mixin(tbar, BackdropTemplateMixin)
                     timer:ClearAllPoints()
                     timer:SetPoint("RIGHT", tbar, "RIGHT", -4, 0)
                     timer:SetFont(STANDARD_TEXT_FONT, 22)
