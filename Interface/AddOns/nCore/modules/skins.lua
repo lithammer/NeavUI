@@ -9,29 +9,6 @@ function nCore:Skins()
     f:RegisterEvent("PLAYER_ENTERING_WORLD")
 
     f:SetScript("OnEvent", function(self)
-
-            -- a example for addons like pitbull
-
-        --[[
-        if IsAddOnLoaded("PitBull4") then
-            f:SetScript("OnUpdate", function(self)
-
-                    -- works fine because beautycase will not create multiple textures/borders
-
-                for _, pitframe in pairs({
-                    PitBull4_Frames_player,
-                    PitBull4_Frames_target,
-                    PitBull4_Frames_targettarget,
-                }) do
-                    if pitframe:IsShown() then
-                        pitframe:CreateBeautyBorder(11)
-                        pitframe:SetBeautyBorderPadding(2)
-                    end
-                end
-            end)
-        end
-        --]]
-
         if IsAddOnLoaded("Omen") then
             if not OmenBarList.beautyBorder then
                 OmenBarList:CreateBeautyBorder(11)
