@@ -4,3 +4,6 @@
 [submodule "Interface/AddOns/nPlates"]
 	path = Interface/AddOns/nPlates
 	url = git@github.com:Grimsbain/nPlates.git
+[submodule "Interface/AddOns/oUF_Neav/modules/oUF_MovableFrames"]
+	path = Interface/AddOns/oUF_Neav/modules/oUF_MovableFrames
+	url = git@github.com:oUF-wow/oUF_MovableFrames.git

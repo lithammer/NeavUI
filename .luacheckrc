@@ -12,6 +12,7 @@ exclude_files = {
     "Interface/AddOns/nMainbar/Libs/LibStub",
     "Interface/AddOns/nPlates",
     "Interface/AddOns/oUF",
+    "Interface/AddOns/oUF_Neav/modules/oUF_MovableFrames",
     "Interface/AddOns/oUF_NeavRaid/modules/CallbackHandler-1.0",
     "Interface/AddOns/oUF_NeavRaid/modules/LibSharedMedia-3.0",
     "Interface/AddOns/oUF_NeavRaid/modules/LibStub",
