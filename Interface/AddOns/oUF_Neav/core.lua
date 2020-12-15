@@ -1478,3 +1478,11 @@ oUF:Factory(function(self)
         party:SetFrameStrata("LOW")
     end
 end)
+
+SlashCmdList["oUF_Neav_Reset"] = function(msg)
+    if oUF_NeavDB then
+        oUF_NeavDB = nil
+        ReloadUI()
+    end
+end
+SLASH_oUF_Neav_Reset1 = "/neavreset"

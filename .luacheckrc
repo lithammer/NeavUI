@@ -104,6 +104,8 @@ globals = {
 
     -- oUF_Neav
     "SLASH_oUF_Neav_Castbar_AnchorToggle1",
+    "SLASH_oUF_Neav_Reset1",
+    "oUF_NeavDB",
     "oUF_Neav_Player",
 
     -- oUF_NeavRaid.
